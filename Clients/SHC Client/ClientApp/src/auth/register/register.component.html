@@ -1,0 +1,536 @@
+<div class="main-content">
+    <div class="bdr-btm">
+        <div class="container">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="#">Trang chủ</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Đăng ký tài khoản sử dụng</li>
+                </ol>
+            </nav>
+
+        </div>
+    </div>
+    <section id="signup" class="iq-pt-50">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="heading-title">
+                        <h4 class="title iq-tw-5 text-uppercase">Đăng ký tài khoản sử dụng</h4>
+                        <p>Mở tài khoản dễ dàng, nhanh chóng với một form duy nhất để có thể sử dụng đầy đủ các chức
+                            năng và dịch vụ của Mangyteviet.com
+                            Đăng nhập tại đây nếu bạn đã có tài khoản tại Mangyteviet.com</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-xs-12 col-md-6 pull-right text-center"><img style="margin: 0 auto;"
+                        class="img-responsive iq-pt-50-on-lg" src="/assets/images/dk.jpg" width="499" height="519"
+                        alt="" /></div>
+                <div class="col-xs-12 col-md-6 pull-left">
+                    <div class="signup-form">
+                        <form [formGroup]="frmUser">
+
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-xs-12 col-md-4">
+                                        <label class="primary-label">Loại tài khoản</label>
+                                    </div>
+
+                                    <div class="col-xs-12 col-md-8">
+                                        <div class="row">
+                                            <div class="col-xs-12 col-sm-4 col-md-12">
+                                                <div class="radio">
+                                                    <label>
+                                                        <input type="radio"
+                                                            (change)="onChangeAccountType(1)" value="1" formControlName="accountType" [checked]="true">
+                                                        Thành viên</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-12 col-sm-4 col-md-12">
+                                                <div class="radio">
+                                                    <label>
+                                                        <input type="radio" 
+                                                            (change)="onChangeAccountType(2)" value="2" formControlName="accountType">
+                                                        Bác sĩ / chuyên gia / điều dưỡng...</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-12 col-sm-4 col-md-12">
+                                                <div class="radio">
+                                                    <label>
+                                                        <input type="radio" 
+                                                            (change)="onChangeAccountType(3)" value="3" formControlName="accountType">
+                                                        Cơ sở y tế / doanh nghiệp</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>  
+                            </div>
+
+                            <div [ngClass]="{'hidden': _hideSpecialist}">
+                                <div class="row">
+                                    <div class="col-xs-12 col-md-4">
+                                        <label class="primary-label" style="padding-top: 0px;">Đăng ký cho ai</label>
+                                    </div>
+
+                                    <div class="col-xs-12 col-md-8" [ngClass]="{'hidden': _hideDoctor}">
+                                        <div class="row">
+                                            <div class="col-xs-6 col-sm-6">
+                                                <div class="radio">
+                                                    <label><input type="radio" value="1"
+                                                        [checked]="!_hideDoctor ? true : false" formControlName="register">Chính tôi</label>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-xs-6 col-sm-6">
+                                                <div class="radio">
+                                                    <label><input type="radio" value="2"
+                                                        formControlName="register">Bác sĩ tôi thay mặt</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-12 col-md-8" [ngClass]="{'hidden': _hideMF}">
+                                        <div class="row">
+                                            <div class="col-xs-12 col-sm-6">
+                                                <div class="radio">
+                                                    <label><input type="radio" value="3"
+                                                        [checked]="!_hideMF ? true : false" formControlName="register">Cơ sở của tôi</label>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-xs-12 col-sm-6">
+                                                <div class="radio">
+                                                    <label><input type="radio" value="4"
+                                                        formControlName="register">Cơ sở tôi đại diện</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-xs-12 col-md-4">
+                                        <label class="primary-label custom-label">Họ và tên<span
+                                                class="text-danger">*</span></label>
+                                    </div>
+
+                                    <div class="col-xs-12 col-md-8">
+                                        <input #fullName type="text" formControlName="fullName" name="name" id="name"
+                                            class="validate form-control" maxlength="255">
+                                        <validation [control]="frmUser.controls['fullName']"></validation>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-xs-12 col-md-4">
+                                        <label class="primary-label custom-label" style="padding-top: 0px;">Giới tính</label>
+                                    </div>     
+                                    <div class="col-sm-10 col-lg-6">
+                                        <label class="radio-inline"><input type="radio" formControlName="sex" name="sex" checked="checked"
+                                                [value]="1" [checked]="true">Nam</label>
+                                        <label class="radio-inline"><input type="radio" formControlName="sex" name="sex"
+                                                [value]="2">Nữ</label>
+                                        <label class="radio-inline"><input type="radio" formControlName="sex" name="sex"
+                                                [value]="3">Không xác định</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-xs-12 col-md-4">
+                                        <label class="primary-label custom-label">Ngày sinh</label>
+                                    </div>
+                                    <div class="col-xs-12 col-md-8">
+                                        <div class="row">
+                                            <div class="col-xs-4">
+                                                <select id="birthD" class="form-control" placeholder="Ngày">
+                                                    <option *ngFor="let o of _dates" [ngValue]="o">{{o}}</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-xs-4">
+                                                <select id="birthM" class="form-control" placeholder="Tháng">
+                                                    <option *ngFor="let o of _months" [ngValue]="o">{{o}}</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-xs-4">
+                                                <select id="birthY" class="form-control" placeholder="Năm">
+                                                    <option *ngFor="let o of _years" [ngValue]="o">{{o}}</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-xs-12 col-md-4">
+                                        <label class="primary-label custom-label">Điện thoại<span
+                                                class="text-danger">*</span></label>
+                                    </div>
+
+                                    <div class="col-xs-12 col-md-8">
+                                        <input type="text"  formControlName="phoneNumber" name="mobile_phone" id="mobile_phone" 
+                                        class="form-control" (keyup)="rulePhoneNumber($event)" minlength="10" maxlength="20">
+                                        <validation [control]="frmUser.controls['phoneNumber']"></validation>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-xs-12 col-md-4">
+                                        <label class="primary-label custom-label">Email<span
+                                                class="text-danger">*</span></label>
+                                    </div>
+
+                                    <div class="col-xs-12 col-md-8">
+                                        <input type="text" formControlName="email" name="email" id="email" 
+                                            class="form-control" (keyup)="ruleEmail($event)" maxlength="320">
+                                        <validation [control]="frmUser.controls['email']"></validation>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-xs-12 col-md-4">
+                                        <label class="primary-label custom-label">Tài khoản<span
+                                                class="text-danger">*</span></label>
+                                    </div>
+
+                                    <div class="col-xs-12 col-md-8">
+                                        <input #fullName type="text" formControlName="userName" name="userName" id="userName"
+                                            class="validate form-control" [patterns]="insurrancePatterns" mask="0*" maxlength="255">
+                                        <validation [control]="frmUser.controls['userName']"></validation>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-xs-12 col-md-4">
+                                        <label class="primary-label custom-label">Mật khẩu<span
+                                                class="text-danger">*</span></label>
+                                    </div>
+
+                                    <div class="col-xs-12 col-md-8">
+                                        <input type="password" formControlName="password" name="password" id="password"
+                                            title="Mật khẩu cần có ít nhất 8 kí tự"
+                                            placeholder="Mật khẩu cần có ít nhất 8 ký tự" data-display="Mật khẩu" class="validate form-control" minlength="8" maxlength="255">
+                                        <validation [control]="frmUser.controls['password']"></validation>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-xs-12 col-md-4">
+                                        <label class="primary-label custom-label">Xác nhận lại mật khẩu<span class="text-danger">*</span></label>
+                                    </div>
+
+                                    <div class="col-xs-12 col-md-8">
+                                        <input type="password" formControlName="confirmPassword" name="confirm_password"
+                                            id="confirm_password" title="Nhập lại mật khẩu"
+                                            placeholder="Nhập lại mật khẩu"
+                                            class="validate form-control" minlength="8" maxlength="255">
+                                        <validation [control]="frmUser.controls['confirmPassword']"></validation>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-xs-12 col-md-4">
+                                        <label class="primary-label custom-label">Địa chỉ</label>
+                                    </div>
+
+                                    <div class="col-xs-12 col-md-8">
+                                        <input type="text" formControlName="address" name="address" id="address" class="form-control" maxlength="255">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-xs-12 col-md-4">
+                                        <label class="primary-label custom-label">Tỉnh/TP</label>
+                                    </div>
+
+                                    <div class="col-xs-12 col-md-8">
+                                        <select formControlName="provinceCode" class="form-control" id="province"
+                                            (change)="onSelectProvince($event)">
+                                            <option *ngFor="let o of _provinces" [ngValue]="o.provinceCode">
+                                                {{o.name}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-xs-12 col-md-4">
+                                        <label class="primary-label custom-label">Quận/Huyện</label>
+                                    </div>
+
+                                    <div class="col-xs-12 col-md-8">
+                                        <select formControlName="districtCode" class="form-control" id="district"
+                                            (change)="onSelectDistrict($event)">
+                                            <option *ngFor="let o of _districts" [ngValue]="o.districtCode">
+                                                {{o.name}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-xs-12 col-md-4">
+                                        <label class="primary-label custom-label">Xã/Phường</label>
+                                    </div>
+
+                                    <div class="col-xs-12 col-md-8">
+                                        <select formControlName="wardCode" class="form-control" id="ward">
+                                            <option *ngFor="let o of _wards" [ngValue]="o.wardCode">{{o.name}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="for-account-type-professional no-margins">
+                                <div class="form-group" [ngClass]="{'hidden': _hideMember}">
+                                    <div class="row">
+                                        <div class="col-xs-12 col-md-4">
+                                            <label class="primary-label custom-label">Số CMND/CCCD</label>
+                                        </div>
+
+                                        <div class="col-xs-12 col-md-8">
+                                            <input type="text" formControlName="identification" mask="00*.00" name="prof_spec"
+                                                class="form-control" minlength="9" maxlength="12">
+                                            <validation [control]="frmUser.controls['identification']"></validation>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group" [ngClass]="{'hidden': _hideMember}">
+                                    <div class="row">
+                                        <div class="col-xs-12 col-md-4">
+                                            <label class="primary-label custom-label">Số thẻ BHYT</label>
+                                        </div>
+
+                                        <div class="col-xs-12 col-md-8">
+                                            <input type="text" formControlName="insurrance" [patterns]="insurrancePatterns" mask="0*" name="prof_place" value=""
+                                                class="form-control" maxlength="15">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group" [ngClass]="{'hidden': _hideDoctor}">
+                                    <div class="row">
+                                        <div class="col-xs-12 col-md-4">
+                                            <label class="primary-label custom-label">Nơi công tác</label>
+                                        </div>
+
+                                        <div class="col-xs-12 col-md-8">
+                                            <input type="text" formControlName="workPlace" name="prof_place"
+                                                class="form-control" maxlength="255">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group" [ngClass]="{'hidden': _hideMF}">
+                                    <div class="row">
+                                        <div class="col-xs-12 col-md-4">
+                                            <label class="primary-label custom-label">Tên CSYT/DN<span
+                                                class="text-danger">*</span></label>
+                                        </div>
+
+                                        <div class="col-xs-12 col-md-8">
+                                            <input type="text" formControlName="healthFacilitiesName" name="prof_place"
+                                                class="form-control" (keyup)="ruleRequire($event.target.value)" maxlength="255">
+                                            <validation [control]="frmUser.controls['healthFacilitiesName']"></validation>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group" [ngClass]="{'hidden': _hideSpecialist}">
+                                    <div class="row">
+                                        <div class="col-xs-12 col-md-4">
+                                            <label class="primary-label custom-label">Chuyên khoa</label>
+                                        </div>
+
+                                        <div class="col-xs-12 col-md-8">
+                                            <select formControlName="specialist" class="form-control" id="specialist">
+                                                <option *ngFor="let o of _specialist" [ngValue]="o.id">{{o.name}}
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="row">
+                                        <div class="col-xs-12 col-md-4">
+                                            <label class="primary-label">Gửi giấy tờ xác thực</label>
+                                        </div>
+
+                                        <div class="col-xs-12 col-md-8">
+                                            <div class="image-uploader text-muted" data-name="first"
+                                                data-description="Chứng minh thư nhân dân / thẻ căn cước">
+                                                <div class="upload-content"><span class="upload-description">Chứng minh
+                                                        thư nhân dân / thẻ căn cước</span>
+                                                    <div class="upload-button"><input type="file" multiple><span
+                                                            class="btn btn-sm btn-primary-inverted"><i
+                                                                class="fa fa-paperclip" aria-hidden="true"></i>Tải
+                                                            lên</span></div>
+                                                </div>
+                                                <div class="upload-target">
+                                                    <div class="row"></div>
+                                                </div>
+                                            </div>
+                                            <div class="image-uploader text-muted" data-name="second"
+                                                data-description="Giấy phép hành nghề hoặc bằng tốt nghiệp">
+                                                <div class="upload-content"><span class="upload-description">Giấy phép
+                                                        hành nghề hoặc bằng tốt nghiệp</span>
+                                                    <div class="upload-button"><input type="file" multiple><span
+                                                            class="btn btn-sm btn-primary-inverted"><i
+                                                                class="fa fa-paperclip" aria-hidden="true"></i>Tải
+                                                            lên</span></div>
+                                                </div>
+                                                <div class="upload-target">
+                                                    <div class="row"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="select-service">
+                                <h6 class="text-center text-uppercase text-blue">Lựa chọn các dịch vụ sử dụng</h6>
+                                <div>
+                                    <div class="iq-accordion iq-mt-20">
+                                        <div class="iq-ad-block">
+                                            <input type="checkbox" class="pull-right" name="qna" value="Hỏi bác sĩ">
+                                            <a href="" class="ad-title iq-tw-5 iq-font-grey"><i class="fa fa-user-md"
+                                                    aria-hidden="true"></i> Hỏi Bác sĩ / Cộng đồng </a>
+                                            <div class="ad-details">
+                                                <div class="row">
+                                                    <div class="col-sm-12">
+                                                        Chuyên mục Hỏi Bác sĩ / Cộng đồng là nơi trao đổi thông tin y tế
+                                                        giữa các bác sĩ, chuyên gia và người bệnh với hơn 2 triệu lượt
+                                                        truy cập hàng tháng. Mỗi câu trả lời của bác sĩ hiện trên
+                                                        Mangyteviet.com là một lần danh tiếng bác sĩ đến gần người bệnh
+                                                        hơn, đồng thời cũng giúp hàng triệu người hỏi trong cộng đồng
+                                                        Mangyteviet có thêm kiến thức sức khỏe để bảo vệ bản
+                                                        thân.<br>
+
+
+                                                        Bạn có thể xem thêm thông tin về chương trình hợp tác này <a
+                                                            class="text-blue" href="#">tại đây</a>.<br>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="iq-ad-block">
+                                            <input type="checkbox" class="pull-right" name="qna" value="Hỏi bác sĩ">
+                                            <a href="javascript:void(0)" class="ad-title iq-tw-5 iq-font-grey"><i
+                                                    class="fa fa-phone fa-fw" aria-hidden="true"></i> Gọi bác sĩ</a>
+                                            <div class="ad-details">
+                                                <div class="row">
+                                                    <div class="col-sm-12"> It has survived not only five centuries, but
+                                                        also the leap into electronic typesetting. Neque porro quisquam
+                                                        est, qui dolorem ipsum quia dolor sit amet, consectetur.</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="iq-ad-block">
+                                            <input type="checkbox" class="pull-right" name="qna" value="Hỏi bác sĩ">
+                                            <a href="javascript:void(0)" class="ad-title iq-tw-5 iq-font-grey"><i
+                                                    class="fa fa-gift fa-fw" aria-hidden="true"></i> Đăng tải thông tin
+                                                ưu đãi, khuyến mãi, voucher giảm giá</a>
+                                            <div class="ad-details">
+                                                <div class="row">
+                                                    <div class="col-sm-12"> It has survived not only five centuries, but
+                                                        also the leap into electronic typesetting. Neque porro quisquam
+                                                        est, qui dolorem ipsum quia dolor sit amet, consectetur.</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="iq-ad-block">
+                                            <input type="checkbox" class="pull-right" name="qna" value="Hỏi bác sĩ">
+                                            <a href="javascript:void(0)" class="ad-title iq-tw-5 iq-font-grey"><i
+                                                    class="fa fa-calendar-plus-o fa-fw" aria-hidden="true"></i> Đăng ký
+                                                khám, quản lý thông tin lịch khám bệnh Online?</a>
+                                            <div class="ad-details">
+                                                <div class="row">
+                                                    <div class="col-sm-12"> It has survived not only five centuries, but
+                                                        also the leap into electronic typesetting. Neque porro quisquam
+                                                        est, qui dolorem ipsum quia dolor sit amet, consectetur.</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="iq-ad-block">
+                                            <input type="checkbox" class="pull-right" name="qna" value="Hỏi bác sĩ">
+                                            <a href="javascript:void(0)" class="ad-title iq-tw-5 iq-font-grey"><i
+                                                    class="fa fa-file-text-o fa-fw" aria-hidden="true"></i> Đăng tin
+                                                bài, video</a>
+                                            <div class="ad-details">
+                                                <div class="row">
+                                                    <div class="col-sm-12"> It has survived not only five centuries, but
+                                                        also the leap into electronic typesetting. Neque porro quisquam
+                                                        est, qui dolorem ipsum quia dolor sit amet, consectetur.</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="iq-ad-block">
+                                            <input type="checkbox" class="pull-right" name="qna" value="Hỏi bác sĩ">
+                                            <a href="javascript:void(0)" class="ad-title iq-tw-5 iq-font-grey"><i
+                                                    class="fa fa-pencil-square fa-fw" aria-hidden="true"></i> Đăng kí
+                                                khám chữa bệnh</a>
+                                            <div class="ad-details">
+                                                <div class="row">
+                                                    <div class="col-sm-12"> It has survived not only five centuries, but
+                                                        also the leap into electronic typesetting. Neque porro quisquam
+                                                        est, qui dolorem ipsum quia dolor sit amet, consectetur.</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row iq-mt-20">
+                                        <div class="">
+                                            <label class="col-sm-3 required">Mã xác nhận</label>
+                                            <div class="col-sm-4">
+                                                <input type="text" name="prof_place" formControlName="codeCapcha" class="form-control validate">
+                                                <small *ngIf="this.capcha" class="help-block" style="color: red;">Mã xác nhận không khớp</small>
+                                            </div>
+                                            <div class="col-sm-2" style="margin-left: -20px; margin-top: -3px;"><img [src]="_capcha.data" width="162" height="39" alt="" /></div>
+                                            <span type="button" style="position: relative;margin-left: 84px;top: 5px;" (click)="getCapcha()"><i class="fa fa-refresh" aria-hidden="true"></i></span>
+                                        </div>
+                                    </div>
+                                    <p class="iq-mt-10 iq-font-14">Vui lòng cung cấp đầy đủ thông tin để chúng tôi có
+                                        thể liên hệ và hỗ trợ bạn tốt nhất.</p>
+                                    <div class="col-sm-12 text-center iq-mall-20">
+                                        <button type="submit" class="btn btn-lg btn-aqua btn-curvy btn-longer-width" (click)="submit()"><i
+                                                class="fa fa-check-square-o" aria-hidden="true"></i> Đăng ký</button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>

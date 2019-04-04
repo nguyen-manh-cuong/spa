@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Viettel.PostgreSQL</id>
+    <version>3.4.0</version>
+    <title>Viettel.PostgreSQL</title>
+    <authors>Shuxin Qin</authors>
+    <owners>Shuxin Qin</owners>
+    <licenseUrl>https://github.com/shuxinqin/Viettel/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/shuxinqin/Viettel</projectUrl>
+    <iconUrl>http://images.cnblogs.com/cnblogs_com/so9527/860154/o_ORMicon.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>
+A lightweight and high-performance Object/Relational Mapping(ORM) library.
+    </description>
+    <copyright>Copyright 2016-2019</copyright>
+    <tags>Viettel,ORM,Data,PostgreSQL,.NET Core</tags>
+
+    <dependencies>
+      <group targetFramework="net40">
+        <dependency id="Viettel" version="3.4.0" />	  
+      </group>
+	  
+      <group targetFramework="netstandard2.0">
+        <dependency id="Viettel" version="3.4.0" />
+      </group> 
+    </dependencies>
+    
+  </metadata>
+
+  <files>
+	<file src="..\Viettel.PostgreSQL\bin\Release\net40\Viettel.PostgreSQL.dll" target="lib\net40" />
+    <file src="..\Viettel.PostgreSQL\bin\Release\net40\Viettel.PostgreSQL.xml" target="lib\net40" />
+	<file src="..\Viettel.PostgreSQL\bin\Release\netstandard2.0\Viettel.PostgreSQL.dll" target="lib\netstandard2.0"></file>
+    <file src="..\Viettel.PostgreSQL\bin\Release\netstandard2.0\Viettel.PostgreSQL.xml" target="lib\netstandard2.0"></file>
+  </files>
+</package>

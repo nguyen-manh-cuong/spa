@@ -1,0 +1,5 @@
+{
+  "remoteServiceBaseUrl": "http://localhost:9008/api",
+  "gatewayServiceBaseUrl": "http://localhost:9008/api",
+  "appBaseUrl": "http://localhost:8300"
+}

@@ -1,0 +1,11 @@
+#signup input[type=text]{
+    font-size: 14px;
+}
+
+.signup-form .primary-label {
+    padding-top: 6px;
+}
+
+.signup-form .form-group {
+    margin-bottom: 10px;
+}

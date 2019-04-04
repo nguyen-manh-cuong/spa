@@ -1,0 +1,120 @@
+<form [formGroup]="_frm" class="container p-relative" novalidate>
+    <div class="p-absolute t-5 r-5">
+        <button mat-icon-button mat-dialog-close style="z-index: 9;" [matTooltipPosition]="'left'" matTooltip="Đóng">
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+    <mat-tab-group scroll-able>
+        <mat-tab>
+            <ng-template mat-tab-label>
+                {{_isNew ? l("CreateNew") : l("Edit")}} {{l("Package")}}
+            </ng-template>
+            
+            <div class="pt-4">
+                <div class="row">
+                    <div class="col-md-12" [ngClass]="{'disabled': _package.distribute != 0 && _isNew == false }">
+                        <mat-form-field appearance="outline" class="w-100" autofocus>
+                            <mat-label>{{l("PackageName")}}</mat-label>
+                            <input #txtName="matInput" [required]="true" formControlName="name" matInput maxlength="255">
+                            <validation matSuffix [control]="_frm.controls['name']"></validation>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-12" [ngClass]="{'disabled': _package.distribute != 0 && _isNew == false}">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l("PackageDescription")}}</mat-label>
+                            <input formControlName="description" matInput [required]="true" maxlength="4000">
+                            <validation matSuffix [control]="_frm.controls['description']"></validation>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-6 disabled">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l('PackageCost')}}</mat-label>
+                            <input type="text" mask="dot_separator" formControlName="cost" matInput>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-6 disabled">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l('PackageQuantity')}}</mat-label>
+                            <input type="text" mask="dot_separator" formControlName="quantity" matInput>
+                        </mat-form-field>
+                    </div>
+                    <section class="col-md-12 m-b-20">
+                        <mat-checkbox formControlName="status">{{l('Using')}}</mat-checkbox>
+                    </section><br>
+
+                    <div class="col-md-3 disabled">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l('PackageSmsFrom')}}</mat-label>
+                            <input type="text" formControlName="smsFrom" matInput [required]="true">
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-3" [ngClass]="{'disabled': _package.distribute != 0 && _isNew == false}">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l('PackageSmsTo')}}</mat-label>
+                            <input type="text" mask="dot_separator" formControlName="smsTo" matInput [required]="true"
+                                (keyup)="getValue($event.target.value, -1, 1)" (input)="inputOnlyNumber($event)"
+                                maxlength="11">
+                            <validation matSuffix [control]="_frm.controls['smsTo']"></validation>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-4" [ngClass]="{'disabled': _package.distribute != 0 && _isNew == false}">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l('PackageDetailCost')}}</mat-label>
+                            <input type="text" mask="dot_separator" formControlName="detailCost" matInput
+                                [required]="true" (keyup)="getValue($event.target.value, -1, 2)"
+                                (input)="inputOnlyNumber($event)" maxlength="11">
+                            <validation matSuffix [control]="_frm.controls['detailCost']"></validation>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-12" [ngClass]="{'disabled': _package.distribute != 0 && _isNew == false}">
+                        <div class="row" *ngFor="let item of _details; index as i">
+                            <div class="col-md-3 disabled">
+                                <mat-form-field appearance="outline" class="w-100">
+                                    <mat-label>{{l('PackageSmsFrom')}}</mat-label>
+                                    <input type="text" mask="dot_separator" formControlName="{{_smsFrom + item.index}}"
+                                        matInput [required]="true">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-md-3">
+                                <mat-form-field appearance="outline" class="w-100">
+                                    <mat-label>{{l('PackageSmsTo')}}</mat-label>
+                                    <input type="text" mask="dot_separator" formControlName="{{_smsTo + item.index}}"
+                                        matInput [required]="true" (keyup)="getValue($event.target.value, i, 1)"
+                                        (input)="inputOnlyNumber($event)" maxlength="11">
+                                    <validation matSuffix [control]="_frm.controls[_smsTo + item.index]"></validation>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-md-4">
+                                <mat-form-field appearance="outline" class="w-100">
+                                    <mat-label>{{l('PackageDetailCost')}}</mat-label>
+                                    <input type="text" mask="dot_separator"
+                                        formControlName="{{_detailCost + item.index}}" matInput [required]="true"
+                                        (keyup)="getValue($event.target.value, i, 2)" (input)="inputOnlyNumber($event)"
+                                        maxlength="11">
+                                    <validation matSuffix [control]="_frm.controls[_detailCost + item.index]">
+                                    </validation>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-md-2">
+                                <button mat-icon-button [matTooltipPosition]="'right'" matTooltip="Xóa" (click)="deleteDetail(i, item.index)">
+                                    <mat-icon aria-label="Xóa">delete</mat-icon>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </mat-tab>
+    </mat-tab-group>
+    <div class="row">
+        <div class="col-md-4" [ngClass]="{'disabled': _package.distribute != 0 && _isNew == false}">
+            <button mat-raised-button color="primary" (click)="addDetail()"
+                [disabled]="!_frm.controls['smsTo'].value || !_frm.controls['detailCost'].value || checkPackageDetail()">Thêm</button>
+        </div>
+        <div class="col-md-8">
+            <div class="text-right mb-3"><button class="mr-3" mat-raised-button color="primary" mat-dialog-close>{{l("Close")}}</button>
+                <button mat-raised-button color="primary" [disabled]="_frm.invalid" (click)="submit()">{{l("Save")}}</button>
+            </div>
+        </div>
+    </div>
+</form>

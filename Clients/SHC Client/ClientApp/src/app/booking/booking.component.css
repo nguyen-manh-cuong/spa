@@ -1,0 +1,207 @@
+#booking-page .panel-heading{
+    text-align: center;
+    
+}
+
+#booking-page #step-navigation {
+    position: relative;
+}
+#booking-page #step-navigation > li {
+    list-style-type: none;
+    text-align: center
+}
+#booking-page #step-navigation > li > a{
+    color: #99a2a8;
+    position: relative; 
+    z-index: 2;
+}
+#booking-page #step-navigation > li > a::before{
+    content: "\f37e";
+    font: normal normal normal 30px/50px Ionicons;
+    width: 50px;
+    height: 50px;
+    line-height: 50px;
+    display: block;
+    background: #eaf0f4;
+    border-radius: 50%;
+    margin: 0 auto 10px auto;
+    position: relative;
+    z-index: 2;
+}
+
+#booking-page #step-navigation > li.active::after{
+    content: '';
+    width: 100%;
+    height: 10px;
+    background: #eaf0f4;
+    position: absolute;
+    top: 21px;
+    left: 0;
+    z-index: 1;
+}
+#booking-page #step-navigation > li::after{
+    content: '';
+    width: 100%;
+    height: 10px;
+    background: #eaf0f4;
+    position: absolute;
+    top: 21px;
+    left: 0;
+    z-index: 1;
+}
+
+#booking-page #step-navigation > li.active > a::before{
+    background: #03a9f4;
+    color: white;
+}
+
+#booking-page #step-navigation > li:nth-child(2) > a::before{
+    content: "\f213";
+}
+
+#booking-page #step-navigation > li:nth-child(3) > a::before{
+    content: "\f375";
+}
+
+#booking-page #step-navigation > li:nth-child(4) > a::before{
+    content: "\f39d";
+}
+
+#booking-page #step-navigation > li:nth-child(5) > a::before{
+    content: "\f382";
+}
+
+#booking-page .group-title{
+    font-weight: bold;
+    border-bottom: solid 1px #ededed;
+    margin-bottom: 15px;
+    padding-top: 15px;
+}
+
+#booking-page .tab-pane{
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.ng-option{
+    border-bottom: inset;
+}
+
+.DocumentItem
+{
+    border:1px solid black;
+    padding:0;
+    height:100px;
+}
+
+.list-inline {
+  white-space:nowrap;
+}
+
+/* slick css */
+.slick-slider {
+    width: 100%;
+    margin: auto;
+}
+
+.nav-btn {
+    height: 47px;
+    position: absolute;
+    width: 27px;
+    cursor: pointer;
+    top: 60px !important;
+}
+
+.prev-slide.slick-disabled,
+.next-slide.slick-disabled {
+    pointer-events: none;
+    opacity: 0.2;
+}
+
+.prev-slide {
+    background: url(assets/images/nav-icon.png) no-repeat scroll 0 0;left: -33px;
+}
+
+.next-slide {
+    background: url(assets/images/nav-icon.png) no-repeat scroll -24px 0px;
+    right: -23px;
+}
+
+.prev-slide:hover {
+    background-position: 0px -53px;
+}
+
+.next-slide:hover {
+    background-position: -24px -53px;
+}
+
+.img-slick{
+    border-radius: 50%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 5px;
+    width: 150px;
+    height: 150px;
+}
+
+.border{
+    border: 2px solid #847d7d;
+    border-radius: 6px;
+}
+
+.border-r{
+    border-right: 2px solid #847d7d;
+}
+ /* slick css */
+
+.nav-tabs {
+    font-size: 14px;
+    border-bottom: 1px solid #ddd;
+}
+
+.nav-tabs > li{
+    float: left;
+}
+
+.nav-tabs > li.active > a{
+    color: #555;
+    cursor: default;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-bottom-color: transparent;
+    border-radius: 4px 4px 0 0;
+}
+
+.nav-tabs > li.active > a, .nav-tabs > li.active > a:focus, .nav-tabs > li.active > a:hover {
+    color: #555;
+    cursor: default;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-bottom-color: transparent;
+    border-radius: 4px 4px 0 0;
+}
+
+.button-time {
+    padding: 10px;
+    width: 138px;
+    margin-right: 22px;
+    margin-bottom: 10px;
+    left: 10%;
+    position: relative;
+}
+
+/*
+#birthY .ng-select-container {
+    border-color: rgb(185, 74, 72) !important;
+}
+*/
+
+.clicked{
+    border-color: mediumslateblue;
+    background-color: lightgrey;
+}
+
+.ellipsis{
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

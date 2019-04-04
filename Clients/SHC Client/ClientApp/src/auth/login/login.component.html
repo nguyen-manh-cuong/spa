@@ -1,0 +1,49 @@
+<div class="main-content">
+    <section class="overview-block-ptb iq-bg iq-features" style="background: url(/assets/images/bg/14.jpg);">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="contentLogin">
+                        <div class="box-control mt10 contentpanel container positionBox">
+                            <div class="nameHT">
+                                <a>Đăng nhập hệ thống</a>
+                            </div>
+                            <div class="contentpanel mt10">
+                                <form [formGroup]="frmLogin" class="form-horizontal frmLogin" id="frmChangePass">
+                                    <div class="form-group">
+                                        <div>
+                                            <label>Tên đăng nhập/Email/Số điện thoại</label>
+                                            <input #userNameOrEmailAddress formControlName="userNameOrEmailAddress" placeholder="" type="text" name="tentruycap" id="bill-number" class="form-control input-lg" autocomplete="off" maxlength="255">
+                                            <validation [control]="frmLogin.controls['userNameOrEmailAddress']"></validation>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div>
+                                            <label>Mật khẩu</label>
+                                            <input #password formControlName="password" placeholder="" type="password" name="matkhau" id="bill-code" class="form-control input-lg" autocomplete="off" maxlength="255">
+                                            <validation [control]="frmLogin.controls['password']"></validation>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">Quên mật khẩu? Nhấn <a href="#">vào đây</a></div>
+                                    <div class="form-group">Đăng ký tài khoản mới? Nhấn <a href="/auth/register">vào đây</a></div>
+
+                                    <div class="form-group">
+                                        <div>
+                                            <button class="btn btn-aqua btn-block btn-lg text-uppercase" (click)="login()">Đăng nhập</button>
+                                            <button class="btn btn-facebook btn-block btn-lg">Đăng nhập nhanh bằng Facebook</button>
+                                            <button class="btn btn-google btn-block btn-lg ">Đăng nhập nhanh bằng Google</button>
+                                            <button class="btn btn-zalo btn-block btn-lg ">Đăng nhập nhanh bằng Zalo</button>
+                                        </div>
+                                    </div>
+
+                                </form>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div>

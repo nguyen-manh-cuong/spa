@@ -1,0 +1,69 @@
+<form [formGroup]="_frm" class="container p-relative" novalidate>
+  <div class="p-absolute t-5 r-5">
+      <button mat-icon-button mat-dialog-close style="z-index: 9;" [matTooltipPosition]="'left'" matTooltip="Đóng">
+          <mat-icon>close</mat-icon>
+      </button>
+  </div>
+  <mat-tab-group>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        {{_isNew ? l("CreateNew") : l("Edit")}} {{ll("PackageTemplateSMS")}}
+      </ng-template>
+      <div class="pt-4">
+        <div class="row">
+          <div class="col-md-12">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>{{l("PackageTemplateName")}}</mat-label>
+              <input #txtName="matInput" formControlName="smsTemplateName" matInput autocomplete required maxlength="255">
+              <validation matSuffix [control]="_frm.controls['smsTemplateName']"></validation>
+            </mat-form-field>
+          </div>
+          <div class="col-md-8">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>{{l("PackageTemplateMessageType")}}</mat-label>
+              <mat-select formControlName="messageType">
+                <mat-option *ngIf="_messageType.length" class="text-center" [innerHTML]="'<div class=\'text-center border-bottom w-100\'>'+ l('Bỏ chọn') +'</div>'"></mat-option>
+                <mat-option *ngFor="let o of _messageType" [value]="o.id">{{ o.name }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-md-4 disabled">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>{{l("PackageTemplateHeadNumberType")}}</mat-label>
+              <input matInput autocomplete value="VTT_CSKH">
+            </mat-form-field>
+          </div>
+          <div class="col-md-12">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>{{l("PackageTemplateMessageContent")}}</mat-label>
+              <textarea formControlName="smsContent" rows="5" matInput required required maxlength="500"></textarea>
+              <validation matSuffix [control]="_frm.controls['smsContent']"></validation>
+            </mat-form-field>
+          </div>
+          <div class="col-md-12">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>{{l("PackageTemplateParameterValues")}}</mat-label>
+              <mat-chip-list>
+                <mat-chip (click)="changeSelected(1)">Phòng khám</mat-chip>
+                <mat-chip (click)="changeSelected(2)">Ngày sinh</mat-chip>
+                <mat-chip (click)="changeSelected(3)">Họ tên</mat-chip>
+                <mat-chip (click)="changeSelected(4)">Email</mat-chip>
+                <mat-chip (click)="changeSelected(5)">Giới tính</mat-chip>
+                <mat-chip (click)="changeSelected(6)">Ngày hiện tại</mat-chip>
+                <mat-chip (click)="changeSelected(7)">Ngày tái khám</mat-chip>
+              </mat-chip-list>
+            </mat-form-field>
+          </div>
+          <div class="col-md-12">
+            <mat-checkbox formControlName="status">{{l("Using")}}</mat-checkbox>
+          </div>
+          <div class="col-md-12" *ngIf="!appSession.user.healthFacilitiesId">
+            <mat-checkbox formControlName="applyAllSystem">{{l("PackageTemplateApplyAllSystem")}}</mat-checkbox>
+          </div>
+        </div>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+  <div class="text-right mb-3"><button class="mr-3" mat-raised-button color="primary" mat-dialog-close>{{l("Close")}}</button><button
+      mat-raised-button color="primary" [disabled]="_frm.invalid" (click)="submit()">{{l("Save")}}</button></div>
+</form>

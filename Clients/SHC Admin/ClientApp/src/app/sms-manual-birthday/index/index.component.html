@@ -1,0 +1,231 @@
+<div class="toolbar">
+    <div class="row w-100 m-0">
+        <div class="col-3 text-left d-flex align-items-center">
+            <div class="separate"></div>
+            <mat-slide-toggle class="ml-2" [checked]="showFilter" (change)="toggedFilter()">
+                <ng-container *ngIf="showFilter">{{l("ShowFilter")}}</ng-container>
+                <ng-container *ngIf="!showFilter">{{l("HideFilter")}}</ng-container>
+            </mat-slide-toggle>
+        </div>
+        <div class="col-9">
+            <mat-paginator #paginator [pageSizeOptions]="pageSizeOptions" [length]="totalItems" [pageSize]="pageSize" showFirstLastButtons></mat-paginator>
+        </div>
+    </div>
+</div>
+<div class="content">
+    <form [formGroup]="frmSearch" class="form-filter pl-2 pr-2" novalidate>
+        <div class="row m-0 pt-4">
+            <div class="col-md-6" [hidden]="this.appSession.user.healthFacilitiesId">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>{{l('Phòng khám')}}</mat-label>
+                    <input matInput [formControl]="healthfacilities" (click)="clickCbo()" [matAutocomplete]="auto">
+                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="onSelectHealthFacilities($event.option.value)">
+                        <mat-option *ngFor="let o of filteredOptions | async" [value]="o">
+                            {{o.name}}
+                        </mat-option>
+                    </mat-autocomplete>
+                </mat-form-field>
+            </div>
+            <div class="col-md-6 disabled" [hidden]="!this.appSession.user.healthFacilitiesId">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>{{l('Phòng khám')}}</mat-label>
+                    <mat-select formControlName="healthfacilities">
+                        <mat-option *ngFor="let o of _healthfacilities" [value]="o.healthFacilitiesId">{{ o.name }}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+
+            <div class="col-md-3">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>{{l('Bác sĩ')}}</mat-label>
+                    <mat-select formControlName="doctor">
+                        <mat-option *ngIf="_doctors.length" class="text-center" [innerHTML]="'<div class=\'text-center border-bottom w-100\'>'+ l('Bỏ chọn') +'</div>'"></mat-option>
+                        <mat-option *ngFor="let o of _doctors" [value]="o.doctorId">{{ o.fullName }}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="col-md-3">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>{{l('Trạng thái')}}</mat-label>
+                    <mat-select formControlName="statusB">
+                        <mat-option *ngFor="let o of _status" [value]="o.id">{{ o.name }}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <!-- 2 -->
+            <div class="col-md-3">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>{{l("Mã BN")}}</mat-label>
+                    <input formControlName="patientCode" mask="A*" matInput maxlength="10">
+                </mat-form-field>
+            </div>
+            <div class="col-md-3">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>{{l("Tên BN")}}</mat-label>
+                    <input formControlName="patientName" matInput maxlength="255">
+                </mat-form-field>
+            </div>
+            <div class="col-md-3">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>{{l("Số BHYT")}}</mat-label>
+                    <input formControlName="insurrance" mask="A*" matInput maxlength="15">
+                </mat-form-field>
+            </div>
+            <div class="col-md-3">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>{{l("Số CMND")}}</mat-label>
+                    <input formControlName="identification" mask="0*" matInput maxlength="12">
+                </mat-form-field>
+            </div>
+            <!-- 3 -->
+            <div class="col-md-3">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>{{l("Số điện thoại")}}</mat-label>
+                    <input formControlName="phoneNumber" matInput mask="0*" maxlength="20">
+                </mat-form-field>
+            </div>
+            <div class="col-md-6 p-t-4">
+                <label class="primary-label custom-label">Giới tính:</label>
+                <mat-checkbox formControlName="male" class="m-l-25">Nam</mat-checkbox>
+                <mat-checkbox formControlName="female" class="m-l-25">Nữ</mat-checkbox>
+            </div>
+            <div class="col-md-3"></div>
+            <!-- 4 -->
+            <div class="col-md-4">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>{{l('FilterByProvine')}}</mat-label>
+                    <mat-select formControlName="provinceCode" (selectionChange)="onSelectProvince($event.value)">
+                        <mat-option *ngIf="_provinces.length" class="text-center" [innerHTML]="'<div class=\'text-center border-bottom w-100\'>'+ l('Bỏ chọn') +'</div>'"></mat-option>
+                        <mat-option *ngFor="let o of _provinces" [value]="o.provinceCode">{{ o.name }}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="col-md-4">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>{{l('FilterByDistrict')}}</mat-label>
+                    <mat-select formControlName="districtCode" (selectionChange)="onSelectDistrict($event.value)">
+                        <mat-option *ngIf="_districts.length" class="text-center" [innerHTML]="'<div class=\'text-center border-bottom w-100\'>'+ l('Bỏ chọn') +'</div>'"></mat-option>
+                        <mat-option *ngFor="let o of _districts" [value]="o.districtCode">{{ o.name }}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="col-md-4">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>{{l('FilterByWard')}}</mat-label>
+                    <mat-select formControlName="wardCode">
+                        <mat-option *ngIf="_wards.length" class="text-center" [innerHTML]="'<div class=\'text-center border-bottom w-100\'>'+ l('Bỏ chọn') +'</div>'"></mat-option>
+                        <mat-option *ngFor="let o of _wards" [value]="o.wardCode">{{ o.name }}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <!--  -->
+            <div class="col-md-4">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>{{l('Ngày sinh từ')}}</mat-label>
+                    <input matInput #birthdayFrom mask="00/00/0000" maxlength="10" (dateChange)="changeEndDate($event.value, 1)" [matDatepicker]="picker" required>
+                    <mat-datepicker-toggle matSuffix [for]="picker" class="t-2"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                </mat-form-field>
+            </div>
+            <div class="col-md-4">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>{{l('Đến ngày')}}</mat-label>
+                    <input matInput #birthdayTo mask="00/00/0000" maxlength="10" (dateChange)="changeEndDate($event.value, 1)" [matDatepicker]="picker1" required>
+                    <mat-datepicker-toggle matSuffix [for]="picker1" class="t-2"></mat-datepicker-toggle>
+                    <mat-datepicker #picker1></mat-datepicker>
+                </mat-form-field>
+            </div>
+            <div class="col-md-4">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>{{l("Trong vòng")}}</mat-label>
+                    <input formControlName="about" matInput autocomplete maxlength="3" mask="0*" (keyup)="changeEndDate($event.target.value, 2)">
+                </mat-form-field>
+            </div>
+            <!--  -->
+            <div class="col-md-3"></div>
+            <div class="col-md-3 text-center d-flex align-self-center">
+                <button #btnSearch mat-stroked-button color="primary" (click)="customSearch()" class="w-100 mb-4">
+                    <mat-icon class="mr-2">search</mat-icon>{{l("Search")}}
+                </button>
+            </div>
+            <div class="col-md-3 text-center d-flex align-self-center">
+                <button mat-stroked-button color="primary" (click)="selection.selected.length ? sendSms() : showMess(1)" class="w-100 mb-4">
+                    <mat-icon class="mr-2">sms</mat-icon>{{l("Gửi SMS chúc sinh nhật")}}
+                </button>
+            </div>
+        </div>
+    </form>
+    <div class="table-content" [perfectScrollbar]="{}">
+        <table mat-table [dataSource]="dataSources" matSort #sort="matSort" matSortDisableClear matSortActive="id" matSortDirection="desc" class="w-100 task">
+            <ng-container matColumnDef="orderNumber">
+                <th mat-header-cell *matHeaderCellDef class="min-w-50 text-center pl-0"> {{l("OrderNumber")}} </th>
+                <td mat-cell *matCellDef="let element; let i = index;" class="min-w-50 text-center">{{(i + 1) + (paginator.pageIndex * paginator.pageSize)}}</td>
+            </ng-container>
+            <ng-container matColumnDef="select">
+                <th mat-header-cell *matHeaderCellDef class="min-w-50 text-center pl-0 p-t-8">
+                    <mat-checkbox (change)="$event ? masterToggle() : null"
+                                    [checked]="selection.hasValue() && isAllSelected()"
+                                    [indeterminate]="selection.hasValue() && !isAllSelected()">
+                    </mat-checkbox>
+                </th>
+                <td mat-cell *matCellDef="let row" class="min-w-50 p-t-8 text-center">
+                    <mat-checkbox (click)="$event.stopPropagation()"
+                                    (change)="$event ? selection.toggle(row) : null"
+                                    [checked]="selection.isSelected(row)">
+                    </mat-checkbox>
+                </td>
+            </ng-container>
+            <ng-container matColumnDef="code">
+                <th mat-header-cell *matHeaderCellDef class="text-center"> {{l('Mã bệnh nhân')}} </th>
+                <td mat-cell *matCellDef="let element"> {{element.patient.code}} </td>
+            </ng-container>
+            <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef class="text-center"> {{l('Tên bệnh nhân')}} </th>
+                <td mat-cell *matCellDef="let element" class="td-ellipsis"> {{element.patient.fullName}} </td>
+            </ng-container>
+            <ng-container matColumnDef="birthday">
+                <th mat-header-cell *matHeaderCellDef class="text-center"> {{l('Ngày sinh')}} </th>
+                <td mat-cell *matCellDef="let element" class="text-center"> {{(element.patient.birthDate ? element.patient.birthDate + '/' : '') + (element.patient.birthMonth ? element.patient.birthMonth + '/' : '') + element.patient.birthYear}} </td>
+            </ng-container>
+            <ng-container matColumnDef="age">
+                <th mat-header-cell *matHeaderCellDef class="text-center" class="min-w-50 text-center"> {{l('Tuổi')}} </th>
+                <td mat-cell *matCellDef="let element" class="min-w-50 text-center"> {{_currentYear - element.patient.birthYear}} </td>
+            </ng-container>
+            <ng-container matColumnDef="gender">
+                <th mat-header-cell *matHeaderCellDef class="text-center" class="min-w-50 text-center"> {{l('Giới tính')}} </th>
+                <td mat-cell *matCellDef="let element" class="min-w-50 text-center"> {{element.patient.gender == 0 ? 'Nữ' : 'Nam'}} </td>
+            </ng-container>
+            <ng-container matColumnDef="phoneNumber">
+                <th mat-header-cell *matHeaderCellDef class="text-center"> {{l('Điện thoại')}} </th>
+                <td mat-cell *matCellDef="let element" class="text-right"> {{element.patient.phoneNumber}} </td>
+            </ng-container>
+            <ng-container matColumnDef="address">
+                <th mat-header-cell *matHeaderCellDef class="text-center"> {{l('Địa chỉ')}} </th>
+                <td mat-cell *matCellDef="let element" class="td-ellipsis" title="{{element.patient.address}}"> {{element.patient.address}} </td>
+            </ng-container>
+            <ng-container matColumnDef="ReExaminationDate">
+                <th mat-header-cell *matHeaderCellDef class="text-center"> {{l('Ngày tái khám')}} </th>
+                <td mat-cell *matCellDef="let element" class="text-center"> {{element.reExaminationDate | date: 'dd/MM/yyyy'}} </td>
+            </ng-container>
+            <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef class="text-center"> {{l('Trạng thái')}} </th>
+                <td mat-cell *matCellDef="let element"> {{element.isBirthDay == 1 ? 'Đã gửi SMS' : 'Chưa gửi SMS'}} </td>
+            </ng-container>
+            <!-- <ng-container matColumnDef="task">
+                <th mat-header-cell *matHeaderCellDef></th>
+                <td mat-cell *matCellDef="let element" class="w-px-30 pr-0">
+                    <div class="d-flex">
+                        <button mat-icon-button (click)="element.distribute != 0 ? showMessage() : openDialog(element) ">
+                            <mat-icon class="text-muted f-18">edit</mat-icon>
+                        </button>
+                        <button mat-icon-button (click)="deleteDialog(element, 'name')" >
+                            <mat-icon class="text-danger f-18">delete</mat-icon>
+                        </button>
+                    </div>
+                </td>
+            </ng-container> -->
+            <tr mat-header-row *matHeaderRowDef="displayedColumns;sticky:true"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="fadeIn animated"></tr>
+        </table>
+    </div>
+</div>

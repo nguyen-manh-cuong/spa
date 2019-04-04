@@ -1,0 +1,49 @@
+.user {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    height: 136px;
+    min-height: 136px;
+    max-height: 136px;
+    padding: 24px 0 64px;
+    background-color: #1e2129;
+    margin-bottom: 60px;
+    .avatar-container {
+        position: absolute;
+        top: 92px;
+        border-radius: 50%;
+        padding: 6px;
+        -webkit-transform: translateX(-50%);
+        transform: translateX(-50%);
+        left: 50%;
+        background-color: #2d323e;
+        .avatar {
+            width: 72px;
+            height: 72px;
+            margin: 0;
+            border-radius: 50%;
+        }
+    }
+}
+
+// .mat-icon-button .mat-icon,
+// .mat-icon-button i {
+//     line-height: 20px !important
+// }
+
+.logo {
+    display: flex;
+    align-items: center;
+    .logo-icon {
+        width: 24px;
+        height: 24px;
+    }
+    .logo-text {
+        margin-left: 6px;
+        font-size: 16px;
+        letter-spacing: .4px;
+        line-height: normal;
+    }
+}

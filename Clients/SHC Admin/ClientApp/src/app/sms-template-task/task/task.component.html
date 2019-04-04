@@ -1,0 +1,35 @@
+<form [formGroup]="_frm" class="container p-relative" novalidate>
+  <div class="p-absolute t-5 r-5">
+    <button mat-icon-button mat-dialog-close style="z-index: 9;" [matTooltipPosition]="'left'" matTooltip="Đóng">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <mat-tab-group>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        {{"Chọn mẫu SMS"}}
+      </ng-template>
+      <div class="pt-4">
+        <div class="row">
+          <div class="col-md-12">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>{{l("Chọn mẫu SMS")}}</mat-label>
+              <mat-select formControlName="smsTemplate" (selectionChange)="onSelectTemplate($event.value)" required>
+                <mat-option *ngFor="let o of _templates" [value]="o.id">{{ o.smsTemplateName }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-md-12 disabled">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>{{l("Nội dung SMS")}}</mat-label>
+              <textarea formControlName="smsContent" rows="5" matInput maxlength="500"></textarea>
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+  <div class="text-right mb-3"><button class="mr-3" mat-raised-button color="primary"
+      mat-dialog-close (click)="close()">{{l("Close")}}</button><button mat-raised-button color="primary" [disabled]="_frm.controls['smsTemplate'].invalid"
+      (click)="sendSms()">{{l("Xác nhận")}}</button></div>
+</form>

@@ -1,0 +1,82 @@
+<mat-sidenav-container class="sidenav-container" id="root-container" autosize>
+    <mat-sidenav #ldrawer class="sidenav mat-elevation-z8" style="background-color: #2d323e; width: 250px;overflow: hidden;" fixedInViewport="true" [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'" [mode]="(isHandset$ | async) ? 'over' : 'side'" [opened]="!(isHandset$ | async)">
+        <mat-toolbar color="primary" style="background-color: #1e2129" class="align-items-center">
+            <div class="logo"><img class="logo-icon" src="assets/logo.png"><span class="logo-text text-muted">Viettel Gateway</span></div>
+            <span class="spacer"></span>
+            <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="ldrawer.toggle()" *ngIf="ldrawer.opened">
+                <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+            </button>
+        </mat-toolbar>
+        <div class="user" fxlayout="column" style="flex-direction: column; box-sizing: border-box; display: flex;">
+            <div class="h3 text-light w-100 text-center text-truncate">{{appSession.user.fullName}}</div>
+            <div class="h5 text-muted w-100 text-center text-truncate">{{appSession.user.email}}</div>
+            <div class="avatar-container"><img class="avatar" src="assets/images/user.png"></div>
+        </div>
+        <perfect-scrollbar style="max-height: calc(100vh - 260px);">
+            <app-side-bar-nav></app-side-bar-nav>
+        </perfect-scrollbar>
+    </mat-sidenav>
+    <mat-sidenav #rdrawer position="end" class="sidenav mat-elevation-z2" fixedInViewport="true" [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'">
+    </mat-sidenav>
+    <mat-sidenav-content id="main-container">
+        <mat-toolbar class="mat-elevation-z2 sticky-top pr-0">
+            <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="ldrawer.toggle()" *ngIf="!ldrawer.opened">
+                <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+            </button>
+            <button mat-button class="align-self-stretch" [matMenuTriggerFor]="language">
+                <div class="media">
+                    <div class="mr-2 d-flex align-self-center"><i class="{{currentLanguage.icon}}" style="zoom: 1.5"></i> </div>
+                    <div class="media-body">
+                        {{currentLanguage.displayName}}
+                    </div>
+                </div>
+            </button>
+            <span class="spacer"></span>
+            <button mat-button class="align-self-stretch" [matMenuTriggerFor]="menu">
+                <div class="media">
+                    <img class="avatar rounded-circle mr-2" width="42px" height="42px" src="assets/images/user.png">
+                    <div class="media-body">
+                        <div class="h-px-24 d-flex align-items-center text-left text-primary">{{appSession.user.fullName}}</div>
+                        <div class="h-px-14 f-11 d-flex align-items-center text-left text-muted">{{appSession.user.accountType | accountType}}</div>
+                    </div>
+                </div>
+            </button>
+            <mat-menu #language="matMenu" yPosition="above" [overlapTrigger]="false">
+                <button mat-menu-item class="align-self-stretch" *ngFor="let language of languages" (click)="changeLanguage(language)">
+                    <div class="media">
+                        <div class="mr-2 d-flex align-self-center"><i class="{{language.icon}}" style="zoom: 1.5"></i> </div>
+                        <div class="media-body">
+                            {{language.displayName}}
+                        </div>
+                    </div>
+                </button>
+            </mat-menu>
+            <mat-menu #menu="matMenu" yPosition="above" [overlapTrigger]="false">
+                <button mat-menu-item (click)="logout()">
+                    <mat-icon>input</mat-icon> Đăng xuất
+                </button>
+            </mat-menu>
+            <button mat-button class="align-self-stretch" (click)="rdrawer.toggle()">
+                <mat-icon aria-label="Side nav toggle icon">message</mat-icon>
+            </button>
+        </mat-toolbar>
+        <section>
+            <div class="page-layout carded fullwidth inner-scroll">
+                <div class="table-loading-shade" *ngIf="isTableLoading">
+                    <div id="loader"></div>
+                </div>
+                <div class="top-bg">
+                    <mat-icon>school</mat-icon>
+                </div>
+                <div class="center">
+                    <div class="header d-flex align-items-center">
+                        <h3 class="m-0">{{pateTitle}}</h3>
+                    </div>
+                    <div class="content-card">
+                        <router-outlet></router-outlet>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </mat-sidenav-content>
+</mat-sidenav-container>

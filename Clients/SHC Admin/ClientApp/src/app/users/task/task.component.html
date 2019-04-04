@@ -1,0 +1,201 @@
+<form [formGroup]="frmUser" class="container p-relative" novalidate>
+    <div class="p-absolute t-5 r-5">
+        <button mat-icon-button mat-dialog-close style="z-index: 9;" [matTooltipPosition]="'left'" matTooltip="Đóng">
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+    <mat-tab-group>
+        <mat-tab label="Thông tin chi tiết">
+            <div class="pt-3">
+                <div class="media">
+                    <img class="mr-3 border" src="/assets/images/user.png" height="112px" width="112px">
+                    <div class="media-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <mat-form-field appearance="outline" class="w-100">
+                                    <mat-label>{{l('UserName')}}</mat-label>
+                                    <input formControlName="userName" [readonly]="!_isNew" matInput autocomplete [required]="_isNew" minlength="6" maxlength="255">
+                                    <validation matSuffix [control]="frmUser.controls['userName']"></validation>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-md-4">
+                                <mat-form-field appearance="outline" class="w-100">
+                                    <mat-label>{{l('Password')}}</mat-label>
+                                    <input formControlName="password" type="password" matInput [required]="_isNew" minlength="8" maxlength="255">
+                                    <validation matSuffix [control]="frmUser.controls['password']"></validation>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-md-4">
+                                <mat-form-field appearance="outline" class="w-100">
+                                    <mat-label>{{l('AccountType')}}</mat-label>
+                                    <mat-select formControlName="accountType" (selectionChange)="onChangeAccountType($event.value)" required>
+                                        <mat-option *ngFor="let o of _accountTypes" [value]="o.id">{{ o.name }}</mat-option>
+                                    </mat-select>
+                                    <validation matSuffix [control]="frmUser.controls['accountType']"></validation>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-md-5">
+                                <mat-form-field appearance="outline" class="w-100">
+                                    <mat-label>{{l('FullName')}}</mat-label>
+                                    <input formControlName="fullName" matInput required maxlength="255">
+                                    <validation matSuffix [control]="frmUser.controls['fullName']"></validation>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-md-4">
+                                <mat-form-field appearance="outline" class="w-100">
+                                    <mat-label>{{l('Sex')}}</mat-label>
+                                    <mat-select formControlName="sex" required>
+                                        <mat-option *ngFor="let o of _sexTypes" [value]="o.id">{{ o.name }}</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-md-3">
+                                <mat-form-field appearance="outline" class="w-100">
+                                    <mat-label>{{l('BirthDay')}}</mat-label>
+                                    <input formControlName="birthDay" matInput [matDatepicker]="picker">
+                                    <mat-datepicker-toggle matSuffix [for]="picker" class="t-2"></mat-datepicker-toggle>
+                                    <mat-datepicker #picker></mat-datepicker>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-4">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l('PhoneNumber')}}</mat-label>
+                            <input formControlName="phoneNumber" matInput required mask="0*" minlength="10" maxlength="12">
+                            <validation matSuffix [control]="frmUser.controls['phoneNumber']"></validation>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-4">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>Email</mat-label>
+                            <input formControlName="email" matInput required maxlength="320">
+                            <validation matSuffix [control]="frmUser.controls['email']"></validation>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-4">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l('Address')}}</mat-label>
+                            <input formControlName="address" matInput required maxlength="255">
+                        </mat-form-field>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-4">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l('FilterByProvine')}}</mat-label>
+                            <mat-select formControlName="provinceCode" (selectionChange)="onSelectProvince($event.value)">
+                                <!-- <mat-option *ngIf="_provinces.length" class="text-center" [innerHTML]="'<div class=\'text-center border-bottom w-100\'>'+ l('SelectAll') +'</div>'"></mat-option> -->
+                                <mat-option *ngFor="let o of _provinces" [value]="o.provinceCode">{{ o.name }}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-4">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l('FilterByDistrict')}}</mat-label>
+                            <mat-select formControlName="districtCode" (selectionChange)="onSelectDistrict($event.value)">
+                                <!-- <mat-option *ngIf="_districts.length" class="text-center" [innerHTML]="'<div class=\'text-center border-bottom w-100\'>'+ l('SelectAll') +'</div>'"></mat-option> -->
+                                <mat-option *ngFor="let o of _districts" [value]="o.districtCode">{{ o.name }}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-4">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l('FilterByWard')}}</mat-label>
+                            <mat-select formControlName="wardCode">
+                                <!-- <mat-option *ngIf="_wards.length" class="text-center" [innerHTML]="'<div class=\'text-center border-bottom w-100\'>'+ l('SelectAll') +'</div>'"></mat-option> -->
+                                <mat-option *ngFor="let o of _wards" [value]="o.wardCode">{{ o.name }}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <!-- Nguoi benh -->
+                    <div class="col-md-4 col-sm-6" [ngClass]="{'hidden': _hidePatient}">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l('Mã y tế cá nhân')}}</mat-label>
+                            <mat-select formControlName="medicalCode">
+                                <mat-option></mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-4 col-sm-6" [ngClass]="{'hidden': _hidePatient}">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l('Mã y tế người thân')}}</mat-label>
+                            <mat-select formControlName="medicalCodeRelatives">
+                                <mat-option></mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <!-- thanh vien -->
+                    <div class="col-md-4 col-sm-6" [ngClass]="{'hidden': _hideMember}">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l('Số CMND/CCCD')}}</mat-label>
+                            <input matInput formControlName="identification" minlength="9" maxlength="12">
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-4 col-sm-6" [ngClass]="{'hidden': _hideMember}">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l('Số thẻ BHYT')}}</mat-label>
+                            <input matInput formControlName="insurrance" maxlength="20">
+                        </mat-form-field>
+                    </div>
+                    <!-- bac si -->
+                    <div class="col-md-4 col-sm-6" [ngClass]="{'hidden': _hideDoctor}">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l('Nơi công tác')}}</mat-label>
+                            <input matInput formControlName="workPlace" maxlength="255">
+                        </mat-form-field>
+                    </div>
+                    <!-- co so y te -->
+                    <div class="col-md-4 col-sm-6" [ngClass]="{'hidden': _hideMF}">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l('Tên CSYT/Doanh nghiệp')}}</mat-label>
+                            <input matInput formControlName="healthFacilitiesName" maxlength="255">
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-4 col-sm-6" [ngClass]="{'hidden': _hideSpecialist}">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l('Chuyên khoa')}}<span style="color: red;"> *</span></mat-label>
+                            <mat-select formControlName="specialist">
+                                <mat-option *ngFor="let o of _specialist" [value]="o.id">{{ o.name }}</mat-option>
+                            </mat-select>
+                            <validation matSuffix [control]="frmUser.controls['specialist']"></validation>
+                        </mat-form-field>
+                    </div>
+                </div>
+            </div>                
+        </mat-tab>
+        
+        <mat-tab label="Nhóm quyền hạn">
+            <div class="pt-3">
+                <table class="w-100 border checkbox mat-table mb-3">
+                    <thead>
+                        <tr class="mat-header-row pl-0">
+                            <th class="w-px-40 mat-header-cell mat-table-sticky pt-2">
+                                <mat-checkbox color="primary" matTooltip="Toàn bộ" (change)="$event ? masterToggle() : null" [checked]="_selection.hasValue() && isAllSelected()" [indeterminate]="_selection.hasValue() && !isAllSelected()"> </mat-checkbox>
+                            </th>
+                            <th class="w-px-200 mat-header-cell mat-table-sticky"> {{l('GroupName')}} </th>
+                            <th class="mat-header-cell mat-table-sticky pl-2"> {{l('Description')}} </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let g of _groups" class="mat-row">
+                            <td class="mat-cell pt-2">
+                                <mat-checkbox color="primary" class="m-t-7" (click)="$event.stopPropagation()" (change)="$event ? _selection.toggle(g) : null" [checked]="_selection.isSelected(g)"> </mat-checkbox>
+                            </td>
+                            <td class="mat-cell">{{g.name}}</td>
+                            <td class="mat-cell pl-2 pr-2"> {{g.description}} </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </mat-tab>
+    </mat-tab-group>
+    <div class="text-right mb-3"><button class="mr-3" mat-raised-button color="primary" mat-dialog-close>{{l('Close')}}</button><button mat-raised-button color="primary" (click)="submit()" [disabled]="frmUser.invalid">{{l('Save')}}</button></div>
+</form>

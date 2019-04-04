@@ -1,0 +1,118 @@
+@import 'core.variable.scss';
+@for $i from 1 through 200 {
+
+    .p-t-#{$i} {
+        padding-top: $i + 0px !important;
+    }
+
+    .p-b-#{$i} {
+        padding-bottom: $i + 0px !important;
+    }
+
+    .p-r-#{$i} {
+        padding-right: $i + 0px !important;
+    }
+
+    .p-l-#{$i} {
+        padding-left: $i + 0px !important;
+    }
+
+    .t-#{$i} {
+        top: $i + 0px !important;
+    }
+
+    .l-#{$i} {
+       left: $i + 0px !important;
+    }
+
+    .r-#{$i} {
+        right: $i + 0px !important;
+    }
+
+    .b-#{$i} {
+        bottom: $i + 0px !important;
+    }
+
+    .m-t-#{$i} {
+        margin-top: $i + 0px !important;
+    }
+
+    .m-b-#{$i} {
+        margin-bottom: $i + 0px !important;
+    }
+
+    .m-r-#{$i} {
+        margin-right: $i + 0px !important;
+    }
+
+    .m-l-#{$i} {
+        margin-left: $i + 0px !important;
+    }
+
+    .m-t--#{$i} {
+        margin-top: -$i + 0px !important;
+    }
+
+    .m-b--#{$i} {
+        margin-bottom: -$i + 0px !important;
+    }
+
+    .m-r--#{$i} {
+        margin-right: -$i + 0px !important;
+    }
+
+    .m-l--#{$i} {
+        margin-left: -$i + 0px !important;
+    }
+
+    .w-px-#{$i} {
+        width: $i + 0px !important;
+    }
+    .h-px-#{$i} {
+        height: $i + 0px !important;
+    }
+    .w-percent-#{$i} {
+        width: $i + 0% !important;
+    }
+    @if $i % 5==0 {
+        .min-w-#{$i} {
+            min-width: $i + 0px !important;
+        }
+        .max-w-#{$i} {
+            max-width: $i + 0px !important;
+        }
+        .min-h-#{$i} {
+            min-height: $i + 0px !important;
+        }
+        .max-h-#{$i} {
+            max-height: $i + 0px !important;
+        }
+    }
+    @if $i < 10 and $i>0 {
+        .opacity-#{$i} {
+            opacity: $i * 0.1 !important;
+        }
+    }
+    @if $i < 101 and $i>9 {
+        .l-h-#{$i} {
+            line-height: $i + 0px !important;
+        }
+        .f-#{$i} {
+            font-size: $i + 0px !important;
+        }
+    }
+}
+
+.p-absolute{
+    position: absolute;
+}
+
+.p-relative{
+    position: relative;
+}
+
+.td-ellipsis{
+    max-width:250px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

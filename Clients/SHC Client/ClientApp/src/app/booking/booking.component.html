@@ -1,0 +1,363 @@
+<div class="main-content bg-grey-0" id="booking-page">
+  <div class="container">
+
+    <div class="panel panel-default iq-mt-20">
+      <div class="panel-heading" *ngIf="success == 0">
+        <!-- Nav tabs -->
+        <ul class="nav-justified iq-mt-20" role="tablist" id="step-navigation">
+          <li role="presentation" [ngClass]="{'active': _currentStep>=1}"><a href="javascript:void(0)" (click)="setStep(1)">Thông tin chung</a></li>
+          <li role="presentation" [ngClass]="{'active': _currentStep>=2}"><a href="javascript:void(0)" (click)="setStep(2)">Thông tin cá nhân</a></li>
+          <li role="presentation" [ngClass]="{'active': _currentStep>=3}"><a href="javascript:void(0)" (click)="setStep(3)">Chọn phòng khám</a></li>
+          <li role="presentation" [ngClass]="{'active': _currentStep>=4}"><a href="javascript:void(0)" (click)="setStep(4)">Chọn lịch khám</a></li>
+          <li role="presentation" [ngClass]="{'active': _currentStep==5}"><a href="javascript:void(0)" (click)="setStep(5)">Xác nhận</a></li>
+        </ul>
+        <div class="clearfix"></div>
+      </div>
+
+      <div class="panel-body">
+        <form class="form-horizontal frmBooking" [formGroup]="frmBooking" novalidate>
+          <!-- Tab panes -->
+          <div class="tab-content iq-pt-15">
+            <!-- Tab 1 -->
+            <div role="tabpanel" class="tab-pane" [ngClass]="{'active': _currentStep==1}">
+              <div class="form-group" [ngClass]="{'has-error': frmBooking.get('bookingUser').invalid && (frmBooking.get('bookingUser').dirty || frmBooking.get('bookingUser').touched)}">
+                <label for="bookingUser" class="col-sm-2 col-lg-4 control-label">Họ tên người đặt khám <span class="text-danger">*</span></label>
+                <div class="col-sm-10 col-lg-6">
+                  <input #bookingUser formControlName="bookingUser" type="text" class="form-control" id="bookingUser" placeholder="VD: Nguyễn Văn A" maxlength="255">
+                  <validation [control]="frmBooking.controls['bookingUser']"></validation>
+                </div>
+              </div>
+              <div class="form-group" [ngClass]="{'has-error': frmBooking.get('phoneNumber').invalid && (frmBooking.get('phoneNumber').dirty || frmBooking.get('phoneNumber').touched)}">
+                <label for="phoneNumber" class="col-sm-2 col-lg-4 control-label">Số điện thoại người đặt khám <span class="text-danger">*</span></label>
+                <div class="col-sm-10 col-lg-6">
+                  <input #phoneNumber formControlName="phoneNumber" (keyup)="rulePhoneNumber($event)" type="text" class="form-control" id="phoneNumber" placeholder="VD: 0916110785" minlength="10" maxlength="45">
+                  <validation [control]="frmBooking.controls['phoneNumber']"></validation>
+                </div>
+              </div>
+            </div>
+            <!-- End tab 1 -->
+
+            <!-- Tab 2 -->
+            <div role="tabpanel" class="tab-pane" [ngClass]="{'active': _currentStep==2}">
+              <div class="form-group">
+                <div class="col-sm-6 text-center">
+                  <div class="radio"><label class="btn-block"><input type="radio" (change)="onSelectType(1)" formControlName="bookingType" name="bookingType" [value]="1">Đặt cho mình</label></div>
+                </div>
+                <div class="col-sm-6 text-center">
+                  <div class="radio"><label class="btn-block"><input type="radio" (change)="onSelectType(2)" formControlName="bookingType" name="bookingType" [value]="2">Đặt cho người thân</label></div>
+                </div>
+              </div>
+              <ng-container *ngIf="frmBooking.get('bookingType').value===2">
+                <div class="group-title">Thông tin người đặt khám</div>
+                <div class="form-group">
+                  <label for="bookingRepresent" class="col-sm-2 col-lg-4 control-label">Họ và tên <span class="text-danger">*</span></label>
+                  <div class="col-sm-10 col-lg-6">
+                    <input formControlName="bookingRepresent" type="text" class="form-control" id="bookingRepresent" readonly>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="phoneRepresent" class="col-sm-2 col-lg-4 control-label">Số điện thoại <span class="text-danger">*</span></label>
+                  <div class="col-sm-10 col-lg-6">
+                    <input formControlName="phoneRepresent" type="text" class="form-control" id="phoneRepresent" readonly>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="emailRepresent" class="col-sm-2 col-lg-4 control-label">Email</label>
+                  <div class="col-sm-10 col-lg-6">
+                    <input formControlName="emailRepresent" type="text" class="form-control" id="emailRepresent" (keyup)="ruleEmail($event)" placeholder="VD: nguyenvana@gmail.com" maxlength="320">
+                    <validation [control]="frmBooking.controls['emailRepresent']"></validation>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="relationship" class="col-sm-2 col-lg-4 control-label">Quan hệ với người khám <span class="text-danger">*</span></label>
+                  <div class="col-sm-10 col-lg-6">
+                    <select formControlName="relationshipId" class="form-control" id="relationship">
+                      <option *ngFor="let r of _relationship" [value]="r.id">{{r.name}}</option>
+                    </select>
+                  </div>
+                </div>
+              </ng-container>
+
+              <ng-container>
+                <div class="group-title">Thông tin người khám</div>
+                <div class="form-group"  [ngClass]="{'has-error': frmBooking.get('bookingSecondUser').invalid && (frmBooking.get('bookingSecondUser').dirty || frmBooking.get('bookingSecondUser').touched)}">
+                  <label for="bookingSecondUser" class="col-sm-2 col-lg-4 control-label">Họ và tên <span class="text-danger">*</span></label>
+                  <div class="col-sm-10 col-lg-6">
+                    <input formControlName="bookingSecondUser" type="text" class="form-control" id="bookingSecondUser" maxlength="255" [readonly]="frmBooking.get('bookingType').value===1">
+                    <validation [control]="frmBooking.controls['bookingSecondUser']"></validation>
+                  </div>
+                </div>
+                <div class="form-group"  [ngClass]="{'has-error': frmBooking.get('phoneSecondNumber').invalid && (frmBooking.get('phoneSecondNumber').dirty || frmBooking.get('phoneSecondNumber').touched)}">
+                  <label for="phoneSecondNumber" class="col-sm-2 col-lg-4 control-label">Số điện thoại <span class="text-danger">*</span></label>
+                  <div class="col-sm-10 col-lg-6">
+                    <input formControlName="phoneSecondNumber" (keyup)="rulePhoneNumber($event)"  type="text" class="form-control" id="phoneNumber" minlength="10" maxlength="45" [readonly]="frmBooking.get('bookingType').value===1">
+                    <validation [control]="frmBooking.controls['phoneSecondNumber']"></validation>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="email" class="col-sm-2 col-lg-4 control-label">Email</label>
+                  <div class="col-sm-10 col-lg-6">
+                    <input formControlName="email" type="text" class="form-control" id="email" (keyup)="ruleEmail($event)" placeholder="VD: nguyenvana@gmail.com" maxlength="320">
+                    <validation [control]="frmBooking.controls['email']"></validation>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="relationship" class="col-sm-2 col-lg-4 control-label">Giới tính</label>
+                  <div class="col-sm-10 col-lg-6">
+                    <label class="radio-inline"><input type="radio" formControlName="gender" name="gender" [value]="1">Nam</label>
+                    <label class="radio-inline"><input type="radio" formControlName="gender" name="gender" [value]="2">Nữ</label>
+                    <label class="radio-inline"><input type="radio" formControlName="gender" name="gender" [value]="3">Không xác định</label>
+                  </div>
+                </div>
+                <div class="form-group"  [ngClass]="{'has-error': frmBooking.get('birthYear').invalid && (frmBooking.get('birthYear').dirty || frmBooking.get('birthYear').touched)}">
+                  <label for="birthD" class="col-sm-2 col-lg-4 control-label">Ngày sinh <span class="text-danger">*</span></label>
+                  <div class="col-sm-10 col-lg-6">
+                    <div class="row">
+                      <div class="col-xs-4">
+                        <ng-select formControlName="birthDay" id="birthD" [items]="_dates" placeholder="Ngày"></ng-select>
+                      </div>
+                      <div class="col-xs-4">
+                        <ng-select formControlName="birthMonth" id="birthM" placeholder="Tháng">
+                          <ng-option *ngFor="let o of _months" [value]="o">Tháng {{o}}</ng-option>
+                        </ng-select>
+                      </div>
+                      <div class="col-xs-4">
+                        <ng-select formControlName="birthYear" id="birthY" [items]="_years" placeholder="Năm"></ng-select>
+                      </div>
+                    </div>
+                    <validation [control]="frmBooking.controls['birthYear']"></validation>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="address" class="col-sm-2 col-lg-4 control-label">Địa chỉ</label>
+                  <div class="col-sm-10 col-lg-6">
+                    <input formControlName="address" type="text" class="form-control" id="address" placeholder="VD: 52 Lĩnh Nam" maxlength="255">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="provinceCode" class="col-sm-2 col-lg-4 control-label">Tỉnh/ Thành phố</label>
+                  <div class="col-sm-10 col-lg-6">
+                    <ng-select [searchable]="false" formControlName="provinceCode" id="provinceCode" (ngModelChange)="onSelectProvince($event)">
+                      <ng-option *ngFor="let o of _provinces" [value]="o.provinceCode">{{ o.name }}</ng-option>
+                    </ng-select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="districtCode" class="col-sm-2 col-lg-4 control-label">Quận/ Huyện</label>
+                  <div class="col-sm-10 col-lg-6">
+                    <ng-select [searchable]="false" formControlName="districtCode" id="districtCode">
+                      <ng-option *ngFor="let o of _districts" [value]="o.districtCode">{{ o.name }}</ng-option>
+                    </ng-select>
+                  </div>
+                </div>
+              </ng-container>
+              <div class="form-group" [ngClass]="{'has-error': frmBooking.get('reason').invalid && (frmBooking.get('reason').dirty || frmBooking.get('reason').touched)}">
+                <label for="reason" class="col-sm-2 col-lg-4 control-label">Triệu chứng <span class="text-danger">*</span></label>
+                <div class="col-sm-10 col-lg-6">
+                  <textarea rows="5" formControlName="reason" class="form-control" id="reason" maxlength="1000"></textarea>
+                  <validation [control]="frmBooking.controls['reason']"></validation>
+                </div>
+              </div>
+            </div>
+            <!-- End tab 2 -->
+
+            <!-- Tab 3 -->
+            <div role="tabpanel" class="tab-pane" style="max-width: inherit;" [ngClass]="{'active': _currentStep==3}">
+              <div class="form-group">
+                <label for="provinceCode" class="col-sm-2 control-label">Địa bàn muốn khám <span class="text-danger">*</span></label>
+                <div class="col-sm-10 col-lg-8">
+                  <div class="col-md-6">
+                    <ng-select [searchable]="false" placeholder="Chọn tỉnh, thành phố" formControlName="provinceCodeExamination" id="provinceCodeExamination" (ngModelChange)="onSelectExaminationProvince($event)">
+                      <ng-option *ngFor="let o of _provincesExamination" [value]="o.provinceCode">{{ o.name }}</ng-option>
+                    </ng-select>
+                    <validation [control]="frmBooking.controls['provinceCodeExamination']"></validation>
+                  </div>
+                  <div class="col-md-6">
+                    <ng-select [searchable]="false" placeholder="Chọn quận, huyện" formControlName="districtCodeExamination" id="districtCodeExamination" (ngModelChange)="getHealthfacilities()">
+                      <ng-option *ngFor="let o of _districtsExamination" [value]="o.districtCode">{{ o.name }}</ng-option>
+                    </ng-select>
+                    <validation [control]="frmBooking.controls['districtCodeExamination']"></validation>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="provinceCode" class="col-sm-2 control-label">Chuyên khoa</label>
+                <div class="col-sm-10 col-lg-8">
+                  <div class="col-md-12">
+                    <ng-select [searchable]="false" [multiple]="true" [closeOnSelect]="false" placeholder="Chọn chuyên khoa" formControlName="specialists" id="specialists" (change)="getHealthfacilities()">
+                      <ng-option *ngFor="let o of _specialists" [value]="o.id">{{ o.name }}</ng-option>
+                    </ng-select>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="form-group">
+                  <label for="provinceCode" class="col-sm-2 control-label">Tìm kiếm phòng khám</label>
+                  <div class="col-sm-10 col-lg-8">
+                    <div class="col-md-12">
+                      <div class="input-group">
+                        <input #healthfacilitiesSearch type="text" formControlName="healthfacilitiesSearch" id="healthfacilitiesSearch" class="form-control" placeholder="Tìm kiếm theo tên phòng khám" maxlength="200"/>
+                        <div class="input-group-btn">
+                          <button class="btn btn-primary" type="button" (click)="getHealthfacilities()">
+                            <span class="fa fa-search"></span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+              </div>
+              <div class="form-group">
+                  <label for="provinceCode" class="col-sm-2 control-label">Chọn phòng khám <span class="text-danger">*</span></label>
+                  <div class="col-sm-10 col-lg-8">
+                    <div class="col-md-12">
+                        <ng-select [items]="_healthfacilities" placeholder="Chọn phòng khám" formControlName="healthFacilitiesId" bindLabel="name" bindValue="healthFacilitiesId" (ngModelChange)="onSelectHealthFacilities($event)">
+                            <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
+                              <div style="margin: 10px 0;" class="card">
+                                <div class="card-body">
+                                    <h4 class="card-title" [ngOptionHighlight]="search"><b>{{item.name}}</b></h4>
+                                    <h6 class="card-subtitle mb-2 text-muted small">Địa chỉ</h6>
+                                    <p class="card-text">{{item.address}}</p>
+                                </div>
+                              </div>
+                            </ng-template>
+                        </ng-select>
+                        <validation [control]="frmBooking.controls['healthfacilitiesId']"></validation>
+                    </div>
+                  </div>
+              </div>
+            </div>         
+            <!-- End tab 3 -->
+
+            <!-- Tab 4 -->
+            <div role="tabpanel" class="tab-pane" [ngClass]="{'active': _currentStep==4}">
+              <div class="form-group">
+                <div class="row border" style="border-bottom: none;">
+                    <div class="col-md-12">
+                      <p class="bg-secondary text-white" style="margin: 0;text-align: center;line-height: 30px;"><b>{{_healthfacility ? (_healthfacility.name + '-' + _healthfacility.address) : ''}}</b></p>
+                    </div>
+                </div>
+                <div class="row border">
+                  <div class="col-md-3 text-center border-r" style="height: 213px;">
+                    <img class="img-slick" src="{{ _healthfacility && _healthfacility.avatar ? _healthfacility.avatar : defaulth }}" alt="" (click)="onClickHealthFacilities()">
+                    <p title="{{_healthfacility ? _healthfacility.name : ''}}">{{_healthfacility ? hashLength(_healthfacility.name) : ''}}</p>
+                  </div>
+                  <div class="col-md-9">
+                      <ngx-slick-carousel class="carousel text-center border-r" style="margin-left: -8px;height: 213px;"
+                      #slickModal="slick-carousel" 
+                      [config]="slideConfig">
+                        <div ngxSlickItem *ngFor="let doctor of _doctors" class="slide">
+                          <img class="img-slick" src="{{ doctor.avatar ? doctor.avatar : defaultd }}" (click)="onClickDoctor(doctor)">
+                          <p>{{doctor.fullName}}</p>
+                        </div>
+                    </ngx-slick-carousel>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <div class="row border">
+                  <div class="col-md-4 text-center" style="margin-top: 20px;">
+                    <img class="" src="{{ isDoctor == 0 ? (_healthfacility && _healthfacility.avatar ? _healthfacility.avatar : defaulth) : (_doctor.avatar ? _doctor.avatar : defaultd) }}" alt="" width="250" height="150">
+                    <a>>> Xem chi tiết</a>
+                  </div>
+                  <div class="col-md-8" style="padding-top: 30px;">
+                    <p><b>{{isDoctor == 0 ? (_healthfacility ? _healthfacility.name : '') : _doctor.fullName}}</b></p>
+                    <p><i class="fa fa-{{isDoctor? 'graduation-cap' : 'map-marker'}}" style="margin-right: 10px;"></i>{{isDoctor == 0 ? (_healthfacility ? _healthfacility.address : '') : (_doctor.academic + (_doctor.academic && _doctor.degree ? ", " : "") + _doctor.degree)}}</p>
+                    <p><i class='fa fa-medkit' style="margin-right: 10px;"></i>{{isDoctor == 0 ? (_healthfacility ? _healthfacility.specialistName : '') : _specialist}}</p>
+                    <p><i class='fa fa-user-md' style="margin-right: 10px;"></i>{{isDoctor == 0 ? (_healthfacility ? _healthfacility.totalDoctor + ' bác sĩ' : '') : _doctor.description}}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group" >
+                <div class="row border">
+                  <div class="col-md-12">   
+                    <ul class="nav nav-tabs" style="margin-top: 5px;">        
+                      <li *ngFor="let workingTime of _lstWorkingTimes; index as i" [ngClass]="{'active': i == 0}"><a data-toggle="tab" href="#{{i}}">{{workingTime.dayWeek + workingTime.dayMonth}}</a></li>
+                    </ul>
+
+                    <div class="tab-content" *ngIf="isDoctor == 0">
+                      <ul *ngFor="let el of _lstWorkingTimes; index as i" id="{{i}}"  class="nav nav-tabs tab-pane fade{{i == 0 ? ' in active' : ''}}" style="margin-top: 10px; float: none;">
+                        <li style="float: none; text-align: center;margin-bottom: 10px;"><button class="btn btn-default" [ngClass]="{'clicked': (isClicked == i && type == 1)}" style="width: 300px;" (click)="onClickWorkingTime(el, 1, isDoctor, i)">Sáng (8:00 - 12:00)</button></li>
+                        <li style="float: none; text-align: center;margin-bottom: 10px;"><button class="btn btn-default" [ngClass]="{'clicked': (isClicked == i && type == 2)}" style="width: 300px;" (click)="onClickWorkingTime(el, 2, isDoctor, i)">Chiều (12:00 - 17:00)</button></li>
+                        <li style="float: none; text-align: center;margin-bottom: 10px;"><button class="btn btn-default" [ngClass]="{'clicked': (isClicked == i && type == 3)}" style="width: 300px;" (click)="onClickWorkingTime(el, 3, isDoctor, i)">Tối (17:00 - 21:00)</button></li>
+                      </ul>
+                    </div>
+
+                    <div class="tab-content" *ngIf="isDoctor == 1">
+                      <ul *ngFor="let el of _lstWorkingTimes; index as i" id="{{i}}" class="nav nav-tabs tab-pane fade{{i == 0 ? ' in active' : ''}}" style="margin-top: 10px;">
+                        <li *ngFor="let wt of el.workingTime; index as i" id="{{j}}"><button class="btn btn-default button-time" [ngClass]="{'clicked': (isClicked == j && type == wt.hoursStart)}" (click)="onClickWorkingTime(el, wt, isDoctor, j)">{{wt.hoursStart}} : {{wt.minuteStart}}</button></li>
+                      </ul>
+                    </div>
+
+                  </div>
+                </div>
+                <small *ngIf="frmBooking.controls.examinationDate.invalid" class="help-block" style="color: red;">Chưa chọn thời gian</small>
+              </div>
+            </div>
+            <!-- End tab 4 -->
+
+            <!-- Tab 5 -->
+            <div role="tabpanel" class="tab-pane" [ngClass]="{'active': _currentStep==5}">
+              <div class="form-group">
+                <div class="row" *ngIf="success >= 0">
+                  <h1 *ngIf="success==1" style="text-align: center; padding: 20px;">Đặt Khám thành công</h1>
+                  <p>Thông tin đặt khám của quý khách <b>{{ frmBooking.value['bookingSecondUser'] }}</b> như sau: </p>
+                  <p><i class="fa fa-map-marker" style="margin-right: 10px;"></i><b>{{_healthfacility ? _healthfacility.name + ' - ' + _healthfacility.address : ''}}</b></p>
+                  <p><i class='fa fa-clock-o' style="margin-right: 10px;"></i><b>{{dateExamination}}</b></p>
+                  <p *ngIf="_doctor"><i class='fa fa-user-md' style="margin-right: 10px;"></i><b>{{_doctor ? _doctor.fullName : ''}}</b></p>
+
+                  <div *ngIf="success == 0">
+                    <p>Lưu ý:</p>
+                    <ul style="padding-left:40px;">
+                      <li>* Nếu tới trễ quá 5 phút thì, chúng tôi sẽ chuyển ngày hoặc khung giờ khác cho quý khác. Mong quý khách thông cảm và báo lễ tân đặt lịch khác</li>
+                      <li>* Lượt đặt này chỉ dành cho quý khách. Nếu có người thân khác đi cùng, quý khách vui lòng đặt lịch riêng cho từng người.</li>
+                      <li>* Thời gian phục vụ có thể trễ tới 5-10 phút so với giờ hẹn</li>
+                    </ul> 
+                    
+                    <p class="iq-font-14" style="margin-top:12px;">Vui lòng nhập mã xác nhận dưới đây để xác nhận hoàn thành đặt lịch khám.</p>
+                    <div class="row">
+                      <label class="col-sm-2">Mã xác nhận<span class="text-danger">*</span></label>
+                      <div class="col-sm-6">
+                        <input type="text" name="prof_place" formControlName="codeCapcha" placeholder="Nhập mã xác nhận" class="form-control validate" maxlength="4">
+                        <small *ngIf="capcha" class="help-block" style="color: red;">Mã xác nhận không khớp</small>
+                        <label style="margin-top:10px;"><input type="checkbox" formControlName="rules">Tôi đã đồng ý với <a> điều khoản sử dụng </a> của Mangyte.vn </label>
+                      </div>
+                      <div class="col-sm-2"><img [src]="_capcha.data" width="162" height="39" alt="" style="margin-left: -20px; margin-top: -2px;" /></div>
+                      <span type="button" style="margin-left: 20px;top: 4px;position: relative;" (click)="getCapcha()"><i class="fa fa-refresh" aria-hidden="true"></i></span>
+                    </div>
+                  </div>
+                  
+                  <div *ngIf="success == 1">
+                    <p>Mã đặt khám của quý khách là</p>
+                    <div class="row text-center">
+                      <h2 type="text" stype="padding: 30px;" name="prof_place">{{frmBooking.value['ticketId']}}</h2>
+                      <p>Vui lòng đem theo mã này đến khám!</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row" *ngIf="success < 0">
+                  <h1 style="text-align: center; padding: 20px;">Đặt khám không thành công</h1>
+                  <p class="text-center">Đã có sự cố trong quá trình đặt khám, vui lòng thử lại sau</p>
+                  <p class="text-center">hoặc liên hệ CSKH: 0321654897</p>
+                </div>
+              </div>
+            </div>
+            <!-- End tab 5 -->
+          </div>
+        </form>
+      </div>
+
+      <div class="panel-footer bg-white">
+        <button class="btn btn-default float-left" *ngIf="_currentStep > 1 && success == 0" (click)="setStep(_currentStep-1)"><i class="ion-chevron-left iq-mr-10"></i> Quay lại</button>
+        <button class="btn btn-primary" style="float: right;" *ngIf="_currentStep < 5" (click)="setStep(_currentStep+1)">Tiếp theo <i class="ion-chevron-right iq-ml-10"></i></button>
+        <button class="btn btn-primary" style="float: right;" *ngIf="_currentStep == 5 && success == 0" [disabled]="!frmBooking.value['rules']" (click)="submit()"><i class="ion-checkmark-circled iq-mr-10"></i> Xác nhận</button>
+        <button class="btn btn-default center-block" *ngIf="_currentStep == 5 && (success != 0)" (click)="back()"><a [routerLink]="['/']"><i class="ion-home iq-mr-10"></i>Quay lại trang chủ</a></button>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
