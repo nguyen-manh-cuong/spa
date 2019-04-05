@@ -34,7 +34,6 @@ export class packagedistributeViewComponent extends AppComponentBase implements 
   }
 
   ngOnInit() {
-
     this._dataService.getAll('smsbrands-all').subscribe(resp => this._brands = resp.items);
     this._dataService.getAll('healthfacilities').subscribe(resp => this._medicalFacility = resp.items);
     this._dataService.getAll('smspackages-all').subscribe(resp => this._package = resp.items);

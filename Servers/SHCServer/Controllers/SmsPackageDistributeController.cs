@@ -92,11 +92,15 @@ namespace SHCServer.Controllers
                 pd.Status = obj.Status;
                 pd.SmsPackageId = obj.SmsPackageId;
                 pd.SmsBrandsId = obj.SmsBrandsId;
+                pd.CreateDate = DateTime.Now;
+                pd.CreateUserId = obj.UserId;
 
                 SmsPackageUsed pu = new SmsPackageUsed();
                 pu.SmsPackageId = obj.SmsPackageId;
                 pu.HealthFacilitiesId = obj.HealthFacilitiesId[i];
                 pu.Quantityused = package.Quantity;
+                pu.CreateDate = DateTime.Now;
+                pu.CreateUserId = obj.UserId;
 
                 if (_context.Query<SmsPackagesDistribute>().Where(g => g.HealthFacilitiesId == pd.HealthFacilitiesId && g.SmsPackageId == obj.SmsPackageId).Count() > 0)
                 {
@@ -135,6 +139,9 @@ namespace SHCServer.Controllers
                     MonthStart = obj.MonthStart,
                     Year = obj.Year,
                     Status = obj.Status,
+
+                    UpdateDate = DateTime.Now,
+                    UpdateUserId = obj.UserId
                 });
 
                 _context.Session.CommitTransaction();

@@ -87,7 +87,13 @@ namespace SHCServer.Controllers
 
         [HttpGet]
         [Route("api/smspackages-all")]
-        public IActionResult GetAllSmsPackages() => Json(new ActionResultDto { Result = new { Items = _context.Query<SmsPackage>().OrderBy(t => t.Name).ToList() } });
+        public IActionResult GetAllSmsPackages() => Json(new ActionResultDto { Result = new { Items = _context.Query<SmsPackage>().OrderBy(o => o.Name).ToList() } });
+        #endregion
+
+        #region distribute
+        [HttpGet]
+        [Route("api/smspackages-cbo")]
+        public IActionResult GetSmsPackages() => Json(new ActionResultDto { Result = new { Items = _context.Query<SmsPackage>().Where(o => o.IsDelete == 0 && o.Status == 1).OrderBy(o => o.Name).ToList() } });
         #endregion
 
         [HttpGet]

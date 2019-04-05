@@ -43,7 +43,7 @@ namespace SHCServer.ViewModels
 
         public int Quantity { set; get; }
 
-        public int Status { set; get; }
+        public int? Status { set; get; }
 
         public IList<SmsPackageDetailViewModel> Details { get; set; }
 
@@ -62,7 +62,9 @@ namespace SHCServer.ViewModels
 
         public int Quantity { set; get; }
 
-        public int Status { set; get; }
+        public int? Status { set; get; }
+
+        public int? UserId { set; get; }
 
         public List<PackageDetailInputViewModel> Details { set; get; }
 

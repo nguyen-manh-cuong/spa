@@ -75,7 +75,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
 
     ngAfterViewInit(): void {
         setTimeout(() => {
-            this.txtName.focus();
+            this._package.distribute == 0 && this._isNew == false ? this.txtName.focus() : '';
         }, 500);
     }
 
@@ -188,7 +188,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     }
 
     submit() {
-        var params = _.pick(this._frm.value, ['id', 'name', 'description', 'cost', 'quantity', 'status', 'details']);
+        var params = _.pick(this._frm.value, ['id', 'name', 'description', 'cost', 'quantity', 'status', 'details', 'userId']);
         var detail: Array<IPackageDetail> = [{
             smsFrom: this._frm.value.smsFrom,
             smsTo: Number(this._frm.value.smsTo),
@@ -198,7 +198,8 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
         params.name = _.trim(params.name);//temp
         params.details = this._details.concat(detail);
         params.status = params.status == true ? 1 : 0;
-
+        params.userId = this.appSession.userId;
+        
         if (this.packageData) {
             params.id = this.packageData.id;
         }

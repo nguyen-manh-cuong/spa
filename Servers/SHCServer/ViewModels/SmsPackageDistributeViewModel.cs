@@ -83,6 +83,7 @@ namespace SHCServer.ViewModels
         public int MonthEnd { get; set; }
         public int Year { get; set; }
         public int Status { set; get; }
+        public int UserId { set; get; }
 
         public static explicit operator int(PackageDistributeInputViewModelArray v)
         {
@@ -100,6 +101,7 @@ namespace SHCServer.ViewModels
         public int MonthEnd { get; set; }
         public int Year { get; set; }
         public int Status { set; get; }
+        public int UserId { set; get; }
 
         public static explicit operator int(PackageDistributeInputViewModel v)
         {
