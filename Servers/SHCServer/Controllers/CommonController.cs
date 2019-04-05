@@ -1,14 +1,12 @@
-﻿using SHCServer.Models;
-using SHCServer.ViewModels;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using System;
+using SHCServer.Models;
+using SHCServer.ViewModels;
 using System.Collections.Generic;
-using System.Text;
-using Viettel.MySql;
 using Viettel;
+using Viettel.MySql;
 
 namespace SHCServer.Controllers
 {
@@ -24,6 +22,7 @@ namespace SHCServer.Controllers
         }
 
         #region location
+
         [HttpGet]
         [Route("api/provinces")]
         public IActionResult GetAllProvinces() => Json(new ActionResultDto { Result = new { Items = _context.Query<Province>().ToList() } });
@@ -61,9 +60,11 @@ namespace SHCServer.Controllers
 
             return Json(new ActionResultDto { Result = new { Items = objs.ToList() } });
         }
-        #endregion
+
+        #endregion location
 
         #region booking
+
         [HttpGet]
         [Route("api/healthfacilitiesbooking")]
         public IActionResult GetHealthfacilitiesBooking(string filter)
@@ -78,9 +79,11 @@ namespace SHCServer.Controllers
 
             return Json(new ActionResultDto { Result = new { Items = objs.OrderBy(h => h.Name).Take(1000).Select(h => new HealthFacilitiesViewModel(h, _connectionString)).ToList() } });
         }
-        #endregion
+
+        #endregion booking
 
         #region getall
+
         [HttpGet]
         [Route("api/smsbrands-all")]
         public IActionResult GetAllSmsBrands() => Json(new ActionResultDto { Result = new { Items = _context.Query<SmsBrands>().OrderBy(t => t.BrandName).ToList() } });
@@ -88,15 +91,27 @@ namespace SHCServer.Controllers
         [HttpGet]
         [Route("api/smspackages-all")]
         public IActionResult GetAllSmsPackages() => Json(new ActionResultDto { Result = new { Items = _context.Query<SmsPackage>().OrderBy(t => t.Name).ToList() } });
-        #endregion
+
+        #endregion getall
+
+        #region categorycommon
 
         [HttpGet]
         [Route("api/categorycommon")]
-        public IActionResult GetCategoryCommon(string filter) => Json(new ActionResultDto { Result = new { Items = _context.Query<CategoryCommon>().OrderBy(g => g.Name).Where(g => g.Type == filter).Select(g => new CategoryCommonViewModel(g)).ToList() } });
+        public IActionResult GetCategoryCommon(string filter)
+        {
+            var objs = _context.Query<CategoryCommon>().OrderBy(g => g.Name).Where(g => g.Type == filter).Select(g => new CategoryCommonViewModel(g)).ToList();
+            return Json(new ActionResultDto { Result = new { Items =objs  } });
+        }
+
+
+        #endregion
+
 
         [HttpGet]
         [Route("api/smstemplates")]
-        public IActionResult GetSmsTemplates(string filter) {
+        public IActionResult GetSmsTemplates(string filter)
+        {
             var objs = _context.Query<SmsTemplate>();
 
             if (!string.IsNullOrEmpty(filter)) objs = objs.Where(o => o.HealthFacilitiesId == int.Parse(filter) || o.ApplyAllSystem == true);
@@ -112,7 +127,7 @@ namespace SHCServer.Controllers
 
             if (!string.IsNullOrEmpty(filter)) objs = objs.Where((d, h) => h.HealthFacilitiesId == int.Parse(filter));
 
-            return Json(new ActionResultDto { Result = new { Items = objs.Select((d, h) => new DoctorViewModel(d, _connectionString)).ToList() }});
+            return Json(new ActionResultDto { Result = new { Items = objs.Select((d, h) => new DoctorViewModel(d, _connectionString)).ToList() } });
         }
 
         [HttpGet]
@@ -182,7 +197,7 @@ namespace SHCServer.Controllers
         //    {
         //        var c = a.GetInt32(i);
         //        var d = a.GetPropertyValue("PatientId");
-        //        i++;             
+        //        i++;
         //    }
 
         //    return Json(new ActionResultDto { Result = new { } });
