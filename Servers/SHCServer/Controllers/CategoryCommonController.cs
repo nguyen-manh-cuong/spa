@@ -37,9 +37,9 @@ namespace SHCServer.Controllers
                     if (string.IsNullOrEmpty(value))
                         continue;
                     if (string.Equals(key, "name"))
-                        objs = objs.Where(o => o.Name == value);
+                        objs = objs.Where(o => o.Name.Contains(value));
                     if (string.Equals(key, "id"))
-                        objs = objs.Where(o => o.Id.ToString() == value);
+                        objs = objs.Where(o => o.Id.ToString().Contains(value));
                 }
             }
 
@@ -52,8 +52,19 @@ namespace SHCServer.Controllers
                 }
 
             }
+            else
+            {
+                objs = objs.OrderByDesc(o => o.Code).OrderByDesc(o=>o.CreateDate);
+            }
 
-            return Json(new ActionResultDto() { Result = new { Items = objs.ToList() } });
+            return Json(new ActionResultDto()
+            {
+                Result = new
+                {
+                    Items = objs.TakePage(skipCount == 0 ? 1 : skipCount + 1, maxResultCount).ToList(),
+                    TotalCount = objs.Count()
+                }
+            });
         }
 
         [HttpPost]
@@ -73,7 +84,7 @@ namespace SHCServer.Controllers
                         Code = categoryCommon.Code,
                         Type="CHUYENKHOA",
                         CreateDate = DateTime.Now,
-                        CreateUserId=null,
+                        CreateUserId=categoryCommon.CreateUserId,
                     });
 
                     _context.Session.CommitTransaction();
@@ -114,7 +125,7 @@ namespace SHCServer.Controllers
                     Name = categoryCommon.Name,
                     IsActive = categoryCommon.IsActive,
                     UpdateDate = DateTime.Now,
-                    UpdateUserId = null
+                    UpdateUserId = categoryCommon.UpdateUserId,
                 });
 
                 _context.Session.CommitTransaction();
@@ -146,7 +157,7 @@ namespace SHCServer.Controllers
 
                 _context.Update<CategoryCommon>(c => c.Id == id,x=> new CategoryCommon()
                 {
-                    IsDelete = true
+                    IsDelete = true,
                 });
 
                 _context.Session.CommitTransaction();

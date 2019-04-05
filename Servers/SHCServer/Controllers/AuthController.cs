@@ -108,7 +108,8 @@ namespace SHCServer.Controllers
                                          new MenuItem {Name = "SmsManualBirthday", Icon = "", Route = "/app/sms-manual-birthday"},
                                          new MenuItem {Name = "SmsManual", Icon = "", Route = "/app/sms-manual"},
                                          new MenuItem {Name = "SmsLog", Icon = "", Route = "/app/sms-log"}
-                                    }}
+                                    }},
+                                    new MenuItem{Name="CategoryCommon", Icon="home",Route="/app/category-common"}
                                 }
                             }
                         }

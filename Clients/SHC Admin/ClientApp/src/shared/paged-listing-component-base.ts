@@ -29,7 +29,7 @@ export class PagedRequestDto {
 // tslint:disable-next-line:no-shadowed-variable
 export abstract class PagedListingComponentBase<EntityDto> extends AppComponentBase implements AfterViewInit {
 
-    public pageSize: number = 20;
+    public pageSize: number = 5;
     public pageNumber: number = 1;
     public pageSizeOptions: Array<number> = [5, 10, 20, 50];
     public totalPages: number = 1;
@@ -110,7 +110,6 @@ export abstract class PagedListingComponentBase<EntityDto> extends AppComponentB
                     return of([]);
                 })
             ).subscribe(data => this.dataSources.data = data);
-
         this.setTableHeight();
     }
 
