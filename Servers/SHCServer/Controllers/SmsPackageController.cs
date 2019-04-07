@@ -23,9 +23,6 @@ namespace SHCServer.Controllers
 
             _connectionString = configuration.GetConnectionString("DefaultConnection");
             _excep = new FriendlyException();
-
-            //Mapper.Reset();
-            //Mapper.Initialize(config => config.CreateMap<UserInputViewModel, User>().ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null)));
         }
 
         [HttpGet]
@@ -84,6 +81,10 @@ namespace SHCServer.Controllers
                     packagesDetail.SmsTo = element.SmsTo;
                     packagesDetail.Cost = element.Cost;
                     packagesDetail.SmsPackageId = packageResult.Result.Id;
+                    packagesDetail.CreateDate = DateTime.Now;
+                    packagesDetail.CreateUserId = package.UserId;
+                    packagesDetail.UpdateDate = DateTime.Now;
+                    packagesDetail.UpdateUserId = package.UserId;
 
                     listPackageDetail.Add(packagesDetail);
                 }
@@ -117,7 +118,10 @@ namespace SHCServer.Controllers
                     Description = package.Description,
                     Quantity = package.Quantity,
                     Cost = package.Cost,
-                    Status = package.Status
+                    Status = package.Status,
+
+                    UpdateDate = DateTime.Now,
+                    UpdateUserId = package.UserId
                 });
 
                 List<SmsPackageDetail> listPackageDetail = new List<SmsPackageDetail>();
@@ -132,6 +136,10 @@ namespace SHCServer.Controllers
                     packagesDetail.SmsTo = element.SmsTo;
                     packagesDetail.Cost = element.Cost;
                     packagesDetail.SmsPackageId = Id;
+                    packagesDetail.CreateDate = DateTime.Now;
+                    packagesDetail.CreateUserId = package.UserId;
+                    packagesDetail.UpdateDate = DateTime.Now;
+                    packagesDetail.UpdateUserId = package.UserId;
 
                     listPackageDetail.Add(packagesDetail);
                 }
@@ -154,7 +162,7 @@ namespace SHCServer.Controllers
         {
             try
             {
-                if (_context.Query<SmsPackagesDistribute>().Where(pd => pd.SmsPackageId == id).Count() > 0)
+                if (_context.Query<SmsPackagesDistribute>().Where(pd => pd.SmsPackageId == id && pd.IsDelete == 0).Count() > 0)
                 {
                     return StatusCode(500, _excep.Throw("Xóa gói thất bại.", "Gói SMS đang được sử dụng!"));
                 }

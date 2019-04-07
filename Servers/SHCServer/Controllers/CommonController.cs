@@ -87,7 +87,13 @@ namespace SHCServer.Controllers
 
         [HttpGet]
         [Route("api/smspackages-all")]
-        public IActionResult GetAllSmsPackages() => Json(new ActionResultDto { Result = new { Items = _context.Query<SmsPackage>().OrderBy(t => t.Name).ToList() } });
+        public IActionResult GetAllSmsPackages() => Json(new ActionResultDto { Result = new { Items = _context.Query<SmsPackage>().OrderBy(o => o.Name).ToList() } });
+        #endregion
+
+        #region distribute
+        [HttpGet]
+        [Route("api/smspackages-cbo")]
+        public IActionResult GetSmsPackages() => Json(new ActionResultDto { Result = new { Items = _context.Query<SmsPackage>().Where(o => o.IsDelete == 0 && o.Status == 1).OrderBy(o => o.Name).ToList() } });
         #endregion
 
         [HttpGet]
@@ -96,7 +102,8 @@ namespace SHCServer.Controllers
 
         [HttpGet]
         [Route("api/smstemplates")]
-        public IActionResult GetSmsTemplates(string filter) {
+        public IActionResult GetSmsTemplates(string filter)
+        {
             var objs = _context.Query<SmsTemplate>();
 
             if (!string.IsNullOrEmpty(filter)) objs = objs.Where(o => o.HealthFacilitiesId == int.Parse(filter) || o.ApplyAllSystem == true);
@@ -112,7 +119,7 @@ namespace SHCServer.Controllers
 
             if (!string.IsNullOrEmpty(filter)) objs = objs.Where((d, h) => h.HealthFacilitiesId == int.Parse(filter));
 
-            return Json(new ActionResultDto { Result = new { Items = objs.Select((d, h) => new DoctorViewModel(d, _connectionString)).ToList() }});
+            return Json(new ActionResultDto { Result = new { Items = objs.Select((d, h) => new DoctorViewModel(d, _connectionString)).ToList() } });
         }
 
         [HttpGet]
@@ -165,28 +172,189 @@ namespace SHCServer.Controllers
             return Json(new ActionResultDto { Result = new { Items = objs.Select(h => new BookingDoctorsCalendarsViewModel(h, _connectionString)).ToList() } });
         }
 
-        //[HttpGet]
-        //[Route("api/testquery")]
-        //public IActionResult TestQuery(string filter)
-        //{
-        //    const string subQuery = @"select * from medical_healthcare_histories";
+        [HttpGet]
+        [Route("api/testquery")]
+        public IActionResult TestQuery(string filter)
+        {
+            string query = @"select 
+	                                PatientHistoriesId,
+	                                HealthFacilitiesId,
+	                                HealthInsuranceNumber,
+	                                DoctorId,
+	                                ReExaminationDate,
+	                                IsReExamination,
+	                                IsBirthDay,	
+                                    p.PatientId,
+	                                p.Code,
+                                    p.FullName,
+                                    p.BirthDate,
+                                    p.BirthMonth,
+                                    p.BirthYear,
+                                    p.Gender,
+                                    p.PhoneNumber,
+                                    p.Address
+                                from medical_healthcare_histories h
+                                inner join cats_patients p on h.PatientId = p.PatientId
+                                where 1=1";
+            List<string> clause = new List<string>(); ;
+            List<DbParam> param = new List<DbParam>();
+            List<MedicalHealthcareHistoriesViewModel> lst = new List<MedicalHealthcareHistoriesViewModel>();
 
-        //    var subParamQuery = new List<string>();
-        //    var subParam = new List<DbParam>();
+            if (filter != null)
+            {
+                foreach (var (key, value) in JsonConvert.DeserializeObject<Dictionary<string, string>>(filter))
+                {
+                    if (string.IsNullOrEmpty(value) || value == "false" || value == "0") continue;
+                    if (string.Equals(key, "healthfacilities"))
+                    {
+                        clause.Add(" and h.HealthFacilitiesId = @HealthFacilitiesId");
+                        param.Add(DbParam.Create("@HealthFacilitiesId", value));
+                    }
+                    if (string.Equals(key, "doctor"))
+                    {
+                        clause.Add(" and h.DoctorId = @DoctorId");
+                        param.Add(DbParam.Create("@DoctorId", value));
+                    }
+                    if (string.Equals(key, "insurrance"))
+                    {
+                        clause.Add(" and h.HealthInsuranceNumber = @HealthInsuranceNumber");
+                        param.Add(DbParam.Create("@HealthInsuranceNumber", value));
+                    }
+                    if (string.Equals(key, "startTime"))
+                    {
+                        clause.Add(" and h.ReExaminationDate >= @ReExaminationDate");
+                        param.Add(DbParam.Create("@ReExaminationDate", value));
+                    }
+                    if (string.Equals(key, "endTime"))
+                    {
+                        clause.Add(" and h.ReExaminationDate <= @ReExaminationDateEnd");
+                        param.Add(DbParam.Create("@ReExaminationDateEnd", value));
+                    }
+                    if (string.Equals(key, "status"))
+                    {
+                        if (value == "1")
+                        {
+                            clause.Add(" and h.IsReExamination == 1");
+                        }
+                        else
+                        {
+                            clause.Add(" and h.IsReExamination != 1");
+                        }
+                    }
+                    if (string.Equals(key, "statusB"))
+                    {
+                        if (value == "1")
+                        {
+                            clause.Add(" and h.IsBirthDay == 1");
+                        }
+                        else
+                        {
+                            clause.Add(" and h.IsBirthDay != 1");
+                        }
+                    }
 
-        //    MedicalHealthcareHistories[] m = new MedicalHealthcareHistories[10];
-        //    var a = _context.Session.ExecuteReader(subQuery, new {});
+                    if (string.Equals(key, "patientCode"))
+                    {
+                        clause.Add(" and p.Code = @Code");
+                        param.Add(DbParam.Create("@Code", value));
+                    }
+                    if (string.Equals(key, "patientName"))
+                    {
+                        clause.Add(" and p.FullName like %@FullName%");
+                        param.Add(DbParam.Create("@FullName", value.Trim()));
+                    }
+                    if (string.Equals(key, "identification"))
+                    {
+                        clause.Add(" and p.Identification = @Identification");
+                        param.Add(DbParam.Create("@Identification", value));
+                    }
+                    if (string.Equals(key, "phoneNumber"))
+                    {
+                        clause.Add(" and p.PhoneNumber = @PhoneNumber");
+                        param.Add(DbParam.Create("@PhoneNumber", value));
+                    }
+                    if (string.Equals(key, "provinceCode"))
+                    {
+                        clause.Add(" and p.ProvinceCode = @ProvinceCode");
+                        param.Add(DbParam.Create("@ProvinceCode", value));
+                    }
+                    if (string.Equals(key, "districtCode"))
+                    {
+                        clause.Add(" and p.DistrictCode = @DistrictCode");
+                        param.Add(DbParam.Create("@DistrictCode", value));
+                    }
+                    if (string.Equals(key, "wardCode"))
+                    {
+                        clause.Add(" and p.WardCode = @WardCode");
+                        param.Add(DbParam.Create("@WardCode", value));
+                    }
+                    if (string.Equals(key, "male"))
+                    {
+                        clause.Add(" and p.Gender = @Gender");
+                        param.Add(DbParam.Create("@Gender", 1));
+                    }
+                    if (string.Equals(key, "female"))
+                    {
+                        clause.Add(" and p.Gender = @Gender");
+                        param.Add(DbParam.Create("@Gender", 0));
+                    }
+                    if (string.Equals(key, "birthday"))
+                    {
+                        var birthday = DateTime.Parse(value);
 
-        //    int i = 0;
-        //    while (a.Read())
-        //    {
-        //        var c = a.GetInt32(i);
-        //        var d = a.GetPropertyValue("PatientId");
-        //        i++;             
-        //    }
+                        clause.Add(" and p.BirthDate = @BirthDate and p.BirthMonth = @BirthMonth and p.BirthYear = @BirthYear");
+                        param.Add(DbParam.Create("@BirthDate", birthday.Day));
+                        param.Add(DbParam.Create("@BirthMonth", birthday.Month));
+                        param.Add(DbParam.Create("@BirthYear", birthday.Year));
+                    }
 
-        //    return Json(new ActionResultDto { Result = new { } });
-        //}
+                    //    if (string.Equals(key, "birthdayTo"))
+                    //    {
+                    //        var birthday = DateTime.Parse(value);
+                    //        objs = objs.Where((mhh, p) => mhh.BirthDay <= DateTime.Parse(value));
+                    //    }
+
+                    //    if (string.Equals(key, "birthdayFrom"))
+                    //    {
+                    //        var birthday = DateTime.Parse(value);
+                    //        objs = objs.Where((mhh, p) => mhh.BirthDay >= DateTime.Parse(value));
+                    //    }
+                }
+            }
+            var str = $"{query} {string.Join(",", clause)}";
+            var c = string.Join(",", clause);
+            var querys = query + string.Join(",", clause);
+
+            var reader = _context.Session.ExecuteReader(query + string.Join(",", clause), param);
+
+            while (reader.Read())
+            {
+                lst.Add(new MedicalHealthcareHistoriesViewModel()
+                {
+                    PatientHistoriesId = Convert.ToInt32(reader["PatientHistoriesId"]),
+                    HealthFacilitiesId = reader["HealthFacilitiesId"] != DBNull.Value ? Convert.ToInt32(reader["HealthFacilitiesId"]) : 0,
+                    HealthInsuranceNumber = reader["HealthInsuranceNumber"].ToString(),
+                    DoctorId = Convert.ToInt32(reader["DoctorId"]),
+                    PatientId = Convert.ToInt32(reader["PatientId"]),
+                    ReExaminationDate = Convert.ToDateTime(reader["ReExaminationDate"]),
+                    IsReExamination = reader["IsReExamination"] != DBNull.Value ? Convert.ToInt32(reader["IsReExamination"]) : 0,
+                    IsBirthDay = reader["IsBirthDay"] != DBNull.Value ? Convert.ToInt32(reader["IsBirthDay"]) : 0,
+
+                    //Patient
+                    Code = reader["Code"].ToString(),
+                    FullName = reader["FullName"].ToString(),
+                    BirthDate = reader["BirthDate"] != DBNull.Value ? Convert.ToInt32(reader["BirthDate"]) : 0,
+                    BirthMonth = reader["BirthMonth"] != DBNull.Value ? Convert.ToInt32(reader["BirthMonth"]) : 0,
+                    BirthYear = Convert.ToInt32(reader["BirthYear"]),
+                    Gender = Convert.ToInt32(reader["Gender"]),
+                    PhoneNumber = reader["PhoneNumber"].ToString(),
+                    Address = reader["Address"].ToString(),
+                });
+            }
+
+
+            return Json(new ActionResultDto { Result = lst });
+        }
 
         public class FilterHealthFacilities
         {

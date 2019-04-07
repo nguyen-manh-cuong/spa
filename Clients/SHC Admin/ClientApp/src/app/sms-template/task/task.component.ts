@@ -41,10 +41,12 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     this.dataService.getAll('categorycommon', 'LOAITINNHAN').subscribe(resp => this._messageType = resp.items);
     this._smstemplates.status = true;
     this._smstemplates.applyAllSystem = true;
+
     if (this.smstemplate) {
       this._smstemplates = _.clone(this.smstemplate);
       this._isNew = false;
     }
+
     this._context = {
       smsTemplateName: [this._smstemplates.smsTemplateName, [Validators.required, validationRule.hasValue]],
       messageType: [this._smstemplates.messageType, ],
@@ -52,7 +54,8 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
       status:[this._smstemplates.status],
       applyAllSystem:[this._smstemplates.applyAllSystem],
       organizationName: [this._smstemplates.organizationName],
-      healthFacilitiesId: []
+      healthFacilitiesId: [],
+      userId: []
     };
     this._frm = this._formBuilder.group(this._context);
   }
@@ -67,6 +70,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     this._frm.value.smsTemplateName = this._frm.value.smsTemplateName.trim();
     this._frm.value.smsContent = this._frm.value.smsContent.trim();
     this._frm.value.healthFacilitiesId = this.appSession.user.healthFacilitiesId;
+    this._frm.value.userId = this.appSession.userId;
     this.appSession.user.healthFacilitiesId ? this._frm.value.applyAllSystem = false: '';
 
     this._isNew ?

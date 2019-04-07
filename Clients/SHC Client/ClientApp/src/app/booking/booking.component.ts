@@ -86,6 +86,11 @@ export class BookingComponent extends AppComponentBase implements OnInit, AfterV
       examinationDate: [, Validators.required], examinationWorkingTime: [], examinationTime: [], doctorId: [], ticketId: [], timeSlotId: [], codeCapcha: [], rules: [false]
     });
 
+    if(this.appSession.user){
+      this.frmBooking.controls['bookingUser'].setValue(this.appSession.user.fullName);
+      this.frmBooking.controls['phoneNumber'].setValue(this.appSession.user.phoneNumber);
+    }
+
     this._dataService.getAll('provinces').subscribe(resp => this._provinces = this._provincesExamination = resp.items);
     this.getDate();
     this.getCapcha();
@@ -277,7 +282,7 @@ export class BookingComponent extends AppComponentBase implements OnInit, AfterV
 
     this._dataService.create('bookinginformations', _.pickBy(this.frmBooking.value, _.identity)).subscribe(
       () => {
-          this.success = 1;
+        this.success = 1;
       }, err => {
         this.success = -1;
       })

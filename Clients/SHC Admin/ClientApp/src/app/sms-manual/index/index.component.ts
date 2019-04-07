@@ -148,7 +148,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
         }
 
         this.healthfacilities.value ? this.frmSearch.controls['healthfacilities'].setValue(this.healthfacilities.value.healthFacilitiesId) : '';
-        this.birthday.nativeElement.value ? this.frmSearch.controls['birthday'].setValue(moment(this.birthday.nativeElement.value, 'DD/MM/YYYY').add(7, 'hours').toDate()) : '';
+        this.birthday.nativeElement.value ? this.frmSearch.controls['birthday'].setValue(moment(this.birthday.nativeElement.value, 'DD/MM/YYYY').toDate()) : '';
         this.btnSearchClicks$.next();
     }
 
