@@ -44,19 +44,13 @@ export class TaskComponent extends AppComponentBase implements OnInit {
   }
  
   sendSms(){
-    var lstPatient = [];
     if(this.selection.selected.length){
-        this.selection.selected.forEach(el => {
-            lstPatient.push(el.patient);
-        })
-
         this._dataService.create('infosms', {
-          lstPatient: lstPatient, 
           lstMedicalHealthcareHistories: this.selection.selected, 
-          type: 3, 
-          healthFacilitiesId: this.appSession.user.healthFacilitiesId, 
+          healthFacilitiesId: this.appSession.user.healthFacilitiesId,  
+          smsTemplateId: this._template.id,
           content: this._frm.controls['smsContent'].value,
-          smsTemplateId: this._template.id
+          type: 3, 
         }).subscribe(resp => {
           this.dialogRef.close()  
           swal('Thông báo', resp, 'error');

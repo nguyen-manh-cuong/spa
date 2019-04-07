@@ -36,7 +36,7 @@ namespace SHCServer
         public int SmsPackagesDistributeId { set; get; }
     }
 
-    public class Utils
+    public class InfoSMS
     {
         public static bool PropertyExists<T>(string propertyName)
         {
