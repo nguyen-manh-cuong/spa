@@ -44,7 +44,7 @@ namespace SHCServer.ViewModels
                         .Where((d, h) => d.Id == PackagesDistribute.Id)
                         .Select((d, h) => h).FirstOrDefault();
 
-            var SmsBrands = context.JoinQuery<SmsPackagesDistribute, SmsBrands>((d, b) => new object[]
+            SmsBrand = context.JoinQuery<SmsPackagesDistribute, SmsBrands>((d, b) => new object[]
                        {
                             JoinType.InnerJoin, d.SmsBrandsId == b.SmsBrandId
                        })
@@ -55,7 +55,7 @@ namespace SHCServer.ViewModels
             Quantity = Packages.Quantity;
             Cost = Packages.Cost;
             HealthFacilitiesName = HealthFacilities.Name;
-            SmsBrandsName = SmsBrands.BrandName;
+            SmsBrandsName = SmsBrand.BrandName;
         }
 
         //public override int Id { set; get; }
@@ -70,6 +70,8 @@ namespace SHCServer.ViewModels
 
         public string HealthFacilitiesName { get; set; }
 
+        public SmsBrands SmsBrand { get; set; }
+        
         public string SmsBrandsName { get; set; }
     }
 

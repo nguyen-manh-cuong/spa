@@ -14,12 +14,10 @@ namespace SHCServer.Controllers
     public class SmsManualController : BaseController
     {
         private readonly string _connectionString;
-        private IConfiguration _configuration;
 
         public SmsManualController(IOptions<Audience> settings, IConfiguration configuration)
         {
             _settings = settings;
-            _configuration = configuration;
             _context = new MySqlContext(new MySqlConnectionFactory(configuration.GetConnectionString("DefaultConnection")));
             _excep = new FriendlyException();
             _connectionString = configuration.GetConnectionString("DefaultConnection");
@@ -307,10 +305,10 @@ namespace SHCServer.Controllers
         [Route("api/infosms")]
         public IActionResult InfoSms([FromBody] SmsInfoInputViewModel infoInput)
         {
-            //kiem tra danh sach goi su dung
+            //danh sach goi sms su dung
             var packages = _context.Query<SmsPackagesDistribute>().Where(pd => pd.HealthFacilitiesId == infoInput.healthFacilitiesId && pd.Year >= DateTime.Now.Year && pd.MonthEnd >= DateTime.Now.Month && pd.IsDelete == 0).Select(u => new PackageDistributeViewModel(u, _connectionString)).ToList();
-            if (packages.Count == 0 || infoInput.healthFacilitiesId == null) return StatusCode(422, _excep.Throw("Tài khoản chưa đăng ký gói SMS nào."));
-
+            if (packages.Count == 0) return StatusCode(422, _excep.Throw("Tài khoản chưa đăng ký gói SMS nào."));
+            
             List<int> lstPackageId = new List<int>();
 
             foreach (var p in packages)
@@ -318,7 +316,8 @@ namespace SHCServer.Controllers
                 lstPackageId.Add(p.SmsPackageId);
             }
 
-            var smsPackageUsed = _context.Query<SmsPackageUsed>().Where(pu => lstPackageId.Contains(pu.SmsPackageId)).ToList();
+            //danh sach so luong tin nhan cua cac goi sms
+            var smsPackageUsed = _context.Query<SmsPackageUsed>().Where(pu => lstPackageId.Contains(pu.SmsPackageId) && pu.HealthFacilitiesId == infoInput.healthFacilitiesId).ToList();
             int totalSms = 0;
             int totalSmsSend = infoInput.lstMedicalHealthcareHistories.Count;
 
@@ -329,36 +328,37 @@ namespace SHCServer.Controllers
 
             if (totalSms < totalSmsSend) return StatusCode(422, _excep.Throw("Không đủ số lượng tin nhắn."));
 
-            List<SmsPackageUsed> lstSmsPackageUsed = new List<SmsPackageUsed>();
-            List<BrandForPackage> lstBrandForPackages = new List<BrandForPackage>();
+            //List<SmsPackageUsed> lstSmsPackageUsed = new List<SmsPackageUsed>();
+            //List<BrandForPackage> lstBrandForPackages = new List<BrandForPackage>();
             
             //tru so luong tin nhan
-            foreach (var s in smsPackageUsed)
-            {
-                if (totalSmsSend > 0)
-                {
-                    SmsPackageUsed smsPU = new SmsPackageUsed();
-                    smsPU.HealthFacilitiesId = s.HealthFacilitiesId;
-                    smsPU.SmsPackageId = s.SmsPackageId;
-                    smsPU.SmsPackageUsedId = s.SmsPackageUsedId;
-                    //BrandForPackage brandForPackage = new BrandForPackage();
-                    //smsPU.SmsPackageId = s.SmsPackageId;
+            //foreach (var s in smsPackageUsed)
+            //{
+            //    if (totalSmsSend > 0)
+            //    {
+            //        SmsPackageUsed smsPU = new SmsPackageUsed();
+            //        smsPU.HealthFacilitiesId = s.HealthFacilitiesId;
+            //        smsPU.SmsPackageId = s.SmsPackageId;
+            //        smsPU.SmsPackageUsedId = s.SmsPackageUsedId;
+            //        //BrandForPackage brandForPackage = new BrandForPackage();
+            //        //smsPU.SmsPackageId = s.SmsPackageId;
 
-                    if (totalSmsSend >= s.Quantityused)
-                    {
-                        smsPU.Quantityused = 0;
-                        totalSmsSend -= s.Quantityused;
-                    }
-                    else
-                    {
-                        totalSmsSend = 0;
-                        smsPU.Quantityused = s.Quantityused - totalSmsSend;
-                    }
+            //        if (totalSmsSend >= s.Quantityused)
+            //        {
+            //            smsPU.Quantityused = 0;
+            //            totalSmsSend -= s.Quantityused;
+            //        }
+            //        else
+            //        {
+            //            totalSmsSend = 0;
+            //            smsPU.Quantityused = s.Quantityused - totalSmsSend;
+            //        }
 
-                    lstSmsPackageUsed.Add(smsPU);
-                }               
-            }
+            //        lstSmsPackageUsed.Add(smsPU);
+            //    }               
+            //}
 
+            //Xu ly tin nhan
             string code = "";
             string content = "";
             int templateId = 0;
@@ -373,7 +373,7 @@ namespace SHCServer.Controllers
                     break;
             }
 
-            if (string.IsNullOrEmpty(infoInput.content) && infoInput.smsTemplateId == null)
+            if (infoInput.type != 3)
             {
                 var config = _context.Query<HealthFacilitiesConfigs>().Where(hp => hp.Code == code).FirstOrDefault();
                 templateId = config != null ? config.Values : 0;
@@ -388,14 +388,12 @@ namespace SHCServer.Controllers
             //danh sach sms content
             List<SmsContent> lstContent = new List<SmsContent>();
 
-            foreach (var p in infoInput.lstMedicalHealthcareHistories)
+            foreach (var m in infoInput.lstMedicalHealthcareHistories)
             {
                 SmsContent scontent = new SmsContent();
-
-                content = RepalaceContentSms(content, p, packages[0]);
-                scontent.Message = content;
-                scontent.PhoneNumber = p.PhoneNumber;
-                scontent.Brand = packages[0].SmsBrandsName;
+                scontent.SmsBrand = packages[0].SmsBrand;
+                scontent.Message = RepalaceContentSms(content, m, packages[0].PackageName);
+                scontent.PhoneNumber = m.PhoneNumber;
 
                 scontent.HealthFacilitiesId = infoInput.healthFacilitiesId.Value;
                 scontent.SmsTemplateId = templateId;
@@ -404,24 +402,24 @@ namespace SHCServer.Controllers
                 lstContent.Add(scontent);
             }
 
-            var Result = Utils.SendListSMS(_configuration, lstContent, lstSmsPackageUsed, infoInput.lstMedicalHealthcareHistories, infoInput.type);
+            var Result = Utils.SendListSMS(lstContent, infoInput.type);
 
-            return Json(new ActionResultDto { Result = Result.Message });
+            return Json(new ActionResultDto { Result = Result });
         }
 
-        public static string RepalaceContentSms(string content, MedicalHealthcareHistoriesViewModel patient, PackageDistributeViewModel package)
+        public static string RepalaceContentSms(string content, MedicalHealthcareHistoriesViewModel mhh, string packageName)
         {
             string _content = content;
             if (!string.IsNullOrEmpty(content))
             {
                 _content = _content
-                    .Replace("<PHONGKHAM>", package.HealthFacilitiesName)
-                    .Replace("<NGAYSINH>", patient.BirthYear.ToString())
-                    .Replace("<HOTEN>", patient.FullName)
-                    .Replace("<EMAIL>", patient.Email)
-                    .Replace("<GIOITINH>", patient.Gender == 1 ? "Nam" : "Nữ")
+                    .Replace("<PHONGKHAM>", packageName)
+                    .Replace("<NGAYSINH>", mhh.BirthYear.ToString())
+                    .Replace("<HOTEN>", mhh.FullName)
+                    .Replace("<EMAIL>", mhh.Email)
+                    .Replace("<GIOITINH>", mhh.Gender == 1 ? "Nam" : "Nữ")
                     .Replace("<NGAYHIENTAI>", DateTime.Now.ToString("dd/MM/yyyy"))
-                    .Replace("<NGAYTAIKHAM>", patient.ReExaminationDate.Value.ToString("dd/MM/yyyy"));
+                    .Replace("<NGAYTAIKHAM>", mhh.ReExaminationDate.Value.ToString("dd/MM/yyyy"));
             }
 
             return _content;

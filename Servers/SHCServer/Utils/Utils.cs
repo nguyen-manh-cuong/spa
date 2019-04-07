@@ -8,27 +8,27 @@ using System.Reflection;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using SHCServer.Models;
-using SHCServer.ViewModels;
-using Viettel;
-using Viettel.MySql;
 
 namespace SHCServer
 {
     public class SmsRespone
     {
         public long Code { set; get; }
-        public string Message { set; get; }  
+        public string Message { set; get; }
+
+        public string PhoneNumber { set; get; }
+        public int HealthFacilitiesId { set; get; }
+        public int SmsTemplateId { set; get; }
+        public int SmsPackagesDistributeId { set; get; }
     }
 
     public class SmsContent
     {
+        public SmsBrands SmsBrand { set; get; }
         public string PhoneNumber { set; get; }
-        public string Brand { set; get; }
         public string Message { set; get; }
 
         public int HealthFacilitiesId { set; get; }
@@ -181,62 +181,19 @@ namespace SHCServer
             return returnClass;
         }
 
-        public static void SaveInfoSms(IConfiguration configuration, SmsContent content, List<SmsPackageUsed> lstSmsPackageUsed, List<MedicalHealthcareHistoriesViewModel> lstMedicalHealthcareHistories, long status, int type)
-        {
-            DbContext _context = new MySqlContext(new MySqlConnectionFactory(configuration.GetConnectionString("DefaultConnection")));
-            if (_context != null)
-            {
-                SmsLogs smsLog = new SmsLogs();
-                smsLog.PhoneNumber = content.PhoneNumber;
-                smsLog.Message = content.Message;//result.message;
-                smsLog.Status = Convert.ToInt32(status);
-                smsLog.HealthFacilitiesId = content.HealthFacilitiesId;
-                smsLog.SmsTemplateId = content.SmsTemplateId;
-                smsLog.SmsPackagesDistributeId = content.SmsPackagesDistributeId;
-                smsLog.SentDate = DateTime.Now;
-                smsLog.LogType = 1;
-
-                foreach (var smsPackageUsed in lstSmsPackageUsed)
-                {
-                    _context.Update<SmsPackageUsed>(p => p.SmsPackageUsedId == smsPackageUsed.SmsPackageUsedId, a => new SmsPackageUsed
-                    {
-                        Quantityused = smsPackageUsed.Quantityused
-                    });
-                }
-
-                foreach (var medicalHealthcareHistories in lstMedicalHealthcareHistories)
-                {
-                    if (type == 1)
-                    {
-                        _context.Update<MedicalHealthcareHistories>(m => m.PatientHistoriesId == medicalHealthcareHistories.PatientHistoriesId, a => new MedicalHealthcareHistories
-                        {
-                            IsReExamination = 1
-                        });
-                    } else if (type == 2)
-                    {
-                        _context.Update<MedicalHealthcareHistories>(m => m.PatientHistoriesId == medicalHealthcareHistories.PatientHistoriesId, a => new MedicalHealthcareHistories
-                        {
-                            IsBirthDay = 1
-                        });
-                    }
-                }
-
-                _context.Insert(smsLog);
-            }
-        }
-
-        public static SmsRespone SendSMS(IConfiguration configuration, SmsContent content, List<SmsPackageUsed> lstSmsPackageUsed, List<MedicalHealthcareHistoriesViewModel> lstMedicalHealthcareHistories, int type = 1)
+        public static SmsRespone SendSMS(SmsContent content, int type = 1)
         {
             tinnhanthuonghieu.CcApiClient requestMT = new tinnhanthuonghieu.CcApiClient();
-
-            const string User = "V-CLINIC";
-            const string Password = "V-CLINIC";
-            const string CPCode = "V-CLINIC";
+             
+            string User = content.SmsBrand.UserName;
+            string Password = content.SmsBrand.UserName;
+            string CPCode = content.SmsBrand.CPCode;
             const string RequestID = "1";
+            const string CommandCode = "bulksms";
+
+            string ServiceID = content.SmsBrand.ServiceId;
             string UserID = content.PhoneNumber;
             string ReceiverID = content.PhoneNumber;
-            string ServiceID = content.Brand;
-            const string CommandCode = "bulksms";
             string Content = content.Message;
             string ContentType = "1";
 
@@ -253,7 +210,6 @@ namespace SHCServer
             {
                 var response = requestMT.wsCpMtAsync(User, Password, CPCode, RequestID, UserID, ReceiverID, ServiceID, CommandCode, Content, ContentType);
                 var result = response.Result.@return;
-                SaveInfoSms(configuration, content, lstSmsPackageUsed, lstMedicalHealthcareHistories, result.result1, type);
 
                 return new SmsRespone
                 {
@@ -267,38 +223,33 @@ namespace SHCServer
             }
         }
 
-        public static SmsRespone SendListSMS(IConfiguration configuration, List<SmsContent> lst, List<SmsPackageUsed> lstSmsPackageUsed, List<MedicalHealthcareHistoriesViewModel> lstMedicalHealthcareHistories, int type = 1)
+        public static List<SmsRespone> SendListSMS(List<SmsContent> lst, int type = 1)
         {
-            long code = 0;
-            int failSms = 0;
-            int total = lst.Count;
-            string message = "";
+            //long code = 0;
+            //int failSms = 0;
+            //int total = lst.Count;
+            //string message = "";
+            List<SmsRespone> lstSmsRespones = new List<SmsRespone>();
 
             foreach (var smsContent in lst)
             {
-                //Thread threadSendSms = new Thread(() => {
-                    var sendMt = SendSMS(configuration, smsContent, lstSmsPackageUsed, lstMedicalHealthcareHistories);
-                    code = sendMt.Code;
+                lstSmsRespones.Add(SendSMS(smsContent));
 
-                    if (sendMt.Code == 0)
-                    {
-                        failSms++;
-                        message = "<b>Tổng số SMS đã gửi\\Số SMS gửi lỗi: " + total + "\\" + failSms;
-                    }
-                    else
-                    {
-                        message = "<b>Tổng số SMS đã gửi\\Số SMS gửi lỗi: " + total + "\\" + failSms;
-                    }
-                //});
-                //threadSendSms.Start();
-                //Thread.Sleep(100);
+                //var sendMt = SendSMS(smsContent);
+                //code = sendMt.Code;
+
+                //if (sendMt.Code == 0)
+                //{
+                //    failSms++;
+                //    message = "<b>Tổng số SMS đã gửi\\Số SMS gửi lỗi: " + total + "\\" + failSms;
+                //}
+                //else
+                //{
+                //    message = "<b>Tổng số SMS đã gửi\\Số SMS gửi lỗi: " + total + "\\" + failSms;
+                //}
             }
 
-            return new SmsRespone
-            {
-                Code = code,
-                Message = message
-            };
+            return lstSmsRespones;
         }
 
         //public static string GetLocalToken(HttpClient _httpClient, BearerToken _token, string key = null, string host = "127.0.0.1", double port = 9000)
