@@ -8,6 +8,8 @@ import { UtilsModule } from '@shared/utils/utils.module';
 import { CategoryCommonRoutingModule } from './category-common-routing.module';
 import { TaskComponent } from './task/task.component';
 import { ValidationModule } from '@app/validation/validation.module';
+import { NgxMaskModule } from 'ngx-mask';
+
 @NgModule({
   imports: [
     CommonModule,
@@ -15,7 +17,8 @@ import { ValidationModule } from '@app/validation/validation.module';
     CategoryCommonRoutingModule,
     SharedModule,
     UtilsModule,
-    ValidationModule
+    ValidationModule,
+    NgxMaskModule.forRoot()
   ],
   declarations: [CategoryCommonComponent, IndexComponent, TaskComponent],
   entryComponents: [TaskComponent]

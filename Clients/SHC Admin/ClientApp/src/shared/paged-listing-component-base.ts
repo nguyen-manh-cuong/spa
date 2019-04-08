@@ -1,5 +1,5 @@
 ﻿import { AfterViewInit, Component, Injector, OnInit, ViewChild } from '@angular/core';
-import { MatDialog, MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
+import { MatDialog, MatPaginator, MatTableDataSource } from '@angular/material';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { isEmpty, isNil, isNull, omitBy, zipObject } from 'lodash';
 import { merge, of } from 'rxjs';
@@ -11,6 +11,7 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { Subject } from 'rxjs';
 import { standardized } from './helpers/utils';
 import swal from 'sweetalert2';
+import { analyzeAndValidateNgModules } from '@angular/compiler';
 
 export class PagedResultDto {
     items: any[];
@@ -29,7 +30,7 @@ export class PagedRequestDto {
 // tslint:disable-next-line:no-shadowed-variable
 export abstract class PagedListingComponentBase<EntityDto> extends AppComponentBase implements AfterViewInit {
 
-    public pageSize: number = 5;
+    public pageSize: number = 20;
     public pageNumber: number = 1;
     public pageSizeOptions: Array<number> = [5, 10, 20, 50];
     public totalPages: number = 1;
@@ -45,7 +46,6 @@ export abstract class PagedListingComponentBase<EntityDto> extends AppComponentB
     selection = new SelectionModel<EntityDto>(true, []);
 
     @ViewChild('paginator') paginator: MatPaginator;
-    @ViewChild('sort') sort: MatSort;
 
     btnSearchClicks$ = new Subject<Event>();
     frmSearch: FormGroup;
@@ -88,17 +88,14 @@ export abstract class PagedListingComponentBase<EntityDto> extends AppComponentB
 
     ngAfterViewInit(): void {
 
-        this.dataSources.sort = this.sort;
-        this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
         this.btnSearchClicks$.subscribe(() => this.paginator.pageIndex = 0);
 
-        merge(this.sort.sortChange, this.paginator.page, this.btnSearchClicks$)
+        merge(this.paginator.page, this.btnSearchClicks$)
             .pipe(
                 startWith({}),
                 switchMap(() => {
                     setTimeout(() => this.isTableLoading = true, 0);
-                    const sort = this.sort.active ? zipObject([this.sort.active], [this.sort.direction]) : {};
-                    return this.dataService.get(this.api, JSON.stringify(standardized(omitBy(this.frmSearch.value, isNil), this.ruleSearch)), JSON.stringify(sort), this.paginator.pageIndex, this.paginator.pageSize);
+                    return this.dataService.get(this.api, JSON.stringify(standardized(omitBy(this.frmSearch.value, isNil), this.ruleSearch)), '', this.paginator.pageIndex, this.paginator.pageSize);
                 }),
                 map((data: any) => {
                     setTimeout(() => this.isTableLoading = false, 500);
@@ -134,11 +131,16 @@ export abstract class PagedListingComponentBase<EntityDto> extends AppComponentB
             buttonsStyling: false
         }).then((result) => {
             if (result.value) {
-                this.dataService.delete(this.api, obj[id ? id : 'id']).subscribe(() => {
-                    swal(this.l('SuccessfullyDeleted'), this.l('DeletedInSystem', obj[key]), 'success');
-                    this.paginator.pageIndex = 0;
-                    this.paginator._changePageSize(this.paginator.pageSize);
-                });
+                if (obj['isActive'] == true) {
+                    swal(this.l('ErrorDelete'),this.l('ErrorCategoryCommonDeleted',obj[key]),'error');
+                }
+                else {
+                    this.dataService.delete(this.api, obj[id ? id : 'id']).subscribe(() => {
+                        swal(this.l('SuccessfullyDeleted'), this.l('DeletedInSystem', obj[key]), 'success');
+                        this.paginator.pageIndex = 0;
+                        this.paginator._changePageSize(this.paginator.pageSize);
+                    });
+                }
             }
         });
     }

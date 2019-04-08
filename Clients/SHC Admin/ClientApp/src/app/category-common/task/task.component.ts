@@ -25,8 +25,6 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   _context: any;
   _isNew: boolean = true;
 
-  @ViewChild("txtName") txtName: MatInput;
-
   constructor(
     injector: Injector,
     private _dataService: DataService,
@@ -40,7 +38,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   ngOnInit() {
 
     const validationRule = new ValidationRule();
-
+    
     if (this.obj) {
       this._obj = _.clone(this.obj);
       this._isNew = false;
@@ -51,15 +49,12 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
       code: [this._obj.code, [Validators.required, validationRule.hasValue]],
       isActive: [this._obj.isActive?this._obj.isActive:false]
     };
-    console.log(this._context);
+
     this._frm = this._formBuilder.group(this._context);
 
   }
 
   ngAfterViewInit(): void {
-    setTimeout(() => {
-      this.txtName.focus();
-    }, 500);
   }
 
   submit() {

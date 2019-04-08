@@ -16,7 +16,7 @@
                     <div class="col-md-6">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("CategoryCommonCode")}}</mat-label>
-                            <input formControlName="code" matInput [required]="true" maxlength="255">
+                            <input [readonly]="_obj.distribute !=0 &&_isNew == false" formControlName="code" matInput [required]="true" maxlength="255" mask="A*">
                             <validation matSuffix [control]="_frm.controls['code']"></validation>
                         </mat-form-field>
                     </div>

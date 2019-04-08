@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using SHCServer.Models;
-using SHCServer.ViewModels;
+using System;
+using System.Collections.Generic;
 using Viettel.MySql;
 
 namespace SHCServer.Controllers
@@ -28,11 +24,11 @@ namespace SHCServer.Controllers
         [Route("api/catcommon")]
         public IActionResult GetAll(int skipCount = 0, int maxResultCount = 10, string sorting = null, string filter = null)
         {
-            var objs = _context.Query<CategoryCommon>().Where(o=>o.Type=="CHUYENKHOA" && o.IsDelete==false);
+            var objs = _context.Query<CategoryCommon>().Where(o => o.Type == "CHUYENKHOA" && o.IsDelete == false);
 
-            if(filter!=null)
+            if (filter != null)
             {
-                foreach(var (key,value) in JsonConvert.DeserializeObject<Dictionary<string,string>>(filter))
+                foreach (var (key, value) in JsonConvert.DeserializeObject<Dictionary<string, string>>(filter))
                 {
                     if (string.IsNullOrEmpty(value))
                         continue;
@@ -54,7 +50,7 @@ namespace SHCServer.Controllers
             //}
             //else
             //{
-                objs = objs.OrderByDesc(o => o.Code).OrderByDesc(o=>o.CreateDate);
+            objs = objs.OrderByDesc(o => o.Code).OrderByDesc(o => o.CreateDate);
             //}
 
             return Json(new ActionResultDto()
@@ -78,25 +74,25 @@ namespace SHCServer.Controllers
                 //var cc=_context.Query<CategoryCommon>().Where(c => c.Code == categoryCommon.Code).FirstOrDefault();
                 //if (cc == null) Duplicate Code
                 //{
-                    _context.Insert(() => new CategoryCommon()
-                    {
-                        Name = categoryCommon.Name,
-                        Code = categoryCommon.Code,
-                        IsActive=categoryCommon.IsActive,                    
-                        Type="CHUYENKHOA",
-                        CreateDate = DateTime.Now,
-                        CreateUserId=categoryCommon.CreateUserId,
-                        UpdateDate=DateTime.Now,
-                        UpdateUserId=categoryCommon.UpdateUserId
-                    });
+                _context.Insert(() => new CategoryCommon()
+                {
+                    Name = categoryCommon.Name,
+                    Code = categoryCommon.Code,
+                    IsActive = categoryCommon.IsActive,
+                    Type = "CHUYENKHOA",
+                    CreateDate = DateTime.Now,
+                    CreateUserId = categoryCommon.CreateUserId,
+                    UpdateDate = DateTime.Now,
+                    UpdateUserId = categoryCommon.UpdateUserId
+                });
 
-                    _context.Session.CommitTransaction();
+                _context.Session.CommitTransaction();
 
-                    return Json(new ActionResultDto());
+                return Json(new ActionResultDto());
                 //}
                 //return Json(new ActionResultDto() { Error = "Mã chuyên khoa đã tồn tại" });
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 if (_context.Session.IsInTransaction)
                 {
@@ -135,7 +131,7 @@ namespace SHCServer.Controllers
 
                 return Json(new ActionResultDto());
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 if (_context.Session.IsInTransaction)
                 {
@@ -158,7 +154,7 @@ namespace SHCServer.Controllers
             {
                 _context.Session.BeginTransaction();
 
-                _context.Update<CategoryCommon>(c => c.Id == id,x=> new CategoryCommon()
+                _context.Update<CategoryCommon>(c => c.Id == id, x => new CategoryCommon()
                 {
                     IsDelete = true,
                 });
@@ -167,7 +163,7 @@ namespace SHCServer.Controllers
 
                 return Json(new ActionResultDto());
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 if (_context.Session.IsInTransaction)
                 {
