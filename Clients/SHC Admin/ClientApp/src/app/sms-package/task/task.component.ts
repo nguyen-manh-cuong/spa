@@ -32,7 +32,15 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
 
     @ViewChild("txtName") txtName: MatInput;
 
-    constructor(injector: Injector, private _dataService: DataService, private _formBuilder: FormBuilder, public dialogRef: MatDialogRef<TaskComponent>, @Inject(MAT_DIALOG_DATA) public packageData: IPackage) { super(injector); }
+    constructor(
+        injector: Injector, 
+        private _dataService: DataService, 
+        private _formBuilder: FormBuilder, 
+        public dialogRef: MatDialogRef<TaskComponent>, 
+        @Inject(MAT_DIALOG_DATA) 
+        public packageData: IPackage) { 
+            super(injector); 
+        }
 
     ngOnInit() {
         const validationRule = new ValidationRule();

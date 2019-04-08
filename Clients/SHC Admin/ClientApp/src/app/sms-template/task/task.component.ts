@@ -54,6 +54,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
       organizationName: [this._smstemplates.organizationName],
       healthFacilitiesId: []
     };
+    console.log(this._context);
     this._frm = this._formBuilder.group(this._context);
   }
 

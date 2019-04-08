@@ -43,19 +43,19 @@ namespace SHCServer.Controllers
                 }
             }
 
-            if (sorting != null)
-            {
-                foreach (var (key, value) in JsonConvert.DeserializeObject<Dictionary<string, string>>(sorting))
-                {
-                    if (!Utils.PropertyExists<SmsLogs>(key)) continue;
-                    objs = value == "asc" ? objs.OrderBy(mhh => key) : objs.OrderByDesc(mhh => key);
-                }
+            //if (sorting != null)
+            //{
+            //    foreach (var (key, value) in JsonConvert.DeserializeObject<Dictionary<string, string>>(sorting))
+            //    {
+            //        if (!Utils.PropertyExists<SmsLogs>(key)) continue;
+            //        objs = value == "asc" ? objs.OrderBy(mhh => key) : objs.OrderByDesc(mhh => key);
+            //    }
 
-            }
-            else
-            {
+            //}
+            //else
+            //{
                 objs = objs.OrderByDesc(o => o.Code).OrderByDesc(o=>o.CreateDate);
-            }
+            //}
 
             return Json(new ActionResultDto()
             {
@@ -82,9 +82,12 @@ namespace SHCServer.Controllers
                     {
                         Name = categoryCommon.Name,
                         Code = categoryCommon.Code,
+                        IsActive=categoryCommon.IsActive,                    
                         Type="CHUYENKHOA",
                         CreateDate = DateTime.Now,
                         CreateUserId=categoryCommon.CreateUserId,
+                        UpdateDate=DateTime.Now,
+                        UpdateUserId=categoryCommon.UpdateUserId
                     });
 
                     _context.Session.CommitTransaction();
@@ -105,9 +108,9 @@ namespace SHCServer.Controllers
 
         [HttpPut]
         [Route("api/catcommon")]
-        public IActionResult Update([FromBody] CategoryCommon categoryCommon,int id)
+        public IActionResult Update([FromBody] CategoryCommon categoryCommon)
         {
-            var cc = _context.Query<CategoryCommon>().Where(c => c.Id == id).FirstOrDefault();
+            var cc = _context.Query<CategoryCommon>().Where(c => c.Id == categoryCommon.Id).FirstOrDefault();
 
             if (cc == null)
                 return StatusCode(404, _excep.Throw("Not Found"));
@@ -119,7 +122,7 @@ namespace SHCServer.Controllers
                 //if(ccc!=null) Duplicate Cat.Code
                 _context.Session.BeginTransaction();
 
-                _context.Update<CategoryCommon>(c => c.Id == id, x => new CategoryCommon()
+                _context.Update<CategoryCommon>(c => c.Id == categoryCommon.Id, x => new CategoryCommon()
                 {
                     Code = categoryCommon.Code,
                     Name = categoryCommon.Name,
