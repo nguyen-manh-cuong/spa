@@ -16,13 +16,14 @@ namespace SHCServer
 {
     public class SmsRespone
     {
-        public long Code { set; get; }
+        public long Code { set; get; } //0=fail
         public string Message { set; get; }
-
         public string PhoneNumber { set; get; }
         public int HealthFacilitiesId { set; get; }
         public int SmsTemplateId { set; get; }
         public int SmsPackagesDistributeId { set; get; }
+        public int SmsPackageUsedId { set; get; }
+        public int PatientHistoriesId { set; get; }
     }
 
     public class SmsContent
@@ -30,10 +31,11 @@ namespace SHCServer
         public SmsBrands SmsBrand { set; get; }
         public string PhoneNumber { set; get; }
         public string Message { set; get; }
-
         public int HealthFacilitiesId { set; get; }
         public int SmsTemplateId { set; get; }
         public int SmsPackagesDistributeId { set; get; }
+        public int SmsPackageUsedId { set; get; }
+        public int PatientHistoriesId { set; get; }
     }
 
     public class Utils
@@ -214,7 +216,29 @@ namespace SHCServer
                 return new SmsRespone
                 {
                     Code = result.result1,
-                    Message = result.message
+                    //Message = result.message,
+                    Message = content.Message,
+                    PhoneNumber = content.PhoneNumber,
+                    HealthFacilitiesId = content.HealthFacilitiesId,
+                    SmsTemplateId = content.SmsTemplateId,
+                    SmsPackagesDistributeId = content.SmsPackagesDistributeId,
+                    SmsPackageUsedId = content.SmsPackageUsedId,
+                    PatientHistoriesId = content.PatientHistoriesId
+                };
+            }
+            catch(Exception e)
+            {
+                return new SmsRespone
+                {
+                    Code = 0,
+                    Message = e.Message,
+                    //Message = content.Message,
+                    PhoneNumber = content.PhoneNumber,
+                    HealthFacilitiesId = content.HealthFacilitiesId,
+                    SmsTemplateId = content.SmsTemplateId,
+                    SmsPackagesDistributeId = content.SmsPackagesDistributeId,
+                    SmsPackageUsedId = content.SmsPackageUsedId,
+                    PatientHistoriesId = content.PatientHistoriesId
                 };
             }
             finally
@@ -225,28 +249,11 @@ namespace SHCServer
 
         public static List<SmsRespone> SendListSMS(List<SmsContent> lst, int type = 1)
         {
-            //long code = 0;
-            //int failSms = 0;
-            //int total = lst.Count;
-            //string message = "";
             List<SmsRespone> lstSmsRespones = new List<SmsRespone>();
 
             foreach (var smsContent in lst)
             {
                 lstSmsRespones.Add(SendSMS(smsContent));
-
-                //var sendMt = SendSMS(smsContent);
-                //code = sendMt.Code;
-
-                //if (sendMt.Code == 0)
-                //{
-                //    failSms++;
-                //    message = "<b>Tổng số SMS đã gửi\\Số SMS gửi lỗi: " + total + "\\" + failSms;
-                //}
-                //else
-                //{
-                //    message = "<b>Tổng số SMS đã gửi\\Số SMS gửi lỗi: " + total + "\\" + failSms;
-                //}
             }
 
             return lstSmsRespones;
