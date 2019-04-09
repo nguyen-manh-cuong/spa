@@ -153,8 +153,15 @@ export interface IMedicalHealthcareHistories{
     doctorId?: number,
     patientId?: number,
     reExaminationDate?: Date,
-
-    patient?: IPatient[] 
+    
+    code?: number;
+    fullName: string;
+    birthDate?: number;
+    birthMonth?: number;
+    birthYear: number;
+    gender: number;
+    phoneNumber?: number;
+    address?: string;
 }
 
 

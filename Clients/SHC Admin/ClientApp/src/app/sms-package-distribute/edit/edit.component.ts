@@ -39,7 +39,6 @@ export class packagedistributeEditComponent extends AppComponentBase implements 
   }
 
   ngOnInit() {
-    this._dataService.getAll('smspackages').subscribe(resp => this._package = resp.items);
     if (this.obj) {
       this._obj = _.clone(this.obj);
       this._obj.monthStart = this.obj.monthStart;
@@ -58,6 +57,7 @@ export class packagedistributeEditComponent extends AppComponentBase implements 
       year: [this._obj.year, [Validators.maxLength(4), Validators.pattern('[0-9]*')]],
       smsPackageId: [this._obj.smsPackageId, Validators.required],
       status: [this._obj.status],
+      userId: [],
     };
     this._frmpackagedistributeedit = this._formBuilder.group(this._context);
   }
@@ -65,6 +65,8 @@ export class packagedistributeEditComponent extends AppComponentBase implements 
   submit() {
     this._frmpackagedistributeedit.value.status = this._frmpackagedistributeedit.value.status == true ? 1 : 0;
     this._frmpackagedistributeedit.value.month = this._frmpackagedistributeedit.value.month == null || this._frmpackagedistributeedit.value.month == "" ? 1 : this._frmpackagedistributeedit.value.month;
+    this._frmpackagedistributeedit.value.userId = this.appSession.userId;
+    
     this._dataService.update(this.api, standardized(Object.assign(this._frmpackagedistributeedit.value, { id: this.obj.id }), this.rules)).subscribe(() => {
       swal(this.l('SaveSuccess'), '', 'success');
       this.dialogRef.close();

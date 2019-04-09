@@ -2224,13 +2224,13 @@ export interface IApplicationInfoDto {
 export class UserLoginInfoDto implements IUserLoginInfoDto {
     fullName: string | undefined;
     userName: string | undefined;
+    phoneNumber: string | undefined;
     email: string | undefined;
     id: number | undefined;
     accountType: number | undefined;
     groups: IGroup;
 
     constructor(data?: IUserLoginInfoDto) {
-
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -2240,10 +2240,10 @@ export class UserLoginInfoDto implements IUserLoginInfoDto {
     }
 
     init(data?: any) {
-        console.log(data);
         if (data) {
             this.fullName = data["fullName"];
             this.userName = data["userName"];
+            this.phoneNumber = data["phoneNumber"];
             this.email = data["email"];
             this.id = data["id"];
             this.accountType = data["accountType"];

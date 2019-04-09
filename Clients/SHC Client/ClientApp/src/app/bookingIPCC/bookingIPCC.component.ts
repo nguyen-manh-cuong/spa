@@ -123,6 +123,7 @@ export class BookingIPCCComponent extends AppComponentBase implements OnInit {
   submit() {   
     var controls = this.frmBooking.controls['bookingType'].value == 1 ? ['bookingUser', 'phoneNumber', 'reason', 'birthYear', 'provinceCodeExamination', 'districtCodeExamination', 'healthFacilitiesId', 'examinationDate', 'examinationTime'] : ['bookingUser', 'phoneNumber', 'bookingRepresent', 'phoneRepresent', 'reason', 'birthYear', 'provinceCodeExamination', 'districtCodeExamination', 'healthFacilitiesId', 'examinationDate', 'examinationTime'];
     this.frmBooking.patchValue({bookingUser: this.frmBooking.value.bookingUser.trim(), reason: this.frmBooking.value.reason.trim(), address: this.frmBooking.value.address ? this.frmBooking.value.address.trim() : null, examinationDate: this.examinationDate.nativeElement.value ? this.examinationDate.nativeElement.value : null});
+
     if(this.frmBooking.controls['bookingType'].value == 2){
       this.frmBooking.patchValue({bookingRepresent: this.frmBooking.value.bookingRepresent.trim(), phoneRepresent: this.frmBooking.value.phoneRepresent.trim()});
     }
@@ -138,7 +139,6 @@ export class BookingIPCCComponent extends AppComponentBase implements OnInit {
       if(check == 1)  return;
     }
 
-
     var fromData = this.frmBooking.value;
     var examinationTime = fromData.examinationTime.substring(0, 2) + ':' + this.frmBooking.controls['examinationTime'].value.substring(2, 4);
     var ticketId = this._healthfacility.code + moment(this.frmBooking.controls['examinationDate'].value.jsdate).format("DDMMYYYY") + Math.floor((Math.random() * 9000) + 1000);
@@ -148,7 +148,7 @@ export class BookingIPCCComponent extends AppComponentBase implements OnInit {
 
     this._dataService.create('bookinginformations', _.pickBy(fromData, _.identity)).subscribe(
       () => {
-        swal('Thông báo', 'Thành công', 'success');
+        swal('Thông báo', 'Đặt khám thành công', 'success');
         this._location.back();
       }, err => {})
   }
@@ -165,6 +165,27 @@ export class BookingIPCCComponent extends AppComponentBase implements OnInit {
         this.validateAllFormFields(control, fields);
       }
     });
+  }
+
+  onKeyupDate(date: any){
+    if(date && !moment(date, 'DD/MM/YYYY').isValid){
+      this.frmBooking.controls['examinationDate'].setErrors({special: true});      
+    } else{
+      if(moment(date + '23:59:59', 'DD/MM/YYYY hh:mm:ss').toDate() < new Date()){
+        this.frmBooking.controls['examinationDate'].setErrors({compareDate: true});
+      } else{
+        this.frmBooking.patchValue({examinationDate: this.examinationDate.nativeElement.value});
+      }
+    }
+    this.validateAllFormFields(this.frmBooking, ['examinationDate']);
+  }
+
+  onDateChanged(value: any) {
+    if(value.jsdate){
+      this.frmBooking.controls['examinationDate'].setErrors(null);
+    } else{
+      this.frmBooking.controls['examinationDate'].setErrors({required: true});
+    }
   }
 
   rulePhoneNumber(event: any){

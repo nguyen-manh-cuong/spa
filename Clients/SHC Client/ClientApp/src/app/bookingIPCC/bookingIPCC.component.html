@@ -121,7 +121,7 @@
               </div>
             </ng-container>
             <div class="form-group" [ngClass]="{'has-error': frmBooking.get('reason').invalid && (frmBooking.get('reason').dirty || frmBooking.get('reason').touched)}">
-              <label for="reason" class="col-sm-2 col-lg-4 control-label">Mô tả Triệu chứng, lý do khám <span class="text-danger">*</span></label>
+              <label for="reason" class="col-sm-2 col-lg-4 control-label">Mô tả triệu chứng, lý do khám <span class="text-danger">*</span></label>
               <div class="col-sm-10 col-lg-6">
                 <textarea rows="5" formControlName="reason" class="form-control" id="reason" maxlength="1000"></textarea>
                 <validation [control]="frmBooking.controls['reason']"></validation>
@@ -182,7 +182,7 @@
                 <label for="examinationDate" class="col-sm-2 col-lg-4 control-label">Chọn ngày khám <span class="text-danger">*</span></label>
                 <div class="col-sm-10 col-lg-6">
                   <div class="input-group" [ngClass]="{'has-error': frmBooking.get('examinationDate').invalid && (frmBooking.get('examinationDate').dirty || frmBooking.get('examinationDate').touched)}">
-                    <input class="form-control" style="float:none; font-size: 14px;" ngx-mydatepicker name="examinationDate" [options]="myDatePickerOptions" #dp="ngx-mydatepicker" #examinationDate mask="00/00/0000"/>
+                    <input class="form-control" style="float:none; font-size: 14px;" ngx-mydatepicker name="examinationDate" [options]="myDatePickerOptions" #dp="ngx-mydatepicker" #examinationDate mask="00/00/0000" (keyup)="onKeyupDate($event.target.value)" (dateChanged)="onDateChanged($event)" />
                     <span class="input-group-btn">
                       <button type="button" class="btn btn-default" (click)="dp.clearDate()"><i class="fa fa-times"></i></button>
                       <button type="button" class="btn btn-default" (click)="dp.toggleCalendar()"><i class="fa fa-calendar"></i></button>
