@@ -92,26 +92,26 @@ export class BookingIPCCComponent extends AppComponentBase implements OnInit {
   }
 
   onSelectProvince(obj: any) {
-    if(!this.frmBooking.controls['provinceCode'].value) return;
-
     this._districts = [];
     this.frmBooking.patchValue({ districtCode: null });
+    if(!this.frmBooking.controls['provinceCode'].value) return;
+
     const province = this._provinces.find((o: { provinceCode: string, name: string; }) => o.provinceCode === obj);
     if (province) { this._dataService.get('districts', JSON.stringify({ ProvinceCode: province.provinceCode }), '', 0, 0).subscribe(resp => this._districts = resp.items); }
   }
 
   onSelectExaminationProvince(obj: any) {
+    this._districtsExamination = [];
+    this.frmBooking.patchValue({ districtCodeExamination: null, healthFacilitiesId: null, doctorId: null });
     if(!this.frmBooking.controls['provinceCodeExamination'].value) return;
 
-    this._districtsExamination = [];
-    this.frmBooking.patchValue({ districtCodeExamination: null, healthFacilitiesId: null });
     const province = this._provincesExamination.find((o: { provinceCode: string, name: string; }) => o.provinceCode === obj);
     if (province) { this._dataService.get('districts', JSON.stringify({ ProvinceCode: province.provinceCode }), '', 0, 0).subscribe(resp => this._districtsExamination = resp.items); }
   }
 
   getHealthfacilities() {
     this._healthfacilities = [];   
-    this.frmBooking.patchValue({ healthFacilitiesId: null });
+    this.frmBooking.patchValue({ healthFacilitiesId: null, doctorId: null });
     if(!this.frmBooking.controls['districtCodeExamination'].value) return;
 
     this._dataService.get('healthfacilitiesbooking', JSON.stringify({ 
@@ -124,12 +124,13 @@ export class BookingIPCCComponent extends AppComponentBase implements OnInit {
 
   onSelectHealthFacilities(obj: any){
     this._doctors = [];
+    this.frmBooking.patchValue({ doctorId: null });
     this._healthfacility = this._healthfacilities.find(o => o.healthFacilitiesId == obj);
     this._dataService.get('doctors', this._healthfacility.healthFacilitiesId.toString(), '', 0, 0).subscribe(resp => this._doctors = resp.items);
   }
 
   submit() {   
-    var controls = this.frmBooking.controls['bookingType'].value == 1 ? ['bookingUser', 'phoneNumber', 'reason', 'birthYear', 'provinceCodeExamination', 'districtCodeExamination', 'healthFacilitiesId', 'examinationDate', 'examinationTime'] : ['bookingUser', 'phoneNumber', 'bookingRepresent', 'phoneRepresent', 'reason', 'birthYear', 'provinceCodeExamination', 'districtCodeExamination', 'healthFacilitiesId', 'examinationDate', 'examinationTime'];
+    var controls = this.frmBooking.controls['bookingType'].value == 1 ? ['bookingUser', 'phoneNumber', 'reason', 'birthYear', 'provinceCodeExamination', 'districtCodeExamination', 'healthFacilitiesId', 'examinationDate', 'examinationTime', 'email'] : ['bookingUser', 'phoneNumber', 'bookingRepresent', 'phoneRepresent', 'reason', 'birthYear', 'provinceCodeExamination', 'districtCodeExamination', 'healthFacilitiesId', 'examinationDate', 'examinationTime', 'email'];
     this.frmBooking.patchValue({bookingUser: this.frmBooking.value.bookingUser.trim(), reason: this.frmBooking.value.reason.trim(), address: this.frmBooking.value.address ? this.frmBooking.value.address.trim() : null, examinationDate: this.examinationDate.nativeElement.value ? this.examinationDate.nativeElement.value : null});
 
     if(this.frmBooking.controls['bookingType'].value == 2){
