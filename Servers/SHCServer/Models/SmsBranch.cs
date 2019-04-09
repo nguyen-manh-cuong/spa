@@ -16,5 +16,10 @@ namespace SHCServer.Models
         [AutoIncrement]
         public int SmsBrandId { set; get; }
         public string BrandName { set; get; }
-    }
+        public string CPCode { set; get; }
+        public string UserName { set; get; }
+        public string PassWord { set; get; }
+        public string URL { set; get; }
+        public string ServiceId { set; get; }
+}
 }

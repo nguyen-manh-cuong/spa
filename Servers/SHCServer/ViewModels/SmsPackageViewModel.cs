@@ -39,11 +39,11 @@ namespace SHCServer.ViewModels
 
         public string Description { set; get; }
 
-        public int Cost { set; get; }
+        public long Cost { set; get; }
 
-        public int Quantity { set; get; }
+        public long Quantity { set; get; }
 
-        public int Status { set; get; }
+        public int? Status { set; get; }
 
         public IList<SmsPackageDetailViewModel> Details { get; set; }
 
@@ -58,11 +58,13 @@ namespace SHCServer.ViewModels
 
         public string Description { set; get; }
 
-        public int Cost { set; get; }
+        public long Cost { set; get; }
 
-        public int Quantity { set; get; }
+        public long Quantity { set; get; }
 
-        public int Status { set; get; }
+        public int? Status { set; get; }
+
+        public int? UserId { set; get; }
 
         public List<PackageDetailInputViewModel> Details { set; get; }
 

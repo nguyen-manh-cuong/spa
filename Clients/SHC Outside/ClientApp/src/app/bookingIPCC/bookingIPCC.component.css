@@ -1,0 +1,13 @@
+#booking-page .panel-heading{
+    text-align: center;
+    
+}
+
+#booking-page .tab-pane{
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.ng-option{
+    border-bottom: inset;
+}

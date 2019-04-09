@@ -30,6 +30,6 @@
     </mat-tab>
   </mat-tab-group>
   <div class="text-right mb-3"><button class="mr-3" mat-raised-button color="primary"
-      mat-dialog-close (click)="close()">{{l("Close")}}</button><button mat-raised-button color="primary" [disabled]="_frm.controls['smsTemplate'].invalid"
+      mat-dialog-close>{{l("Close")}}</button><button mat-raised-button color="primary" [disabled]="_frm.controls['smsTemplate'].invalid"
       (click)="sendSms()">{{l("Xác nhận")}}</button></div>
 </form>

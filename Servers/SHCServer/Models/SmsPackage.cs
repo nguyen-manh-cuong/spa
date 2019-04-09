@@ -21,6 +21,8 @@ namespace SHCServer.Models
             Quantity = packages.Quantity;
             Cost = packages.Cost;
             Status = packages.Status;
+            CreateDate = DateTime.Now;
+            CreateUserId = packages.UserId;
         }
 
         [Column(IsPrimaryKey = true)]
@@ -28,10 +30,14 @@ namespace SHCServer.Models
         public virtual int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public int Quantity { get; set; }
-        public int Cost { get; set; }
-        public int Status { get; set; }
+        public long Quantity { get; set; }
+        public long Cost { get; set; }
+        public int? Status { get; set; }
         public int IsDelete { get; set; }
-        public DateTime CreateDate { get; set; }
+
+        public DateTime? CreateDate { get; set; }
+        public int? CreateUserId { get; set; }
+        public DateTime? UpdateDate { get; set; }
+        public int? UpdateUserId { get; set; }
     }
 }

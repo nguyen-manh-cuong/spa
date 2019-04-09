@@ -1,4 +1,5 @@
 ﻿using SHCServer.ViewModels;
+using System;
 using Viettel.Annotations;
 
 namespace SHCServer.Models
@@ -16,6 +17,11 @@ namespace SHCServer.Models
         public int MonthEnd { set; get; }
         public int Status { set; get; }
         public int IsDelete { set; get; }
+
+        public DateTime? CreateDate { get; set; }
+        public int? CreateUserId { get; set; }
+        public DateTime? UpdateDate { get; set; }
+        public int? UpdateUserId { get; set; }
     }
 
     [Table("sms_packages_distribute")]

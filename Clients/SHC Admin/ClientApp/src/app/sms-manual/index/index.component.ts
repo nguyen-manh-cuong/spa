@@ -148,7 +148,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
         }
 
         this.healthfacilities.value ? this.frmSearch.controls['healthfacilities'].setValue(this.healthfacilities.value.healthFacilitiesId) : '';
-        this.birthday.nativeElement.value ? this.frmSearch.controls['birthday'].setValue(moment(this.birthday.nativeElement.value, 'DD/MM/YYYY').add(7, 'hours').toDate()) : '';
+        this.birthday.nativeElement.value ? this.frmSearch.controls['birthday'].setValue(moment(this.birthday.nativeElement.value, 'DD/MM/YYYY').toDate()) : '';
         this.btnSearchClicks$.next();
     }
 
@@ -157,7 +157,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     }
 
     openCustomDialog(): void {
-        const dialogRef = this.dialog.open(this.dialogComponent, { minWidth: 'calc(100vw/2)', maxWidth: 'calc(100vw - 300px)', disableClose: true, data: this.selection });
+        const dialogRef = this.dialog.open(this.dialogComponent, { minWidth: 'calc(100vw/2)', maxWidth: 'calc(100vw - 300px)', disableClose: true, data: { selection: this.selection, type: 3 }});
         
         dialogRef.afterClosed().subscribe(() => {
             this.paginator.pageIndex = 0;

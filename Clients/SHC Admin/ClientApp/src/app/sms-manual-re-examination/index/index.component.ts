@@ -153,19 +153,13 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     }
 
     filterOptions() {
-        if(this.appSession.user.healthFacilitiesId){
-            return this._healthfacilities.filter(h => {
-                h.healthFacilitiesId == this.appSession.user.healthFacilitiesId
-            });
-        } else{
-            this.filteredOptions = this.healthfacilities.valueChanges
+        this.filteredOptions = this.healthfacilities.valueChanges
             .pipe(
                 startWith<string | IHealthfacilities>(''),
                 map(value => typeof value === 'string' ? value : value.name),
                 map(name => name ? this._filter(name) : this._healthfacilities.slice()),
                 map(data => data.slice(0, 30))
             );
-        }
     }
 
     customSearch() {
@@ -182,42 +176,21 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
         }
 
         this.healthfacilities.value ? this.frmSearch.controls['healthfacilities'].setValue(this.healthfacilities.value.healthFacilitiesId) : '';
-        this.birthday.nativeElement.value ? this.frmSearch.controls['birthday'].setValue(moment(this.birthday.nativeElement.value, 'DD/MM/YYYY hh:mm:ss').add(7, 'hours').toDate()) : '';
-        this.endTime.nativeElement.value ? this.frmSearch.controls['endTime'].setValue(moment(this.endTime.nativeElement.value + '23:59:59', 'DD/MM/YYYY hh:mm:ss').add(7, 'hours').toDate()) : '';
+        this.birthday.nativeElement.value ? this.frmSearch.controls['birthday'].setValue(moment(this.birthday.nativeElement.value, 'DD/MM/YYYY').toDate()) : '';
+        this.endTime.nativeElement.value ? this.frmSearch.controls['endTime'].setValue(moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').toDate()) : '';
         this.btnSearchClicks$.next();
     }
 
     setValueBD(){
-        this.frmSearch.controls['birthday'].setValue(moment(this.birthday.nativeElement.value, 'DD/MM/YYYY hh:mm:ss').add(7, 'hours').toDate());
+        this.frmSearch.controls['birthday'].setValue(moment(this.birthday.nativeElement.value, 'DD/MM/YYYY').toDate());
     }
 
     showMess(type: number) {
         if(type == 1 ) swal('Thông báo', 'Chưa chọn bệnh nhân', 'warning');
-        
-        // swal({
-        //     title: this.l('AreYouSure'),
-        //     html: this.l('DeleteWarningMessage', "haha" + " - " +"huhu"),
-        //     type: 'warning',
-        //     showCancelButton: true,
-        //     confirmButtonClass: 'mat-raised-button mat-primary bg-danger',
-        //     cancelButtonClass: 'mat-button',
-        //     confirmButtonText: this.l('YesDelete'),
-        //     cancelButtonText: this.l('Cancel'),
-        //     buttonsStyling: false,
-        //     showLoaderOnConfirm: true
-        //   }).then((result) => {
-        //     if (result.value) {
-        //       //this.dataService.delete(this.api, obj[id ? id : 'id']).subscribe(e => {
-        //         //this.paginator._changePageSize(this.paginator.pageSize);
-        //         //this.paginator.pageIndex = 0;
-        //         swal(this.l('SuccessfullyDeleted'), this.l('DeletedInSystem', "haha" + " - " +"huhu"), 'success');
-        //       //});
-        //     }
-        //   });
     }
 
     openCustomDialog(): void {
-        const dialogRef = this.dialog.open(this.dialogComponent, { minWidth: 'calc(100vw/2)', maxWidth: 'calc(100vw - 300px)', disableClose: true, data: this.selection });
+        const dialogRef = this.dialog.open(this.dialogComponent, { minWidth: 'calc(100vw/2)', maxWidth: 'calc(100vw - 300px)', disableClose: true, data: {selection: this.selection, type: 1} });
         
         dialogRef.afterClosed().subscribe(() => {
             this.paginator.pageIndex = 0;
@@ -238,18 +211,12 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
                 return this.openCustomDialog();
             } 
 
-            var lstPatient = [];
-            this.selection.selected.forEach(el => {
-                lstPatient.push(el.patient);
-            })
-
             this._dataService.create('infosms', {
-                lstPatient: lstPatient, 
                 lstMedicalHealthcareHistories: this.selection.selected, 
+                healthFacilitiesId: this.appSession.user.healthFacilitiesId,           
+                smsTemplateId: resp.items.values,
                 type: 1, 
-                healthFacilitiesId: this.appSession.user.healthFacilitiesId, 
-                content: '',
-                smsTemplateId: resp.items.values                                                                                                                               
+                content: ''                                                                                                                       
             })
             .subscribe(resp => {
                 swal('Thông báo', resp, 'error');

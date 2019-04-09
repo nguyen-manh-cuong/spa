@@ -9,13 +9,14 @@
             <ng-template mat-tab-label>
                 {{_isNew ? l("CreateNew") : l("Edit")}} {{l("Package")}}
             </ng-template>
-            
+
             <div class="pt-4">
                 <div class="row">
                     <div class="col-md-12" [ngClass]="{'disabled': _package.distribute != 0 && _isNew == false }">
                         <mat-form-field appearance="outline" class="w-100" autofocus>
                             <mat-label>{{l("PackageName")}}</mat-label>
-                            <input #txtName="matInput" [required]="true" formControlName="name" matInput maxlength="255">
+                            <input #txtName="matInput" [required]="true" formControlName="name" matInput
+                                maxlength="255">
                             <validation matSuffix [control]="_frm.controls['name']"></validation>
                         </mat-form-field>
                     </div>
@@ -78,7 +79,7 @@
                             <div class="col-md-3">
                                 <mat-form-field appearance="outline" class="w-100">
                                     <mat-label>{{l('PackageSmsTo')}}</mat-label>
-                                    <input type="text" mask="dot_separator" formControlName="{{_smsTo + item.index}}"
+                                    <input type="text" id="{{_smsTo + item.index}}" mask="dot_separator" formControlName="{{_smsTo + item.index}}"
                                         matInput [required]="true" (keyup)="getValue($event.target.value, i, 1)"
                                         (input)="inputOnlyNumber($event)" maxlength="11">
                                     <validation matSuffix [control]="_frm.controls[_smsTo + item.index]"></validation>
@@ -96,7 +97,8 @@
                                 </mat-form-field>
                             </div>
                             <div class="col-md-2">
-                                <button mat-icon-button [matTooltipPosition]="'right'" matTooltip="Xóa" (click)="deleteDetail(i, item.index)">
+                                <button mat-icon-button [matTooltipPosition]="'right'" matTooltip="Xóa"
+                                    (click)="deleteDetail(i, item.index)">
                                     <mat-icon aria-label="Xóa">delete</mat-icon>
                                 </button>
                             </div>
@@ -112,8 +114,10 @@
                 [disabled]="!_frm.controls['smsTo'].value || !_frm.controls['detailCost'].value || checkPackageDetail()">Thêm</button>
         </div>
         <div class="col-md-8">
-            <div class="text-right mb-3"><button class="mr-3" mat-raised-button color="primary" mat-dialog-close>{{l("Close")}}</button>
-                <button mat-raised-button color="primary" [disabled]="_frm.invalid" (click)="submit()">{{l("Save")}}</button>
+            <div class="text-right mb-3"><button class="mr-3" mat-raised-button color="primary"
+                    mat-dialog-close>{{l("Close")}}</button>
+                <button mat-raised-button color="primary" [disabled]="_frm.invalid"
+                    (click)="submit()">{{l("Save")}}</button>
             </div>
         </div>
     </div>

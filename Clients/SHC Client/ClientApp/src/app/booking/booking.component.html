@@ -87,20 +87,6 @@
                     <validation [control]="frmBooking.controls['bookingSecondUser']"></validation>
                   </div>
                 </div>
-                <div class="form-group"  [ngClass]="{'has-error': frmBooking.get('phoneSecondNumber').invalid && (frmBooking.get('phoneSecondNumber').dirty || frmBooking.get('phoneSecondNumber').touched)}">
-                  <label for="phoneSecondNumber" class="col-sm-2 col-lg-4 control-label">Số điện thoại <span class="text-danger">*</span></label>
-                  <div class="col-sm-10 col-lg-6">
-                    <input formControlName="phoneSecondNumber" (keyup)="rulePhoneNumber($event)"  type="text" class="form-control" id="phoneNumber" minlength="10" maxlength="45" [readonly]="frmBooking.get('bookingType').value===1">
-                    <validation [control]="frmBooking.controls['phoneSecondNumber']"></validation>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label for="email" class="col-sm-2 col-lg-4 control-label">Email</label>
-                  <div class="col-sm-10 col-lg-6">
-                    <input formControlName="email" type="text" class="form-control" id="email" (keyup)="ruleEmail($event)" placeholder="VD: nguyenvana@gmail.com" maxlength="320">
-                    <validation [control]="frmBooking.controls['email']"></validation>
-                  </div>
-                </div>
                 <div class="form-group">
                   <label for="relationship" class="col-sm-2 col-lg-4 control-label">Giới tính</label>
                   <div class="col-sm-10 col-lg-6">
@@ -113,10 +99,10 @@
                   <label for="birthD" class="col-sm-2 col-lg-4 control-label">Ngày sinh <span class="text-danger">*</span></label>
                   <div class="col-sm-10 col-lg-6">
                     <div class="row">
-                      <div class="col-xs-4">
+                      <div class="col-xs-3">
                         <ng-select formControlName="birthDay" id="birthD" [items]="_dates" placeholder="Ngày"></ng-select>
                       </div>
-                      <div class="col-xs-4">
+                      <div class="col-xs-5">
                         <ng-select formControlName="birthMonth" id="birthM" placeholder="Tháng">
                           <ng-option *ngFor="let o of _months" [value]="o">Tháng {{o}}</ng-option>
                         </ng-select>
@@ -126,6 +112,20 @@
                       </div>
                     </div>
                     <validation [control]="frmBooking.controls['birthYear']"></validation>
+                  </div>
+                </div>
+                <div class="form-group"  [ngClass]="{'has-error': frmBooking.get('phoneSecondNumber').invalid && (frmBooking.get('phoneSecondNumber').dirty || frmBooking.get('phoneSecondNumber').touched)}">
+                  <label for="phoneSecondNumber" class="col-sm-2 col-lg-4 control-label">Số điện thoại <span class="text-danger">*</span></label>
+                  <div class="col-sm-10 col-lg-6">
+                    <input formControlName="phoneSecondNumber" (keyup)="rulePhoneNumber($event)" type="text" class="form-control" id="phoneNumber" minlength="10" maxlength="45" [readonly]="frmBooking.get('bookingType').value===1">
+                    <validation [control]="frmBooking.controls['phoneSecondNumber']"></validation>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="email" class="col-sm-2 col-lg-4 control-label">Email</label>
+                  <div class="col-sm-10 col-lg-6">
+                    <input formControlName="email" type="text" class="form-control" id="email" (keyup)="ruleEmail($event)" placeholder="VD: nguyenvana@gmail.com" maxlength="320">
+                    <validation [control]="frmBooking.controls['email']"></validation>
                   </div>
                 </div>
                 <div class="form-group">
@@ -145,14 +145,14 @@
                 <div class="form-group">
                   <label for="districtCode" class="col-sm-2 col-lg-4 control-label">Quận/ Huyện</label>
                   <div class="col-sm-10 col-lg-6">
-                    <ng-select [searchable]="false" formControlName="districtCode" id="districtCode">
+                    <ng-select [searchable]="false" formControlName="districtCode" id="districtCode" (ngModelChange)="onSelectDistrict($event)">
                       <ng-option *ngFor="let o of _districts" [value]="o.districtCode">{{ o.name }}</ng-option>
                     </ng-select>
                   </div>
                 </div>
               </ng-container>
               <div class="form-group" [ngClass]="{'has-error': frmBooking.get('reason').invalid && (frmBooking.get('reason').dirty || frmBooking.get('reason').touched)}">
-                <label for="reason" class="col-sm-2 col-lg-4 control-label">Triệu chứng <span class="text-danger">*</span></label>
+                <label for="reason" class="col-sm-2 col-lg-4 control-label">Mô tả triệu chứng, lý do khám <span class="text-danger">*</span></label>
                 <div class="col-sm-10 col-lg-6">
                   <textarea rows="5" formControlName="reason" class="form-control" id="reason" maxlength="1000"></textarea>
                   <validation [control]="frmBooking.controls['reason']"></validation>
@@ -222,7 +222,7 @@
                               </div>
                             </ng-template>
                         </ng-select>
-                        <validation [control]="frmBooking.controls['healthfacilitiesId']"></validation>
+                        <validation [control]="frmBooking.controls['healthFacilitiesId']"></validation>
                     </div>
                   </div>
               </div>
@@ -258,8 +258,12 @@
               <div class="form-group">
                 <div class="row border">
                   <div class="col-md-4 text-center" style="margin-top: 20px;">
-                    <img class="" src="{{ isDoctor == 0 ? (_healthfacility && _healthfacility.avatar ? _healthfacility.avatar : defaulth) : (_doctor.avatar ? _doctor.avatar : defaultd) }}" alt="" width="250" height="150">
-                    <a>>> Xem chi tiết</a>
+                    <div class="thumbnail">
+                      <img src="{{ isDoctor == 0 ? (_healthfacility && _healthfacility.avatar ? _healthfacility.avatar : defaulth) : (_doctor.avatar ? _doctor.avatar : defaultd) }}" width="{{isDoctor == 0 ? 250 : 150}}" height="150">
+                      <div class="caption">
+                        <a>>> Xem chi tiết</a>
+                      </div>
+                    </div>
                   </div>
                   <div class="col-md-8" style="padding-top: 30px;">
                     <p><b>{{isDoctor == 0 ? (_healthfacility ? _healthfacility.name : '') : _doctor.fullName}}</b></p>
@@ -302,7 +306,7 @@
             <div role="tabpanel" class="tab-pane" [ngClass]="{'active': _currentStep==5}">
               <div class="form-group">
                 <div class="row" *ngIf="success >= 0">
-                  <h1 *ngIf="success==1" style="text-align: center; padding: 20px;">Đặt Khám thành công</h1>
+                  <h1 *ngIf="success==1" style="text-align: center; padding: 20px;">Đặt khám thành công</h1>
                   <p>Thông tin đặt khám của quý khách <b>{{ frmBooking.value['bookingSecondUser'] }}</b> như sau: </p>
                   <p><i class="fa fa-map-marker" style="margin-right: 10px;"></i><b>{{_healthfacility ? _healthfacility.name + ' - ' + _healthfacility.address : ''}}</b></p>
                   <p><i class='fa fa-clock-o' style="margin-right: 10px;"></i><b>{{dateExamination}}</b></p>
@@ -311,7 +315,7 @@
                   <div *ngIf="success == 0">
                     <p>Lưu ý:</p>
                     <ul style="padding-left:40px;">
-                      <li>* Nếu tới trễ quá 5 phút thì, chúng tôi sẽ chuyển ngày hoặc khung giờ khác cho quý khác. Mong quý khách thông cảm và báo lễ tân đặt lịch khác</li>
+                      <li>* Nếu tới trễ quá 5 phút thì chúng tôi sẽ chuyển ngày hoặc khung giờ khác cho quý khác. Mong quý khách thông cảm và báo lễ tân đặt lịch khác</li>
                       <li>* Lượt đặt này chỉ dành cho quý khách. Nếu có người thân khác đi cùng, quý khách vui lòng đặt lịch riêng cho từng người.</li>
                       <li>* Thời gian phục vụ có thể trễ tới 5-10 phút so với giờ hẹn</li>
                     </ul> 
@@ -354,7 +358,7 @@
         <button class="btn btn-default float-left" *ngIf="_currentStep > 1 && success == 0" (click)="setStep(_currentStep-1)"><i class="ion-chevron-left iq-mr-10"></i> Quay lại</button>
         <button class="btn btn-primary" style="float: right;" *ngIf="_currentStep < 5" (click)="setStep(_currentStep+1)">Tiếp theo <i class="ion-chevron-right iq-ml-10"></i></button>
         <button class="btn btn-primary" style="float: right;" *ngIf="_currentStep == 5 && success == 0" [disabled]="!frmBooking.value['rules']" (click)="submit()"><i class="ion-checkmark-circled iq-mr-10"></i> Xác nhận</button>
-        <button class="btn btn-default center-block" *ngIf="_currentStep == 5 && (success != 0)" (click)="back()"><a [routerLink]="['/']"><i class="ion-home iq-mr-10"></i>Quay lại trang chủ</a></button>
+        <button class="btn btn-default center-block" *ngIf="_currentStep == 5 && (success != 0)"><a [routerLink]="['/']"><i class="ion-home iq-mr-10"></i>Quay lại trang chủ</a></button>
         <div class="clearfix"></div>
       </div>
     </div>

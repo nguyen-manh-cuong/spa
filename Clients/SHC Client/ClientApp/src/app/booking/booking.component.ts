@@ -86,6 +86,11 @@ export class BookingComponent extends AppComponentBase implements OnInit, AfterV
       examinationDate: [, Validators.required], examinationWorkingTime: [], examinationTime: [], doctorId: [], ticketId: [], timeSlotId: [], codeCapcha: [], rules: [false]
     });
 
+    if(this.appSession.user){
+      this.frmBooking.controls['bookingUser'].setValue(this.appSession.user.fullName);
+      this.frmBooking.controls['phoneNumber'].setValue(this.appSession.user.phoneNumber);
+    }
+
     this._dataService.getAll('provinces').subscribe(resp => this._provinces = this._provincesExamination = resp.items);
     this.getDate();
     this.getCapcha();
@@ -124,20 +129,21 @@ export class BookingComponent extends AppComponentBase implements OnInit, AfterV
       }
 
       if (i === 3) {
-        this.frmBooking.patchValue({ provinceCodeExamination: this.frmBooking.get('provinceCode').value });
-        this.frmBooking.patchValue({ districtCodeExamination: this.frmBooking.get('districtCode').value });
-        this.getHealthfacilities();
+        !this.frmBooking.value.provinceCodeExamination ? this.frmBooking.patchValue({ provinceCodeExamination: this.frmBooking.get('provinceCode').value }) : '';
+        !this.frmBooking.value.districtCodeExamination ? this.frmBooking.patchValue({ districtCodeExamination: this.frmBooking.get('districtCode').value }) : '';
+        !this._specialists.length ? this._dataService.getAll('categorycommon', 'CHUYENKHOA').subscribe(resp => this._specialists = resp.items) : '';
+        !this.frmBooking.value.healthFacilitiesId ? this.getHealthfacilities() : '';
       }
       this.frmBooking.patchValue({bookingSecondUser: this.frmBooking.value.bookingSecondUser.trim(), reason: this.frmBooking.value.reason.trim(), address: this.frmBooking.value.address ? this.frmBooking.value.address.trim() : null});
-      this._dataService.getAll('categorycommon', 'CHUYENKHOA').subscribe(resp => this._specialists = resp.items);
     }
 
     if (i >= 4) {
       this.validateAllFormFields(this.frmBooking, ['provinceCodeExamination', 'districtCodeExamination', 'healthFacilitiesId']);
-
       if (this.frmBooking.controls.provinceCodeExamination.invalid || this.frmBooking.controls.districtCodeExamination.invalid || this.frmBooking.controls.healthFacilitiesId.invalid) { return; }
 
-      this._dataService.get('doctors', this._healthfacility.healthFacilitiesId.toString(), '', 0, 0).subscribe(resp => this._doctors = resp.items);
+      if(i === 4){
+        !this._doctor ? this._dataService.get('doctors', this._healthfacility.healthFacilitiesId.toString(), '', 0, 0).subscribe(resp => this._doctors = resp.items) : '';
+      }
     }
 
     if (i >= 5) { 
@@ -161,13 +167,6 @@ export class BookingComponent extends AppComponentBase implements OnInit, AfterV
     });
   }
 
-  onSelectProvince(obj: any) {
-    this._districts = [];
-    this.frmBooking.patchValue({ districtCode: null });
-    const province = this._provinces.find((o: { provinceCode: string, name: string; }) => o.provinceCode === obj);
-    if (province) { this._dataService.get('districts', JSON.stringify({ ProvinceCode: province.provinceCode }), '', 0, 0).subscribe(resp => this._districts = resp.items); }
-  }
-
   onSelectType(num: number) {
     const u = _.trim(this.frmBooking.get('bookingUser').value);
     const p = _.trim(this.frmBooking.get('phoneNumber').value);
@@ -178,24 +177,26 @@ export class BookingComponent extends AppComponentBase implements OnInit, AfterV
     }
   }
 
+  onSelectProvince(obj: any) {
+    this._districts = this._districtsExamination = []; 
+    this.frmBooking.patchValue({ districtCode: null, provinceCodeExamination: null, districtCodeExamination: null });
+    const province = this._provinces.find((o: { provinceCode: string, name: string; }) => o.provinceCode === obj);
+    if (province) { this._dataService.get('districts', JSON.stringify({ ProvinceCode: province.provinceCode }), '', 0, 0).subscribe(resp => this._districts = resp.items); }
+  }
+
   onSelectExaminationProvince(obj: any) {
+    this._districtsExamination = [];
     this.frmBooking.patchValue({ districtCodeExamination: null, healthFacilitiesId: null });
     const province = this._provincesExamination.find((o: { provinceCode: string, name: string; }) => o.provinceCode === obj);
     if (province) { this._dataService.get('districts', JSON.stringify({ ProvinceCode: province.provinceCode }), '', 0, 0).subscribe(resp => this._districtsExamination = resp.items); }
   }
 
-  getHealthfacilities() {
-    this._healthfacilities = [];   
-    this.frmBooking.patchValue({ healthFacilitiesId: null });
-    this._dataService.get('healthfacilitiesbooking', JSON.stringify({ 
-      districtCode: this.frmBooking.controls['districtCodeExamination'].value,
-      provinceCode: this.frmBooking.controls['provinceCodeExamination'].value,
-      name: this.frmBooking.value.healthfacilitiesSearch ? this.frmBooking.controls['healthfacilitiesSearch'].value.trim() : '',
-      specialist: this.frmBooking.controls['specialists'].value
-    }), '', 0, 0).subscribe(resp => this._healthfacilities = resp.items);   
+  onSelectDistrict(){
+    this.frmBooking.patchValue({ districtCodeExamination: null });
   }
 
   onSelectHealthFacilities(obj: any){
+    this.onClickHealthFacilities();
     this._healthfacility = this._healthfacilities.find(o => o.healthFacilitiesId == obj);
   }
 
@@ -260,6 +261,19 @@ export class BookingComponent extends AppComponentBase implements OnInit, AfterV
       this.frmBooking.patchValue({examinationWorkingTime: null, examinationTime: (value.hoursStart + ':' + value.minuteStart), timeSlotId: value.timeSlotId});
     }
   }
+  
+  getHealthfacilities() {
+    this._healthfacilities = [];
+    if(!this.frmBooking.controls['districtCodeExamination'].value) return;
+  
+    this.frmBooking.patchValue({ healthFacilitiesId: null });
+    this._dataService.get('healthfacilitiesbooking', JSON.stringify({ 
+      districtCode: this.frmBooking.controls['districtCodeExamination'].value,
+      provinceCode: this.frmBooking.controls['provinceCodeExamination'].value,
+      name: this.frmBooking.value.healthfacilitiesSearch ? this.frmBooking.controls['healthfacilitiesSearch'].value.trim() : '',
+      specialist: this.frmBooking.controls['specialists'].value
+    }), '', 0, 0).subscribe(resp => this._healthfacilities = resp.items);   
+  }
 
   submit() {
     var ticketId = this._healthfacility.code + moment(this.frmBooking.controls['examinationDate'].value).format("DDMMYYYY") + Math.floor((Math.random() * 9000) + 1000); 
@@ -277,7 +291,7 @@ export class BookingComponent extends AppComponentBase implements OnInit, AfterV
 
     this._dataService.create('bookinginformations', _.pickBy(this.frmBooking.value, _.identity)).subscribe(
       () => {
-          this.success = 1;
+        this.success = 1;
       }, err => {
         this.success = -1;
       })

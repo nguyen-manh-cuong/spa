@@ -87,7 +87,13 @@ namespace SHCServer.Controllers
 
         [HttpGet]
         [Route("api/smspackages-all")]
-        public IActionResult GetAllSmsPackages() => Json(new ActionResultDto { Result = new { Items = _context.Query<SmsPackage>().OrderBy(t => t.Name).ToList() } });
+        public IActionResult GetAllSmsPackages() => Json(new ActionResultDto { Result = new { Items = _context.Query<SmsPackage>().OrderBy(o => o.Name).ToList() } });
+        #endregion
+
+        #region distribute
+        [HttpGet]
+        [Route("api/smspackages-cbo")]
+        public IActionResult GetSmsPackages() => Json(new ActionResultDto { Result = new { Items = _context.Query<SmsPackage>().Where(o => o.IsDelete == 0 && o.Status == 1).OrderBy(o => o.Name).ToList() } });
         #endregion
 
         [HttpGet]
@@ -96,8 +102,9 @@ namespace SHCServer.Controllers
 
         [HttpGet]
         [Route("api/smstemplates")]
-        public IActionResult GetSmsTemplates(string filter) {
-            var objs = _context.Query<SmsTemplate>();
+        public IActionResult GetSmsTemplates(string filter)
+        {
+            var objs = _context.Query<SmsTemplate>().Where(t => t.IsDelete == false && t.Status == true);
 
             if (!string.IsNullOrEmpty(filter)) objs = objs.Where(o => o.HealthFacilitiesId == int.Parse(filter) || o.ApplyAllSystem == true);
 
@@ -112,7 +119,7 @@ namespace SHCServer.Controllers
 
             if (!string.IsNullOrEmpty(filter)) objs = objs.Where((d, h) => h.HealthFacilitiesId == int.Parse(filter));
 
-            return Json(new ActionResultDto { Result = new { Items = objs.Select((d, h) => new DoctorViewModel(d, _connectionString)).ToList() }});
+            return Json(new ActionResultDto { Result = new { Items = objs.Select((d, h) => new DoctorViewModel(d, _connectionString)).ToList() } });
         }
 
         [HttpGet]
@@ -164,29 +171,6 @@ namespace SHCServer.Controllers
 
             return Json(new ActionResultDto { Result = new { Items = objs.Select(h => new BookingDoctorsCalendarsViewModel(h, _connectionString)).ToList() } });
         }
-
-        //[HttpGet]
-        //[Route("api/testquery")]
-        //public IActionResult TestQuery(string filter)
-        //{
-        //    const string subQuery = @"select * from medical_healthcare_histories";
-
-        //    var subParamQuery = new List<string>();
-        //    var subParam = new List<DbParam>();
-
-        //    MedicalHealthcareHistories[] m = new MedicalHealthcareHistories[10];
-        //    var a = _context.Session.ExecuteReader(subQuery, new {});
-
-        //    int i = 0;
-        //    while (a.Read())
-        //    {
-        //        var c = a.GetInt32(i);
-        //        var d = a.GetPropertyValue("PatientId");
-        //        i++;             
-        //    }
-
-        //    return Json(new ActionResultDto { Result = new { } });
-        //}
 
         public class FilterHealthFacilities
         {

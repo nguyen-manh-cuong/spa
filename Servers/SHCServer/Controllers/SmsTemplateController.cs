@@ -71,10 +71,10 @@ namespace SHCServer.Controllers
         [Route("api/sms-templates")]
         public IActionResult Create([FromBody] SmsTemplateInputViewModel sms)
         {
-            if (_context.Query<SmsTemplate>().Where(g => g.SmsTemplateName == sms.SmsTemplateName).Count() > 0)
+            if (_context.Query<SmsTemplate>().Where(g => g.SmsTemplateName == sms.SmsTemplateName && sms.IsDelete == false).Count() > 0)
                 return StatusCode(500, _excep.Throw("Tạo mẫu tin nhắn thất bại.", "Tên mẫu tin nhắn đã tồn tại !"));
             
-            if (_context.Query<SmsTemplate>().Where(g => g.SmsContent  == sms.SmsContent).Count() > 0)  
+            if (_context.Query<SmsTemplate>().Where(g => g.SmsContent  == sms.SmsContent && sms.IsDelete == false).Count() > 0)  
                     return StatusCode(500, _excep.Throw("Tạo mẫu tin nhắn thất bại.", "Nội dung tin nhắn đã tồn tại !"));
 
             return Json(new ActionResultDto { Result = _context.Insert(new SmsTemplate(sms)) });
@@ -88,10 +88,10 @@ namespace SHCServer.Controllers
             {
                 _context.Session.BeginTransaction();
 
-                if (_context.Query<SmsTemplate>().Where(g => g.SmsTemplateName == sms.SmsTemplateName && g.Id != sms.Id).Count() > 0)
+                if (_context.Query<SmsTemplate>().Where(g => g.SmsTemplateName == sms.SmsTemplateName && g.Id != sms.Id && sms.IsDelete == false).Count() > 0)
                     return StatusCode(500, _excep.Throw("Sửa mẫu tin nhắn thất bại.", "Tên mẫu tin nhắn đã tồn tại !"));
 
-                if (_context.Query<SmsTemplate>().Where(g => g.SmsContent == sms.SmsContent && g.Id != sms.Id).Count() > 0)
+                if (_context.Query<SmsTemplate>().Where(g => g.SmsContent == sms.SmsContent && g.Id != sms.Id && sms.IsDelete == false).Count() > 0)
                     return StatusCode(500, _excep.Throw("Sửa mẫu tin nhắn thất bại.", "Nội dung tin nhắn đã tồn tại !"));
 
                 _context.Update<SmsTemplate>(g => g.Id == sms.Id, a => new SmsTemplate {
@@ -99,7 +99,10 @@ namespace SHCServer.Controllers
                     MessageType = sms.MessageType,
                     SmsContent = sms.SmsContent,
                     Status = sms.Status,
-                    ApplyAllSystem = sms.ApplyAllSystem
+                    ApplyAllSystem = sms.ApplyAllSystem,
+
+                    UpdateDate = DateTime.Now,
+                    UpdateUserId = sms.UserId
                 });
 
                 _context.Session.CommitTransaction();
