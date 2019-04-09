@@ -306,62 +306,25 @@ namespace SHCServer.Controllers
         public IActionResult InfoSms([FromBody] SmsInfoInputViewModel infoInput)
         {
             //danh sach goi sms su dung
-            var packages = _context.Query<SmsPackagesDistribute>().Where(pd => pd.HealthFacilitiesId == infoInput.healthFacilitiesId && pd.Year >= DateTime.Now.Year && pd.MonthEnd >= DateTime.Now.Month && pd.IsDelete == 0).Select(u => new PackageDistributeViewModel(u, _connectionString)).ToList();
-            if (packages.Count == 0) return StatusCode(422, _excep.Throw("Tài khoản chưa đăng ký gói SMS nào."));
+            var packages = _context.Query<SmsPackagesDistribute>().Where(pd => pd.HealthFacilitiesId == infoInput.healthFacilitiesId && pd.Year >= DateTime.Now.Year && pd.MonthEnd >= DateTime.Now.Month && pd.IsDelete == 0 && pd.Status == 1).Select(u => new PackageDistributeViewModel(u, _connectionString)).ToList();
+            if (packages.Count == 0) return StatusCode(422, _excep.Throw("Không thể gửi tin do số lượng tin nhắn vượt quá gói SMS hiện tại. Mời bạn mua thêm gói SMS"));
             
-            List<int> lstPackageId = new List<int>();
-
-            foreach (var p in packages)
-            {
-                lstPackageId.Add(p.SmsPackageId);
-            }
-
-            //danh sach so luong tin nhan cua cac goi sms
-            var smsPackageUsed = _context.Query<SmsPackageUsed>().Where(pu => lstPackageId.Contains(pu.SmsPackageId) && pu.HealthFacilitiesId == infoInput.healthFacilitiesId).ToList();
-            int totalSms = 0;
+            long totalSms = 0;
             int totalSmsSend = infoInput.lstMedicalHealthcareHistories.Count;
 
-            foreach (var s in smsPackageUsed)
+            foreach (var s in packages)
             {
-                totalSms += s.Quantityused;
+                totalSms += s.SmsPackageUsed.Quantityused;
             }
 
-            if (totalSms < totalSmsSend) return StatusCode(422, _excep.Throw("Không đủ số lượng tin nhắn."));
-
-            //List<SmsPackageUsed> lstSmsPackageUsed = new List<SmsPackageUsed>();
-            //List<BrandForPackage> lstBrandForPackages = new List<BrandForPackage>();
-            
-            //tru so luong tin nhan
-            //foreach (var s in smsPackageUsed)
-            //{
-            //    if (totalSmsSend > 0)
-            //    {
-            //        SmsPackageUsed smsPU = new SmsPackageUsed();
-            //        smsPU.HealthFacilitiesId = s.HealthFacilitiesId;
-            //        smsPU.SmsPackageId = s.SmsPackageId;
-            //        smsPU.SmsPackageUsedId = s.SmsPackageUsedId;
-            //        //BrandForPackage brandForPackage = new BrandForPackage();
-            //        //smsPU.SmsPackageId = s.SmsPackageId;
-
-            //        if (totalSmsSend >= s.Quantityused)
-            //        {
-            //            smsPU.Quantityused = 0;
-            //            totalSmsSend -= s.Quantityused;
-            //        }
-            //        else
-            //        {
-            //            totalSmsSend = 0;
-            //            smsPU.Quantityused = s.Quantityused - totalSmsSend;
-            //        }
-
-            //        lstSmsPackageUsed.Add(smsPU);
-            //    }               
-            //}
+            if (totalSms < totalSmsSend) return StatusCode(422, _excep.Throw("Không thể gửi tin do số lượng tin nhắn vượt quá gói SMS hiện tại. Mời bạn mua thêm gói SMS"));
 
             //Xu ly tin nhan
             string code = "";
             string content = "";
             int templateId = 0;
+            int indexM = 0;
+            int indexUsed = 0;
 
             switch (infoInput.type)
             {
@@ -373,7 +336,7 @@ namespace SHCServer.Controllers
                     break;
             }
 
-            if (infoInput.type != 3)
+            if (infoInput.type != 3 && string.IsNullOrEmpty(infoInput.content))
             {
                 var config = _context.Query<HealthFacilitiesConfigs>().Where(hp => hp.Code == code).FirstOrDefault();
                 templateId = config != null ? config.Values : 0;
@@ -390,21 +353,31 @@ namespace SHCServer.Controllers
 
             foreach (var m in infoInput.lstMedicalHealthcareHistories)
             {
+                indexM++;
+                if(indexM > packages[indexUsed].SmsPackageUsed.Quantityused)
+                {
+                    indexM = 0;
+                    indexUsed++;
+                }
+
                 SmsContent scontent = new SmsContent();
-                scontent.SmsBrand = packages[0].SmsBrand;
-                scontent.Message = RepalaceContentSms(content, m, packages[0].PackageName);
+                scontent.SmsBrand = packages[indexUsed].SmsBrand;
+                scontent.Message = RepalaceContentSms(content, m, packages[indexUsed].PackageName);
                 scontent.PhoneNumber = m.PhoneNumber;
 
                 scontent.HealthFacilitiesId = infoInput.healthFacilitiesId.Value;
                 scontent.SmsTemplateId = templateId;
-                scontent.SmsPackagesDistributeId = packages[0].Id;
+                scontent.SmsPackagesDistributeId = packages[indexUsed].Id;
+                scontent.SmsPackageUsedId = packages[indexUsed].SmsPackageUsed.SmsPackageUsedId;
+                scontent.PatientHistoriesId = m.PatientHistoriesId;
 
                 lstContent.Add(scontent);
             }
 
-            var Result = Utils.SendListSMS(lstContent, infoInput.type);
+            var sendSMS = Utils.SendListSMS(lstContent, infoInput.type);
+            var infoSms = SMS.SaveInfoSMS(_connectionString, sendSMS, infoInput.type);
 
-            return Json(new ActionResultDto { Result = Result });
+            return Json(new ActionResultDto { Result = infoSms });
         }
 
         public static string RepalaceContentSms(string content, MedicalHealthcareHistoriesViewModel mhh, string packageName)
@@ -424,11 +397,5 @@ namespace SHCServer.Controllers
 
             return _content;
         }
-    }
-
-    public class BrandForPackage
-    {
-        public int SmsPackageId { get; set; }
-        public int Quantity { get; set; }
     }
 }

@@ -39,7 +39,7 @@ namespace SHCServer.Models
 
             HealthFacilitiesId = obj.healthfacilitiesId;
             DoctorId = obj.doctorId;
-            ExaminationDate = obj.examinationDate;
+            ExaminationDate = DateTime.Parse(obj.examinationDate);
             ExaminationTime = obj.examinationTime;
             ExaminationWorkingTime = obj.examinationWorkingTime;
             TimeSlotId = obj.timeSlotId;
