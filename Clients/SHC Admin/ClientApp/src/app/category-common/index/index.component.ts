@@ -5,7 +5,7 @@ import { MAT_DIALOG_DATA, MatButton, MatDialog, MatDialogRef, MatSort } from '@a
 import { Subject, merge, of } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { compact, isEmpty, omitBy, zipObject } from 'lodash';
-
+import * as _ from 'lodash';
 import { DataService } from '@shared/service-proxies/service-data';
 import { ILanguage, IBookingTimeslots } from '@shared/Interfaces';
 import { PagedListingComponentBase } from '@shared/paged-listing-component-base';
@@ -28,8 +28,5 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
     this.dataService = this._dataService;
     this.dialogComponent = TaskComponent;
     this.frmSearch = this._formBuilder.group({ name: []});
-  }
-  Test($event){
-    console.log($event.value);
   }
 }

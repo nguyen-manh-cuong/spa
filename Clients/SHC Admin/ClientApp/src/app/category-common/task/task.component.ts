@@ -47,7 +47,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     this._context = {
       name: [this._obj.name, [Validators.required, validationRule.hasValue]],
       code: [this._obj.code, [Validators.required, validationRule.hasValue]],
-      isActive: [this._obj.isActive?this._obj.isActive:false]
+      isActive: [this._obj.isActive ? this._obj.isActive:true]
     };
 
     this._frm = this._formBuilder.group(this._context);
