@@ -29,4 +29,7 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
     this.dialogComponent = TaskComponent;
     this.frmSearch = this._formBuilder.group({ name: []});
   }
+  showDeleteMessage() {
+    swal(this.l('ErrorDelete'),this.l('ErrorCategoryCommonDeleted',''),'error');
+  }
 }

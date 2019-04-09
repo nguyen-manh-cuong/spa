@@ -22,7 +22,7 @@
                 <div class="col-md-6 fadeIn animated">
                     <mat-form-field appearance="outline" class="w-100">
                         <mat-label>{{l("CategoryCommonKeyword")}}</mat-label>
-                        <input formControlName="name" matInput maxlength="500">
+                        <input formControlName="name" matInput maxlength="255">
                     </mat-form-field>
                 </div>
                 <div class="col-md-3 text-center d-flex align-self-center fadeIn animated">
@@ -63,7 +63,7 @@
                             <button mat-icon-button (click)="openDialog(element)">
                                 <mat-icon class="text-muted f-18">edit</mat-icon>
                             </button>
-                            <button mat-icon-button (click)="deleteDialog(element, 'name')">
+                            <button mat-icon-button (click)="element.isActive? showDeleteMessage() :deleteDialog(element, 'name')">
                                 <mat-icon class="text-danger f-18">delete</mat-icon>
                             </button>
                         </div>

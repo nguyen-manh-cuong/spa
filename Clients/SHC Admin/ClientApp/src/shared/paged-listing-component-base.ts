@@ -131,16 +131,11 @@ export abstract class PagedListingComponentBase<EntityDto> extends AppComponentB
             buttonsStyling: false
         }).then((result) => {
             if (result.value) {
-                if (obj['isActive'] == true) {
-                    swal(this.l('ErrorDelete'),this.l('ErrorCategoryCommonDeleted',obj[key]),'error');
-                }
-                else {
-                    this.dataService.delete(this.api, obj[id ? id : 'id']).subscribe(() => {
-                        swal(this.l('SuccessfullyDeleted'), this.l('DeletedInSystem', obj[key]), 'success');
-                        this.paginator.pageIndex = 0;
-                        this.paginator._changePageSize(this.paginator.pageSize);
-                    });
-                }
+                this.dataService.delete(this.api, obj[id ? id : 'id']).subscribe(() => {
+                    swal(this.l('SuccessfullyDeleted'), this.l('DeletedInSystem', obj[key]), 'success');
+                    this.paginator.pageIndex = 0;
+                    this.paginator._changePageSize(this.paginator.pageSize);
+                });
             }
         });
     }
