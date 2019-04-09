@@ -2,12 +2,11 @@ import * as _ from 'lodash';
 
 import { Component, Inject, Injector, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ISmsTemplate, IMedicalHealthcareHistories } from '@shared/Interfaces';
+import { ISmsTemplate } from '@shared/Interfaces';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { AppComponentBase } from '@shared/app-component-base';
 import { DataService } from '@shared/service-proxies/service-data';
 import swal from 'sweetalert2';
-import { SelectionModel } from '@angular/cdk/collections';
 
 
 @Component({
@@ -21,15 +20,14 @@ export class TaskComponent extends AppComponentBase implements OnInit {
   _templates: Array<ISmsTemplate> = [];
   _template: ISmsTemplate;
   _context: any;
-
-  selection = new SelectionModel<IMedicalHealthcareHistories>(true, []);
+  _data: {selection: any, type: number};
   dataService: DataService;
 
-  constructor(injector: Injector, private _dataService: DataService, private _formBuilder: FormBuilder, public dialogRef: MatDialogRef<TaskComponent>, @Inject(MAT_DIALOG_DATA) public _selection) { super(injector); }
+  constructor(injector: Injector, private _dataService: DataService, private _formBuilder: FormBuilder, public dialogRef: MatDialogRef<TaskComponent>, @Inject(MAT_DIALOG_DATA) public data) { super(injector); }
 
   ngOnInit() {
     this.dataService = this._dataService;
-    this.selection =  _.clone(this._selection);
+    this._data =  _.clone(this.data);
     this._context = {
       smsTemplate: [this._smstemplates.smsTemplateName, Validators.required],
       smsContent:[this._smstemplates.smsContent],
@@ -44,13 +42,13 @@ export class TaskComponent extends AppComponentBase implements OnInit {
   }
  
   sendSms(){
-    if(this.selection.selected.length){
+    if(this.data && this.data.selection && this.data.selection.selected.length){
         this._dataService.create('infosms', {
-          lstMedicalHealthcareHistories: this.selection.selected, 
+          lstMedicalHealthcareHistories: this.data.selection.selected, 
           healthFacilitiesId: this.appSession.user.healthFacilitiesId,  
           smsTemplateId: this._template.id,
           content: this._frm.controls['smsContent'].value,
-          type: 3, 
+          type: this.data.type, 
         }).subscribe(resp => {
           this.dialogRef.close()  
           swal('Thông báo', resp, 'error');

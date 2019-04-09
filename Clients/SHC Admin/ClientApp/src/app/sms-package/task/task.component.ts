@@ -83,8 +83,8 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
 
     ngAfterViewInit(): void {
         setTimeout(() => {
-            this._package.distribute == 0 && this._isNew == false ? this.txtName.focus() : '';
-        }, 500);
+            this._package.distribute == 0 || this._isNew == true ? this.txtName.focus() : '';
+        }, 1000);
     }
 
     deleteDetail(index: number, indexControl: number) {
@@ -127,6 +127,8 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     }
 
     addDetail() {
+        if( (this._frm.controls['cost'].value && this._frm.controls['cost'].value > 2000000000) || (this._frm.controls['quantity'].value && this._frm.controls['quantity'].value > 2000000000) ) return swal('Thông báo', 'Thành tiền hoặc số tin nhắn tối đa là 2000000000', 'warning');
+
         var length: number = this._details.length;
         var smsTo: number = length == 0 ? Number(this._frm.value.smsTo) + 1 : Number(this._details[length - 1].smsTo) + 1;
 
@@ -140,6 +142,10 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
 
         this._frm.controls[this._smsFrom + length].setValue(smsTo);
         this._details.push({ smsFrom: smsTo, smsTo: undefined, cost: undefined, index: length });
+
+        setTimeout(() => {
+            $("#smsTo" + length).focus();
+        }, 500);
     }
 
     checkPackageDetail() {
@@ -196,6 +202,8 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     }
 
     submit() {
+        if( (this._frm.controls['cost'].value && this._frm.controls['cost'].value > 2000000000) || (this._frm.controls['quantity'].value && this._frm.controls['quantity'].value > 2000000000) ) return swal('Thông báo', 'Thành tiền hoặc số tin nhắn tối đa là 2000000000', 'warning');
+
         var params = _.pick(this._frm.value, ['id', 'name', 'description', 'cost', 'quantity', 'status', 'details', 'userId']);
         var detail: Array<IPackageDetail> = [{
             smsFrom: this._frm.value.smsFrom,

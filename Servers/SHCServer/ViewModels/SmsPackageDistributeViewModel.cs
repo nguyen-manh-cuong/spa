@@ -51,6 +51,13 @@ namespace SHCServer.ViewModels
                         .Where((d, b) => d.Id == PackagesDistribute.Id)
                         .Select((d, b) => b).FirstOrDefault();
 
+            SmsPackageUsed = context.JoinQuery<SmsPackagesDistribute, SmsPackageUsed>((d, u) => new object[]
+                       {
+                            JoinType.InnerJoin, d.SmsPackageId == u.SmsPackageId && d.HealthFacilitiesId == u.HealthFacilitiesId
+                       })
+                        .Where((d, u) => d.Id == PackagesDistribute.Id)
+                        .Select((d, u) => u).FirstOrDefault();
+
             PackageName = Packages.Name;
             Quantity = Packages.Quantity;
             Cost = Packages.Cost;
@@ -62,16 +69,18 @@ namespace SHCServer.ViewModels
 
         public string Locality { set; get; }
 
-        public int Quantity { get; set; }
+        public long Quantity { get; set; }
 
         public string PackageName { get; set; }
 
-        public int Cost { get; set; }
+        public long Cost { get; set; }
 
         public string HealthFacilitiesName { get; set; }
 
         public SmsBrands SmsBrand { get; set; }
-        
+
+        public SmsPackageUsed SmsPackageUsed { get; set; }
+
         public string SmsBrandsName { get; set; }
     }
 
