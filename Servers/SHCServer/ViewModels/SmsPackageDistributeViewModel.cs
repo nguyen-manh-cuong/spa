@@ -69,11 +69,11 @@ namespace SHCServer.ViewModels
 
         public string Locality { set; get; }
 
-        public int Quantity { get; set; }
+        public long Quantity { get; set; }
 
         public string PackageName { get; set; }
 
-        public int Cost { get; set; }
+        public long Cost { get; set; }
 
         public string HealthFacilitiesName { get; set; }
 

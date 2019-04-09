@@ -78,7 +78,7 @@
                             <div class="col-md-3">
                                 <mat-form-field appearance="outline" class="w-100">
                                     <mat-label>{{l('PackageSmsTo')}}</mat-label>
-                                    <input type="text" mask="dot_separator" formControlName="{{_smsTo + item.index}}"
+                                    <input type="text" id="{{_smsTo + item.index}}" mask="dot_separator" formControlName="{{_smsTo + item.index}}"
                                         matInput [required]="true" (keyup)="getValue($event.target.value, i, 1)"
                                         (input)="inputOnlyNumber($event)" maxlength="11">
                                     <validation matSuffix [control]="_frm.controls[_smsTo + item.index]"></validation>

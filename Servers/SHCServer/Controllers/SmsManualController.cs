@@ -309,7 +309,7 @@ namespace SHCServer.Controllers
             var packages = _context.Query<SmsPackagesDistribute>().Where(pd => pd.HealthFacilitiesId == infoInput.healthFacilitiesId && pd.Year >= DateTime.Now.Year && pd.MonthEnd >= DateTime.Now.Month && pd.IsDelete == 0 && pd.Status == 1).Select(u => new PackageDistributeViewModel(u, _connectionString)).ToList();
             if (packages.Count == 0) return StatusCode(422, _excep.Throw("Không thể gửi tin do số lượng tin nhắn vượt quá gói SMS hiện tại. Mời bạn mua thêm gói SMS"));
             
-            int totalSms = 0;
+            long totalSms = 0;
             int totalSmsSend = infoInput.lstMedicalHealthcareHistories.Count;
 
             foreach (var s in packages)
