@@ -58,6 +58,16 @@ export interface IBookingTimeslots {
     code: string;
     name: string;
     healthFacilitiesId: number;
+export interface IBookingTimeslots {
+    timeSlotId: number;
+    hoursStart: string;
+    minuteStart: string;
+    hoursEnd: string;
+    minuteEnd: string;
+    code: string;
+    name: string;
+    healthFacilitiesId: number;
+    isActive: boolean;
 }
 
 export interface IPackage {

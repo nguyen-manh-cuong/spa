@@ -8,6 +8,8 @@ import { NgModule } from '@angular/core';
 import { SharedModule } from '@shared/shared.module';
 import { TaskComponent } from './task/task.component';
 import { UtilsModule } from '@shared/utils/utils.module';
+import { ValidationModule } from '@app/validation/validation.module';
+import { NgxMaskModule} from 'ngx-mask';
 
 @NgModule({
   imports: [
@@ -16,7 +18,9 @@ import { UtilsModule } from '@shared/utils/utils.module';
     ReactiveFormsModule,
     SharedModule,
     UtilsModule,
-    TimeslotsRoutingModule
+    TimeslotsRoutingModule,
+    ValidationModule,
+    NgxMaskModule.forRoot()
   ],
   declarations: [TimeslotsComponent, IndexComponent, TaskComponent],
   entryComponents: [TaskComponent]
