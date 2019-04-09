@@ -33,9 +33,9 @@ namespace SHCServer.Controllers
                     if (string.IsNullOrEmpty(value))
                         continue;
                     if (string.Equals(key, "name"))
-                        objs = objs.Where(o => o.Name.Contains(value));
+                        objs = objs.Where(o => o.Name.Contains(value.Trim()));
                     if (string.Equals(key, "id"))
-                        objs = objs.Where(o => o.Id.ToString().Contains(value));
+                        objs = objs.Where(o => o.Id.ToString().Contains(value.Trim()));
                 }
             }
 
