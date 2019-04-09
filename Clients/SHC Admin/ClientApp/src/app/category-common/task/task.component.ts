@@ -38,12 +38,11 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   ngOnInit() {
 
     const validationRule = new ValidationRule();
-    
     if (this.obj) {
       this._obj = _.clone(this.obj);
       this._isNew = false;
     }
-
+    
     this._context = {
       name: [this._obj.name, [Validators.required, validationRule.hasValue]],
       code: [this._obj.code, [Validators.required, validationRule.hasValue]],
@@ -51,7 +50,8 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     };
 
     this._frm = this._formBuilder.group(this._context);
-
+    if(this.obj)
+      this._frm.controls['isActive'].setValue(this._obj.isActive);
   }
 
   ngAfterViewInit(): void {

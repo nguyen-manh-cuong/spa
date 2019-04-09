@@ -24,15 +24,15 @@
                     <div class="col-md-6">
                         <div class="col-md-3"></div>
                         <div class="col-md-3">
-                            <mat-checkbox #catStatus formControlName="isActive" [checked]="isActive"
-                                [value]="catStatus.checked" color="primary">
+                            <mat-checkbox #catStatus formControlName="isActive" color="primary">
                                 {{l("CategoryCommonStatus")}}</mat-checkbox>
                         </div>
                     </div>
                 </div>
                 <div class="text-right mb-3"><button class="mr-3" mat-button
                         mat-dialog-close>{{l("Close")}}</button><button mat-raised-button color="primary"
-                        [disabled]="_frm.invalid" (click)="submit()">{{l("Save")}}</button></div>
+                        [disabled]="_frm.invalid" (click)="submit()">{{l("Save")}}</button>
+                </div>
             </div>
         </mat-tab>
     </mat-tab-group>
