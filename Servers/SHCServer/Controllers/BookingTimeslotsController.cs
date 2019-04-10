@@ -57,7 +57,7 @@ namespace SHCServer.Controllers
             }
             else
             {
-                objs = objs.OrderByDesc(b => b.Code).OrderByDesc(b => b.CreateDate);
+                objs = objs.OrderByDesc(b => b.CreateDate);
             }
 
             return Json(new ActionResultDto { Result = new { Items = objs.TakePage(skipCount == 0 ? 1 : skipCount + 1, maxResultCount).ToList(), TotalCount = objs.Count() } });
