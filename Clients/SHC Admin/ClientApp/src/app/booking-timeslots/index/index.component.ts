@@ -27,7 +27,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingTimeslots>
 
   constructor(injector: Injector, private _dataService: DataService, public dialog: MatDialog, private _formBuilder: FormBuilder) { super(injector); }
 
-  ngOnInit() {
+  ngOnInit() {   
     this.api = 'bookingtimeslots';
     this.dataService = this._dataService;
     this.dialogComponent = TaskComponent;  
@@ -38,7 +38,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingTimeslots>
 
     this.dataService.getAll('healthfacilities', (this.appSession.user.healthFacilitiesId ? String(this.appSession.user.healthFacilitiesId) : '')).subscribe(resp => 
     {
-      this._healthfacilities = resp.items;
+      this._healthfacilities = resp.items;      
     });
   }
   displayFn(h?: IHealthfacilities): string | undefined {
@@ -69,9 +69,18 @@ filterOptions() {
 }
 
 customSearch() {  
-  this.healthfacilities.value 
+  if(this.appSession.user.healthFacilitiesId != null){
+    console.log(11111)
+    this.healthfacilities.value 
+      ? this.frmSearch.controls['healthfacilities'].setValue(this.healthfacilities.value.healthFacilitiesId) 
+      : '';  
+  }
+  else{
+    console.log(22222)
+    this.healthfacilities.value 
       ? this.frmSearch.controls['healthfacilities'].setValue(this.healthfacilities.value.healthFacilitiesId) 
       : this.frmSearch.controls['healthfacilities'].setValue('');  
+  }
   this.btnSearchClicks$.next();
 }
 
