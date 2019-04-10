@@ -6,24 +6,24 @@
       </ng-template>
       <div class="pt-4">
         <div class="row">
-          <div class="col-md-6 pr-5--md">
+          <div class="col-md-6">
             <mat-form-field appearance="outline" class="w-100" autofocus>
-              <mat-label>{{l("BookingTimeslotsCode")}}</mat-label>
+              <mat-label>{{l("Mã khung giờ")}}</mat-label>
               <input formControlName="code" matInput mask="A*" [required]="true" [readonly]="!_isNew"  maxlength="255">              
               <validation matSuffix [control]="_frm.controls['code']"></validation>
             </mat-form-field>
           </div>
-          <div class="col-md-6 pl-5--md">
+          <div class="col-md-6">
             <mat-form-field appearance="outline" class="w-100">
-              <mat-label>{{l("BookingTimeslotsName")}}</mat-label>
+              <mat-label>{{l("Tên khung giờ")}}</mat-label>
               <input #txtName="matInput" formControlName="name" matInput [required]="true"  maxlength="255">
               <validation matSuffix [control]="_frm.controls['name']"></validation>
             </mat-form-field>
           </div>          
         </div>
         <div class="row">
-          <div class="col-md-2 mt-3 pr-0">{{l("BookingTimeslotsHoursStart")}}</div>
-          <div class="col-md-2 pl-0 pr-5--md">
+          <div class="col-md-2 mt-3">{{l("Từ giờ")}}</div>
+          <div class="col-md-2">
             <mat-form-field  appearance="outline" class="w-100">
               <mat-select formControlName="hoursStart">
                 <mat-option *ngFor="let h of _hours" [value]="h">
@@ -32,15 +32,15 @@
               </mat-select>
             </mat-form-field>
           </div>
-          <div class="col-md-2 pl-5--md">
+          <div class="col-md-2">
             <mat-form-field  appearance="outline" class="w-100">
               <mat-select formControlName="minuteStart">
                 <mat-option *ngFor="let m of _minute" [value]="m">{{m}}</mat-option>                
               </mat-select>
             </mat-form-field>
           </div>
-          <div class="col-md-2 mt-3 pr-0">{{l("BookingTimeslotsHoursEnd")}}</div>
-          <div class="col-md-2 pl-0 pr-5--md">
+          <div class="col-md-2 mt-3">{{l("Đến giờ")}}</div>
+          <div class="col-md-2">
             <mat-form-field  appearance="outline" class="w-100">
               <mat-select formControlName="hoursEnd">
                   <mat-option *ngFor="let h of _hours" [value]="h">
@@ -49,7 +49,7 @@
               </mat-select>
             </mat-form-field>
           </div>
-          <div class="col-md-2 pl-5--md">
+          <div class="col-md-2">
             <mat-form-field  appearance="outline" class="w-100">
               <mat-select formControlName="minuteEnd">
                   <mat-option *ngFor="let m of _minute" [value]="m">{{m}}</mat-option>
@@ -57,7 +57,7 @@
             </mat-form-field>
           </div>
           <section class="col-md-12 m-b-20">
-              <mat-checkbox formControlName="isActive">{{l('BookingTimeslotsIsActive')}}</mat-checkbox>
+              <mat-checkbox formControlName="isActive">{{l('Hoạt động')}}</mat-checkbox>
           </section><br>
         </div>
         <div class="text-right mb-3"><button class="mr-3" mat-button mat-dialog-close>{{l("Close")}}</button><button mat-raised-button color="primary" [disabled]="_frm.invalid" (click)="submit()">{{l("Save")}}</button></div>

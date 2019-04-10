@@ -12,11 +12,6 @@ import { PagedListingComponentBase } from '@shared/paged-listing-component-base'
 import { TaskComponent } from '../task/task.component';
 import swal from 'sweetalert2';
 
-export class EntityDto {
-  id: number;
-  isActive:boolean;
-}
-
 @Component({
   selector: 'app-index',
   templateUrl: './index.component.html',
@@ -55,21 +50,8 @@ export class IndexComponent extends PagedListingComponentBase<IBookingTimeslots>
     return this._healthfacilities.filter(h => h.name.toLowerCase().indexOf(filterValue) === 0);
 }
 
-showMess(obj: EntityDto, key: string, id?: number | string){
-  swal({    
-    title: this.l('AreYouSure'),
-    type: 'warning',
-    showCancelButton: true,
-    confirmButtonClass: 'mat-raised-button mat-primary bg-danger',
-    cancelButtonClass: 'mat-button',
-    confirmButtonText: this.l('YesDelete'),
-    cancelButtonText: this.l('Cancel'),
-    buttonsStyling: false
-}).then((result) => {
-  if (result.value) {
-      swal(this.l('Xóa khung giờ khám không thành công. Không thể xóa khung giờ khám đang hoạt động'), '', 'error');
-  }
-});  
+showMess(){
+  swal(this.l('Xóa khung giờ khám không thành công. Không thể xóa khung giờ khám đang hoạt động'), '', 'error');
 }
 
   clickCbo() {    
@@ -88,20 +70,18 @@ filterOptions() {
 
 customSearch() {  
   if(this.appSession.user.healthFacilitiesId != null){
+    console.log(11111)
     this.healthfacilities.value 
       ? this.frmSearch.controls['healthfacilities'].setValue(this.healthfacilities.value.healthFacilitiesId) 
       : '';  
   }
   else{
+    console.log(22222)
     this.healthfacilities.value 
       ? this.frmSearch.controls['healthfacilities'].setValue(this.healthfacilities.value.healthFacilitiesId) 
       : this.frmSearch.controls['healthfacilities'].setValue('');  
   }
   this.btnSearchClicks$.next();
-}
-
-showNotify(obj: EntityDto, key: string, id?: number | string) {
-  swal(this.l('Không thể xóa khung giờ khám đang hoạt động'), '', 'error');
 }
 
 onChangeHealthfacilities() {
