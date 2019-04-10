@@ -109,8 +109,8 @@ namespace SHCServer.Controllers
                                          new MenuItem {Name = "SmsManual", Icon = "", Route = "/app/sms-manual"},
                                          new MenuItem {Name = "SmsLog", Icon = "", Route = "/app/sms-log"}
                                     }},
-                                    new MenuItem {Name = "Danh mục khung giờ khám", Icon = "g_translate", Route = "/app/timeslots"},
-                                    new MenuItem{Name = "CategoryCommon", Icon="home", Route="/app/category-common"}
+                                    new MenuItem {Name = "Danh mục khung giờ khám", Icon = "av_timer", Route = "/app/timeslots"},
+                                    new MenuItem{Name = "CategoryCommon", Icon="account_circle", Route="/app/category-common"}
                                 } 
                             }
                         }

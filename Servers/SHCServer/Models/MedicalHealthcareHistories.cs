@@ -23,7 +23,7 @@ namespace SHCServer.Models
         public DateTime? ReExaminationDate { set; get; }
         public DateTime CreateDate { set; get; }
         public DateTime BirthDay { set; get; }
-        public int IsReExamination { set; get; }
-        public int IsBirthDay { set; get; }
+        public bool IsReExamination { set; get; }
+        public bool IsBirthDay { set; get; }
     }
 }

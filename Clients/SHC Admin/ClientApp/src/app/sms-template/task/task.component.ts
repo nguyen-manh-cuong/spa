@@ -22,7 +22,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   api: string = 'sms-templates';
 
   _frm: FormGroup;
-  _smstemplates: ISmsTemplate | any = { smsTemplateName: '', messageType: '',messageContent:'',status:'',applyAllSystem:'' };
+  _smstemplates: ISmsTemplate | any = { smsTemplateName: '', messageType: '',messageContent:'',isActive:'',applyAllSystem:'' };
   _users: Array<IUser> = [];
   _selection = new SelectionModel<IUser>(true, []);
   _context: any;
@@ -39,7 +39,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
 
     this.dataService = this._dataService;
     this.dataService.getAll('categorycommon', 'LOAITINNHAN').subscribe(resp => this._messageType = resp.items);
-    this._smstemplates.status = true;
+    this._smstemplates.isActive = true;
     this._smstemplates.applyAllSystem = true;
 
     if (this.smstemplate) {
@@ -50,14 +50,13 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     this._context = {
       smsTemplateName: [this._smstemplates.smsTemplateName, [Validators.required, validationRule.hasValue]],
       messageType: [this._smstemplates.messageType, ],
-      smsContent:[this._smstemplates.smsContent, [Validators.required, validationRule.hasValue]],
-      status:[this._smstemplates.status],
-      applyAllSystem:[this._smstemplates.applyAllSystem],
+      smsContent: [this._smstemplates.smsContent, [Validators.required, validationRule.hasValue]],
+      isActive: [this._smstemplates.isActive],
+      applyAllSystem: [this._smstemplates.applyAllSystem],
       organizationName: [this._smstemplates.organizationName],
       healthFacilitiesId: [],
       userId: []
     };
-    console.log(this._context);
     this._frm = this._formBuilder.group(this._context);
   }
 

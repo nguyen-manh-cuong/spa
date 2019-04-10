@@ -19,7 +19,7 @@ namespace SHCServer.Models
             SmsTemplateName = sms.SmsTemplateName;
             MessageType = sms.MessageType;
             SmsContent = sms.SmsContent;
-            Status = sms.Status;
+            IsActive = sms.IsActive;
             ApplyAllSystem = sms.ApplyAllSystem;
             IsDelete = sms.IsDelete;
             CreateUserId = sms.UserId;
@@ -43,7 +43,7 @@ namespace SHCServer.Models
 
         public string SmsContent { set; get; }
 
-        public bool? Status { set; get; }
+        public bool? IsActive { set; get; }
 
         public bool? ApplyAllSystem { set; get; }
 

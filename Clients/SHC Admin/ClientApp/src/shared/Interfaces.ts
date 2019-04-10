@@ -67,7 +67,7 @@ export interface IPackage {
     description: string;
     cost: number;
     quantity: number;
-    status: number;
+    isActive: number;
 
     details: Array<IPackageDetail>;
 }

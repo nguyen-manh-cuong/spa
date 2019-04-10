@@ -22,7 +22,7 @@ export class packagedistributeTaskComponent extends AppComponentBase implements 
   api: string = 'smspackagedistribute';
 
   _frmpackagedistribute: FormGroup;
-  _obj: IPachkageDistribute | any = { smsBrandsId: '', healthFacilitiesId: '', monthStart: '', monthEnd: '', year: '', smsPackageId: '', status: false };
+  _obj: IPachkageDistribute | any = { smsBrandsId: '', healthFacilitiesId: '', monthStart: '', monthEnd: '', year: '', smsPackageId: '', isActive: false };
   _context: any;
   _isNew: boolean = true;
   _month = [{ id: 1, name: 'Tháng 1' }, { id: 2, name: 'Tháng 2' }, { id: 3, name: 'Tháng 3' }, { id: 4, name: 'Tháng 4' }, { id: 5, name: 'Tháng 5' }, { id: 6, name: 'Tháng 6' },
@@ -52,7 +52,7 @@ export class packagedistributeTaskComponent extends AppComponentBase implements 
       this._obj.monthStart = Number(this.datePipe.transform(Date.now(), "M"));
       this._obj.monthEnd = Number(this.datePipe.transform(Date.now(), "M"));
       this._obj.year = Number(this.datePipe.transform(Date.now(), "yyyy"));
-      this._obj.status = true;
+      this._obj.isActive = true;
     }
 
     this._dataService.getAll('smsbrands-all').subscribe(resp => this._brands = resp.items);
@@ -65,14 +65,13 @@ export class packagedistributeTaskComponent extends AppComponentBase implements 
       monthEnd: [this._obj.monthEnd, ],
       year: [this._obj.year, [Validators.maxLength(4), Validators.pattern('[0-9]*')]],
       smsPackageId: [this._obj.smsPackageId, Validators.required],
-      status: [this._obj.status],
+      isActive: [this._obj.isActive],
       userId: []
     };
     this._frmpackagedistribute = this._formBuilder.group(this._context);
   }
 
   submit() {
-    this._frmpackagedistribute.value.status = this._frmpackagedistribute.value.status == true ? 1 : 0;
     this._frmpackagedistribute.value.userId = this.appSession.userId;
 
     if (this._isNew) {

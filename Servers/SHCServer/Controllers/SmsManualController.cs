@@ -192,9 +192,9 @@ namespace SHCServer.Controllers
                     HealthInsuranceNumber = reader["HealthInsuranceNumber"].ToString(),
                     DoctorId = Convert.ToInt32(reader["DoctorId"]),
                     PatientId = Convert.ToInt32(reader["PatientId"]),
-                    ReExaminationDate = Convert.ToDateTime(reader["ReExaminationDate"]),
-                    IsReExamination = reader["IsReExamination"] != DBNull.Value ? Convert.ToInt32(reader["IsReExamination"]) : 0,
-                    IsBirthDay = reader["IsBirthDay"] != DBNull.Value ? Convert.ToInt32(reader["IsBirthDay"]) : 0,
+                    ReExaminationDate = reader["ReExaminationDate"] != DBNull.Value ? Convert.ToDateTime(reader["ReExaminationDate"]) : DateTime.Now,
+                    IsReExamination = reader["IsReExamination"] != DBNull.Value ? Convert.ToBoolean(reader["IsReExamination"]) : false,
+                    IsBirthDay = reader["IsBirthDay"] != DBNull.Value ? Convert.ToBoolean(reader["IsBirthDay"]) : false,
 
                     //Patient
                     Code = reader["Code"].ToString(),
@@ -306,7 +306,7 @@ namespace SHCServer.Controllers
         public IActionResult InfoSms([FromBody] SmsInfoInputViewModel infoInput)
         {
             //danh sach goi sms su dung
-            var packages = _context.Query<SmsPackagesDistribute>().Where(pd => pd.HealthFacilitiesId == infoInput.healthFacilitiesId && pd.Year >= DateTime.Now.Year && pd.MonthEnd >= DateTime.Now.Month && pd.IsDelete == 0 && pd.Status == 1).Select(u => new PackageDistributeViewModel(u, _connectionString)).ToList();
+            var packages = _context.Query<SmsPackagesDistribute>().Where(pd => pd.HealthFacilitiesId == infoInput.healthFacilitiesId && pd.Year >= DateTime.Now.Year && pd.MonthEnd >= DateTime.Now.Month && pd.IsDelete == true && pd.IsActive == true).Select(u => new PackageDistributeViewModel(u, _connectionString)).ToList();
             if (packages.Count == 0) return StatusCode(422, _excep.Throw("Không thể gửi tin do số lượng tin nhắn vượt quá gói SMS hiện tại. Mời bạn mua thêm gói SMS"));
             
             long totalSms = 0;

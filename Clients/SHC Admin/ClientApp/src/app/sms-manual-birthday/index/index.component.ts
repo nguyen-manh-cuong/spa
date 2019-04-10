@@ -185,7 +185,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
             return swal('Thông báo', 'Từ ngày không đúng định dạng', 'warning');
         }
 
-        this.healthfacilities.value ? this.frmSearch.controls['healthfacilities'].setValue(this.healthfacilities.value.healthFacilitiesId) : '';
+        this.healthfacilities.value ? this.frmSearch.controls['healthfacilities'].setValue(this.healthfacilities.value.healthFacilitiesId) : (this.appSession.user.healthFacilitiesId == null ? this.frmSearch.controls['healthfacilities'].setValue(null) : '');
         this.birthdayFrom.nativeElement.value ? this.frmSearch.controls['birthdayFrom'].setValue(moment(this.birthdayFrom.nativeElement.value, 'DD/MM/YYYY').toDate()) : '';
         this.birthdayTo.nativeElement.value ? this.frmSearch.controls['birthdayTo'].setValue(moment(this.birthdayTo.nativeElement.value, 'DD/MM/YYYY').toDate()) : '';
         this.btnSearchClicks$.next();

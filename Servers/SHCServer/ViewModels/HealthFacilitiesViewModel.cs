@@ -49,7 +49,7 @@ namespace SHCServer.ViewModels
         public string SpecialistName { set; get; }
         public int? Specialist { set; get; }        
         public int totalDoctor { set; get; }
-        public int IsActive { set; get; }
-        public int IsDelete { set; get; }
+        public bool IsActive { set; get; }
+        public bool IsDelete { set; get; }
     }
 }

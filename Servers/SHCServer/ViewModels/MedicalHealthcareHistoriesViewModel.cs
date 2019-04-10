@@ -36,8 +36,8 @@ namespace SHCServer.ViewModels
         public int PatientId { set; get; }
         public DateTime? ReExaminationDate { get; set; }
         public Patient Patient { get; set; }
-        public int IsReExamination { set; get; }
-        public int IsBirthDay { set; get; }
+        public bool IsReExamination { set; get; }
+        public bool IsBirthDay { set; get; }
         //patient
         public string Code { set; get; }
         public string FullName { set; get; }

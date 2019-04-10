@@ -5,7 +5,6 @@ import { AppRouteGuard } from '@shared/auth/auth-route-guard';
 import { DashboardComponent } from '@app/dashboard/dashboard.component';
 import { NgModule } from '@angular/core';
 import { BookingComponent } from './booking/booking.component';
-import { BookingIPCCComponent } from './bookingIPCC/bookingIPCC.component';
 
 
 
@@ -24,13 +23,6 @@ import { BookingIPCCComponent } from './bookingIPCC/bookingIPCC.component';
                 component: AppComponent,
                 children: [
                     { path: '', component: BookingComponent }
-                ]
-            },
-            {
-                path: 'bookingIPCC',
-                component: AppComponent,
-                children: [
-                    { path: '', component: BookingIPCCComponent }
                 ]
             }
         ])

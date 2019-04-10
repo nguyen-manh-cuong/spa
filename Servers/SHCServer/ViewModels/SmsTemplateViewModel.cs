@@ -21,7 +21,7 @@ namespace SHCServer.ViewModels
             SmsTemplateName = obj.SmsTemplateName;
             MessageType = obj.MessageType;
             SmsContent = obj.SmsContent;
-            Status = obj.Status;
+            IsActive = obj.IsActive;
             ApplyAllSystem = obj.ApplyAllSystem;
             IsDelete = obj.IsDelete;
             CreateUserId = obj.CreateUserId;
@@ -46,7 +46,7 @@ namespace SHCServer.ViewModels
 
         public string SmsContent { set; get; }
 
-        public bool? Status { set; get; }
+        public bool? IsActive { set; get; }
 
         public bool? ApplyAllSystem { set; get; }
 
@@ -82,7 +82,7 @@ namespace SHCServer.ViewModels
 
         public string SmsContent { set; get; }
 
-        public bool? Status { set; get; }
+        public bool? IsActive { set; get; }
 
         public bool? ApplyAllSystem { set; get; }
 

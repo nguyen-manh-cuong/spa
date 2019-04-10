@@ -23,7 +23,7 @@ namespace SHCServer.ViewModels
             Description = obj.Description;
             Cost = obj.Cost;
             Quantity = obj.Quantity;
-            Status = obj.Status;
+            IsActive = obj.IsActive;
 
             Details = context.JoinQuery<SmsPackage, SmsPackageDetail>((package, pd) => new object[] { JoinType.InnerJoin, package.Id == pd.SmsPackageId })
                              .Where((p, pd) => p.Id == obj.Id)
@@ -43,7 +43,7 @@ namespace SHCServer.ViewModels
 
         public long Quantity { set; get; }
 
-        public int? Status { set; get; }
+        public bool? IsActive { set; get; }
 
         public IList<SmsPackageDetailViewModel> Details { get; set; }
 
@@ -62,7 +62,7 @@ namespace SHCServer.ViewModels
 
         public long Quantity { set; get; }
 
-        public int? Status { set; get; }
+        public bool? IsActive { set; get; }
 
         public int? UserId { set; get; }
 

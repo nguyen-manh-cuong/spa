@@ -20,7 +20,7 @@ namespace SHCServer.Models
             Description = packages.Description;
             Quantity = packages.Quantity;
             Cost = packages.Cost;
-            Status = packages.Status;
+            IsActive = packages.IsActive;
             CreateDate = DateTime.Now;
             CreateUserId = packages.UserId;
         }
@@ -32,8 +32,8 @@ namespace SHCServer.Models
         public string Description { get; set; }
         public long Quantity { get; set; }
         public long Cost { get; set; }
-        public int? Status { get; set; }
-        public int IsDelete { get; set; }
+        public bool? IsActive { get; set; }
+        public bool IsDelete { get; set; }
 
         public DateTime? CreateDate { get; set; }
         public int? CreateUserId { get; set; }

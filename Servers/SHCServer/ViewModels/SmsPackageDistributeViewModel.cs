@@ -28,7 +28,7 @@ namespace SHCServer.ViewModels
             Year = PackagesDistribute.Year;
             MonthStart = PackagesDistribute.MonthStart;
             MonthEnd = PackagesDistribute.MonthEnd;
-            Status = PackagesDistribute.Status;
+            IsActive = PackagesDistribute.IsActive;
 
             var Packages = context.JoinQuery<SmsPackagesDistribute, SmsPackage>((d, p) => new object[]
                        {
@@ -93,7 +93,7 @@ namespace SHCServer.ViewModels
         public int MonthStart { get; set; }
         public int MonthEnd { get; set; }
         public int Year { get; set; }
-        public int Status { set; get; }
+        public bool IsActive { set; get; }
         public int UserId { set; get; }
 
         public static explicit operator int(PackageDistributeInputViewModelArray v)
@@ -111,7 +111,7 @@ namespace SHCServer.ViewModels
         public int MonthStart { get; set; }
         public int MonthEnd { get; set; }
         public int Year { get; set; }
-        public int Status { set; get; }
+        public bool IsActive { set; get; }
         public int UserId { set; get; }
 
         public static explicit operator int(PackageDistributeInputViewModel v)

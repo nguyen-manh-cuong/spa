@@ -21,7 +21,7 @@ export class packagedistributeEditComponent extends AppComponentBase implements 
   api: string = 'smspackagedistribute';
 
   _frmpackagedistributeedit: FormGroup;
-  _obj: IPachkageDistribute | any = { smsBrandsId: '', healthFacilitiesId: '', monthStart: '', monthEnd: '', year: '', smsPackageId: '', status: false };
+  _obj: IPachkageDistribute | any = { smsBrandsId: '', healthFacilitiesId: '', monthStart: '', monthEnd: '', year: '', smsPackageId: '', isActive: false };
   _context: any;
   _isNew: boolean = true;
   _month = [{ id: 1, name: 'Tháng 1' }, { id: 2, name: 'Tháng 2' }, { id: 3, name: 'Tháng 3' }, { id: 4, name: 'Tháng 4' }, { id: 5, name: 'Tháng 5' }, { id: 6, name: 'Tháng 6' },
@@ -56,14 +56,13 @@ export class packagedistributeEditComponent extends AppComponentBase implements 
       monthEnd: [this._obj.monthEnd, ],
       year: [this._obj.year, [Validators.maxLength(4), Validators.pattern('[0-9]*')]],
       smsPackageId: [this._obj.smsPackageId, Validators.required],
-      status: [this._obj.status],
+      isActive: [this._obj.isActive],
       userId: [],
     };
     this._frmpackagedistributeedit = this._formBuilder.group(this._context);
   }
 
   submit() {
-    this._frmpackagedistributeedit.value.status = this._frmpackagedistributeedit.value.status == true ? 1 : 0;
     this._frmpackagedistributeedit.value.month = this._frmpackagedistributeedit.value.month == null || this._frmpackagedistributeedit.value.month == "" ? 1 : this._frmpackagedistributeedit.value.month;
     this._frmpackagedistributeedit.value.userId = this.appSession.userId;
     

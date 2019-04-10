@@ -34,7 +34,7 @@ namespace SHCServer.Controllers
                                    sms.SmsTemplateName,
                                    sms.MessageType,
                                    sms.SmsContent,
-                                   sms.Status,
+                                   sms.IsActive,
                                    sms.OrganizationName,
                                    sms.ApplyAllSystem,
                                    sms.HealthFacilitiesId,
@@ -50,7 +50,7 @@ namespace SHCServer.Controllers
                         objs = objs.Where(o => o.SmsTemplateName.Contains(query) || o.SmsContent.Contains(query));
                     }
                     if (string.Equals(key, "healthFacilitiesId")) objs = objs.Where(o => o.HealthFacilitiesId == int.Parse(value) || o.ApplyAllSystem == true);
-                    if (string.Equals(key, "status") && value != "2") objs = objs.Where(o => o.Status == bool.Parse(value));
+                    if (string.Equals(key, "status") && value != "2") objs = objs.Where(o => o.IsActive == bool.Parse(value));
                 }
             }
 
@@ -98,7 +98,7 @@ namespace SHCServer.Controllers
                     SmsTemplateName = sms.SmsTemplateName,
                     MessageType = sms.MessageType,
                     SmsContent = sms.SmsContent,
-                    Status = sms.Status,
+                    IsActive = sms.IsActive,
                     ApplyAllSystem = sms.ApplyAllSystem,
 
                     UpdateDate = DateTime.Now,

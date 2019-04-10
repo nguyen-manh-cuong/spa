@@ -12,7 +12,6 @@ import { BookingComponent } from './booking/booking.component';
 import { SlickCarouselModule } from 'ngx-slick-carousel';
 import { ValidationModule } from '@app/validation/validation.module';
 import { NgxMaskModule } from 'ngx-mask';
-import { BookingIPCCComponent } from './bookingIPCC/bookingIPCC.component';
 import { NgxMyDatePickerModule } from 'ngx-mydatepicker';
 
 
@@ -33,6 +32,6 @@ import { NgxMyDatePickerModule } from 'ngx-mydatepicker';
         NgxMyDatePickerModule.forRoot() 
     ],
     providers: [{ provide: LOCALE_ID, useValue: 'vi' }],
-    declarations: [AppComponent, BookingComponent, BookingIPCCComponent ]
+    declarations: [AppComponent, BookingComponent ]
 })
 export class AppModule { }
