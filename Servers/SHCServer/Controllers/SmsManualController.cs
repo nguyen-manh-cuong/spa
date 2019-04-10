@@ -181,7 +181,7 @@ namespace SHCServer.Controllers
             param.Add(DbParam.Create("@resultCount", maxResultCount));
 
             var str = $"{query} {string.Join(" ", clause)}";
-            var reader = _context.Session.ExecuteReader(query + string.Join(" ", clause), param);
+            var reader = _context.Session.ExecuteReader($"{query} {string.Join(" ", clause)}", param);
 
             while (reader.Read())
             {
