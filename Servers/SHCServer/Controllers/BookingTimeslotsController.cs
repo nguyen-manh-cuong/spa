@@ -45,20 +45,19 @@ namespace SHCServer.Controllers
                 }
 
             }
-            if (sorting != null)
-            {
-                foreach (var (key, value) in JsonConvert.DeserializeObject<Dictionary<string, string>>(sorting))
-                {
-                    if (!Utils.PropertyExists<BookingTimeslots>(key))
-                        continue;
+            //if (sorting != null)
+            //{
+            //    foreach (var (key, value) in JsonConvert.DeserializeObject<Dictionary<string, string>>(sorting))
+            //    {
+            //        if (!Utils.PropertyExists<BookingTimeslots>(key))
+            //            continue;
 
-                    objs = value == "asc" ? objs.OrderBy(u => key) : objs.OrderByDesc(u => key);
-                }
-            }
-            else
-            {
+            //        objs = value == "asc" ? objs.OrderBy(u => key) : objs.OrderByDesc(u => key);
+            //    }
+            //}
+
                 objs = objs.OrderByDesc(b => b.CreateDate);
-            }
+
 
             return Json(new ActionResultDto { Result = new { Items = objs.TakePage(skipCount == 0 ? 1 : skipCount + 1, maxResultCount).ToList(), TotalCount = objs.Count() } });
         }

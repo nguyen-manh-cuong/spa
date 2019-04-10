@@ -67,7 +67,7 @@ showMess(obj: EntityDto, key: string, id?: number | string){
     buttonsStyling: false
 }).then((result) => {
   if (result.value) {
-      swal(this.l('Xóa khung giờ khám không thành công. Không thể xóa khung giờ khám đang hoạt động'), '', 'error');
+      swal(this.l('Xóa không thành công'), 'Không thể xóa khung giờ khám đang hoạt động!', 'error');
   }
 });  
 }
