@@ -37,11 +37,11 @@ namespace SHCServer.Controllers
                 foreach (var (key, value) in JsonConvert.DeserializeObject<Dictionary<string, string>>(filter))
                 {
                     if (string.Equals(key, "keyFilter") && !string.IsNullOrWhiteSpace(value))
-                        objs = objs.Where(o => o.Code.Contains(value.Trim()) || o.Name.Contains(value.Trim()));
+                        objs = objs.Where(b => b.Code.Contains(value.Trim()) || b.Name.Contains(value.Trim()));
                         
 
                     if (string.Equals(key, "healthfacilities") && !string.IsNullOrWhiteSpace(value))
-                        objs = objs.Where(o => o.HealthFacilitiesId.ToString() == value.Trim());
+                        objs = objs.Where(b => b.HealthFacilitiesId.ToString() == value.Trim() || b.HealthFacilitiesId == null);
                 }
 
             }
@@ -87,9 +87,12 @@ namespace SHCServer.Controllers
                         MinuteStart = obj.MinuteStart,
                         MinuteEnd = obj.MinuteEnd,
                         IsDelete = false,
+                        IsActive = obj.IsActive,
                         CreateUserId = obj.CreateUserId,
                         UpdateUserId = obj.UpdateUserId,
                         HealthFacilitiesId = obj.HealthFacilitiesId,
+                        UpdateDate = DateTime.Now,
+                        CreateDate = DateTime.Now
 
                     });
                 }

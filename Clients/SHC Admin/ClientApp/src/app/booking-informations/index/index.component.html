@@ -22,7 +22,7 @@
                 <div class="row">                    
                         <div class="col-md-6" [hidden]="this.appSession.user.healthFacilitiesId">
                                 <mat-form-field appearance="outline" class="w-100">
-                                    <mat-label>{{l('BookingTimeSlotsUnit')}}</mat-label>
+                                    <mat-label>{{l('Đơn vị')}}</mat-label>
                                     <input matInput [formControl]="healthfacilities" (click)="clickCbo()" [matAutocomplete]="auto" (change)="onChangeHealthfacilities()">
                                     <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" >
                                         <mat-option *ngFor="let o of filteredOptions | async" [value]="o">
@@ -40,14 +40,14 @@
                             </div>   
                             <div class="col-md-6">
                                     <mat-form-field appearance="outline" class="w-100">
-                                        <mat-label>{{l("BookingTimeSlotsUnitTimeslost")}}</mat-label>
+                                        <mat-label>{{l("Khung giờ")}}</mat-label>
                                         <input formControlName="keyFilter" matInput autocomplete maxlength="255">
                                     </mat-form-field>
                                 </div>    
                 </div>
             </div>
             <div class="col-md-2 text-center d-flex align-self-center">
-                <button #btnSearch mat-stroked-button (click)="customSearch()" color="primary" class="w-100 mb-4">
+                <button #btnSearch mat-stroked-button (click)="customSearch()" class="w-100 mb-4">
                     <mat-icon class="text-danger mr-2">search</mat-icon>{{l("Search")}}
                 </button>
             </div>
@@ -61,23 +61,23 @@
                 <td mat-cell *matCellDef="let element; let i = index;" class="min-w-30 text-center">{{(i + 1) + (paginator.pageIndex * paginator.pageSize)}}</td>
             </ng-container>
             <ng-container matColumnDef="code" sticky>
-                <th mat-header-cell *matHeaderCellDef class="text-center"> {{l("BookingTimeslotsCode")}} </th>
+                <th mat-header-cell *matHeaderCellDef class="text-center"> {{l("Mã khung giờ")}} </th>
                 <td mat-cell *matCellDef="let element"> <b>{{element.code}}</b> </td>
             </ng-container>
             <ng-container matColumnDef="name" sticky>
-                <th mat-header-cell *matHeaderCellDef class="text-center"> {{l("BookingTimeslotsName")}} </th>
+                <th mat-header-cell *matHeaderCellDef class="text-center"> {{l("Tên khung giờ")}} </th>
                 <td mat-cell *matCellDef="let element"> <b>{{element.name}}</b> </td>
             </ng-container>
             <ng-container matColumnDef="time" sticky>
-                <th mat-header-cell *matHeaderCellDef class="text-center"> {{l("BookingTimeslotsTime")}} </th>
-                <td mat-cell *matCellDef="let element" class="text-center"> <b>{{element.hoursStart + ':' + element.minuteStart + '-' + element.hoursEnd + ':' + element.minuteEnd}}</b> </td>
+                <th mat-header-cell *matHeaderCellDef class="text-center"> {{l("Thời gian")}} </th>
+                <td mat-cell *matCellDef="let element"> <b>{{element.hoursStart + ':' + element.minuteStart + '-' + element.hoursEnd + ':' + element.minuteEnd}}</b> </td>
             </ng-container>
             <ng-container matColumnDef="status">
-                <th mat-header-cell *matHeaderCellDef class="min-w-30 text-center"> {{l('BookingTimeslotsIsActive')}}</th>
+                <th mat-header-cell *matHeaderCellDef class="min-w-30 text-center"> {{l('Hoạt động')}}</th>
                 <td mat-cell *matCellDef="let element" class="min-w-30 text-center"><mat-icon *ngIf="element.isActive == 1">checked</mat-icon></td>
             </ng-container>
             <ng-container matColumnDef="task">
-                    <th mat-header-cell *matHeaderCellDef>{{l('BookingTimeslotsManipulation')}}</th>
+                    <th mat-header-cell *matHeaderCellDef></th>
                     <td mat-cell *matCellDef="let element" class="w-px-30 pr-0">
                         <div class="d-flex">
                             <button mat-icon-button (click)="openDialog(element)">
