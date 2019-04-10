@@ -96,7 +96,7 @@ export class ValidationRule {
     //Date valid
     dateInvalid(control: AbstractControl){
         if(control.value && !moment(control.value, 'DD/MM/YYYY').isValid()){
-            return {special: true};
+            return {compareDate: true};
         }
         return null;
     }

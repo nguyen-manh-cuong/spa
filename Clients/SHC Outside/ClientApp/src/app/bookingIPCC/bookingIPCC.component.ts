@@ -87,7 +87,7 @@ export class BookingIPCCComponent extends AppComponentBase implements OnInit {
         this.frmBooking.controls['provinceCodeExamination'].setValue(provinceCode[0].values);
         this.frmBooking.controls['districtCodeExamination'].setValue(districtCode[0].values);
       });
-    }, 500);
+    }, 1000);
     abp.ui.setBusy();
   }
 
@@ -147,6 +147,11 @@ export class BookingIPCCComponent extends AppComponentBase implements OnInit {
 
       if(check == 1)  return;
     }
+    if(moment(this.frmBooking.controls['examinationDate'].value + '23:59:59', 'DD/MM/YYYY hh:mm:ss').toDate() < new Date()){
+      this.frmBooking.controls['examinationDate'].setValue({compareDate : true});
+      this.validateAllFormFields(this.frmBooking, ['examinationDate']);
+      return;
+    } 
 
     var fromData = this.frmBooking.value;
     var examinationTime = fromData.examinationTime.substring(0, 2) + ':' + this.frmBooking.controls['examinationTime'].value.substring(2, 4);
@@ -155,7 +160,7 @@ export class BookingIPCCComponent extends AppComponentBase implements OnInit {
     fromData.ticketId = ticketId;
     fromData.examinationTime = examinationTime;
     fromData.examinationDate = moment(fromData.examinationDate, 'DD/MM/YYYY').toDate();
-    
+
     this._dataService.create('bookinginformations', _.pickBy(fromData, _.identity)).subscribe(
       () => {
         swal('Thông báo', 'Đặt khám thành công', 'success');
