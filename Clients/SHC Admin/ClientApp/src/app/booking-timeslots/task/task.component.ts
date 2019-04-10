@@ -96,23 +96,23 @@ export class TaskComponent extends AppComponentBase implements OnInit {
   }
 
   submit() {
-    
-      var start = this._frm.controls['hoursStart'].value.concat(this._frm.controls['minuteStart'].value);
-      var end = this._frm.controls['hoursEnd'].value.concat(this._frm.controls['minuteEnd'].value);
-      if(start > end){
-          swal(this.l('Thời gian kết thúc phải lớn hơn thời gian bắt đầu'), '', 'error');
-      }
-      else{
-        this._isNew ?
-        this._dataService.create(this.api, standardized(_.omit(Object.assign(this._frm.value), 'timeSlotId'), this.rules)).subscribe(e =>
-        { 
-          swal(this.l('SaveSuccess'), '', 'success');
-        }, err => {}) :
-        this._dataService.update(this.api, standardized(Object.assign(this._frm.value, this.obj.timeSlotId), this.rules)).subscribe(() => 
-        {
-          swal(this.l('SaveSuccess'), '', 'success');
-          this.dialogRef.close();
-        } , err => {});
-        }
+    var start = this._frm.controls['hoursStart'].value.concat(this._frm.controls['minuteStart'].value);
+    var end = this._frm.controls['hoursEnd'].value.concat(this._frm.controls['minuteEnd'].value);
+    if(start > end){
+        swal(this.l('Thời gian kết thúc phải lớn hơn thời gian bắt đầu'), '', 'error');
+    }
+    else{
+      this._isNew ?
+      this._dataService.create(this.api, standardized(_.omit(Object.assign(this._frm.value), 'timeSlotId'), this.rules)).subscribe(e =>
+      { 
+        swal(this.l('SaveSuccess'), '', 'success');
+        this.dialogRef.close();
+      }, err => {}) :
+      this._dataService.update(this.api, standardized(Object.assign(this._frm.value, this.obj.timeSlotId), this.rules)).subscribe(() => 
+      {
+        swal(this.l('SaveSuccess'), '', 'success');
+        this.dialogRef.close();
+      } , err => {});
+    }
   }
 }

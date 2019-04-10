@@ -21,7 +21,7 @@ namespace SHCServer.Models
         public string ProvinceCode { set; get; }
         public string Address { set; get; }
         public int? Specialist { set; get; }
-        public int IsActive { set; get; }
-        public int IsDelete { set; get; }
+        public bool IsActive { set; get; }
+        public bool IsDelete { set; get; }
     }
 }

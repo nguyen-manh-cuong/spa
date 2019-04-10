@@ -68,7 +68,7 @@ namespace SHCServer.Controllers
         [Route("api/healthfacilitiesbooking")]
         public IActionResult GetHealthfacilitiesBooking(string filter)
         {
-            var objs = _context.Query<HealthFacilities>().Where(o => o.IsDelete == 0 && o.IsActive == 1);
+            var objs = _context.Query<HealthFacilities>().Where(o => o.IsDelete == false && o.IsActive == true);
             FilterHealthFacilities filterHf = JsonConvert.DeserializeObject<FilterHealthFacilities>(filter);
 
             if (filterHf.districtCode != null) objs = objs.Where((o) => o.DistrictCode == filterHf.districtCode);
@@ -93,7 +93,7 @@ namespace SHCServer.Controllers
         #region distribute
         [HttpGet]
         [Route("api/smspackages-cbo")]
-        public IActionResult GetSmsPackages() => Json(new ActionResultDto { Result = new { Items = _context.Query<SmsPackage>().Where(o => o.IsDelete == 0 && o.Status == 1).OrderBy(o => o.Name).ToList() } });
+        public IActionResult GetSmsPackages() => Json(new ActionResultDto { Result = new { Items = _context.Query<SmsPackage>().Where(o => o.IsDelete == false && o.IsActive == true).OrderBy(o => o.Name).ToList() } });
         #endregion
 
         [HttpGet]
@@ -104,7 +104,7 @@ namespace SHCServer.Controllers
         [Route("api/smstemplates")]
         public IActionResult GetSmsTemplates(string filter)
         {
-            var objs = _context.Query<SmsTemplate>().Where(t => t.IsDelete == false && t.Status == true);
+            var objs = _context.Query<SmsTemplate>().Where(t => t.IsDelete == false && t.IsActive == true);
 
             if (!string.IsNullOrEmpty(filter)) objs = objs.Where(o => o.HealthFacilitiesId == int.Parse(filter) || o.ApplyAllSystem == true);
 

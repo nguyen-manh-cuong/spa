@@ -38,14 +38,14 @@ namespace SHCServer
                 {
                     _context.Update<MedicalHealthcareHistories>(m => m.PatientHistoriesId == resp.PatientHistoriesId, a => new MedicalHealthcareHistories
                     {
-                        IsReExamination = 1
+                        IsReExamination = true
                     });
                 }
                 else if (type == 2)
                 {
                     _context.Update<MedicalHealthcareHistories>(m => m.PatientHistoriesId == resp.PatientHistoriesId, a => new MedicalHealthcareHistories
                     {
-                        IsBirthDay = 1
+                        IsBirthDay = true
                     });
                 }
             }

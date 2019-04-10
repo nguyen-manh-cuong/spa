@@ -25,7 +25,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     _detailCost: string = 'cost';
 
     _frm: FormGroup;
-    _package: IPackage | any = { name: '', description: '', cost: '', quantity: '', status: '', smsFrom: '', smsTo: '', detailCost: '' };
+    _package: IPackage | any = { name: '', description: '', cost: '', quantity: '', isActive: '', smsFrom: '', smsTo: '', detailCost: '' };
     _context: any;
     _isNew: boolean = true;
     _details: Array<IPackageDetail> = [];
@@ -57,7 +57,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
             description: [this._package.description, [Validators.required, validationRule.hasValue]],
             cost: [this._package.cost],
             quantity: [this._package.quantity],
-            status: true,
+            isActive: true,
             smsFrom: 1,
             smsTo: [this._package.smsTo, [Validators.required, validationRule.hasValue, validationRule.hasSpecialCharacter, validationRule.compare('smsFrom', 'smsTo')]],
             detailCost: [this._package.detailCost, [Validators.required, validationRule.hasValue, validationRule.hasSpecialCharacter]]
@@ -69,7 +69,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
             this._frm.controls['smsFrom'].patchValue(this._details[0].smsFrom);
             this._frm.controls['smsTo'].patchValue(this._details[0].smsTo);
             this._frm.controls['detailCost'].patchValue(this._details[0].cost);
-            this.packageData.status == 0 ? this._frm.controls['status'].setValue(false) : "";
+            this.packageData.isActive == 0 ? this._frm.controls['isActive'].setValue(false) : "";
 
             this._details.splice(0, 1)
             this._details.forEach((el, i) => {
@@ -204,7 +204,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     submit() {
         if( (this._frm.controls['cost'].value && this._frm.controls['cost'].value > 2000000000) || (this._frm.controls['quantity'].value && this._frm.controls['quantity'].value > 2000000000) ) return swal('Thông báo', 'Thành tiền hoặc số tin nhắn tối đa là 2000000000', 'warning');
 
-        var params = _.pick(this._frm.value, ['id', 'name', 'description', 'cost', 'quantity', 'status', 'details', 'userId']);
+        var params = _.pick(this._frm.value, ['id', 'name', 'description', 'cost', 'quantity', 'isActive', 'details', 'userId']);
         var detail: Array<IPackageDetail> = [{
             smsFrom: this._frm.value.smsFrom,
             smsTo: Number(this._frm.value.smsTo),
@@ -213,7 +213,6 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
         }];
         params.name = _.trim(params.name);//temp
         params.details = this._details.concat(detail);
-        params.status = params.status == true ? 1 : 0;
         params.userId = this.appSession.userId;
         
         if (this.packageData) {

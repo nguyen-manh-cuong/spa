@@ -10,13 +10,13 @@ namespace SHCServer.Models
         {
         }
 
-        //public Language(LanguageInputViewModel obj)
-        //{
-        //    Key = obj.Key;
-        //    Page = obj.Page;
-        //    Vi = obj.Vi;
-        //    En = obj.En;
-        //}
+        public Language(LanguageInputViewModel obj)
+        {
+            Key = obj.Key;
+            Page = obj.Page;
+            Vi = obj.Vi;
+            En = obj.En;
+        }
 
         [Column(IsPrimaryKey = true)]
         [AutoIncrement]

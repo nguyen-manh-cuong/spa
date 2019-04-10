@@ -2,8 +2,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { CommonModule } from '@angular/common';
 import { IndexComponent } from './index/index.component';
-import { TimeslotsComponent } from './timeslots.component';
-import { TimeslotsRoutingModule } from './timeslots-routing.module';
+import { BookingTimeslotsComponent } from './booking-timeslots.component';
+import { BookingTimeslotsRoutingModule } from './booking-timeslots-routing.module';
 import { NgModule } from '@angular/core';
 import { SharedModule } from '@shared/shared.module';
 import { TaskComponent } from './task/task.component';
@@ -18,11 +18,11 @@ import { NgxMaskModule} from 'ngx-mask';
     ReactiveFormsModule,
     SharedModule,
     UtilsModule,
-    TimeslotsRoutingModule,
+    BookingTimeslotsRoutingModule,
     ValidationModule,
     NgxMaskModule.forRoot()
   ],
-  declarations: [TimeslotsComponent, IndexComponent, TaskComponent],
+  declarations: [BookingTimeslotsComponent, IndexComponent, TaskComponent],
   entryComponents: [TaskComponent]
 })
-export class TimeslotsModule { }
+export class BookingTimeslotsModule { }
