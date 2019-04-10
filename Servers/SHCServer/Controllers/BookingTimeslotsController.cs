@@ -95,7 +95,7 @@ namespace SHCServer.Controllers
                 }
                 else
                 {
-                    return StatusCode(400, _excep.Throw("Tạo khung giờ khám không thành công !", "Mã khung giờ khám đã tồn tại"));
+                    return StatusCode(422, _excep.Throw("Tạo khung giờ khám không thành công !", "Mã khung giờ khám đã tồn tại"));
                 }
                 _context.Session.CommitTransaction();
 
