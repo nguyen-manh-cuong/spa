@@ -37,11 +37,11 @@ namespace SHCServer.Controllers
                 foreach (var (key, value) in JsonConvert.DeserializeObject<Dictionary<string, string>>(filter))
                 {
                     if (string.Equals(key, "keyFilter") && !string.IsNullOrWhiteSpace(value))
-                        objs = objs.Where(o => o.Code == value || o.Name == value);
+                        objs = objs.Where(o => o.Code.Contains(value.Trim()) || o.Name.Contains(value.Trim()));
                         
 
                     if (string.Equals(key, "healthfacilities") && !string.IsNullOrWhiteSpace(value))
-                        objs = objs.Where(o => o.HealthFacilitiesId.ToString() == value);
+                        objs = objs.Where(o => o.HealthFacilitiesId.ToString() == value.Trim());
                 }
 
             }
@@ -54,6 +54,10 @@ namespace SHCServer.Controllers
 
                     objs = value == "asc" ? objs.OrderBy(u => key) : objs.OrderByDesc(u => key);
                 }
+            }
+            else
+            {
+                objs = objs.OrderByDesc(b => b.Code).OrderByDesc(b => b.CreateDate);
             }
 
             return Json(new ActionResultDto { Result = new { Items = objs.TakePage(skipCount == 0 ? 1 : skipCount + 1, maxResultCount).ToList(), TotalCount = objs.Count() } });
