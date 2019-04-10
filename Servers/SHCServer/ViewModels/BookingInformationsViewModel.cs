@@ -50,6 +50,7 @@ namespace SHCServer.ViewModels
         public string ticketId { set; get; }
         public int? timeSlotId { set; get; }       
         public string wardCode { set; get; }
+        public int? userId { set; get; }
 
         public static explicit operator int(BookingInformationsInputViewModel v)
         {
