@@ -20,14 +20,6 @@
         <div class="row m-0 pt-4">
             <div class="col-md-3">
                 <mat-form-field appearance="outline" class="w-100">
-                    <mat-label>{{l('PackageDistributeHealthFacilities')}}</mat-label>
-                    <mat-select formControlName="HealthFacilitiesId" multiple>
-                        <mat-option *ngFor="let o of _medicalFacility" [value]="o.healthFacilitiesId">{{ o.name }}</mat-option>
-                    </mat-select>
-                </mat-form-field>
-            </div>
-            <div class="col-md-3">
-                <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('PackageDistributeMonth')}}</mat-label>
                     <mat-select formControlName="monthStart">
                         <mat-option *ngFor="let o of _month" [value]="o.id">{{ o.name }}</mat-option>
@@ -42,10 +34,30 @@
                     </mat-select>
                 </mat-form-field>
             </div>
-            <div class="col-md-3">
+            <!-- <div class="col-md-3">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l("PackageDistributeYear")}}</mat-label>
                     <input mask="0*" maxlength="4" formControlName="year" matInput autocomplete>
+                </mat-form-field>
+            </div> -->
+            <div class="col-md-3">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>{{l("Từ năm")}}</mat-label>
+                    <input mask="0*" maxlength="4" formControlName="year" matInput autocomplete>
+                </mat-form-field>
+            </div>
+            <div class="col-md-3">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>{{l("Đến năm")}}</mat-label>
+                    <input mask="0*" maxlength="4" formControlName="year" matInput autocomplete>
+                </mat-form-field>
+            </div>
+            <div class="col-md-3">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>{{l('PackageDistributeHealthFacilities')}}</mat-label>
+                    <mat-select formControlName="HealthFacilitiesId" multiple>
+                        <mat-option *ngFor="let o of _medicalFacility" [value]="o.healthFacilitiesId">{{ o.name }}</mat-option>
+                    </mat-select>
                 </mat-form-field>
             </div>
             <div class="col-md-3">
@@ -72,8 +84,8 @@
             </ng-container>
             <ng-container matColumnDef="HealthFacilitiesId">
                 <th mat-header-cell *matHeaderCellDef class="text-center"> {{l("PackageDistributeNameHealthFacilities")}} </th>
-                <td mat-cell (click)="openView(element)" *matCellDef="let element" title="{{element.healthFacilitiesName}}">
-                    <u><b>{{element.healthFacilitiesName}}</b></u></td>
+                <td mat-cell (click)="openView(element)" *matCellDef="let element" title="{{element.HealthFacilitiesCode + '-' + element.healthFacilitiesName}}">
+                    <u><b>{{element.healthFacilitiesCode + '-' + element.healthFacilitiesName}}</b></u></td>
             </ng-container>
             <ng-container matColumnDef="StartTime">
                 <th mat-header-cell class="text-center" *matHeaderCellDef >

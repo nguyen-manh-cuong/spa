@@ -83,7 +83,7 @@ export class BookingComponent extends AppComponentBase implements OnInit, AfterV
       provinceCodeExamination: [, Validators.required], districtCodeExamination: [, Validators.required],
       specialists: [], healthfacilitiesSearch: [], healthFacilitiesId: [, Validators.required],
       //4
-      examinationDate: [, Validators.required], examinationWorkingTime: [], examinationTime: [], doctorId: [], ticketId: [], timeSlotId: [], codeCapcha: [], rules: [false]
+      examinationDate: [, Validators.required], examinationWorkingTime: [], examinationTime: [], doctorId: [], ticketId: [], timeSlotId: [], codeCapcha: [], rules: [false], userId: [this.appSession.userId]
     });
 
     if(this.appSession.user){

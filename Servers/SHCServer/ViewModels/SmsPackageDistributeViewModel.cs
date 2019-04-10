@@ -62,6 +62,7 @@ namespace SHCServer.ViewModels
             Quantity = Packages.Quantity;
             Cost = Packages.Cost;
             HealthFacilitiesName = HealthFacilities.Name;
+            HealthFacilitiesCode = HealthFacilities.Code;
             SmsBrandsName = SmsBrand.BrandName;
         }
 
@@ -76,6 +77,8 @@ namespace SHCServer.ViewModels
         public long Cost { get; set; }
 
         public string HealthFacilitiesName { get; set; }
+
+        public string HealthFacilitiesCode { get; set; }
 
         public SmsBrands SmsBrand { get; set; }
 

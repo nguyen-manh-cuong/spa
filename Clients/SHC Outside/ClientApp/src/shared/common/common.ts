@@ -95,9 +95,15 @@ export class ValidationRule {
 
     //Date valid
     dateInvalid(control: AbstractControl){
-        if(control.value && !moment(control.value, 'DD/MM/YYYY').isValid()){
-            return {compareDate: true};
+        if(control.value){
+            if(!moment(control.value, 'DD/MM/YYYY').isValid()){
+                return {special: true};
+            }
+            if(moment(control.value + '23:59:59', 'DD/MM/YYYY hh:mm:ss').toDate() < new Date()){
+                return {compareDate: true};
+            }
         }
+        
         return null;
     }
 }

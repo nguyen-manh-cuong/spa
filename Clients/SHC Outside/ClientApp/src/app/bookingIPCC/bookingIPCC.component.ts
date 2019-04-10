@@ -147,24 +147,25 @@ export class BookingIPCCComponent extends AppComponentBase implements OnInit {
 
       if(check == 1)  return;
     }
-    if(moment(this.frmBooking.controls['examinationDate'].value + '23:59:59', 'DD/MM/YYYY hh:mm:ss').toDate() < new Date()){
-      this.frmBooking.controls['examinationDate'].setValue({compareDate : true});
-      this.validateAllFormFields(this.frmBooking, ['examinationDate']);
-      return;
-    } 
-
+    
     var fromData = this.frmBooking.value;
     var examinationTime = fromData.examinationTime.substring(0, 2) + ':' + this.frmBooking.controls['examinationTime'].value.substring(2, 4);
     var ticketId = this._healthfacility.code + moment(this.frmBooking.controls['examinationDate'].value.jsdate).format("DDMMYYYY") + Math.floor((Math.random() * 9000) + 1000);
-
+    
     fromData.ticketId = ticketId;
     fromData.examinationTime = examinationTime;
     fromData.examinationDate = moment(fromData.examinationDate, 'DD/MM/YYYY').toDate();
-
+    
     this._dataService.create('bookinginformations', _.pickBy(fromData, _.identity)).subscribe(
       () => {
-        swal('Thông báo', 'Đặt khám thành công', 'success');
-        this._location.back();
+        swal({
+          title: 'Đặt khám thành công!',
+          type: 'success',
+          confirmButtonClass: 'mat-raised-button mat-primary bg-danger',
+          confirmButtonText: 'OK',
+        }).then(() => {
+          this._location.back();
+        });
       }, err => {})
   }
 
