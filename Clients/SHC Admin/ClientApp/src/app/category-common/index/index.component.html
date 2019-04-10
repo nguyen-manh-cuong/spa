@@ -19,15 +19,16 @@
 <div class="content fadeIn animated e">
     <form [formGroup]="frmSearch" class="form-filter pl-2 pr-2" novalidate>
         <div class="row m-0 pt-4">
-            <div class="col-auto fadeIn animated">
+            <!-- <div class="col-auto fadeIn animated">
                 <label class="mt-2 mb-0"><b>{{l("CategoryCommonTitle")}}</b></label>
-            </div>
-            <div class="col-md-4 fadeIn animated">
+            </div> -->
+            <div class="col-md-6 fadeIn animated">
                 <mat-form-field appearance="outline" class="w-100">
-                    <input formControlName="name" matInput maxlength="255" placeholder="{{l('CategoryCommonKeyword')}}">
+                    <mat-label>{{l('CategoryCommonKeyword')}}</mat-label>
+                    <input formControlName="name" matInput maxlength="255">
                 </mat-form-field>
             </div>
-            <div class="col-md-2 text-center d-flex align-self-center fadeIn animated">
+            <div class="col-md-3 text-center d-flex align-self-center fadeIn animated">
                 <button #btnSearch mat-stroked-button color="primary" (click)="btnSearchClicks$.next($event)"
                     class="w-100 mb-4">
                     <mat-icon class="mr-2">search</mat-icon>{{l("Search")}}
