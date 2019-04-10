@@ -30,7 +30,7 @@ namespace SHCServer.Controllers
             List<DbParam> param = new List<DbParam>();
             List<DoctorViewModel> doctorList = new List<DoctorViewModel>();
 
-            string doctorJoinSpecialist= @"SELECT * FROM smarthealthcare.cats_doctors d INNER JOIN smarthealthcare.cats_doctors_specialists ds ON d.DoctorId=ds.DoctorId WHERE 1=1 AND d.IsDelete=0 ";
+            string doctorJoinSpecialist= @"SELECT * FROM smarthealthcare.cats_doctors d INNER JOIN smarthealthcare.cats_doctors_specialists ds ON d.DoctorId=ds.DoctorId INNER JOIN smarthealthcare.cats_healthfacilities_doctors hd ON d.DoctorId=hd.DoctorId WHERE 1=1 AND d.IsDelete=0 ";
 
             if (filter != null)
             {
@@ -48,16 +48,21 @@ namespace SHCServer.Controllers
                         clause.Add("AND d.DistrictCode=@DistrictCode");
                         param.Add(DbParam.Create("@DistrictCode", value.Trim()));
                     }
-                    if (string.Equals(key, "fullName"))
+                    if(string.Equals(key, "healthFacilitiesId"))
                     {
-                        clause.Add("AND d.FullName=@FullName");
-                        param.Add(DbParam.Create("@FullName", value.Trim()));
+                        clause.Add("AND hd.HealthFacilitiesId=@HealthFacilitiesId");
+                        param.Add(DbParam.Create("@HealthFacilitiesId", value.Trim()));
                     }
                     if (string.Equals(key, "specialistCode"))
                     {
                         clause.Add("AND ds.SpecialistCode=@SpecialistCode");
                         param.Add(DbParam.Create("@SpecialistCode", value.Trim()));
-                    };
+                    }
+                    if (string.Equals(key, "fullNameOrPhone"))
+                    {
+                        clause.Add("AND d.FullName like '%' @FullNameOrPhone '%' OR d.PhoneNumber like '%' @FullNameOrPhone");
+                        param.Add(DbParam.Create("@fullNameOrPhone", value.Trim()));
+                    }
                 }
             }
 
@@ -72,7 +77,7 @@ namespace SHCServer.Controllers
             {
                 doctorList.Add(new DoctorViewModel()
                 {
-                    AcademicId = Convert.ToInt32(reader["AcademicId"]),
+                    AcademicId =reader["AcademicId"]!=DBNull.Value? Convert.ToInt32(reader["AcademicId"]):0,
                     Address = reader["Address"].ToString(),
                     AllowBooking= Convert.ToInt16(reader["AllowBooking"])==0?false:true,
                     AllowFilter= Convert.ToInt16(reader["AllowFilter"]) == 0 ? false : true,
@@ -114,6 +119,27 @@ namespace SHCServer.Controllers
                     TotalCount = doctorList.Count
                 }
             });
+        }
+
+        [HttpPost]
+        [Route("api/doctor")]
+        public IActionResult Create([FromBody] DoctorViewModel doctor)
+        {
+            return Json(new ActionResultDto());
+        }
+
+        [HttpPut]
+        [Route("api/doctor")]
+        public IActionResult Update([FromBody] DoctorViewModel doctor)
+        {
+            return Json(new ActionResultDto());
+        }
+
+        [HttpDelete]
+        [Route("api/doctor")]
+        public IActionResult Delete(int id)
+        {
+            return Json(new ActionResultDto());
         }
     }
 }

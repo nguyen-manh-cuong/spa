@@ -51,16 +51,7 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
         buttonsStyling: false
     }).then((result) => {
         if (result.value) {
-          if(obj.isActive==1){
-            this.showErrorDeleteMessage();
-          }
-          else{
-            this.dataService.delete(this.api, obj[id ? id : 'id']).subscribe(() => {
-              swal(this.l('SuccessfullyDeleted'), this.l('DeletedInSystem', obj[key]), 'success');
-              this.paginator.pageIndex = 0;
-              this.paginator._changePageSize(this.paginator.pageSize);
-          });
-          }
+          this.showErrorDeleteMessage();
         }
     });
 }
