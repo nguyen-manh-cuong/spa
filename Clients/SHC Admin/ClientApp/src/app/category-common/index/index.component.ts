@@ -12,6 +12,11 @@ import { PagedListingComponentBase } from '@shared/paged-listing-component-base'
 import { TaskComponent } from '../task/task.component';
 import swal from 'sweetalert2';
 
+export class EntityDto {
+  id: number;
+  isActive:number;
+}
+
 @Component({
   selector: 'app-index',
   templateUrl: './index.component.html',
@@ -29,7 +34,34 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
     this.dialogComponent = TaskComponent;
     this.frmSearch = this._formBuilder.group({ name: []});
   }
-  showDeleteMessage() {
-    swal(this.l('ErrorDelete'),this.l('ErrorCategoryCommonDeleted',''),'error');
+  showErrorDeleteMessage() {
+    swal(this.l('ErrorDelete'),this.l('CategoryCommonErrorDeleted',''),'error');
   }
+
+  deleteDialogMessage(obj: EntityDto, key: string, id?: number | string) {
+    swal({
+        title: this.l('AreYouSure'),
+        html: this.l('DeleteWarningMessage', obj[key]),
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonClass: 'mat-raised-button mat-primary bg-danger',
+        cancelButtonClass: 'mat-button',
+        confirmButtonText: this.l('YesDelete'),
+        cancelButtonText: this.l('Cancel'),
+        buttonsStyling: false
+    }).then((result) => {
+        if (result.value) {
+          if(obj.isActive==1){
+            this.showErrorDeleteMessage();
+          }
+          else{
+            this.dataService.delete(this.api, obj[id ? id : 'id']).subscribe(() => {
+              swal(this.l('SuccessfullyDeleted'), this.l('DeletedInSystem', obj[key]), 'success');
+              this.paginator.pageIndex = 0;
+              this.paginator._changePageSize(this.paginator.pageSize);
+          });
+          }
+        }
+    });
+}
 }
