@@ -25,4 +25,4 @@ import { NgxMaskModule} from 'ngx-mask';
   declarations: [BookingInformationsComponent, IndexComponent, TaskComponent],
   entryComponents: [TaskComponent]
 })
-export class BookingTimeslotsModule { }
+export class BookingInformationsModule { }

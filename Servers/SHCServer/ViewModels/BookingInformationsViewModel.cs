@@ -16,6 +16,9 @@ namespace SHCServer.ViewModels
         {
 
         }
+       
+
+
     }
 
     public class BookingInformationsInputViewModel

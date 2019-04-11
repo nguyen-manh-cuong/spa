@@ -28,7 +28,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingTimeslots>
   filteredOptions: Observable<IHealthfacilities[]>;
   healthfacilities = new FormControl();
 
-  displayedColumns = [ 'orderNumber', 'code', 'name', 'time', 'status', 'task'];
+  displayedColumns = [ 'orderNumber', 'healthFacilitiesName', 'code', 'name', 'time', 'status', 'task'];
 
   constructor(injector: Injector, private _dataService: DataService, public dialog: MatDialog, private _formBuilder: FormBuilder) { super(injector); }
 
