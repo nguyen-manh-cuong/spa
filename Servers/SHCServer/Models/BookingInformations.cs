@@ -76,5 +76,9 @@ namespace SHCServer.Models
         public int? ExaminationWorkingTime { set; get; }
         public int? TimeSlotId { set; get; }
         public int Status { set; get; }
+        public DateTime CreateDate { set; get; }
+        public int? BookingServiceType { get; set; }
+
+
     }
 }
