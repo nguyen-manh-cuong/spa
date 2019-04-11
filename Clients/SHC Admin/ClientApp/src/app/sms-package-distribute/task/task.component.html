@@ -48,20 +48,20 @@
           </div>
           <div class="col-md-6">
             <mat-form-field appearance="outline" class="w-100">
-              <mat-label>{{l("Từ năm")}}</mat-label >
+              <mat-label>{{l("Năm")}}</mat-label >
               <input type="text" maxlength="4" formControlName="year" mask="0*" matInput autocomplete [required]="true">
               <mat-icon matSuffix *ngIf="_frmpackagedistribute.controls['year'].invalid && (_frmpackagedistribute.controls['year'].dirty || _frmpackagedistribute.controls['year'].touched)" [matTooltipPosition]="'before'" matTooltipClass="bg-danger text-light mr-1" matTooltip="{{l('NotBeEmpty')}}" color="warn">info</mat-icon>
               <mat-icon matSuffix *ngIf="!_frmpackagedistribute.controls['year'].invalid && (_frmpackagedistribute.controls['year'].value < _currentYear) && (_frmpackagedistribute.controls['year'].dirty || _frmpackagedistribute.controls['year'].touched)" [matTooltipPosition]="'before'" matTooltipClass="bg-danger text-light mr-1" matTooltip="{{l('PackageDistributeCompareYears')}}" color="warn">info</mat-icon>
             </mat-form-field>
           </div>
-          <div class="col-md-6">
+          <!-- <div class="col-md-6">
             <mat-form-field appearance="outline" class="w-100">
               <mat-label>{{l("Đến năm")}}</mat-label >
               <input type="text" maxlength="4" formControlName="year" mask="0*" matInput autocomplete [required]="true">
               <mat-icon matSuffix *ngIf="_frmpackagedistribute.controls['year'].invalid && (_frmpackagedistribute.controls['year'].dirty || _frmpackagedistribute.controls['year'].touched)" [matTooltipPosition]="'before'" matTooltipClass="bg-danger text-light mr-1" matTooltip="{{l('NotBeEmpty')}}" color="warn">info</mat-icon>
               <mat-icon matSuffix *ngIf="!_frmpackagedistribute.controls['year'].invalid && (_frmpackagedistribute.controls['year'].value < _currentYear) && (_frmpackagedistribute.controls['year'].dirty || _frmpackagedistribute.controls['year'].touched)" [matTooltipPosition]="'before'" matTooltipClass="bg-danger text-light mr-1" matTooltip="{{l('PackageDistributeCompareYears')}}" color="warn">info</mat-icon>
             </mat-form-field>
-          </div>
+          </div> -->
       
           <div class="col-md-6" >
             <mat-form-field appearance="outline" class="w-100">

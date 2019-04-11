@@ -41,7 +41,7 @@ namespace SHCServer.ViewModels
 
         public long Cost { set; get; }
 
-        public long Quantity { set; get; }
+        public int Quantity { set; get; }
 
         public bool? IsActive { set; get; }
 
@@ -60,7 +60,7 @@ namespace SHCServer.ViewModels
 
         public long Cost { set; get; }
 
-        public long Quantity { set; get; }
+        public int Quantity { set; get; }
 
         public bool? IsActive { set; get; }
 

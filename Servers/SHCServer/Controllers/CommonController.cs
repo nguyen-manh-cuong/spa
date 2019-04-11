@@ -98,7 +98,7 @@ namespace SHCServer.Controllers
 
         [HttpGet]
         [Route("api/categorycommon")]
-        public IActionResult GetCategoryCommon(string filter) => Json(new ActionResultDto { Result = new { Items = _context.Query<CategoryCommon>().OrderBy(g => g.Name).Where(g => g.Type == filter).Select(g => new CategoryCommonViewModel(g)).ToList() } });
+        public IActionResult GetCategoryCommon(string filter) => Json(new ActionResultDto { Result = new { Items = _context.Query<CategoryCommon>().OrderBy(g => g.Name).Where(g => g.Type == filter && g.IsActive == true && g.IsDelete == false).Select(g => new CategoryCommonViewModel(g)).ToList() } });
 
         [HttpGet]
         [Route("api/smstemplates")]

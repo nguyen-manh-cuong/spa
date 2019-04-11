@@ -68,6 +68,17 @@ export class packagedistributeTaskComponent extends AppComponentBase implements 
       isActive: [this._obj.isActive],
       userId: []
     };
+    // this._context = {
+    //   healthFacilitiesId: [this._obj.healthFacilitiesId, Validators.required],
+    //   smsBrandsId: [this._obj.smsBrandsId, Validators.required],
+    //   monthStart: [this._obj.monthStart, ],
+    //   monthEnd: [this._obj.monthEnd, validationRule.compare('monthStart', 'monthEnd')],
+    //   yearFrom: [this._obj.year, []],
+    //   yearTo: [this._obj.year, []],
+    //   smsPackageId: [this._obj.smsPackageId, Validators.required],
+    //   isActive: [this._obj.isActive],
+    //   userId: []
+    // };
     this._frmpackagedistribute = this._formBuilder.group(this._context);
   }
 
