@@ -29,8 +29,10 @@ namespace SHCServer.Controllers
             List<string> clause = new List<string>(); 
             List<DbParam> param = new List<DbParam>();
             List<DoctorViewModel> doctorList = new List<DoctorViewModel>();
-
-            string doctorJoinSpecialist= @"SELECT * FROM smarthealthcare.cats_doctors d INNER JOIN smarthealthcare.cats_doctors_specialists ds ON d.DoctorId=ds.DoctorId INNER JOIN smarthealthcare.cats_healthfacilities_doctors hd ON d.DoctorId=hd.DoctorId WHERE 1=1 AND d.IsDelete=0 ";
+        
+            string doctorJoinSpecialistHealth = @"SELECT * FROM smarthealthcare.cats_doctors d INNER JOIN smarthealthcare.cats_doctors_specialists ds ON d.DoctorId = ds.DoctorId INNER JOIN smarthealthcare.cats_healthfacilities_doctors hd ON d.DoctorId = hd.DoctorId WHERE 1 = 1 AND d.IsDelete = 0 ";
+            string doctorJoinSpecialist=        @"SELECT * FROM smarthealthcare.cats_doctors d INNER JOIN smarthealthcare.cats_doctors_specialists ds ON d.DoctorId = ds.DoctorId WHERE 1 = 1 AND d.IsDelete = 0 ";
+            int query = 0;
 
             if (filter != null)
             {
@@ -52,6 +54,7 @@ namespace SHCServer.Controllers
                     {
                         clause.Add("AND hd.HealthFacilitiesId=@HealthFacilitiesId");
                         param.Add(DbParam.Create("@HealthFacilitiesId", value.Trim()));
+                        query = 1;
                     }
                     if (string.Equals(key, "specialistCode"))
                     {
@@ -70,7 +73,18 @@ namespace SHCServer.Controllers
             param.Add(DbParam.Create("@skipCount", skipCount * maxResultCount));
             param.Add(DbParam.Create("@resultCount", maxResultCount));
 
-            var str = $"{doctorJoinSpecialist} {string.Join(" ", clause)}";
+            var str = "";
+
+            if(query==0)
+            {
+                str = $"{doctorJoinSpecialist} {string.Join(" ", clause)}";
+            }
+
+            if (query == 1)
+            {
+                str = $"{doctorJoinSpecialistHealth} {string.Join(" ", clause)}";
+            }
+
             var reader = _context.Session.ExecuteReader(str, param);
        
             while(reader.Read())
@@ -87,7 +101,7 @@ namespace SHCServer.Controllers
                     BirthMonth= reader["BirthDate"] != DBNull.Value ? Convert.ToInt16(reader["BirthMonth"]) : 0,
                     BirthYear= Convert.ToInt16(reader["BirthYear"]),
                     CertificationCode=reader["CertificationCode"].ToString(),
-                    CertificationDate=reader["CertificationDate"]!=DBNull.Value?Convert.ToDateTime(reader["CertificationDate"]):DateTime.Now,
+                    CertificationDate=reader["CertificationDate"]!=DBNull.Value?Convert.ToDateTime(reader["CertificationDate"]):Convert.ToDateTime("0001-01-01T01:01:01"),
                     DegreeId=reader["DegreeId"]!=DBNull.Value? Convert.ToInt16(reader["DegreeId"]) : 0,
                     Description=reader["Description"].ToString(),
                     DistrictCode=reader["DistrictCode"].ToString(),
@@ -139,7 +153,26 @@ namespace SHCServer.Controllers
         [Route("api/doctor")]
         public IActionResult Delete(int id)
         {
-            return Json(new ActionResultDto());
+            List<string> clause = new List<string>();
+            List<DbParam> param = new List<DbParam>();
+
+            string doctorCheckBooking = @"SELECT Status FROM smarthealthcare.cats_doctors d INNER JOIN smarthealthcare.booking_doctors_calendars bdc ON d.DoctorId=bdc.DoctorId WHERE 1=1 AND d.IsDelete=0 AND bdc.Status IN (0,1) ";
+
+            clause.Add("AND d.DoctorId=@DoctorId");
+            param.Add(new DbParam("@DoctorId", id));
+
+            var str = $"{doctorCheckBooking} {string.Join(" ", clause)}";
+
+            var reader = _context.Session.ExecuteReader(str, param);
+
+            if (reader.GetValue(0) !=null )
+            {
+                return StatusCode(400, _excep.Throw("Xóa không thành công!","Không thể xóa bác sĩ đang có lịch khám!"));
+            }
+            else
+            {
+                return Json(new ActionResultDto());
+            }
         }
     }
 }
