@@ -185,9 +185,9 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
             return swal('Thông báo', 'Từ ngày không đúng định dạng', 'warning');
         }
 
-        this.healthfacilities.value ? this.frmSearch.controls['healthfacilities'].setValue(this.healthfacilities.value.healthFacilitiesId) : '';
-        this.birthdayFrom.nativeElement.value ? this.frmSearch.controls['birthdayFrom'].setValue(moment(this.birthdayFrom.nativeElement.value + '00:00:00', 'DD/MM/YYYY hh:mm:ss').toDate()) : '';
-        this.birthdayTo.nativeElement.value ? this.frmSearch.controls['birthdayTo'].setValue(moment(this.birthdayTo.nativeElement.value + '23:59:59', 'DD/MM/YYYY hh:mm:ss').toDate()) : '';
+        this.healthfacilities.value ? this.frmSearch.controls['healthfacilities'].setValue(this.healthfacilities.value.healthFacilitiesId) : (this.appSession.user.healthFacilitiesId == null ? this.frmSearch.controls['healthfacilities'].setValue(null) : '');
+        this.birthdayFrom.nativeElement.value ? this.frmSearch.controls['birthdayFrom'].setValue(moment(this.birthdayFrom.nativeElement.value, 'DD/MM/YYYY').toDate()) : '';
+        this.birthdayTo.nativeElement.value ? this.frmSearch.controls['birthdayTo'].setValue(moment(this.birthdayTo.nativeElement.value, 'DD/MM/YYYY').toDate()) : '';
         this.btnSearchClicks$.next();
     }
 
@@ -196,7 +196,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     }
 
     openCustomDialog(): void {
-        const dialogRef = this.dialog.open(this.dialogComponent, { minWidth: 'calc(100vw/2)', maxWidth: 'calc(100vw - 300px)', disableClose: true, data: this.selection });
+        const dialogRef = this.dialog.open(this.dialogComponent, { minWidth: 'calc(100vw/2)', maxWidth: 'calc(100vw - 300px)', disableClose: true, data: {selection: this.selection, type: 2} });
         
         dialogRef.afterClosed().subscribe(() => {
             this.paginator.pageIndex = 0;
@@ -217,18 +217,12 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
                 return this.openCustomDialog();
             } 
 
-            var lstPatient = [];
-            this.selection.selected.forEach(el => {
-                lstPatient.push(el.patient);
-            })
-
             this._dataService.create('infosms', {
-                lstPatient: lstPatient, 
                 lstMedicalHealthcareHistories: this.selection.selected, 
+                healthFacilitiesId: this.appSession.user.healthFacilitiesId,         
+                smsTemplateId: resp.items.values,
                 type: 2, 
-                healthFacilitiesId: this.appSession.user.healthFacilitiesId, 
-                content: '',
-                smsTemplateId: resp.items.values 
+                content: ''
             })
             .subscribe(resp => {
                 swal('Thông báo', resp, 'error');

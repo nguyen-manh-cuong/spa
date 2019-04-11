@@ -49,6 +49,17 @@ export interface ILanguage {
     vi: string;
     en: string;
 }
+export interface IBookingTimeslots {
+    timeSlotId: number;
+    hoursStart: string;
+    minuteStart: string;
+    hoursEnd: string;
+    minuteEnd: string;
+    code: string;
+    name: string;
+    healthFacilitiesId: number;
+    isActive: boolean;
+}
 
 export interface IPackage {
     id: number;
@@ -56,7 +67,7 @@ export interface IPackage {
     description: string;
     cost: number;
     quantity: number;
-    status: number;
+    isActive: number;
 
     details: Array<IPackageDetail>;
 }
@@ -143,8 +154,15 @@ export interface IMedicalHealthcareHistories{
     doctorId?: number,
     patientId?: number,
     reExaminationDate?: Date,
-
-    patient?: IPatient[] 
+    
+    code?: number;
+    fullName: string;
+    birthDate?: number;
+    birthMonth?: number;
+    birthYear: number;
+    gender: number;
+    phoneNumber?: number;
+    address?: string;
 }
 
 

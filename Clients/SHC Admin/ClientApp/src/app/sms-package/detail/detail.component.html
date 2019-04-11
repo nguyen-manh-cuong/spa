@@ -10,55 +10,56 @@
                 {{l("Detail")}} {{l("Package")}}
             </ng-template>
             <div class="pt-4">
-                <div class="row disabled">
-                    <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-12 mydisabled">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("PackageName")}}</mat-label>
-                            <input formControlName="name" matInput>
+                            <input formControlName="name" matInput title="{{_package.name}}" readonly>
                         </mat-form-field>
                     </div>
-                    <div class="col-md-12 ">
+
+                    <div class="col-md-12 mydisabled">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("PackageDescription")}}</mat-label>
-                            <input formControlName="description" matInput>
+                            <input formControlName="description" matInput title="{{_package.description}}" readonly>
                         </mat-form-field>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-6 disabled">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l('PackageCost')}}</mat-label>
                             <input type="text" mask="dot_separator" formControlName="cost" matInput>
                         </mat-form-field>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-6 disabled">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l('PackageQuantity')}}</mat-label>
                             <input type="text" mask="dot_separator" formControlName="quantity" matInput>
                         </mat-form-field>
                     </div>
                     <div class="col-md-12  m-b-20">
-                        <mat-checkbox formControlName="status" disabled="false">{{l('Using')}}</mat-checkbox>
+                        <mat-checkbox formControlName="isActive" disabled="false">{{l('Using')}}</mat-checkbox>
                     </div>
 
-                    <div class="col-md-3">
+                    <div class="col-md-3 disabled">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l('PackageSmsFrom')}}</mat-label>
                             <input type="text" mask="dot_separator" formControlName="smsFrom" matInput>
                         </mat-form-field>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-3 disabled">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l('PackageSmsTo')}}</mat-label>
                             <input type="text" mask="dot_separator" formControlName="smsTo" matInput>
                         </mat-form-field>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-4 disabled">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l('PackageCost')}}</mat-label>
                             <input type="text" mask="dot_separator" formControlName="detailCost" matInput>
                         </mat-form-field>
                     </div>
 
-                    <div class="col-md-12">
+                    <div class="col-md-12 disabled">
                         <div class="row" *ngFor="let item of _details; index as i">
                             <div class="col-md-3">
                                 <mat-form-field appearance="outline" class="w-100">

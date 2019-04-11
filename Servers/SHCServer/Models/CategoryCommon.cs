@@ -16,21 +16,31 @@ namespace SHCServer.Models
 
         public CategoryCommon(CategoryCommonViewModel cc)
         {
+            Id = cc.Id;
             Name = cc.Name;
             Code = cc.Code;
             Type = cc.Type;
             IsDelete = cc.IsDelete;
             CreateDate = cc.CreateDate;
+            UpdateDate = cc.UpdateDate;
+            CreateUserId = cc.CreateUserId;
+            UpdateUserId = cc.UpdateUserId;
+            IsActive = cc.IsActive;
+            IsDelete = cc.IsDelete;
         }
 
         [Column(IsPrimaryKey = true)]
         [AutoIncrement]
         public int Id { set; get; }
-        public string Name { set; get; }
         public string Code { set; get; }
+        public string Name { set; get; }
         public string Type { set; get; }
-        public string IsDelete { set; get; }
-        public string CreateDate { set; get; }
+        public bool IsActive { get; set; }
+        public bool IsDelete { set; get; }
+        public DateTime CreateDate { set; get; }
+        public DateTime? UpdateDate { get; set; }
+        public int? CreateUserId { get; set; }
+        public int? UpdateUserId { get; set; }
     }
 
     public class CategoryCommonMapBase<TUser> : EntityTypeBuilder<TUser> where TUser : CategoryCommon

@@ -33,7 +33,7 @@ namespace SHCServer.ViewModels
         public int? doctorId { set; get; }
         public string email { set; get; }
         public string emailRepresent { set; get; }
-        public DateTime examinationDate { set; get; }
+        public string examinationDate { set; get; }
         public string examinationTime { set; get; }
         public int? examinationWorkingTime { set; get; }
         public int gender { set; get; }
@@ -50,6 +50,7 @@ namespace SHCServer.ViewModels
         public string ticketId { set; get; }
         public int? timeSlotId { set; get; }       
         public string wardCode { set; get; }
+        public int? userId { set; get; }
 
         public static explicit operator int(BookingInformationsInputViewModel v)
         {

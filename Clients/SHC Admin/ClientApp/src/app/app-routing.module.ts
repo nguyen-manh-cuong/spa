@@ -48,6 +48,14 @@ import { NgModule } from '@angular/core';
                     {
                         path: 'sms-log',
                         loadChildren: 'app/sms-log/sms-log.module#SmsLogModule', canActivate: [AppRouteGuard]
+                    },
+                    {
+                        path: 'booking-timeslots',
+                        loadChildren: 'app/booking-timeslots/booking-timeslots.module#BookingTimeslotsModule', canActivate: [AppRouteGuard]
+                    },
+                    {
+                        path: 'category-common',
+                        loadChildren: 'app/category-common/category-common.module#CategoryCommonModule', canActivate:[AppRouteGuard]
                     }
                ]
             },

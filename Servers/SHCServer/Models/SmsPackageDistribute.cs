@@ -1,4 +1,5 @@
 ﻿using SHCServer.ViewModels;
+using System;
 using Viettel.Annotations;
 
 namespace SHCServer.Models
@@ -14,8 +15,13 @@ namespace SHCServer.Models
         public int Year { set; get; }
         public int MonthStart { set; get; }
         public int MonthEnd { set; get; }
-        public int Status { set; get; }
-        public int IsDelete { set; get; }
+        public bool IsActive { set; get; }
+        public bool IsDelete { set; get; }
+
+        public DateTime? CreateDate { get; set; }
+        public int? CreateUserId { get; set; }
+        public DateTime? UpdateDate { get; set; }
+        public int? UpdateUserId { get; set; }
     }
 
     [Table("sms_packages_distribute")]
@@ -30,7 +36,7 @@ namespace SHCServer.Models
         {
             SmsPackageId = obj.SmsPackageId;
             HealthFacilitiesId = obj.HealthFacilitiesId;
-            Status = obj.Status;
+            IsActive = obj.IsActive;
         }
     }
 }

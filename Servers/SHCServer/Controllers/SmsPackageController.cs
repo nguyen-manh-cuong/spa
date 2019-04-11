@@ -23,16 +23,13 @@ namespace SHCServer.Controllers
 
             _connectionString = configuration.GetConnectionString("DefaultConnection");
             _excep = new FriendlyException();
-
-            //Mapper.Reset();
-            //Mapper.Initialize(config => config.CreateMap<UserInputViewModel, User>().ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null)));
         }
 
         [HttpGet]
         [Route("api/smspackages")]
         public IActionResult GetAll(int skipCount = 0, int maxResultCount = 10, string sorting = null, string filter = null)
         {
-            var objs = _context.Query<SmsPackage>().Where(o => o.IsDelete == 0);
+            var objs = _context.Query<SmsPackage>().Where(o => o.IsDelete == false);
 
             if (filter != null)
             {
@@ -44,7 +41,7 @@ namespace SHCServer.Controllers
                         var query = value.Replace(@"%", "\\%").Replace(@"_", "\\_").Trim();
                         objs = objs.Where(o => o.Name.Contains(query) || o.Description.Contains(query));
                     };
-                    if (string.Equals(key, "status") && value != "2" && value != null) objs = objs.Where(o => o.Status == int.Parse(value));
+                    if (string.Equals(key, "status") && value != "2" && value != null) objs = objs.Where(o => o.IsActive == (value == "1" ? true : false));
                 }
             }
 
@@ -65,7 +62,7 @@ namespace SHCServer.Controllers
         [Route("api/smspackages")]
         public IActionResult Create([FromBody] PackageInputViewModel package)
         {
-            if (_context.Query<SmsPackage>().Where(g => g.Name == package.Name && g.IsDelete == 0).Count() > 0)
+            if (_context.Query<SmsPackage>().Where(g => g.Name == package.Name && g.IsDelete == false).Count() > 0)
             {
                 //return Json(new ActionResultDto { Success = false, Error = new { Code = 401, Message = "Tạo gói thất bại.", Details = "Gói SMS đã tồn tại!" } });
                 return StatusCode(500, _excep.Throw("Tạo gói thất bại.", "Gói SMS đã tồn tại!"));
@@ -84,6 +81,10 @@ namespace SHCServer.Controllers
                     packagesDetail.SmsTo = element.SmsTo;
                     packagesDetail.Cost = element.Cost;
                     packagesDetail.SmsPackageId = packageResult.Result.Id;
+                    packagesDetail.CreateDate = DateTime.Now;
+                    packagesDetail.CreateUserId = package.UserId;
+                    packagesDetail.UpdateDate = DateTime.Now;
+                    packagesDetail.UpdateUserId = package.UserId;
 
                     listPackageDetail.Add(packagesDetail);
                 }
@@ -104,7 +105,7 @@ namespace SHCServer.Controllers
                 //{
                 //    return StatusCode(500, _excep.Throw("Sửa gói thất bại.", "Gói SMS đang được sử dụng!"));
                 //}
-                if (_context.Query<SmsPackage>().Where(p => p.Name == package.Name && p.Id != package.Id && p.IsDelete == 0).Count() > 0)
+                if (_context.Query<SmsPackage>().Where(p => p.Name == package.Name && p.Id != package.Id && p.IsDelete == false).Count() > 0)
                 {
                     //return Json(new ActionResultDto { Success = false, Error = new { Code = 401, Message = "Chỉnh sửa gói thất bại.", Details = "Gói SMS đã tồn tại!" } });
                     return StatusCode(500, _excep.Throw("Sửa gói thất bại.", "Gói SMS đã tồn tại!"));
@@ -117,7 +118,10 @@ namespace SHCServer.Controllers
                     Description = package.Description,
                     Quantity = package.Quantity,
                     Cost = package.Cost,
-                    Status = package.Status
+                    IsActive = package.IsActive,
+
+                    UpdateDate = DateTime.Now,
+                    UpdateUserId = package.UserId
                 });
 
                 List<SmsPackageDetail> listPackageDetail = new List<SmsPackageDetail>();
@@ -132,6 +136,10 @@ namespace SHCServer.Controllers
                     packagesDetail.SmsTo = element.SmsTo;
                     packagesDetail.Cost = element.Cost;
                     packagesDetail.SmsPackageId = Id;
+                    packagesDetail.CreateDate = DateTime.Now;
+                    packagesDetail.CreateUserId = package.UserId;
+                    packagesDetail.UpdateDate = DateTime.Now;
+                    packagesDetail.UpdateUserId = package.UserId;
 
                     listPackageDetail.Add(packagesDetail);
                 }
@@ -154,7 +162,7 @@ namespace SHCServer.Controllers
         {
             try
             {
-                if (_context.Query<SmsPackagesDistribute>().Where(pd => pd.SmsPackageId == id).Count() > 0)
+                if (_context.Query<SmsPackagesDistribute>().Where(pd => pd.SmsPackageId == id && pd.IsDelete == false).Count() > 0)
                 {
                     return StatusCode(500, _excep.Throw("Xóa gói thất bại.", "Gói SMS đang được sử dụng!"));
                 }
@@ -167,7 +175,7 @@ namespace SHCServer.Controllers
 
                 _context.Update<SmsPackage>(t => t.Id == id, a => new SmsPackage
                 {
-                    IsDelete = 1
+                    IsDelete = true
                 });
 
                 _context.Session.CommitTransaction();

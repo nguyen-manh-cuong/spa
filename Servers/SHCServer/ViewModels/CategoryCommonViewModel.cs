@@ -19,14 +19,23 @@ namespace SHCServer.ViewModels
             Type = cc.Type;
             IsDelete = cc.IsDelete;
             CreateDate = cc.CreateDate;
+            UpdateDate = cc.UpdateDate;
+            CreateUserId = cc.CreateUserId;
+            UpdateUserId = cc.UpdateUserId;
+            IsActive = cc.IsActive;
+            IsDelete = cc.IsDelete;
         }
 
         public int Id { set; get; }
-        public string Name { set; get; }
         public string Code { set; get; }
+        public string Name { set; get; }
         public string Type { set; get; }
-        public string IsDelete { set; get; }
-        public string CreateDate { set; get; }
+        public bool IsActive { get; set; }
+        public bool IsDelete { set; get; }
+        public DateTime CreateDate { set; get; }
+        public DateTime? UpdateDate { get; set; }
+        public int? CreateUserId { get; set; }
+        public int? UpdateUserId { get; set; }
     }
 
     public class CategoryCommonInputViewModel
@@ -35,9 +44,11 @@ namespace SHCServer.ViewModels
         public string Name { set; get; }
         public string Code { set; get; }
         public string Type { set; get; }
-        public string IsDelete { set; get; }
-        public string CreateDate { set; get; }
+        public DateTime? CreateDate { set; get; }
+        public DateTime? UpdateDate { get; set; }
+        public int? UpdateUserId { get; set; }
+        public int? CreateUserId { get; set; }
+        public bool IsDelete { set; get; }
+        public bool IsActive { get; set; }
     }
-
-
 }

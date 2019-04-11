@@ -21,12 +21,11 @@ namespace SHCServer.ViewModels
             SmsTemplateName = obj.SmsTemplateName;
             MessageType = obj.MessageType;
             SmsContent = obj.SmsContent;
-            Status = obj.Status;
+            IsActive = obj.IsActive;
             ApplyAllSystem = obj.ApplyAllSystem;
             IsDelete = obj.IsDelete;
-            CreateUser = obj.CreateUser;
-            UpdateUser = obj.UpdateUser;
-            //UpdateDate = obj.UpdateDate;
+            CreateUserId = obj.CreateUserId;
+            UpdateUserId = obj.UpdateUserId;
             TypeNumber = obj.TypeNumber;
             OrganizationCode = obj.OrganizationCode;
             HealthFacilitiesConfigs = context.JoinQuery<SmsTemplate, HealthFacilitiesConfigs>((t, h) => new object[]
@@ -47,17 +46,19 @@ namespace SHCServer.ViewModels
 
         public string SmsContent { set; get; }
 
-        public bool? Status { set; get; }
+        public bool? IsActive { set; get; }
 
         public bool? ApplyAllSystem { set; get; }
 
         public bool IsDelete { set; get; }
 
-        public string CreateUser { set; get; }
+        public int? CreateUserId { set; get; }
 
-        public string UpdateUser { set; get; }
+        public int? UpdateUserId { set; get; }
 
-        public DateTime UpdateDate { set; get; }
+        public DateTime? UpdateDate { set; get; }
+
+        public DateTime? CreateDate { set; get; }
 
         public string TypeNumber { set; get; }
 
@@ -81,17 +82,19 @@ namespace SHCServer.ViewModels
 
         public string SmsContent { set; get; }
 
-        public bool? Status { set; get; }
+        public bool? IsActive { set; get; }
 
         public bool? ApplyAllSystem { set; get; }
 
         public bool IsDelete { set; get; }
 
-        public string CreateUser { set; get; }
+        public int? CreateUserId { set; get; }
 
-        public string UpdateUser { set; get; }
+        public int? UpdateUserId { set; get; }
 
-        public DateTime UpdateDate { set; get; }
+        public DateTime? UpdateDate { set; get; }
+
+        public DateTime? CreateDate { set; get; }
 
         public string TypeNumber { set; get; }
 
@@ -99,9 +102,6 @@ namespace SHCServer.ViewModels
 
         public string OrganizationName { set; get; }
 
-        //public static explicit operator int(SmsTemplateViewModel v)
-        //{
-        //    throw new NotImplementedException();
-        //}
+        public int? UserId { set; get; }
     }
 }

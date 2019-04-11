@@ -22,7 +22,7 @@ export class packagedistributeTaskComponent extends AppComponentBase implements 
   api: string = 'smspackagedistribute';
 
   _frmpackagedistribute: FormGroup;
-  _obj: IPachkageDistribute | any = { smsBrandsId: '', healthFacilitiesId: '', monthStart: '', monthEnd: '', year: '', smsPackageId: '', status: false };
+  _obj: IPachkageDistribute | any = { smsBrandsId: '', healthFacilitiesId: '', monthStart: '', monthEnd: '', year: '', smsPackageId: '', isActive: false };
   _context: any;
   _isNew: boolean = true;
   _month = [{ id: 1, name: 'Tháng 1' }, { id: 2, name: 'Tháng 2' }, { id: 3, name: 'Tháng 3' }, { id: 4, name: 'Tháng 4' }, { id: 5, name: 'Tháng 5' }, { id: 6, name: 'Tháng 6' },
@@ -40,7 +40,6 @@ export class packagedistributeTaskComponent extends AppComponentBase implements 
   }
 
   ngOnInit() {
-    this._dataService.getAll('smspackages').subscribe(resp => this._package = resp.items);
     if (this.obj) {
       this._obj = _.clone(this.obj);
       this._obj.monthStart = this.obj.monthStart;
@@ -53,12 +52,12 @@ export class packagedistributeTaskComponent extends AppComponentBase implements 
       this._obj.monthStart = Number(this.datePipe.transform(Date.now(), "M"));
       this._obj.monthEnd = Number(this.datePipe.transform(Date.now(), "M"));
       this._obj.year = Number(this.datePipe.transform(Date.now(), "yyyy"));
-      this._obj.status = true;
+      this._obj.isActive = true;
     }
 
     this._dataService.getAll('smsbrands-all').subscribe(resp => this._brands = resp.items);
     this._dataService.getAll('healthfacilities').subscribe(resp => this._medicalFacility = resp.items);
-    this._dataService.getAll('smspackages-all').subscribe(resp => this._package = resp.items);
+    this._dataService.getAll('smspackages-cbo').subscribe(resp => this._package = resp.items);
     this._context = {
       healthFacilitiesId: [this._obj.healthFacilitiesId, Validators.required],
       smsBrandsId: [this._obj.smsBrandsId, Validators.required],
@@ -66,13 +65,26 @@ export class packagedistributeTaskComponent extends AppComponentBase implements 
       monthEnd: [this._obj.monthEnd, ],
       year: [this._obj.year, [Validators.maxLength(4), Validators.pattern('[0-9]*')]],
       smsPackageId: [this._obj.smsPackageId, Validators.required],
-      status: [this._obj.status],
+      isActive: [this._obj.isActive],
+      userId: []
     };
+    // this._context = {
+    //   healthFacilitiesId: [this._obj.healthFacilitiesId, Validators.required],
+    //   smsBrandsId: [this._obj.smsBrandsId, Validators.required],
+    //   monthStart: [this._obj.monthStart, ],
+    //   monthEnd: [this._obj.monthEnd, validationRule.compare('monthStart', 'monthEnd')],
+    //   yearFrom: [this._obj.year, []],
+    //   yearTo: [this._obj.year, []],
+    //   smsPackageId: [this._obj.smsPackageId, Validators.required],
+    //   isActive: [this._obj.isActive],
+    //   userId: []
+    // };
     this._frmpackagedistribute = this._formBuilder.group(this._context);
   }
 
   submit() {
-    this._frmpackagedistribute.value.status = this._frmpackagedistribute.value.status == true ? 1 : 0;
+    this._frmpackagedistribute.value.userId = this.appSession.userId;
+
     if (this._isNew) {
       this._dataService.create(this.api, standardized(_.omit(Object.assign(this._frmpackagedistribute.value), 'id'), this.rules)).subscribe(() => {
         swal(this.l('SaveSuccess'), '', 'success');

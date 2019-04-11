@@ -30,7 +30,7 @@ namespace SHCServer.Controllers
         [Route("api/smspackagedistribute")]
         public IActionResult GetAllPackageDistribute(int skipCount = 0, int maxResultCount = 10, string sorting = null, string filter = null)
         {
-            var objs = _context.Query<SmsPackagesDistribute>().Where(o => o.IsDelete == 0);
+            var objs = _context.Query<SmsPackagesDistribute>().Where(o => o.IsDelete == false);
             int monthStart = 0;
             int monthEnd = 0;
             string year = "";
@@ -54,7 +54,7 @@ namespace SHCServer.Controllers
                 objs = objs.Where(o => o.Year == int.Parse(year));
             }
             
-            if (filters.Status != null && filters.Status != 2) objs = objs.Where(o => o.Status == filters.Status);
+            if (filters.Status != null && filters.Status != 2) objs = objs.Where(o => o.IsActive == (filters.Status == 1 ? true : false));
 
             if (filters.HealthFacilitiesId != null)
                 if (filters.HealthFacilitiesId.Count != 0)
@@ -76,7 +76,7 @@ namespace SHCServer.Controllers
         [Route("api/smspackagedistribute")]
         public IActionResult CreatePackageDistribute([FromBody] PackageDistributeInputViewModelArray obj)
         {
-            var package = _context.Query<SmsPackage>().Where(g => g.Id == obj.SmsPackageId && g.IsDelete == 0).FirstOrDefault();
+            var package = _context.Query<SmsPackage>().Where(g => g.Id == obj.SmsPackageId && g.IsDelete == false).FirstOrDefault();
             if(package == null) return StatusCode(500, _excep.Throw("Gói SMS đã chọn không tồn tại."));
 
             List <SmsPackagesDistribute> lstPD = new List<SmsPackagesDistribute>();
@@ -89,14 +89,18 @@ namespace SHCServer.Controllers
                 pd.MonthStart = obj.MonthStart;
                 pd.MonthEnd = obj.MonthEnd;
                 pd.Year = obj.Year;
-                pd.Status = obj.Status;
+                pd.IsActive = obj.IsActive;
                 pd.SmsPackageId = obj.SmsPackageId;
                 pd.SmsBrandsId = obj.SmsBrandsId;
+                pd.CreateDate = DateTime.Now;
+                pd.CreateUserId = obj.UserId;
 
                 SmsPackageUsed pu = new SmsPackageUsed();
                 pu.SmsPackageId = obj.SmsPackageId;
                 pu.HealthFacilitiesId = obj.HealthFacilitiesId[i];
                 pu.Quantityused = package.Quantity;
+                pu.CreateDate = DateTime.Now;
+                pu.CreateUserId = obj.UserId;
 
                 if (_context.Query<SmsPackagesDistribute>().Where(g => g.HealthFacilitiesId == pd.HealthFacilitiesId && g.SmsPackageId == obj.SmsPackageId).Count() > 0)
                 {
@@ -134,7 +138,10 @@ namespace SHCServer.Controllers
                     MonthEnd = obj.MonthEnd,
                     MonthStart = obj.MonthStart,
                     Year = obj.Year,
-                    Status = obj.Status,
+                    IsActive = obj.IsActive,
+
+                    UpdateDate = DateTime.Now,
+                    UpdateUserId = obj.UserId
                 });
 
                 _context.Session.CommitTransaction();
@@ -160,7 +167,7 @@ namespace SHCServer.Controllers
 
                 _context.Update<SmsPackagesDistribute>(t => t.Id == id, a => new SmsPackagesDistribute
                 {
-                    IsDelete = 1
+                    IsDelete = true
                 });
 
                 _context.Session.CommitTransaction();

@@ -306,6 +306,12 @@ tr.mat-footer-row, tr.mat-row {
     }
 }
 
+.mydisabled{
+    .mat-form-field-outline{
+        background-color: gainsboro;
+    }
+}
+
 .ps__rail-y,.ps__rail-y{
     z-index: 9;
 }

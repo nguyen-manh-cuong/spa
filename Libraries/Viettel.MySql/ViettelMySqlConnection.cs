@@ -60,7 +60,6 @@ namespace Viettel.MySql
         {
             this._dbConnection.Open();
         }
-
         public void Dispose()
         {
             this._dbConnection.Dispose();

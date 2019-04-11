@@ -25,14 +25,22 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     _detailCost: string = 'cost';
 
     _frm: FormGroup;
-    _package: IPackage | any = { name: '', description: '', cost: '', quantity: '', status: '', smsFrom: '', smsTo: '', detailCost: '' };
+    _package: IPackage | any = { name: '', description: '', cost: '', quantity: '', isActive: '', smsFrom: '', smsTo: '', detailCost: '' };
     _context: any;
     _isNew: boolean = true;
     _details: Array<IPackageDetail> = [];
 
     @ViewChild("txtName") txtName: MatInput;
 
-    constructor(injector: Injector, private _dataService: DataService, private _formBuilder: FormBuilder, public dialogRef: MatDialogRef<TaskComponent>, @Inject(MAT_DIALOG_DATA) public packageData: IPackage) { super(injector); }
+    constructor(
+        injector: Injector, 
+        private _dataService: DataService, 
+        private _formBuilder: FormBuilder, 
+        public dialogRef: MatDialogRef<TaskComponent>, 
+        @Inject(MAT_DIALOG_DATA) 
+        public packageData: IPackage) { 
+            super(injector); 
+        }
 
     ngOnInit() {
         const validationRule = new ValidationRule();
@@ -49,7 +57,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
             description: [this._package.description, [Validators.required, validationRule.hasValue]],
             cost: [this._package.cost],
             quantity: [this._package.quantity],
-            status: true,
+            isActive: true,
             smsFrom: 1,
             smsTo: [this._package.smsTo, [Validators.required, validationRule.hasValue, validationRule.hasSpecialCharacter, validationRule.compare('smsFrom', 'smsTo')]],
             detailCost: [this._package.detailCost, [Validators.required, validationRule.hasValue, validationRule.hasSpecialCharacter]]
@@ -61,7 +69,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
             this._frm.controls['smsFrom'].patchValue(this._details[0].smsFrom);
             this._frm.controls['smsTo'].patchValue(this._details[0].smsTo);
             this._frm.controls['detailCost'].patchValue(this._details[0].cost);
-            this.packageData.status == 0 ? this._frm.controls['status'].setValue(false) : "";
+            this.packageData.isActive == 0 ? this._frm.controls['isActive'].setValue(false) : "";
 
             this._details.splice(0, 1)
             this._details.forEach((el, i) => {
@@ -75,8 +83,8 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
 
     ngAfterViewInit(): void {
         setTimeout(() => {
-            this.txtName.focus();
-        }, 500);
+            this._package.distribute == 0 || this._isNew == true ? this.txtName.focus() : '';
+        }, 1000);
     }
 
     deleteDetail(index: number, indexControl: number) {
@@ -119,6 +127,8 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     }
 
     addDetail() {
+        if(this._frm.controls['cost'].value && this._frm.controls['cost'].value > 2000000000) return swal('Thông báo', 'Thành tiền không được quá 2.000.000.000', 'warning');
+
         var length: number = this._details.length;
         var smsTo: number = length == 0 ? Number(this._frm.value.smsTo) + 1 : Number(this._details[length - 1].smsTo) + 1;
 
@@ -132,6 +142,10 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
 
         this._frm.controls[this._smsFrom + length].setValue(smsTo);
         this._details.push({ smsFrom: smsTo, smsTo: undefined, cost: undefined, index: length });
+
+        setTimeout(() => {
+            $("#smsTo" + length).focus();
+        }, 500);
     }
 
     checkPackageDetail() {
@@ -188,7 +202,9 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     }
 
     submit() {
-        var params = _.pick(this._frm.value, ['id', 'name', 'description', 'cost', 'quantity', 'status', 'details']);
+        if(this._frm.controls['cost'].value && this._frm.controls['cost'].value > 2000000000) return swal('Thông báo', 'Thành tiền không được quá 2.000.000.000', 'warning');
+  
+        var params = _.pick(this._frm.value, ['id', 'name', 'description', 'cost', 'quantity', 'isActive', 'details', 'userId']);
         var detail: Array<IPackageDetail> = [{
             smsFrom: this._frm.value.smsFrom,
             smsTo: Number(this._frm.value.smsTo),
@@ -197,8 +213,8 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
         }];
         params.name = _.trim(params.name);//temp
         params.details = this._details.concat(detail);
-        params.status = params.status == true ? 1 : 0;
-
+        params.userId = this.appSession.userId;
+        
         if (this.packageData) {
             params.id = this.packageData.id;
         }

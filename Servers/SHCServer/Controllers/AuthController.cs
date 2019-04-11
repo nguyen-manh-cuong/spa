@@ -108,8 +108,11 @@ namespace SHCServer.Controllers
                                          new MenuItem {Name = "SmsManualBirthday", Icon = "", Route = "/app/sms-manual-birthday"},
                                          new MenuItem {Name = "SmsManual", Icon = "", Route = "/app/sms-manual"},
                                          new MenuItem {Name = "SmsLog", Icon = "", Route = "/app/sms-log"}
-                                    }}
-                                }
+                                    }},
+                                    new MenuItem {Name = "Danh mục khung giờ khám", Icon = "av_timer", Route = "/app/booking-timeslots"},
+                                    new MenuItem {Name = "Thống kê danh sách bệnh nhân đặt khám", Icon = "av_timer", Route = "/app/booking-informations"},
+                                    new MenuItem{Name = "CategoryCommon", Icon="account_circle", Route="/app/category-common"}
+                                } 
                             }
                         }
                     }

@@ -80,32 +80,40 @@ export class BookingIPCCComponent extends AppComponentBase implements OnInit {
         var districtCode = resp.items.filter(el => el.code == 'A05.DefaultDistrict');
         this.onSelectProvince(provinceCode[0].values);
         this.onSelectExaminationProvince(provinceCode[0].values);
+
         this.frmBooking.controls['provinceCode'].setValue(provinceCode[0].values);
         this.frmBooking.controls['districtCode'].setValue(districtCode[0].values);
 
         this.frmBooking.controls['provinceCodeExamination'].setValue(provinceCode[0].values);
         this.frmBooking.controls['districtCodeExamination'].setValue(districtCode[0].values);
       });
-    }, 500);
+    }, 1000);
     abp.ui.setBusy();
   }
 
   onSelectProvince(obj: any) {
     this._districts = [];
     this.frmBooking.patchValue({ districtCode: null });
+    if(!this.frmBooking.controls['provinceCode'].value) return;
+
     const province = this._provinces.find((o: { provinceCode: string, name: string; }) => o.provinceCode === obj);
     if (province) { this._dataService.get('districts', JSON.stringify({ ProvinceCode: province.provinceCode }), '', 0, 0).subscribe(resp => this._districts = resp.items); }
   }
 
   onSelectExaminationProvince(obj: any) {
-    this.frmBooking.patchValue({ districtCodeExamination: null, healthFacilitiesId: null });
+    this._districtsExamination = [];
+    this.frmBooking.patchValue({ districtCodeExamination: null, healthFacilitiesId: null, doctorId: null });
+    if(!this.frmBooking.controls['provinceCodeExamination'].value) return;
+
     const province = this._provincesExamination.find((o: { provinceCode: string, name: string; }) => o.provinceCode === obj);
     if (province) { this._dataService.get('districts', JSON.stringify({ ProvinceCode: province.provinceCode }), '', 0, 0).subscribe(resp => this._districtsExamination = resp.items); }
   }
 
   getHealthfacilities() {
     this._healthfacilities = [];   
-    this.frmBooking.patchValue({ healthFacilitiesId: null });
+    this.frmBooking.patchValue({ healthFacilitiesId: null, doctorId: null });
+    if(!this.frmBooking.controls['districtCodeExamination'].value) return;
+
     this._dataService.get('healthfacilitiesbooking', JSON.stringify({ 
       districtCode: this.frmBooking.controls['districtCodeExamination'].value,
       provinceCode: this.frmBooking.controls['provinceCodeExamination'].value,
@@ -116,13 +124,15 @@ export class BookingIPCCComponent extends AppComponentBase implements OnInit {
 
   onSelectHealthFacilities(obj: any){
     this._doctors = [];
+    this.frmBooking.patchValue({ doctorId: null });
     this._healthfacility = this._healthfacilities.find(o => o.healthFacilitiesId == obj);
     this._dataService.get('doctors', this._healthfacility.healthFacilitiesId.toString(), '', 0, 0).subscribe(resp => this._doctors = resp.items);
   }
 
   submit() {   
-    var controls = this.frmBooking.controls['bookingType'].value == 1 ? ['bookingUser', 'phoneNumber', 'reason', 'birthYear', 'provinceCodeExamination', 'districtCodeExamination', 'healthFacilitiesId', 'examinationDate', 'examinationTime'] : ['bookingUser', 'phoneNumber', 'bookingRepresent', 'phoneRepresent', 'reason', 'birthYear', 'provinceCodeExamination', 'districtCodeExamination', 'healthFacilitiesId', 'examinationDate', 'examinationTime'];
+    var controls = this.frmBooking.controls['bookingType'].value == 1 ? ['bookingUser', 'phoneNumber', 'reason', 'birthYear', 'provinceCodeExamination', 'districtCodeExamination', 'healthFacilitiesId', 'examinationDate', 'examinationTime', 'email'] : ['bookingUser', 'phoneNumber', 'bookingRepresent', 'phoneRepresent', 'reason', 'birthYear', 'provinceCodeExamination', 'districtCodeExamination', 'healthFacilitiesId', 'examinationDate', 'examinationTime', 'email'];
     this.frmBooking.patchValue({bookingUser: this.frmBooking.value.bookingUser.trim(), reason: this.frmBooking.value.reason.trim(), address: this.frmBooking.value.address ? this.frmBooking.value.address.trim() : null, examinationDate: this.examinationDate.nativeElement.value ? this.examinationDate.nativeElement.value : null});
+
     if(this.frmBooking.controls['bookingType'].value == 2){
       this.frmBooking.patchValue({bookingRepresent: this.frmBooking.value.bookingRepresent.trim(), phoneRepresent: this.frmBooking.value.phoneRepresent.trim()});
     }
@@ -137,19 +147,25 @@ export class BookingIPCCComponent extends AppComponentBase implements OnInit {
 
       if(check == 1)  return;
     }
-
-
+    
     var fromData = this.frmBooking.value;
     var examinationTime = fromData.examinationTime.substring(0, 2) + ':' + this.frmBooking.controls['examinationTime'].value.substring(2, 4);
     var ticketId = this._healthfacility.code + moment(this.frmBooking.controls['examinationDate'].value.jsdate).format("DDMMYYYY") + Math.floor((Math.random() * 9000) + 1000);
-
+    
     fromData.ticketId = ticketId;
     fromData.examinationTime = examinationTime;
-
+    fromData.examinationDate = moment(fromData.examinationDate, 'DD/MM/YYYY').toDate();
+    
     this._dataService.create('bookinginformations', _.pickBy(fromData, _.identity)).subscribe(
       () => {
-        swal('Thông báo', 'Thành công', 'success');
-        this._location.back();
+        swal({
+          title: 'Đặt khám thành công!',
+          type: 'success',
+          confirmButtonClass: 'mat-raised-button mat-primary bg-danger',
+          confirmButtonText: 'OK',
+        }).then(() => {
+          this._location.back();
+        });
       }, err => {})
   }
 
@@ -165,6 +181,27 @@ export class BookingIPCCComponent extends AppComponentBase implements OnInit {
         this.validateAllFormFields(control, fields);
       }
     });
+  }
+
+  onKeyupDate(date: any){
+    if(date && !moment(date, 'DD/MM/YYYY').isValid){
+      this.frmBooking.controls['examinationDate'].setErrors({special: true});      
+    } else{
+      if(moment(date + '23:59:59', 'DD/MM/YYYY hh:mm:ss').toDate() < new Date()){
+        this.frmBooking.controls['examinationDate'].setErrors({compareDate: true});
+      } else{
+        this.frmBooking.patchValue({examinationDate: this.examinationDate.nativeElement.value});
+      }
+    }
+    this.validateAllFormFields(this.frmBooking, ['examinationDate']);
+  }
+
+  onDateChanged(value: any) {
+    if(value.jsdate){
+      this.frmBooking.controls['examinationDate'].setErrors(null);
+    } else{
+      this.frmBooking.controls['examinationDate'].setErrors({required: true});
+    }
   }
 
   rulePhoneNumber(event: any){

@@ -11,18 +11,20 @@ namespace SHCServer.Models
     {
         public SmsTemplate()
         {
+
         }
+
         public SmsTemplate(SmsTemplateInputViewModel sms)
         {
             SmsTemplateName = sms.SmsTemplateName;
             MessageType = sms.MessageType;
             SmsContent = sms.SmsContent;
-            Status = sms.Status;
+            IsActive = sms.IsActive;
             ApplyAllSystem = sms.ApplyAllSystem;
             IsDelete = sms.IsDelete;
-            CreateUser = sms.CreateUser;
-            UpdateUser = sms.UpdateUser;
-            //UpdateDate = sms.UpdateDate;
+            CreateUserId = sms.UserId;
+            CreateDate = DateTime.Now;
+
             TypeNumber = sms.TypeNumber;
             OrganizationCode = sms.OrganizationCode;
             OrganizationName = sms.OrganizationName;
@@ -41,26 +43,27 @@ namespace SHCServer.Models
 
         public string SmsContent { set; get; }
 
-        public bool? Status { set; get; }
+        public bool? IsActive { set; get; }
 
         public bool? ApplyAllSystem { set; get; }
 
         public bool IsDelete { set; get; }
 
-        public string CreateUser { set; get; }
+        public int? CreateUserId { set; get; }
 
-        public string UpdateUser { set; get; }
+        public int? UpdateUserId { set; get; }
 
-        //public DateTime UpdateDate { set; get; }
+        public DateTime? UpdateDate { set; get; }
+
+        public DateTime? CreateDate { set; get; }
 
         public string TypeNumber { set; get; }
 
         public string OrganizationCode { set; get; }
 
         public string OrganizationName { set; get; }
-
-        
     }
+
     public class SmsTemplateMapBase<TUser> : EntityTypeBuilder<TUser> where TUser : SmsTemplate
     {
         public SmsTemplateMapBase()
@@ -69,6 +72,7 @@ namespace SHCServer.Models
             Property(o => o.Id).IsAutoIncrement().IsPrimaryKey();
         }
     }
+
     public class SmsTemplateMap : SmsTemplateMapBase<SmsTemplate>
     {
         public SmsTemplateMap()
