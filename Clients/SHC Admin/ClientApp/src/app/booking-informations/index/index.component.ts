@@ -23,11 +23,11 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
   filteredOptions: Observable<IHealthfacilities[]>;
   healthfacilities = new FormControl();
 
-  displayedColumns = [ 'orderNumber', 'Unit', 'status',];
+  displayedColumns = [ 'orderNumber', 'status'];
 
   constructor(injector: Injector, private _dataService: DataService, public dialog: MatDialog, private _formBuilder: FormBuilder) { super(injector); }
-
-  ngOnInit() {   
+  _bookingServiceTypes = [{ id: 0, name: 'Mới đăng ký' }, { id: 1, name: 'Chưa khám' }, { id: 2, name: 'Đã khám' }, { id: 3, name: 'Hủy khám' }, { id: 4, name: 'Tất cả' }];
+  ngOnInit() {  
     this.api = 'bookinginformations';
     this.dataService = this._dataService;
     this.dialogComponent = TaskComponent;  
