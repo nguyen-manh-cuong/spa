@@ -19,7 +19,7 @@ export class DetailComponent extends AppComponentBase implements OnInit {
     api: string = 'smspackages';
 
     _frm: FormGroup;
-    _package: IPackage | any = { name: '', description: '', cost: '', quantity: '', status: '', smsFrom: '', smsTo: '', detailCost: '' };
+    _package: IPackage | any = { name: '', description: '', cost: '', quantity: '', isActive: '', smsFrom: '', smsTo: '', detailCost: '' };
     _context: any;
     _isNew: boolean = true;
 
@@ -43,7 +43,7 @@ export class DetailComponent extends AppComponentBase implements OnInit {
             description: [this._package.description],
             cost: [this._package.cost],
             quantity: [this._package.quantity],
-            status: [this._package.status],
+            isActive: [this._package.isActive],
             smsFrom: 0, 
             smsTo: [this._package.smsTo], 
             detailCost: [this._package.detailCost]       

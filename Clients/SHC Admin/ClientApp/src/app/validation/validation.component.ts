@@ -31,6 +31,7 @@ export class ValidationComponent implements OnInit {
         let messages = {
             'required': isVi ? 'Không được để trống' : 'Not be empty',
             'compare' : isVi ? 'SMS đến phải lớn hơn SMS từ' : 'The SMS to must be larger than the SMS from',
+            
             'special' : isVi ? 'Không đúng định dạng' : 'Do not enter special characters'
         }
         return messages[err]

@@ -127,7 +127,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     }
 
     addDetail() {
-        if( (this._frm.controls['cost'].value && this._frm.controls['cost'].value > 2000000000) || (this._frm.controls['quantity'].value && this._frm.controls['quantity'].value > 2000000000) ) return swal('Thông báo', 'Thành tiền hoặc số tin nhắn tối đa là 2000000000', 'warning');
+        if(this._frm.controls['cost'].value && this._frm.controls['cost'].value > 2000000000) return swal('Thông báo', 'Thành tiền không được quá 2.000.000.000', 'warning');
 
         var length: number = this._details.length;
         var smsTo: number = length == 0 ? Number(this._frm.value.smsTo) + 1 : Number(this._details[length - 1].smsTo) + 1;
@@ -202,8 +202,8 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     }
 
     submit() {
-        if( (this._frm.controls['cost'].value && this._frm.controls['cost'].value > 2000000000) || (this._frm.controls['quantity'].value && this._frm.controls['quantity'].value > 2000000000) ) return swal('Thông báo', 'Thành tiền hoặc số tin nhắn tối đa là 2000000000', 'warning');
-
+        if(this._frm.controls['cost'].value && this._frm.controls['cost'].value > 2000000000) return swal('Thông báo', 'Thành tiền không được quá 2.000.000.000', 'warning');
+  
         var params = _.pick(this._frm.value, ['id', 'name', 'description', 'cost', 'quantity', 'isActive', 'details', 'userId']);
         var detail: Array<IPackageDetail> = [{
             smsFrom: this._frm.value.smsFrom,
