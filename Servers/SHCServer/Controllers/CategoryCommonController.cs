@@ -18,6 +18,7 @@ namespace SHCServer.Controllers
             _settings = settings;
             _context = new MySqlContext(new MySqlConnectionFactory(configuration.GetConnectionString("DefaultConnection")));
             _connectionString = configuration.GetConnectionString("DefaultConnection");
+            _excep = new FriendlyException();
         }
 
         [HttpGet]
@@ -70,35 +71,35 @@ namespace SHCServer.Controllers
             try
             {
                 _context.Session.BeginTransaction();
-
-                //var cc=_context.Query<CategoryCommon>().Where(c => c.Code == categoryCommon.Code).FirstOrDefault();
-                //if (cc == null) Duplicate Code
-                //{
-                _context.Insert(() => new CategoryCommon()
+                var cc = _context.Query<CategoryCommon>().Where(c => c.Code.Equals(categoryCommon.Code)).FirstOrDefault();
+                if (cc == null)
                 {
-                    Name = categoryCommon.Name,
-                    Code = categoryCommon.Code,
-                    IsActive = categoryCommon.IsActive,
-                    Type = "CHUYENKHOA",
-                    CreateDate = DateTime.Now,
-                    CreateUserId = categoryCommon.CreateUserId,
-                    UpdateDate = DateTime.Now,
-                    UpdateUserId = categoryCommon.UpdateUserId
-                });
+                    _context.Insert(() => new CategoryCommon
+                    {
+                        Name = categoryCommon.Name,
+                        Code = categoryCommon.Code,
+                        IsActive = categoryCommon.IsActive,
+                        Type = "CHUYENKHOA",
+                        CreateDate = DateTime.Now,
+                        CreateUserId = categoryCommon.CreateUserId,
+                        UpdateDate = DateTime.Now,
+                        UpdateUserId = categoryCommon.UpdateUserId
+                    });
+                }
+                else
+                {
+                    return StatusCode(422, _excep.Throw("Tạo không thành công !", "Mã chuyên khoa đã tồn tại"));
+                }
 
                 _context.Session.CommitTransaction();
 
                 return Json(new ActionResultDto());
-                //}
-                //return Json(new ActionResultDto() { Error = "Mã chuyên khoa đã tồn tại" });
             }
             catch (Exception e)
             {
                 if (_context.Session.IsInTransaction)
-                {
                     _context.Session.RollbackTransaction();
-                }
-                return StatusCode(500, _excep.Throw("Có lỗi xảy ra", e.Message));
+                return StatusCode(500, _excep.Throw("Có lỗi xảy ra !", e.Message));
             }
         }
 
