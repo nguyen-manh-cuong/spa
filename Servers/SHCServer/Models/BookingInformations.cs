@@ -44,11 +44,6 @@ namespace SHCServer.Models
             ExaminationWorkingTime = obj.examinationWorkingTime;
             TimeSlotId = obj.timeSlotId;
             Status = 0;
-
-            CreateDate = DateTime.Now;
-            CreateUserId = obj.userId;
-            UpdateDate = DateTime.Now;
-            UpdateUserId = obj.userId;
         }
 
         [Column(IsPrimaryKey = true)]
@@ -81,9 +76,9 @@ namespace SHCServer.Models
         public int? ExaminationWorkingTime { set; get; }
         public int? TimeSlotId { set; get; }
         public int Status { set; get; }
-        public DateTime? CreateDate { get; set; }
-        public int? CreateUserId { get; set; }
-        public DateTime? UpdateDate { get; set; }
-        public int? UpdateUserId { get; set; }
+        public DateTime CreateDate { set; get; }
+        public int? BookingServiceType { get; set; }
+
+
     }
 }
