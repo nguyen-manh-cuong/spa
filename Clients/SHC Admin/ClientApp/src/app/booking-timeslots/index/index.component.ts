@@ -28,7 +28,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingTimeslots>
   filteredOptions: Observable<IHealthfacilities[]>;
   healthfacilities = new FormControl();
 
-  displayedColumns = [ 'orderNumber', 'code', 'name', 'time', 'status', 'task'];
+  displayedColumns = [ 'orderNumber', 'healthFacilitiesName', 'code', 'name', 'time', 'status', 'task'];
 
   constructor(injector: Injector, private _dataService: DataService, public dialog: MatDialog, private _formBuilder: FormBuilder) { super(injector); }
 
@@ -67,7 +67,7 @@ showMess(obj: EntityDto, key: string, id?: number | string){
     buttonsStyling: false
 }).then((result) => {
   if (result.value) {
-      swal(this.l('Xóa không thành công'), 'Không thể xóa khung giờ khám đang hoạt động!', 'error');
+      swal(this.l('Xóa khung giờ khám không thành công. Không thể xóa khung giờ khám đang hoạt động'), '', 'error');
   }
 });  
 }

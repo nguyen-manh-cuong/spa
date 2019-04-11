@@ -54,6 +54,10 @@ import { NgModule } from '@angular/core';
                         loadChildren: 'app/booking-timeslots/booking-timeslots.module#BookingTimeslotsModule', canActivate: [AppRouteGuard]
                     },
                     {
+                        path: 'booking-informations',
+                        loadChildren: 'app/booking-informations/booking-informations.module#BookingInformationsModule', canActivate: [AppRouteGuard]
+                    },
+                    {
                         path: 'category-common',
                         loadChildren: 'app/category-common/category-common.module#CategoryCommonModule', canActivate:[AppRouteGuard]
                     }

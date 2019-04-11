@@ -30,7 +30,7 @@ namespace SHCServer
                 lstSmsLog.Add(smsLog);
 
                 if(resp.Code == 0) fail++;
-                if (lstSmsUsed.IndexOf(resp.SmsPackageUsedId.ToString()) < 0)
+                if (lstSmsUsed.IndexOf(resp.SmsPackageUsedId.ToString()) < 0 && resp.Code != 0)//
                 {
                     lstSmsUsed.Add(resp.SmsPackageUsedId.ToString());
                 }

@@ -34,5 +34,8 @@ namespace SHCServer.Controllers
 
             return Json(new ActionResultDto { Result = result });
         }
+
+       
+        
     }
 }
