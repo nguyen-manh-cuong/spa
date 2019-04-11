@@ -96,8 +96,8 @@ namespace SHCServer.Controllers
                                 Items = new List<MenuItem>
                                 {
                                     new MenuItem {Name = "HomePage", Icon      = "home", Route        = "/app/dashboard"},
-                                    new MenuItem {Name = "UsersManager", Icon = "people", Route = "/app/users"},
-                                    new MenuItem {Name = "Language", Icon = "g_translate", Route = "/app/languages"},
+                                    //new MenuItem {Name = "UsersManager", Icon = "people", Route = "/app/users"},
+                                    //new MenuItem {Name = "Language", Icon = "g_translate", Route = "/app/languages"},
                                     new MenuItem {Name = "SMS", Icon = "sms", Items = new List<MenuItem>{
                                          new MenuItem {Name = "PackagesMenu", Icon = "", Route = "/app/sms-package"},
                                          new MenuItem {Name = "PackagesDistributeSmsPackage", Icon = "", Route = "/app/sms-package-distribute"},
@@ -109,8 +109,8 @@ namespace SHCServer.Controllers
                                          new MenuItem {Name = "SmsManual", Icon = "", Route = "/app/sms-manual"},
                                          new MenuItem {Name = "SmsLog", Icon = "", Route = "/app/sms-log"}
                                     }},
-                                    new MenuItem {Name = "Danh mục khung giờ khám", Icon = "av_timer", Route = "/app/booking-timeslots"},
-                                    new MenuItem {Name = "Thống kê danh sách bệnh nhân đặt khám", Icon = "av_timer", Route = "/app/booking-informations"},
+                                    //new MenuItem {Name = "Danh mục khung giờ khám", Icon = "av_timer", Route = "/app/booking-timeslots"},
+                                    //new MenuItem {Name = "Thống kê danh sách bệnh nhân đặt khám", Icon = "av_timer", Route = "/app/booking-informations"},
                                     new MenuItem{Name = "CategoryCommon", Icon="account_circle", Route="/app/category-common"}
                                 } 
                             }
