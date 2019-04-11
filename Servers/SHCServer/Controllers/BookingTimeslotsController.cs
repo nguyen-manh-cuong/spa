@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using SHCServer.Models;
+using SHCServer.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
@@ -10,14 +11,14 @@ namespace SHCServer.Controllers
 {
     public class BookingTimeslotsController : BaseController
     {
-        private readonly string connectionString;
+        private readonly string _connectionString;
 
         public BookingTimeslotsController(IOptions<Audience> settings, IConfiguration configuration)
         {
             _settings = settings;
             _context = new MySqlContext(new MySqlConnectionFactory(configuration.GetConnectionString("DefaultConnection")));
             _excep = new FriendlyException();
-            connectionString = configuration.GetConnectionString("DefaultConnection");
+            _connectionString = configuration.GetConnectionString("DefaultConnection");
         }
         /// <summary>
         /// GetAll
@@ -59,7 +60,8 @@ namespace SHCServer.Controllers
                 objs = objs.OrderByDesc(b => b.CreateDate);
 
 
-            return Json(new ActionResultDto { Result = new { Items = objs.TakePage(skipCount == 0 ? 1 : skipCount + 1, maxResultCount).ToList(), TotalCount = objs.Count() } });
+            //return Json(new ActionResultDto { Result = new { Items = objs.TakePage(skipCount == 0 ? 1 : skipCount + 1, maxResultCount).ToList(), TotalCount = objs.Count() } });
+            return Json(new ActionResultDto { Result = new { Items = objs.OrderByDesc(p => p.CreateDate).TakePage(skipCount == 0 ? 1 : skipCount + 1, maxResultCount).Select(p => new BookingTimeSlotsViewModel(p, _connectionString)).ToList(), TotalCount = objs.Count() } });
         }
 
         /// <summary>

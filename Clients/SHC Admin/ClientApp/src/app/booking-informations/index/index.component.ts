@@ -7,7 +7,7 @@ import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { compact, isEmpty, omitBy, zipObject } from 'lodash';
 import { SelectionModel } from '@angular/cdk/collections';
 import { DataService } from '@shared/service-proxies/service-data';
-import { ILanguage, IBookingTimeslots, IHealthfacilities, IMedicalHealthcareHistories } from '@shared/Interfaces';
+import { IBookingInformations, IHealthfacilities, IMedicalHealthcareHistories } from '@shared/Interfaces';
 import { PagedListingComponentBase } from '@shared/paged-listing-component-base';
 import { TaskComponent } from '../task/task.component';
 import swal from 'sweetalert2';
@@ -17,18 +17,18 @@ import swal from 'sweetalert2';
   templateUrl: './index.component.html',
   styleUrls: ['./index.component.scss']
 })
-export class IndexComponent extends PagedListingComponentBase<IBookingTimeslots> implements OnInit {
+export class IndexComponent extends PagedListingComponentBase<IBookingInformations> implements OnInit {
   _healthfacilities = [];
 
   filteredOptions: Observable<IHealthfacilities[]>;
   healthfacilities = new FormControl();
 
-  displayedColumns = [ 'orderNumber', 'code', 'name', 'time', 'status', 'task'];
+  displayedColumns = [ 'orderNumber', 'Unit', 'status',];
 
   constructor(injector: Injector, private _dataService: DataService, public dialog: MatDialog, private _formBuilder: FormBuilder) { super(injector); }
 
   ngOnInit() {   
-    this.api = 'bookingtimeslots';
+    this.api = 'bookinginformations';
     this.dataService = this._dataService;
     this.dialogComponent = TaskComponent;  
     this.frmSearch = this._formBuilder.group({
@@ -70,13 +70,11 @@ filterOptions() {
 
 customSearch() {  
   if(this.appSession.user.healthFacilitiesId != null){
-    console.log(11111)
     this.healthfacilities.value 
       ? this.frmSearch.controls['healthfacilities'].setValue(this.healthfacilities.value.healthFacilitiesId) 
       : '';  
   }
   else{
-    console.log(22222)
     this.healthfacilities.value 
       ? this.frmSearch.controls['healthfacilities'].setValue(this.healthfacilities.value.healthFacilitiesId) 
       : this.frmSearch.controls['healthfacilities'].setValue('');  
