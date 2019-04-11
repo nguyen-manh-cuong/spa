@@ -79,6 +79,8 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
                 this._frm.addControl(this._detailCost + i, new FormControl(el.cost, [Validators.required, this.ValidationRule.hasValue, validationRule.hasSpecialCharacter]));
             })
         }
+
+        console.log(83, this._frm)
     }
 
     ngAfterViewInit(): void {
