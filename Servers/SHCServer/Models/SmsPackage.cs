@@ -30,7 +30,7 @@ namespace SHCServer.Models
         public virtual int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public long Quantity { get; set; }
+        public int Quantity { get; set; }
         public long Cost { get; set; }
         public bool? IsActive { get; set; }
         public bool IsDelete { get; set; }

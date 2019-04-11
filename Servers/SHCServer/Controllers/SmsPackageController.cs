@@ -162,7 +162,7 @@ namespace SHCServer.Controllers
         {
             try
             {
-                if (_context.Query<SmsPackagesDistribute>().Where(pd => pd.SmsPackageId == id && pd.IsDelete == true).Count() > 0)
+                if (_context.Query<SmsPackagesDistribute>().Where(pd => pd.SmsPackageId == id && pd.IsDelete == false).Count() > 0)
                 {
                     return StatusCode(500, _excep.Throw("Xóa gói thất bại.", "Gói SMS đang được sử dụng!"));
                 }

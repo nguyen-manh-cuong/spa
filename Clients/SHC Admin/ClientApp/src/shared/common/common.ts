@@ -1,5 +1,4 @@
 import * as _ from 'lodash';
-import swal from 'sweetalert2';
 import { AbstractControl } from '@angular/forms';
 
 export class ValidationRule {   

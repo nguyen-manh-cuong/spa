@@ -71,7 +71,7 @@
            
             
             <ng-container matColumnDef="task">
-                    <th mat-header-cell *matHeaderCellDef></th>
+                    <th mat-header-cell *matHeaderCellDef>{{l('Task')}}</th>
                     <td mat-cell *matCellDef="let element" class="w-px-30 pr-0">
                         <div class="d-flex">
                             <button mat-icon-button (click)="openDialog(element)">

@@ -120,7 +120,7 @@ export class BookingComponent extends AppComponentBase implements OnInit, AfterV
     }
 
     if (i >= 3) {
-      this.validateAllFormFields(this.frmBooking, ['reason', 'birthYear']);
+      this.validateAllFormFields(this.frmBooking, ['bookingSecondUser', 'phoneSecondNumber', 'reason', 'birthYear']);
       if (this.frmBooking.controls.reason.invalid || this.frmBooking.controls.birthYear.invalid || this.frmBooking.controls.email.invalid) { return; }
 
       if (this.frmBooking.get('bookingType').value === 2) {
