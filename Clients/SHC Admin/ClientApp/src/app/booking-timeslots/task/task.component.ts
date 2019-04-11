@@ -105,13 +105,13 @@ export class TaskComponent extends AppComponentBase implements OnInit {
     }
     else{
       this._isNew ?
-      this._dataService.create(this.api, standardized(_.omit(Object.assign(this._frm.value), 'timeSlotId'), this.rules)).subscribe(e =>
+      this._dataService.create(this.api, _.omit(Object.assign(this._frm.value), 'timeSlotId')).subscribe(e =>
       { 
         swal(this.l('SaveSuccess'), '', 'success');
         this.dialogRef.close();
       }, err => {}) :
 
-      this._dataService.update(this.api, standardized(Object.assign(this._frm.value, this.obj.timeSlotId), this.rules)).subscribe(() => 
+      this._dataService.update(this.api, Object.assign(this._frm.value, this.obj.timeSlotId)).subscribe(() => 
       {
         swal(this.l('SaveSuccess'), '', 'success');
         this.dialogRef.close();
