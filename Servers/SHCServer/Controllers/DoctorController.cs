@@ -165,7 +165,7 @@ namespace SHCServer.Controllers
             {
                 str = $"{doctorJoinSpecialist} {string.Join(" ", clause)}";
             }
-
+            //Fixing
             if (query == 1 || query == 2)
             {
                 str = $"{doctorJoinSpecialistHealth} {string.Join(" ", clause)}";
@@ -173,43 +173,88 @@ namespace SHCServer.Controllers
 
             var reader = _context.Session.ExecuteReader(str, param);
 
-            while (reader.Read())
+            if(query==0)
             {
-                doctorList.Add(new DoctorViewModel()
+                while (reader.Read())
                 {
-                    AcademicId = reader["AcademicId"] != DBNull.Value ? Convert.ToInt32(reader["AcademicId"]) : 0,
-                    Address = reader["Address"].ToString(),
-                    AllowBooking = Convert.ToInt16(reader["AllowBooking"]) == 0 ? false : true,
-                    AllowFilter = Convert.ToInt16(reader["AllowFilter"]) == 0 ? false : true,
-                    AllowSearch = Convert.ToInt16(reader["AllowSearch"]) == 0 ? false : true,
-                    Avatar = reader["Avatar"].ToString(),
-                    BirthDate = reader["BirthDate"] != DBNull.Value ? Convert.ToInt16(reader["BirthDate"]) : 0,
-                    BirthMonth = reader["BirthDate"] != DBNull.Value ? Convert.ToInt16(reader["BirthMonth"]) : 0,
-                    BirthYear = Convert.ToInt16(reader["BirthYear"]),
-                    CertificationCode = reader["CertificationCode"].ToString(),
-                    CertificationDate = reader["CertificationDate"] != DBNull.Value ? Convert.ToDateTime(reader["CertificationDate"]) : Convert.ToDateTime("0001-01-01T01:01:01"),
-                    DegreeId = reader["DegreeId"] != DBNull.Value ? Convert.ToInt16(reader["DegreeId"]) : 0,
-                    Description = reader["Description"].ToString(),
-                    DistrictCode = reader["DistrictCode"].ToString(),
-                    ProvinceCode = reader["ProvinceCode"].ToString(),
-                    EducationCountryCode = reader["EducationCountryCode"].ToString(),
-                    Email = reader["Email"].ToString(),
-                    EthnicityCode = reader["EthnicityCode"].ToString(),
-                    FullName = reader["FullName"].ToString(),
-                    Gender = Convert.ToInt16(reader["Gender"]),
-                    HisId = reader["HisId"].ToString(),
-                    IsActive = Convert.ToInt16(reader["IsActive"]) == 0 ? false : true,
-                    IsSync = Convert.ToInt16(reader["IsSync"]) == 0 ? false : true,
-                    NationCode = reader["NationCode"].ToString(),
-                    PhoneNumber = reader["PhoneNumber"].ToString(),
-                    PositionCode = reader["PositionCode"].ToString(),
-                    PriceDescription = reader["PriceDescription"].ToString(),
-                    PriceFrom = reader["PriceFrom"] != DBNull.Value ? Convert.ToInt32(reader["PriceFrom"]) : 0,
-                    PriceTo = reader["PriceTo"] != DBNull.Value ? Convert.ToInt32(reader["PriceTo"]) : 0,
-                    Summary = reader["Summary"].ToString(),
-                    TitleCode = reader["TitleCode"].ToString(),
-                    HealthFacilitiesId=reader["HealthFacilitiesId"] !=DBNull.Value?Convert.ToInt32(reader["HealthFacilitiesId"]):0
-                });
+                    doctorList.Add(new DoctorViewModel()
+                    {
+                        AcademicId = reader["AcademicId"] != DBNull.Value ? Convert.ToInt32(reader["AcademicId"]) : 0,
+                        Address = reader["Address"].ToString(),
+                        AllowBooking = Convert.ToInt16(reader["AllowBooking"]) == 0 ? false : true,
+                        AllowFilter = Convert.ToInt16(reader["AllowFilter"]) == 0 ? false : true,
+                        AllowSearch = Convert.ToInt16(reader["AllowSearch"]) == 0 ? false : true,
+                        Avatar = reader["Avatar"].ToString(),
+                        BirthDate = reader["BirthDate"] != DBNull.Value ? Convert.ToInt16(reader["BirthDate"]) : 0,
+                        BirthMonth = reader["BirthDate"] != DBNull.Value ? Convert.ToInt16(reader["BirthMonth"]) : 0,
+                        BirthYear = Convert.ToInt16(reader["BirthYear"]),
+                        CertificationCode = reader["CertificationCode"].ToString(),
+                        CertificationDate = reader["CertificationDate"] != DBNull.Value ? Convert.ToDateTime(reader["CertificationDate"]) : Convert.ToDateTime("0001-01-01T01:01:01"),
+                        DegreeId = reader["DegreeId"] != DBNull.Value ? Convert.ToInt16(reader["DegreeId"]) : 0,
+                        Description = reader["Description"].ToString(),
+                        DistrictCode = reader["DistrictCode"].ToString(),
+                        ProvinceCode = reader["ProvinceCode"].ToString(),
+                        EducationCountryCode = reader["EducationCountryCode"].ToString(),
+                        Email = reader["Email"].ToString(),
+                        EthnicityCode = reader["EthnicityCode"].ToString(),
+                        FullName = reader["FullName"].ToString(),
+                        Gender = Convert.ToInt16(reader["Gender"]),
+                        HisId = reader["HisId"].ToString(),
+                        IsActive = Convert.ToInt16(reader["IsActive"]) == 0 ? false : true,
+                        IsSync = Convert.ToInt16(reader["IsSync"]) == 0 ? false : true,
+                        NationCode = reader["NationCode"].ToString(),
+                        PhoneNumber = reader["PhoneNumber"].ToString(),
+                        PositionCode = reader["PositionCode"].ToString(),
+                        PriceDescription = reader["PriceDescription"].ToString(),
+                        PriceFrom = reader["PriceFrom"] != DBNull.Value ? Convert.ToInt32(reader["PriceFrom"]) : 0,
+                        PriceTo = reader["PriceTo"] != DBNull.Value ? Convert.ToInt32(reader["PriceTo"]) : 0,
+                        Summary = reader["Summary"].ToString(),
+                        TitleCode = reader["TitleCode"].ToString(),
+                        SpecialistCode = reader["SpecialistCode"].ToString(),
+                    });
+                }
+            }
+            else
+            {
+                while (reader.Read())
+                {
+                    doctorList.Add(new DoctorViewModel()
+                    {
+                        AcademicId = reader["AcademicId"] != DBNull.Value ? Convert.ToInt32(reader["AcademicId"]) : 0,
+                        Address = reader["Address"].ToString(),
+                        AllowBooking = Convert.ToInt16(reader["AllowBooking"]) == 0 ? false : true,
+                        AllowFilter = Convert.ToInt16(reader["AllowFilter"]) == 0 ? false : true,
+                        AllowSearch = Convert.ToInt16(reader["AllowSearch"]) == 0 ? false : true,
+                        Avatar = reader["Avatar"].ToString(),
+                        BirthDate = reader["BirthDate"] != DBNull.Value ? Convert.ToInt16(reader["BirthDate"]) : 0,
+                        BirthMonth = reader["BirthDate"] != DBNull.Value ? Convert.ToInt16(reader["BirthMonth"]) : 0,
+                        BirthYear = Convert.ToInt16(reader["BirthYear"]),
+                        CertificationCode = reader["CertificationCode"].ToString(),
+                        CertificationDate = reader["CertificationDate"] != DBNull.Value ? Convert.ToDateTime(reader["CertificationDate"]) : Convert.ToDateTime("0001-01-01T01:01:01"),
+                        DegreeId = reader["DegreeId"] != DBNull.Value ? Convert.ToInt16(reader["DegreeId"]) : 0,
+                        Description = reader["Description"].ToString(),
+                        DistrictCode = reader["DistrictCode"].ToString(),
+                        ProvinceCode = reader["ProvinceCode"].ToString(),
+                        EducationCountryCode = reader["EducationCountryCode"].ToString(),
+                        Email = reader["Email"].ToString(),
+                        EthnicityCode = reader["EthnicityCode"].ToString(),
+                        FullName = reader["FullName"].ToString(),
+                        Gender = Convert.ToInt16(reader["Gender"]),
+                        HisId = reader["HisId"].ToString(),
+                        IsActive = Convert.ToInt16(reader["IsActive"]) == 0 ? false : true,
+                        IsSync = Convert.ToInt16(reader["IsSync"]) == 0 ? false : true,
+                        NationCode = reader["NationCode"].ToString(),
+                        PhoneNumber = reader["PhoneNumber"].ToString(),
+                        PositionCode = reader["PositionCode"].ToString(),
+                        PriceDescription = reader["PriceDescription"].ToString(),
+                        PriceFrom = reader["PriceFrom"] != DBNull.Value ? Convert.ToInt32(reader["PriceFrom"]) : 0,
+                        PriceTo = reader["PriceTo"] != DBNull.Value ? Convert.ToInt32(reader["PriceTo"]) : 0,
+                        Summary = reader["Summary"].ToString(),
+                        TitleCode = reader["TitleCode"].ToString(),
+                        SpecialistCode=reader["SpecialistCode"].ToString(),
+                        HealthFacilitiesId = reader["HealthFacilitiesId"] != DBNull.Value ? Convert.ToInt32(reader["HealthFacilitiesId"]) : 0
+                    });
+                }
             }
 
             return Json(new ActionResultDto()
@@ -266,22 +311,27 @@ namespace SHCServer.Controllers
                     TitleCode = doctor.TitleCode,
                 });
 
-                foreach(var item in doctor.Specialist)
+                var doctorFirst = _context.Query<Doctor>().OrderByDesc(d => d.CreateDate).FirstOrDefault();
+
+                foreach (var item in doctor.DoctorSpecialists)
                 {
                     _context.Insert(() => new DoctorSpecialists()
                     {
-                        DoctorId = doctor.DoctorId,
-                        SpecialistCode = item.SpecialistCode
+                        DoctorId =doctorFirst.DoctorId,
+                        SpecialistCode = item
                     });
                 }
 
-                if(doctor.HealthFacilitiesId!=null)
+                if(doctor.HealthFacilities!=null)
                 {
-                    _context.Insert(() => new HealthFacilitiesDoctors()
+                    foreach(var h in doctor.HealthFacilities)
                     {
-                        HealthFacilitiesId=(int)doctor.HealthFacilitiesId,
-                        DoctorId=doctor.DoctorId
-                    });
+                        _context.Insert(() => new HealthFacilitiesDoctors()
+                        {
+                            HealthFacilitiesId = h.Value,
+                            DoctorId = doctorFirst.DoctorId
+                        });
+                    }
                 }
 
                 _context.Session.CommitTransaction();
