@@ -38,9 +38,10 @@ namespace SHCServer.Controllers
                 foreach (var (key, value) in JsonConvert.DeserializeObject<Dictionary<string, string>>(filter))
                 {
                     if (string.Equals(key, "keyFilter") && !string.IsNullOrWhiteSpace(value))
-                        objs = objs.Where(b => b.Code.Contains(value.Trim()) || b.Name.Contains(value.Trim()));
-                        
-
+                    {
+                        var query = value.Replace(@"%", "\\%").Replace(@"_", "\\_").Trim();
+                        objs = objs.Where(b => b.Code.Contains(query) || b.Name.Contains(query));
+                    }
                     if (string.Equals(key, "healthfacilities") && !string.IsNullOrWhiteSpace(value))
                         objs = objs.Where(b => b.HealthFacilitiesId.ToString() == value.Trim() || b.HealthFacilitiesId == null);
                 }
@@ -81,8 +82,8 @@ namespace SHCServer.Controllers
                 {
                     _context.Insert(() => new BookingTimeslots
                     {
-                        Name = obj.Name,
-                        Code = obj.Code,
+                        Name = obj.Name.Trim(),
+                        Code = obj.Code.Trim(),
                         HoursStart = obj.HoursStart,
                         HoursEnd = obj.HoursEnd,
                         MinuteStart = obj.MinuteStart,
@@ -133,8 +134,8 @@ namespace SHCServer.Controllers
                 _context.Update<BookingTimeslots>(b => b.TimeSlotId == obj.TimeSlotId, a => new BookingTimeslots()
                 {
 
-                    Name = obj.Name,
-                    Code = obj.Code,
+                    Name = obj.Name.Trim(),
+                    Code = obj.Code.Trim(),
                     HoursStart = obj.HoursStart,
                     HoursEnd = obj.HoursEnd,
                     MinuteStart = obj.MinuteStart,

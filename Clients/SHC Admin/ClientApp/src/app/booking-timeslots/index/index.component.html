@@ -62,19 +62,19 @@
             </ng-container>
             <ng-container matColumnDef="healthFacilitiesName">
                 <th mat-header-cell *matHeaderCellDef class="min-w-30 text-center pl-0"> {{l("BookingTimeslotsUnit")}} </th>
-                <td mat-cell *matCellDef="let element; let i = index;" class="min-w-30 text-center">{{element.healthFacilitiesName}}</td>
+                <td mat-cell *matCellDef="let element; let i = index;" class="min-w-30">{{element.healthFacilitiesName}}</td>
             </ng-container>
             <ng-container matColumnDef="code" sticky>
                 <th mat-header-cell *matHeaderCellDef class="text-center"> {{l("BookingTimeslotsCode")}} </th>
-                <td mat-cell *matCellDef="let element"> <b>{{element.code}}</b> </td>
+                <td mat-cell *matCellDef="let element"> {{element.code}} </td>
             </ng-container>
             <ng-container matColumnDef="name" sticky>
                 <th mat-header-cell *matHeaderCellDef class="text-center"> {{l("BookingTimeslotsName")}} </th>
-                <td mat-cell *matCellDef="let element"> <b>{{element.name}}</b> </td>
+                <td mat-cell *matCellDef="let element"> {{element.name}} </td>
             </ng-container>
             <ng-container matColumnDef="time" sticky>
                 <th mat-header-cell *matHeaderCellDef class="text-center"> {{l("BookingTimeslotsTime")}} </th>
-                <td mat-cell *matCellDef="let element" class="text-center"> <b>{{element.hoursStart + ':' + element.minuteStart + '-' + element.hoursEnd + ':' + element.minuteEnd}}</b> </td>
+                <td mat-cell *matCellDef="let element" class="text-center"> {{element.hoursStart + ':' + element.minuteStart + '-' + element.hoursEnd + ':' + element.minuteEnd}} </td>
             </ng-container>
             <ng-container matColumnDef="status">
                 <th mat-header-cell *matHeaderCellDef class="min-w-30 text-center"> {{l('BookingTimeslotsIsActive')}}</th>

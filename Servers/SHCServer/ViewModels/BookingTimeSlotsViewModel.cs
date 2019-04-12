@@ -41,6 +41,7 @@ namespace SHCServer.ViewModels
             Name = bookingTimeslots.Name;
             IsActive = bookingTimeslots.IsActive;
             IsDefault = bookingTimeslots.IsDefault;
+            TimeSlotId = bookingTimeslots.TimeSlotId;
         }
         public int TimeSlotId { set; get; }
         public string HoursStart { set; get; }
