@@ -2,6 +2,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { CommonModule } from '@angular/common';
 import { IndexComponent } from './index/index.component';
+import { GenderComponent } from './gender-table/gender.component';
 import { BookingInformationsComponent } from './booking-informations.component';
 import { BookingInformationsRoutingModule } from './booking-informations-routing.module';
 import { NgModule } from '@angular/core';
@@ -22,7 +23,7 @@ import { NgxMaskModule} from 'ngx-mask';
     ValidationModule,
     NgxMaskModule.forRoot()
   ],
-  declarations: [BookingInformationsComponent, IndexComponent, TaskComponent],
+    declarations: [BookingInformationsComponent, IndexComponent, TaskComponent, GenderComponent],
   entryComponents: [TaskComponent]
 })
 export class BookingInformationsModule { }

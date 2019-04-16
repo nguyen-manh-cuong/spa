@@ -1,4 +1,4 @@
-﻿import { AfterViewInit, Component, Injector, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, Injector, OnInit, ViewChild } from '@angular/core';
 import { MatDialog, MatPaginator, MatTableDataSource } from '@angular/material';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { isEmpty, isNil, isNull, omitBy, zipObject } from 'lodash';
@@ -106,7 +106,10 @@ export abstract class PagedListingComponentBase<EntityDto> extends AppComponentB
                     setTimeout(() => this.isTableLoading = false, 500);
                     return of([]);
                 })
-            ).subscribe(data => this.dataSources.data = data);
+        ).subscribe(data => {
+            console.log(data);
+            this.dataSources.data = data;
+        });
         this.setTableHeight();
     }
 
