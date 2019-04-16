@@ -21,7 +21,7 @@ export class GenderComponent extends AppComponentBase implements OnInit {
     frmSearch: FormGroup;
     ruleSearch = {};
 
-    displayedColumns = ['orderNumber', 'gender'];
+    displayedColumns = ['orderNumber', 'quantity', 'quantityByGederMale'];
   constructor(injector: Injector, private _dataService: DataService, public dialog: MatDialog, private _formBuilder: FormBuilder) { super(injector); }
 
 
@@ -36,8 +36,12 @@ export class GenderComponent extends AppComponentBase implements OnInit {
             endTime: new Date(),
         });
         this._dataService.get('bookinginformations', JSON.stringify(standardized(omitBy(this.frmSearch.value, isNil), this.ruleSearch)), '', 0, 1000).subscribe(resp => {
-            console.log(resp.items);
-            this.dataSources = resp.items;
+            for (var item of resp.items) {
+                if (this.arrayGender.length < 2) {
+                  this.arrayGender.push(item);
+                }
+            }
+          this.dataSources.data = this.arrayGender;
         });
     
 

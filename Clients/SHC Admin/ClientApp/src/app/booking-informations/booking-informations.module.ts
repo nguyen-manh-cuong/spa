@@ -11,6 +11,7 @@ import { TaskComponent } from './task/task.component';
 import { UtilsModule } from '@shared/utils/utils.module';
 import { ValidationModule } from '@app/validation/validation.module';
 import { NgxMaskModule} from 'ngx-mask';
+import { GenderTypePipe } from 'pipes/gender-type.pipe'
 
 @NgModule({
   imports: [
@@ -23,7 +24,7 @@ import { NgxMaskModule} from 'ngx-mask';
     ValidationModule,
     NgxMaskModule.forRoot()
   ],
-    declarations: [BookingInformationsComponent, IndexComponent, TaskComponent, GenderComponent],
+    declarations: [BookingInformationsComponent, IndexComponent, TaskComponent, GenderComponent, GenderTypePipe],
   entryComponents: [TaskComponent]
 })
 export class BookingInformationsModule { }
