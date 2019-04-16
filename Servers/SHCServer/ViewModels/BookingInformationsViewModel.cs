@@ -1,11 +1,9 @@
 ﻿using SHCServer.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using Viettel;
 using Viettel.MySql;
-
 
 
 namespace SHCServer.ViewModels
@@ -18,89 +16,8 @@ namespace SHCServer.ViewModels
         {
 
         }
+       
 
-        public BookingInformationsViewModel(BookingInformations bookingInformations, string connectionString) : this()
-        {
-            context = new MySqlContext(new MySqlConnectionFactory(connectionString));
-            Status = bookingInformations.Status;
-            #region get HealthFacilitiesName
-            var HealthFacilities = context.JoinQuery<BookingInformations, HealthFacilities>((b, h) => new object[]
-                     {
-                            JoinType.InnerJoin, b.HealthFacilitiesId == h.HealthFacilitiesId
-                     })
-                      .Where((b, h) => b.BookingId == bookingInformations.BookingId)
-                      .Select((b, h) => h).FirstOrDefault();
-            if (HealthFacilities != null)
-            {
-                HealthFacilitiesName = HealthFacilities.Name;
-            }
-            else
-            {
-                HealthFacilitiesName = "";
-            }
-            #endregion
-
-            #region get DoctorName
-            var Doctor = context.JoinQuery<BookingInformations, Doctor>((b, d) => new object[]
-                     {
-                            JoinType.InnerJoin, b.DoctorId == d.DoctorId
-                     })
-                      .Where((b, h) => b.BookingId == bookingInformations.BookingId)
-                      .Select((b, h) => h).FirstOrDefault();
-            if (Doctor != null)
-            {
-                DoctorName = Doctor.FullName;
-            }
-            else
-            {
-                DoctorName = "";
-            }
-            #endregion
-            
-            #region count by doctor
-            var bookingInformation = context.Query<BookingInformations>().ToList();
-            var q = from b in bookingInformation
-                    where b.DoctorId.Equals(bookingInformations.DoctorId)
-                    select b;
-            Quantity = q.Count();
-            #endregion
-
-
-        }
-        public int BookingId { set; get; }
-        public string TicketId { set; get; }
-        //public int BookingType { set; get; }
-        //public int BookingSource { set; get; }
-        public string BookingRepresent { set; get; }
-        public string PhoneRepresent { set; get; }
-        public string EmailRepresent { set; get; }
-        public int RelationshipId { set; get; }
-        public string BookingUser { set; get; }
-        public string PhoneNumber { set; get; }
-        public string Email { set; get; }
-        public int? Gender { set; get; }
-        public int? BirthDate { set; get; }
-        public int? BirthMonth { set; get; }
-        public int BirthYear { set; get; }
-        public string Address { set; get; }
-        public string ProvinceCode { set; get; }
-        public string DistrictCode { set; get; }
-        public string Reason { set; get; }
-        public string ProvinceCodeExamination { set; get; }
-        public string DistrictCodeExamination { set; get; }
-        public int HealthFacilitiesId { set; get; }
-        public string HealthFacilitiesName { get; set; }
-        public int? DoctorId { set; get; }
-        public string DoctorName { get; set; }
-        public DateTime ExaminationDate { set; get; }
-        public string ExaminationTime { set; get; }
-        public int? ExaminationWorkingTime { set; get; }
-        public int? TimeSlotId { set; get; }
-        public int Status { set; get; }
-        public DateTime CreateDate { set; get; }
-        public int? BookingServiceType { get; set; }
-        public int Quantity { get; set; }
-        public int QuantityGender { get; set; }
 
     }
 
