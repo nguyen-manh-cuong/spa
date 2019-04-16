@@ -68,7 +68,8 @@ export interface IBookingInformations{
     status: number;
     healthFacilitiesName: string;
     doctorName: string;
-    quantity;    
+    quantity: number;
+    quantityGender: number;
 }
 
 export interface IPackage {

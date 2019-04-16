@@ -24,7 +24,7 @@ namespace SHCServer.Controllers
             _connectionString = configuration.GetConnectionString("DefaultConnection");
             _excep = new FriendlyException();
         }
-
+        
 
         [HttpPost]
         [Route("api/bookinginformations")]
@@ -52,7 +52,7 @@ namespace SHCServer.Controllers
             if (filter != null)
             {
                 foreach (var (key, value) in JsonConvert.DeserializeObject<Dictionary<string, string>>(filter))
-                {
+                {                    
                     if (string.Equals(key, "healthfacilities") && !string.IsNullOrWhiteSpace(value))
                         objs = objs.Where(b => b.HealthFacilitiesId.ToString() == value.Trim() || b.HealthFacilitiesId.ToString() == null);
                 }
@@ -72,7 +72,7 @@ namespace SHCServer.Controllers
             {
                 objs = objs.OrderByDesc(b => b.CreateDate);
             }
-            var rs = objs.GroupBy(p => p.DoctorId).Select(p => new BookingInformationsViewModel(p, _connectionString));
+            var rs = objs.GroupBy(p => p.DoctorId).Select(p => new BookingInformationsViewModel(p, _connectionString));    
 
             // return Json(new ActionResultDto { Result = new { Items = objs.TakePage(skipCount == 0 ? 1 : skipCount + 1, maxResultCount).ToList(), TotalCount = objs.Count() } });
             return Json(new ActionResultDto { Result = new { Items = rs.TakePage(skipCount == 0 ? 1 : skipCount + 1, maxResultCount).ToList(), TotalCount = objs.Count() } });

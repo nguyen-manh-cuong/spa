@@ -56,7 +56,7 @@ namespace SHCServer.ViewModels
                 DoctorName = "";
             }
             #endregion
-
+            
             #region count by doctor
             var bookingInformation = context.Query<BookingInformations>().ToList();
             var q = from b in bookingInformation
@@ -134,7 +134,7 @@ namespace SHCServer.ViewModels
         public int relationshipId { set; get; }
         //public int? specialists { set; get; }
         public string ticketId { set; get; }
-        public int? timeSlotId { set; get; }
+        public int? timeSlotId { set; get; }       
         public string wardCode { set; get; }
         public int? userId { set; get; }
 
