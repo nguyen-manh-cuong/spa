@@ -33,12 +33,15 @@ namespace SHCServer.Controllers
             var objs = _context.Query<SmsPackagesDistribute>().Where(o => o.IsDelete == false);
             int monthStart = 0;
             int monthEnd = 0;
-            string year = "";
+            string toYear = "";
+            string fromYear = "";
 
             var filters = JsonConvert.DeserializeObject<Filter>(filter);
-            filters.year = filters.year.Trim();
+            filters.toYear = filters.toYear.Trim();
+            filters.fromYear = filters.fromYear.Trim();
             //query
-            if (filters.year != "" && Convert.ToInt32(filters.year) > 0) year = filters.year;
+            if (filters.toYear != "" && Convert.ToInt32(filters.toYear) > 0) toYear = filters.toYear;
+            if (filters.fromYear != "" && Convert.ToInt32(filters.fromYear) > 0) fromYear = filters.fromYear;
             if (filters.monthStart != 13 && filters.monthStart > 0) monthStart = filters.monthStart;
             if (filters.monthEnd != 13 && filters.monthEnd > 0) monthEnd = filters.monthEnd;
             if (monthStart > 0)
@@ -49,11 +52,15 @@ namespace SHCServer.Controllers
             {
                 objs = objs.Where(o => o.MonthEnd <= monthEnd);
             }
-            if (year != null && year != "")
+            if (toYear != null && toYear != "")
             {
-                objs = objs.Where(o => o.Year == int.Parse(year));
+                objs = objs.Where(o => o.Year <= int.Parse(toYear));
             }
-            
+            if (fromYear != null && fromYear != "")
+            {
+                objs = objs.Where(o => o.Year >= int.Parse(fromYear));
+            }
+
             if (filters.Status != null && filters.Status != 2) objs = objs.Where(o => o.IsActive == (filters.Status == 1 ? true : false));
 
             if (filters.HealthFacilitiesId != null)
@@ -190,13 +197,17 @@ namespace SHCServer.Controllers
         [JsonProperty("monthEnd")]
         public int monthEnd { get; set; }
 
-        [JsonProperty("year")]
-        public string year { get; set; }
+        [JsonProperty("toYear")]
+        public string toYear { get; set; }
+
+        [JsonProperty("fromYear")]
+        public string fromYear { get; set; }
 
         [JsonProperty("HealthFacilitiesId")]
         public List<int> HealthFacilitiesId { get; set; }
 
         [JsonProperty("Status")]
         public int? Status { get; set; }
+
     }
 }

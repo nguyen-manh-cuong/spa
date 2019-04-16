@@ -85,68 +85,87 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   }
   
   mescontent : string = '';
-  changeSelected(e) { 
-    if(e == 1)
-    {
-      this._context.mescontent = this._frm.controls['smsContent'].value;
-      if(this._context.mescontent == null){
-        this._frm.controls['smsContent'].setValue(' <PHONGKHAM>');
-      }else{
-        this._frm.controls['smsContent'].setValue(this._context.mescontent + ' <PHONGKHAM>');
-      }
-    }
-    if(e == 2)
-    {
-      this._context.mescontent = this._frm.controls['smsContent'].value;
-      if(this._context.mescontent == null){
-        this._frm.controls['smsContent'].setValue(' <NGAYSINH>');
-      }else{
-        this._frm.controls['smsContent'].setValue(this._context.mescontent + ' <NGAYSINH>');
-      }
-    }
-    if(e == 3)
-    {
-      this._context.mescontent = this._frm.controls['smsContent'].value;
-      if(this._context.mescontent == null){
-        this._frm.controls['smsContent'].setValue(' <HOTEN>');
-      }else{
-        this._frm.controls['smsContent'].setValue(this._context.mescontent + ' <HOTEN>');
-      }
-    }
-    if(e == 4)
-    {
-      this._context.mescontent = this._frm.controls['smsContent'].value;
-      if(this._context.mescontent == null){
-        this._frm.controls['smsContent'].setValue(' <EMAIL>');
-      }else{
-        this._frm.controls['smsContent'].setValue(this._context.mescontent + ' <EMAIL>');
-      }
-    }
-    if(e == 5)
-    {
-      this._context.mescontent = this._frm.controls['smsContent'].value;
-      if(this._context.mescontent == null){
-        this._frm.controls['smsContent'].setValue(' <GIOITINH>');
-      }else{
-        this._frm.controls['smsContent'].setValue(this._context.mescontent + ' <GIOITINH>');
-      }
-    }
-    if(e == 6)
-    {
-      this._context.mescontent = this._frm.controls['smsContent'].value;
-      if(this._context.mescontent == null){
-        this._frm.controls['smsContent'].setValue(' <NGAYHIENTAI>');
-      }else{
-        this._frm.controls['smsContent'].setValue(this._context.mescontent + ' <NGAYHIENTAI>');
-      }
-    }
-    if(e == 7)
-    {
-      this._context.mescontent = this._frm.controls['smsContent'].value;
-      if(this._context.mescontent == null){
-        this._frm.controls['smsContent'].setValue(' <NGAYTAIKHAM>');
-      }else{
-        this._frm.controls['smsContent'].setValue(this._context.mescontent + ' <NGAYTAIKHAM>');
-      }
-    }
+    changeSelected(e) {
+        switch (e) {
+            case 1:
+                this._context.mescontent = this._frm.controls['smsContent'].value;
+                if (this._context.mescontent == null) {
+                    this._frm.controls['smsContent'].setValue(' <PHONGKHAM>');
+                } else {
+                    this._frm.controls['smsContent'].setValue(this._context.mescontent + ' <PHONGKHAM>');
+                }
+                break;
+            case 2:
+                this._context.mescontent = this._frm.controls['smsContent'].value;
+                if (this._context.mescontent == null) {
+                    this._frm.controls['smsContent'].setValue(' <PHONGKHAM>');
+                } else {
+                    this._frm.controls['smsContent'].setValue(this._context.mescontent + ' <NGAYSINH>');
+                }
+                break;
+            case 3:
+                this._context.mescontent = this._frm.controls['smsContent'].value;
+                if (this._context.mescontent == null) {
+                    this._frm.controls['smsContent'].setValue(' <HOTEN>');
+                } else {
+                    this._frm.controls['smsContent'].setValue(this._context.mescontent + ' <HOTEN>');
+                }
+                break;
+            case 4:
+                this._context.mescontent = this._frm.controls['smsContent'].value;
+                if (this._context.mescontent == null) {
+                    this._frm.controls['smsContent'].setValue(' <EMAIL>');
+                } else {
+                    this._frm.controls['smsContent'].setValue(this._context.mescontent + ' <EMAIL>');
+                }
+                break;
+            case 5:
+                this._context.mescontent = this._frm.controls['smsContent'].value;
+                if (this._context.mescontent == null) {
+                    this._frm.controls['smsContent'].setValue(' <GIOITINH>');
+                } else {
+                    this._frm.controls['smsContent'].setValue(this._context.mescontent + ' <GIOITINH>');
+                }
+                break;
+            case 6:
+                this._context.mescontent = this._frm.controls['smsContent'].value;
+                if (this._context.mescontent == null) {
+                    this._frm.controls['smsContent'].setValue(' <NGAYHIENTAI>');
+                } else {
+                    this._frm.controls['smsContent'].setValue(this._context.mescontent + ' <NGAYHIENTAI>');
+                }
+                break;
+            case 7:
+                this._context.mescontent = this._frm.controls['smsContent'].value;
+                if (this._context.mescontent == null) {
+                    this._frm.controls['smsContent'].setValue(' <NGAYTAIKHAM>');
+                } else {
+                    this._frm.controls['smsContent'].setValue(this._context.mescontent + ' <NGAYTAIKHAM>');
+                }
+                break;
+            case 8:
+                this._context.mescontent = this._frm.controls['smsContent'].value;
+                if (this._context.mescontent == null) {
+                    this._frm.controls['smsContent'].setValue(' <PHONGBAN>');
+                } else {
+                    this._frm.controls['smsContent'].setValue(this._context.mescontent + ' <PHONGBAN>');
+                }
+                break;
+            case 9:
+                this._context.mescontent = this._frm.controls['smsContent'].value;
+                if (this._context.mescontent == null) {
+                    this._frm.controls['smsContent'].setValue(' <TENDICHVU>');
+                } else {
+                    this._frm.controls['smsContent'].setValue(this._context.mescontent + ' <TENDICHVU>');
+                }
+                break;
+            case 10:
+                this._context.mescontent = this._frm.controls['smsContent'].value;
+                if (this._context.mescontent == null) {
+                    this._frm.controls['smsContent'].setValue(' <TENTHUOC>');
+                } else {
+                    this._frm.controls['smsContent'].setValue(this._context.mescontent + ' <TENTHUOC>');
+                }
+                break;
+        }
   }}
