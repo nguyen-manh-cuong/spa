@@ -55,6 +55,7 @@ namespace SHCServer.ViewModels
         public string Academic { set; get; }
         public string Degree { set; get; }
         public List<DoctorSpecialistsViewModel> Specialist { set; get; }
+        public List<HealthFacilitiesViewModel> HealthFacilities { set; get; }
         public int DoctorId { set; get; }
         public string HisId { get; set; }
         public string FullName { set; get; }
@@ -94,7 +95,5 @@ namespace SHCServer.ViewModels
         public DateTime? UpdateDate { get; set; }
         public string SpecialistCode { get; set; }
         public int? HealthFacilitiesId { get; set; }
-        public int?[] HealthFacilities { set; get; }
-        public string[] DoctorSpecialists { set; get; }
     }
 }

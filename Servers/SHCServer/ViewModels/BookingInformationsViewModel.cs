@@ -23,6 +23,7 @@ namespace SHCServer.ViewModels
         {
             context = new MySqlContext(new MySqlConnectionFactory(connectionString));
             Status = bookingInformations.Status;
+            Gender = bookingInformations.Gender;
             #region get HealthFacilitiesName
             var HealthFacilities = context.JoinQuery<BookingInformations, HealthFacilities>((b, h) => new object[]
                      {
@@ -57,19 +58,36 @@ namespace SHCServer.ViewModels
             }
 
             #endregion
-
-            #region count by doctor
+            
+           
             var bookingInformation = context.Query<BookingInformations>().ToList();
+             #region COUNT BY DOCTOR
             var q = from b in bookingInformation
                     where b.DoctorId.Equals(bookingInformations.DoctorId)
                     select b;
             Quantity = q.Count();
             #endregion
 
-            Gender = bookingInformations.Gender;
+            #region COUNT BY GENDER MALE
+            var g = from b in bookingInformation
+                    where b.Gender == 1
+                    select b;
+            QuantityByGederMale = g.Count();
+            #endregion
+
+            #region COUNT BY GENDER FEMALE
+            var r = from b in bookingInformation
+                    where b.Gender == 2
+                    select b;
+            QuantityByGederFemale = r.Count();
+            #endregion
 
 
         }
+
+
+
+
         public int BookingId { set; get; }
         public string TicketId { set; get; }
         //public int BookingType { set; get; }
@@ -103,7 +121,8 @@ namespace SHCServer.ViewModels
         public DateTime CreateDate { set; get; }
         public int? BookingServiceType { get; set; }
         public int Quantity { get; set; }
-        public int QuantityGender { get; set; }
+        public int QuantityByGederMale { get; set; }
+        public int QuantityByGederFemale { get; set; }
 
     }
 
@@ -137,7 +156,7 @@ namespace SHCServer.ViewModels
         public int relationshipId { set; get; }
         //public int? specialists { set; get; }
         public string ticketId { set; get; }
-        public int? timeSlotId { set; get; }
+        public int? timeSlotId { set; get; }       
         public string wardCode { set; get; }
         public int? userId { set; get; }
 

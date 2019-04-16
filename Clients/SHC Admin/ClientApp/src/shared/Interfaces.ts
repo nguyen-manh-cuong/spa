@@ -69,7 +69,8 @@ export interface IBookingInformations{
     healthFacilitiesName: string;
     doctorName: string;
     quantity;
-    gender: number;
+    quantityByGederFemale: number;
+    quantityByGederMale: number;
 }
 
 export interface IPackage {
