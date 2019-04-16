@@ -55,6 +55,7 @@ namespace SHCServer.ViewModels
             {
                 DoctorName = "";
             }
+
             #endregion
 
             #region count by doctor
@@ -64,6 +65,8 @@ namespace SHCServer.ViewModels
                     select b;
             Quantity = q.Count();
             #endregion
+
+            Gender = bookingInformations.Gender;
 
 
         }

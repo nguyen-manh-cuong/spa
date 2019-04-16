@@ -38,9 +38,6 @@ export const MY_FORMATS = {
 export class IndexComponent extends PagedListingComponentBase<IBookingInformations> implements OnInit {
   _healthfacilities = [];
   _doctors = [];
-  _patientBySex = [];
-
-  dataSourceBySex = new MatTableDataSource();
 
   filteredOptions: Observable<IHealthfacilities[]>;
   healthfacilities = new FormControl();
