@@ -1,0 +1,146 @@
+<div class="toolbar fadeIn animated">
+    <div class="row w-100 m-0">
+        <div class="col-4 text-left d-flex align-items-center">
+            <button mat-stroked-button color="primary" (click)="openDialog()">
+                <mat-icon class="f-20 m-l--10 mat-icon m-t-2 material-icons">add</mat-icon>{{l("CreateNew")}}
+            </button>
+            <div class="separate"></div>
+            <mat-slide-toggle class="ml-2" [checked]="showFilter" (change)="toggedFilter()">
+                <ng-container *ngIf="showFilter">{{l("ShowFilter")}}</ng-container>
+                <ng-container *ngIf="!showFilter">{{l("HideFilter")}}</ng-container>
+            </mat-slide-toggle>
+        </div>
+        <div class="col-8">
+            <mat-paginator #paginator [pageSizeOptions]="pageSizeOptions" [length]="totalItems" [pageSize]="pageSize"
+                showFirstLastButtons></mat-paginator>
+        </div>
+    </div>
+</div>
+<div class="content fadeIn animated">
+    <form [formGroup]="frmSearch" class="form-filter pl-2 pr-2" novalidate>
+        <div class="row m-0 pt-4">
+            <div class="col-md-3 fadeIn animated">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>{{l("DoctorProvince")}}</mat-label>
+                    <mat-select #province formControlName="provinceCode" (selectionChange)="provinceChange($event)">
+                        <mat-option class="text-center">{{l('CancelSelect')}}</mat-option>
+                        <mat-option *ngFor="let p of provinces" [value]="p.provinceCode">{{p.name}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="col-md-3 fadeIn animated">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>{{l("DoctorDistrict")}}</mat-label>
+                    <mat-select formControlName="districtCode" (selectionChange)="districtChange(province,$event)">
+                        <mat-option *ngIf="checkProvince" class="text-center">{{l('CancelSelect')}}</mat-option>
+                        <mat-option *ngFor="let d of districts" [value]="d.districtCode">{{d.name}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="col-md-6 fadeIn animated">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>{{l("DoctorInfo")}}</mat-label>
+                    <input formControlName="info" matInput maxlength="255">
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="row m-0 pt-4">
+            <div class="col-md-5 fadeIn animated">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>{{l("DoctorHealthFacilities")}}</mat-label>
+                    <mat-select formControlName="healthFacilitiesId">
+                        <mat-option *ngIf="checkProvince" class="text-center">{{l('CancelSelect')}}</mat-option>
+                        <mat-option *ngFor="let h of healthFacilities" [value]="h.healthFacilitiesId">{{h.name}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="col-md-4 fadeIn animated">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>{{l("DoctorSpecialist")}}</mat-label>
+                    <mat-select formControlName="specialistCode">
+                        <mat-option class="text-center">{{l('CancelSelect')}}</mat-option>
+                        <mat-option *ngFor="let s of specialist" [value]="s.code">{{s.name}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="col-md-3 text-center d-flex align-self-center fadeIn animated">
+                <button #btnSearch mat-stroked-button color="primary" (click)="btnSearchClicks$.next($event)"
+                    class="w-100 mb-4">
+                    <mat-icon class="mr-2">search</mat-icon>{{l("Search")}}
+                </button>
+            </div>
+        </div>
+    </form>
+
+    <div class="table-content" style="height: calc(100vh - 245px);">
+        <table mat-table [dataSource]="dataSources" matSort #sort="matSort" matSortDisableClear matSortActive="id"
+            matSortDirection="desc" class="w-100 task">
+            <ng-container matColumnDef="orderNumber">
+                <th mat-header-cell *matHeaderCellDef class="min-w-30 text-center"> {{l("OrderNumber")}} </th>
+                <td mat-cell *matCellDef="let element; let i = index;" class="min-w-30 text-center">
+                    {{(i + 1) + (paginator.pageIndex * paginator.pageSize)}}</td>
+            </ng-container>
+            <ng-container matColumnDef="fullName">
+                <th mat-header-cell *matHeaderCellDef class="min-w-150 text-center"> {{l('DoctorName')}} </th>
+                <td mat-cell *matCellDef="let element" class="min-w-150 td-left"> {{element.fullName}}</td>
+            </ng-container>
+            <ng-container matColumnDef="specialistName">
+                <th mat-header-cell *matHeaderCellDef class="min-w-150 text-center"> {{l('DoctorSpecialist')}} </th>
+                <td mat-cell *matCellDef="let element" class="min-w-150 td-left">
+                    {{element.specialistName}}</td>
+            </ng-container>
+            <ng-container matColumnDef="phoneNumber">
+                <th mat-header-cell *matHeaderCellDef class="min-w-40 text-center"> {{l('PhoneNumber')}}</th>
+                <td mat-cell *matCellDef="let element" class="min-w-40 td-center">
+                    {{element.phoneNumber}}</td>
+            </ng-container>
+            <ng-container matColumnDef="address">
+                <th mat-header-cell *matHeaderCellDef class="min-w-200 text-center"> {{l('Address')}}</th>
+                <td mat-cell *matCellDef="let element" class="min-w-200 td-left">
+                    {{element.address}}</td>
+            </ng-container>
+            <ng-container matColumnDef="priceFrom">
+                <th mat-header-cell *matHeaderCellDef class="min-w-40 text-center"> {{l('DoctorPrice')}}</th>
+                <td mat-cell *matCellDef="let element" class="min-w-40 text-right">
+                    {{element.priceFrom | CustomCurrency}}</td>
+            </ng-container>
+            <ng-container matColumnDef="allowBooking">
+                <th mat-header-cell *matHeaderCellDef class="min-w-30 text-center"> {{l('DoctorAllowBooking')}}</th>
+                <td mat-cell *matCellDef="let element" class="min-w-30 text-center">
+                    <mat-checkbox #cbxAllowBooking [checked]="element.allowBooking"
+                        (click)="doctorUpdateAllowBooking(element)" color="primary"></mat-checkbox>
+                </td>
+            </ng-container>
+            <ng-container matColumnDef="allowFilter">
+                <th mat-header-cell *matHeaderCellDef class="min-w-30 text-center"> {{l('DoctorAllowFilter')}}</th>
+                <td mat-cell *matCellDef="let element" class="min-w-30 text-center">
+                    <mat-checkbox #cbxAllowFilter [checked]="element.allowFilter"
+                        (click)="doctorUpdateAllowFilter(element)" color="primary"></mat-checkbox>
+                </td>
+            </ng-container>
+            <ng-container matColumnDef="allowSearch">
+                <th mat-header-cell *matHeaderCellDef class="min-w-30 text-center"> {{l('DoctorAllowSearch')}}</th>
+                <td mat-cell *matCellDef="let element" class="min-w-30 text-center">
+                    <mat-checkbox #cbxAllowSearch [checked]="element.allowSearch"
+                        (click)="doctorUpdateAllowSearch(element)" color="primary"></mat-checkbox>
+                </td>
+            </ng-container>
+            <ng-container matColumnDef="task">
+                <th mat-header-cell *matHeaderCellDef class="text-center">{{l('Task')}}</th>
+                <td mat-cell *matCellDef="let element" class="w-px-30 pr-0">
+                    <div class="d-flex">
+                        <button mat-icon-button (click)="openDialog(element)">
+                            <mat-icon class="text-muted f-18">edit</mat-icon>
+                        </button>
+                        <button mat-icon-button (click)="deleteDialogDoctor(element, 'fullName')">
+                            <mat-icon class="text-danger f-18">delete</mat-icon>
+                        </button>
+                    </div>
+                </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns;sticky:true"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="fadeIn animated"></tr>
+        </table>
+    </div>
+</div>

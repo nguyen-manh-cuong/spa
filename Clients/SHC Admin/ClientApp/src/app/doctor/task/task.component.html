@@ -1,0 +1,39 @@
+<form [formGroup]="_frm" class="container" novalidate>
+    <mat-tab-group>
+        <mat-tab>
+            <ng-template mat-tab-label>
+                {{_isNew ? l("CreateNew") : l("Edit")}} {{ll("CategoryCommonTitle")}}
+            </ng-template>
+            <div class="pt-4">
+                <div class="row">
+                    <div class="col-md-6">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l("CategoryCommonCode")}}</mat-label>
+                            <input [readonly]="_obj.distribute !=0 &&_isNew == false" formControlName="code" matInput
+                                [required]="true" maxlength="255" mask="A*">
+                            <validation matSuffix [control]="_frm.controls['code']"></validation>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-6">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l("CategoryCommonName")}}</mat-label>
+                            <input #txtName formControlName="name" matInput [required]="true" maxlength="255">
+                            <validation matSuffix [control]="_frm.controls['name']"></validation>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="col-md-3"></div>
+                        <div class="col-md-3">
+                            <mat-checkbox #catStatus formControlName="isActive" color="primary">
+                                {{l("CategoryCommonStatus")}}</mat-checkbox>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-right mb-3"><button class="mr-3" mat-button
+                        mat-dialog-close>{{l("Close")}}</button><button mat-raised-button color="primary"
+                        [disabled]="_frm.invalid" (click)="submit()">{{l("Save")}}</button>
+                </div>
+            </div>
+        </mat-tab>
+    </mat-tab-group>
+</form>

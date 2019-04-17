@@ -128,7 +128,18 @@ namespace SHCServer.Controllers
         {
             var objs = _context.Query<HealthFacilities>();
 
-            if (!string.IsNullOrEmpty(filter)) objs = objs.Where(o => o.HealthFacilitiesId == int.Parse(filter));
+            if (!string.IsNullOrEmpty(filter))
+                foreach (var (key, value) in JsonConvert.DeserializeObject<Dictionary<string, string>>(filter))
+                {
+                    if (string.IsNullOrEmpty(value))
+                        continue;
+                    if (string.Equals(key, "provinceCode"))
+                        objs = objs.Where(o => o.ProvinceCode.Contains(value.ToString().Trim()));
+                    if (string.Equals(key, "districtCode"))
+                        objs = objs.Where(o => o.DistrictCode.Contains(value.ToString().Trim()));
+                    if (string.Equals(key, "id"))
+                        objs = objs.Where(o => o.HealthFacilitiesId == int.Parse(value.Trim()));
+                }
 
             return Json(new ActionResultDto { Result = new { Items = objs.OrderBy(h => h.Name).Take(500).ToList() } });
         }

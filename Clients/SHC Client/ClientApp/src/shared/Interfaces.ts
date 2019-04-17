@@ -58,13 +58,22 @@ export interface IDoctor {
     academic: string;
     degree: string;
     description: string;
+    allowBooking:boolean;
+    allowFilter:boolean;
+    allowSearch:boolean;
     specialist: IDoctorSpecialists[];
+    healthFacilities: IHealthfacilitiesDoctor[];
 }
 
 export interface IDoctorSpecialists {
     doctorId: string;
     specialistCode: string;
     specialist: string;
+}
+
+export interface IHealthfacilitiesDoctor {
+    doctorId: string;
+    healthFacilitiesId: string;
 }
  
 export interface IHealthfacilities {

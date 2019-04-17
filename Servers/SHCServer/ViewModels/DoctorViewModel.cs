@@ -48,7 +48,6 @@ namespace SHCServer.ViewModels
 
             Academic = academic != null ? academic.Name : "";
             Degree = degree != null ? degree.Name : "";
-
         }
 
 
@@ -92,9 +91,11 @@ namespace SHCServer.ViewModels
         public DateTime? CreateDate { get; set; }
         public int? UpdateUserId { get; set; }
         public DateTime? UpdateDate { get; set; }
-        public string SpecialistCode { get; set; }
-        public int? HealthFacilitiesId { get; set; }
+        public string SpecialistName { get; set; }
+        public string HealthFacilitiesName { get; set; }
         public int?[] HealthFacilities { set; get; }
         public string[] DoctorSpecialists { set; get; }
+        public int HealthFacilitiesId { get; set; }
+        public string SpecialistCode { get; set; }
     }
 }

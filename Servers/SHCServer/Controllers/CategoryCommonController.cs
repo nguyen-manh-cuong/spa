@@ -150,7 +150,6 @@ namespace SHCServer.Controllers
 
             if (cc == null)
                 return StatusCode(404, _excep.Throw("Not Found"));
-
             try
             {
                 _context.Session.BeginTransaction();
