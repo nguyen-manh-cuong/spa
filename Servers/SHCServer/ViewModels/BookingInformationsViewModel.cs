@@ -24,6 +24,7 @@ namespace SHCServer.ViewModels
             context = new MySqlContext(new MySqlConnectionFactory(connectionString));
             Status = bookingInformations.Status;
             Gender = bookingInformations.Gender;
+            ExaminationDate = bookingInformations.ExaminationDate;
             #region get HealthFacilitiesName
             var HealthFacilities = context.JoinQuery<BookingInformations, HealthFacilities>((b, h) => new object[]
                      {
@@ -82,6 +83,32 @@ namespace SHCServer.ViewModels
             QuantityByGenderFemale = r.Count();
             #endregion
 
+            #region COUNT BY STATUS
+            // Mới đang ký
+            var m = from b in bookingInformation
+                    where b.Status == 0
+                    select b;
+            QuantityByStatusNew = m.Count();
+            //Chờ khám
+            var p = from b in bookingInformation
+                    where b.Status == 1
+                    select b;
+            QuantityByStatusPending = p.Count();
+            // Đã khám
+            var f = from b in bookingInformation
+                    where b.Status == 2
+                    select b;
+            QuantityByStatusDone = f.Count();
+             //Hủy khám
+             var c = from b in bookingInformation
+                    where b.Status == 3
+                    select b;
+            QuantityByStatusCancel = c.Count();
+            
+
+          
+            #endregion
+
 
         }
 
@@ -123,6 +150,10 @@ namespace SHCServer.ViewModels
         public int Quantity { get; set; }
         public int QuantityByGenderMale { get; set; }
         public int QuantityByGenderFemale { get; set; }
+        public int QuantityByStatusNew { get; set; }
+        public int QuantityByStatusPending { get; set; }
+        public int QuantityByStatusCancel { get; set; }
+        public int QuantityByStatusDone { get; set; }
 
     }
 

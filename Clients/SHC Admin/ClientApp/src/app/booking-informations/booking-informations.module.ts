@@ -1,3 +1,4 @@
+import { StatusComponent } from './status-table/status.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { CommonModule } from '@angular/common';
@@ -24,7 +25,7 @@ import { GenderTypePipe } from 'pipes/gender-type.pipe'
     ValidationModule,
     NgxMaskModule.forRoot()
   ],
-    declarations: [BookingInformationsComponent, IndexComponent, TaskComponent, GenderComponent, GenderTypePipe],
+    declarations: [BookingInformationsComponent, IndexComponent, TaskComponent, GenderComponent, GenderTypePipe, StatusComponent],
   entryComponents: [TaskComponent]
 })
 export class BookingInformationsModule { }

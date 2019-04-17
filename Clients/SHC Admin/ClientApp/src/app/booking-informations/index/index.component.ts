@@ -56,11 +56,9 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
     this.dataService = this._dataService;
     this.dialogComponent = TaskComponent;
     this.frmSearch = this._formBuilder.group({
-       keyFilter: [],     
        healthfacilities: [this.appSession.user.healthFacilitiesId],
-       bookingServiceType: [],
-       bookingInformationsTime: [],
-       doctor : [],       
+       doctor : [],
+       status: [],         
        startTime: new Date(),
        endTime: new Date(),
       });
