@@ -10,18 +10,18 @@ import { AppComponentBase } from 'shared/app-component-base';
 import { DataService } from '@shared/service-proxies/service-data';
 
 @Component({
-  selector: 'app-gender',
-  templateUrl: './gender.component.html',
-  styleUrls: ['./gender.component.scss'],
+  selector: 'app-status',
+  templateUrl: './status.component.html',
+  styleUrls: ['./status.component.scss'],
 })
-export class GenderComponent extends AppComponentBase implements OnInit {
+export class StatusComponent extends AppComponentBase implements OnInit {
     dataSources = new MatTableDataSource();
 
-    arrayGender = [{ position: 1, sex: 'Nam', quantity: 0 }, { position: 2, sex: 'Nữ', quantity: 0 }];
+    arrayStatus = [{ position: 1, status: 'Đã khám', quantity: 0 }, { position: 2, status: 'Chờ khám', quantity: 0 }, { position: 3, status: 'Hủy khám', quantity: 0 }, { position: 4, status: 'Mới đăng ký', quantity: 0 }];
     frmSearch: FormGroup;
     ruleSearch = {};
 
-    displayedColumns = ['orderNumber', 'sex', 'quantity'];
+    displayedColumns = ['orderNumber', 'status', 'quantity'];
   constructor(injector: Injector, private _dataService: DataService, public dialog: MatDialog, private _formBuilder: FormBuilder) { super(injector); }
 
 
@@ -36,17 +36,13 @@ export class GenderComponent extends AppComponentBase implements OnInit {
             endTime: new Date(),
         });
         this._dataService.get('bookinginformations', JSON.stringify(standardized(omitBy(this.frmSearch.value, isNil), this.ruleSearch)), '', 0, 1000).subscribe(resp => {
-            var count = 0;
-            for (var item of resp.items) {
-                if (count == 0) {
-                    this.arrayGender[0].quantity = item.quantityByGenderMale;
-                }
-                if (count == 1) {
-                    this.arrayGender[1].quantity = item.quantityByGenderFemale;
-                }
-                count++;
+            for (var item of resp.items) {                
+                this.arrayStatus[0].quantity = item.quantityByStatusDone;
+                this.arrayStatus[1].quantity = item.quantityByStatusPending;
+                this.arrayStatus[2].quantity = item.quantityByStatusCancel;
+                this.arrayStatus[3].quantity = item.quantityByStatusNew;         
             }
-          this.dataSources.data = this.arrayGender;
+          this.dataSources.data = this.arrayStatus;
         });
     
 

@@ -71,6 +71,11 @@ export interface IBookingInformations{
     quantity;
     quantityByGederFemale: number;
     quantityByGederMale: number;
+    quantityByStatusNew: number;
+    quantityByStatusPending: number;
+    quantityByStatusDone: number;
+    quantityByStatusCancel: number;
+    examinationDate: Date;
 }
 
 export interface IPackage {

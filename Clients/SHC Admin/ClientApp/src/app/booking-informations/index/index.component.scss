@@ -1,0 +1,23 @@
+.table-content{
+  max-width: 100%!important;;
+}
+table {
+  display: table;
+  border-collapse: separate;
+  border-spacing: 2px;
+  border-color: grey;
+}
+tr {
+  display: table-row;
+  vertical-align: inherit;
+  border-color: inherit;
+}
+.table td, .table th {
+    padding: .75rem;
+    vertical-align: top;
+    border-top: 1px solid #dee2e6;
+}
+td, th {
+  display: table-cell;
+  vertical-align: inherit;
+}
