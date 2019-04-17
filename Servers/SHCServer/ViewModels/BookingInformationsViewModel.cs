@@ -72,14 +72,14 @@ namespace SHCServer.ViewModels
             var g = from b in bookingInformation
                     where b.Gender == 1
                     select b;
-            QuantityByGederMale = g.Count();
+            QuantityByGenderMale = g.Count();
             #endregion
 
             #region COUNT BY GENDER FEMALE
             var r = from b in bookingInformation
                     where b.Gender == 2
                     select b;
-            QuantityByGederFemale = r.Count();
+            QuantityByGenderFemale = r.Count();
             #endregion
 
 
@@ -121,8 +121,8 @@ namespace SHCServer.ViewModels
         public DateTime CreateDate { set; get; }
         public int? BookingServiceType { get; set; }
         public int Quantity { get; set; }
-        public int QuantityByGederMale { get; set; }
-        public int QuantityByGederFemale { get; set; }
+        public int QuantityByGenderMale { get; set; }
+        public int QuantityByGenderFemale { get; set; }
 
     }
 

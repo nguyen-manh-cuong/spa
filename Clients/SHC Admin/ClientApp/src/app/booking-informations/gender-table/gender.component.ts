@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Injector, OnInit, ViewChild } from '@angular/core';
+﻿import { AfterViewInit, Component, Injector, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatButton, MatDialog, MatPaginator, MatTableDataSource } from '@angular/material';
 import { Subject, merge, of } from 'rxjs';
@@ -17,11 +17,11 @@ import { DataService } from '@shared/service-proxies/service-data';
 export class GenderComponent extends AppComponentBase implements OnInit {
     dataSources = new MatTableDataSource();
 
-    arrayGender = [];
+    arrayGender = [{ position: 1, sex: 'Nam', quantity: 0 }, { position: 2, sex: 'Nữ', quantity: 0 }];
     frmSearch: FormGroup;
     ruleSearch = {};
 
-    displayedColumns = ['orderNumber', 'quantity', 'quantityByGederMale'];
+    displayedColumns = ['orderNumber', 'sex', 'quantity'];
   constructor(injector: Injector, private _dataService: DataService, public dialog: MatDialog, private _formBuilder: FormBuilder) { super(injector); }
 
 
@@ -36,11 +36,18 @@ export class GenderComponent extends AppComponentBase implements OnInit {
             endTime: new Date(),
         });
         this._dataService.get('bookinginformations', JSON.stringify(standardized(omitBy(this.frmSearch.value, isNil), this.ruleSearch)), '', 0, 1000).subscribe(resp => {
+            var count = 0;
             for (var item of resp.items) {
-                if (this.arrayGender.length < 2) {
-                  this.arrayGender.push(item);
+                if (count == 0) {
+                    console.log(item);
+                    this.arrayGender[0].quantity = item.quantityByGenderMale;
                 }
+                if (count == 1) {
+                    this.arrayGender[1].quantity = item.quantityByGenderFemale;
+                }
+                count++;
             }
+            console.log(this.arrayGender);
           this.dataSources.data = this.arrayGender;
         });
     
