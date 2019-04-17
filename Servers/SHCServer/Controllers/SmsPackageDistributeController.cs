@@ -138,6 +138,14 @@ namespace SHCServer.Controllers
         {
             try
             {
+                var SmsPackage = _context.Query<SmsPackage>().Where(g => g.Id == obj.SmsPackageId).FirstOrDefault();
+                var SmsPackageUsed = _context.Query<SmsPackageUsed>().Where(g => g.SmsPackageId == obj.SmsPackageId && g.HealthFacilitiesId == obj.HealthFacilitiesId).FirstOrDefault();
+
+                if (SmsPackageUsed.Quantityused < SmsPackage.Quantity)
+                {
+                    return StatusCode(500, _excep.Throw("Sửa phân gói SMS không thành công.", "Gói SMS đã được sử dụng tại đơn vị!"));
+                }
+
                 _context.Session.BeginTransaction();
                 _context.Update<SmsPackagesDistribute>(g => g.Id == obj.Id, a => new SmsPackagesDistribute
                 {

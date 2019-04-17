@@ -20,7 +20,6 @@ export class GenderComponent extends AppComponentBase implements OnInit {
     arrayGender = [{ position: 1, sex: 'Nam', quantity: 0 }, { position: 2, sex: 'Nữ', quantity: 0 }];
     frmSearch: FormGroup;
     ruleSearch = {};
-
     displayedColumns = ['orderNumber', 'sex', 'quantity'];
   constructor(injector: Injector, private _dataService: DataService, public dialog: MatDialog, private _formBuilder: FormBuilder) { super(injector); }
 
