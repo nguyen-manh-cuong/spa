@@ -121,24 +121,18 @@
             <!--  -->
             <div class="col-md-4">
                 <mat-form-field appearance="outline" class="w-100">
-                    <mat-label>{{l('Ngày sinh từ')}}</mat-label>
-                    <input matInput #birthdayFrom mask="00/00/0000" maxlength="10" (dateChange)="changeEndDate($event.value, 1)" [matDatepicker]="picker" required>
-                    <mat-datepicker-toggle matSuffix [for]="picker" class="t-2"></mat-datepicker-toggle>
-                    <mat-datepicker #picker></mat-datepicker>
+                    <mat-label>{{l('Ngày')}}</mat-label>
+                    <mat-select formControlName="day">
+                        <mat-option *ngFor="let o of _days" [value]="o.id">{{ o.name }}</mat-option>
+                    </mat-select>
                 </mat-form-field>
             </div>
             <div class="col-md-4">
                 <mat-form-field appearance="outline" class="w-100">
-                    <mat-label>{{l('Đến ngày')}}</mat-label>
-                    <input matInput #birthdayTo mask="00/00/0000" maxlength="10" (dateChange)="changeEndDate($event.value, 1)" [matDatepicker]="picker1" required>
-                    <mat-datepicker-toggle matSuffix [for]="picker1" class="t-2"></mat-datepicker-toggle>
-                    <mat-datepicker #picker1></mat-datepicker>
-                </mat-form-field>
-            </div>
-            <div class="col-md-4">
-                <mat-form-field appearance="outline" class="w-100">
-                    <mat-label>{{l("Trong vòng")}}</mat-label>
-                    <input formControlName="about" matInput autocomplete maxlength="3" mask="0*" (keyup)="changeEndDate($event.target.value, 2)">
+                    <mat-label>{{l('Tháng')}}</mat-label>
+                    <mat-select formControlName="month">
+                        <mat-option *ngFor="let o of _months" [value]="o.id">{{ o.name }}</mat-option>
+                    </mat-select>
                 </mat-form-field>
             </div>
             <!--  -->

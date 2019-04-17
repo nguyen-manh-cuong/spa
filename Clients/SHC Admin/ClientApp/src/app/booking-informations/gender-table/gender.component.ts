@@ -20,7 +20,6 @@ export class GenderComponent extends AppComponentBase implements OnInit {
     arrayGender = [{ position: 1, sex: 'Nam', quantity: 0 }, { position: 2, sex: 'Nữ', quantity: 0 }];
     frmSearch: FormGroup;
     ruleSearch = {};
-
     displayedColumns = ['orderNumber', 'sex', 'quantity'];
   constructor(injector: Injector, private _dataService: DataService, public dialog: MatDialog, private _formBuilder: FormBuilder) { super(injector); }
 
@@ -39,7 +38,6 @@ export class GenderComponent extends AppComponentBase implements OnInit {
             var count = 0;
             for (var item of resp.items) {
                 if (count == 0) {
-                    console.log(item);
                     this.arrayGender[0].quantity = item.quantityByGenderMale;
                 }
                 if (count == 1) {
@@ -47,7 +45,6 @@ export class GenderComponent extends AppComponentBase implements OnInit {
                 }
                 count++;
             }
-            console.log(this.arrayGender);
           this.dataSources.data = this.arrayGender;
         });
     
