@@ -39,7 +39,7 @@ export const MY_FORMATS = {
 })
 export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcareHistories> implements OnInit, AfterViewInit {
 
-    displayedColumns = ['orderNumber', 'select', 'code', 'name', 'birthday', 'age', 'gender', 'phoneNumber', 'address', 'ReExaminationDate', 'status'];
+    displayedColumns = ['orderNumber', 'select', 'code', 'fullName', 'birthday', 'age', 'gender', 'phoneNumber', 'address', 'ReExaminationDate', 'status'];
 
     _provinces = [];
     _districts = [];
@@ -89,7 +89,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
 
         this.dataService = this._dataService;
         this.dialogComponent = TaskComponent;
-        this.frmSearch.controls['birthdayTo'].setValue(new Date(new Date().setDate(new Date().getDate() + this.frmSearch.controls['about'].value)));
+        //this.frmSearch.controls['birthdayTo'].setValue(new Date(new Date().setDate(new Date().getDate() + this.frmSearch.controls['about'].value)));
         this.dataService.getAll('provinces').subscribe(resp => this._provinces = resp.items);
         this.dataService.getAll('healthfacilities', (this.appSession.user.healthFacilitiesId ? String(this.appSession.user.healthFacilitiesId) : '')).subscribe(resp => this._healthfacilities = resp.items);
         if(this.appSession.user.healthFacilitiesId) this.dataService.getAll('doctors', String(this.appSession.user.healthFacilitiesId)).subscribe(resp => this._doctors = resp.items);
