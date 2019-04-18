@@ -90,9 +90,12 @@ export abstract class PagedListingComponentBase<EntityDto> extends AppComponentB
     ngAfterViewInit(): void {
 
         //this.dataSources.sort = this.sort;
-        this.sort.sortChange.subscribe(() => {
-            this.paginator.pageIndex = 0
-        });
+        if (this.sort) {
+            this.sort.sortChange.subscribe(() => {
+                this.paginator.pageIndex = 0
+            });
+        }
+
         this.btnSearchClicks$.subscribe(() => this.paginator.pageIndex = 0);
 
         merge(this.sort.sortChange, this.paginator.page, this.btnSearchClicks$)

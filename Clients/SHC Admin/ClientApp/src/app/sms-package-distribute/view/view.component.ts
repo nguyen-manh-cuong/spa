@@ -20,7 +20,7 @@ export class packagedistributeViewComponent extends AppComponentBase implements 
   api: string = 'smspackagedistribute';
 
   _frmpackagedistributeview: FormGroup;
-  _obj: IPachkageDistribute | any = { smsBrandsId: '', healthFacilitiesId: '', monthStart: '', monthEnd: '', year: '', smsPackageId: '', isActive: false };
+    _obj: IPachkageDistribute | any = { smsBrandsId: '', healthFacilitiesId: '', monthStart: '', monthEnd: '', yearStart: '', yearEnd: '', smsPackageId: '', isActive: false };
   _context: any;
   _isNew: boolean = true;
   _month = [{ id: 1, name: 'tháng 1' }, { id: 2, name: 'tháng 2' }, { id: 3, name: 'tháng 3' }, { id: 4, name: 'tháng 4' }, { id: 5, name: 'tháng 5' }, { id: 6, name: 'tháng 6' },
@@ -40,8 +40,9 @@ export class packagedistributeViewComponent extends AppComponentBase implements 
     if (this.obj) {
       this._obj = _.clone(this.obj);
       this._obj.monthStart = this.obj.monthStart;
-      this._obj.monthEnd = this.obj.monthEnd;
-      this._obj.year = this.obj.year;
+        this._obj.monthEnd = this.obj.monthEnd;
+        this._obj.yearStart = this.obj.yearStart;
+        this._obj.yearEnd = this.obj.yearEnd;
     }
 
     this._context = {

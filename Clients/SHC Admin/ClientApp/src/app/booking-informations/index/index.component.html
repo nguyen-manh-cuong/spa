@@ -70,7 +70,7 @@
             <div class="col-md-4 disabled" id="cbo-endTime">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('Đến')}}</mat-label>
-                    <input matInput [min]="cDate" [matDatepicker]="picker2" #endTime mask="00/00/0000" maxlength="10" (dateChange)="changeEndDate($event.value, 1)" required>
+                    <input matInput [matDatepicker]="picker2" #endTime mask="00/00/0000" maxlength="10" required>
                     <mat-datepicker-toggle matSuffix [for]="picker2" class="t-2"></mat-datepicker-toggle>
                     <mat-datepicker #picker2></mat-datepicker>
                 </mat-form-field>

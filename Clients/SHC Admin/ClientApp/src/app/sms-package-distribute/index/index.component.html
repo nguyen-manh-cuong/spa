@@ -17,7 +17,7 @@
 </div>
 <div class="content">
     <form [formGroup]="frmSearch" class="form-filter pl-2 pr-2" novalidate>
-        <div class="row m-0 pt-4">
+        <div class="row m-0 pt-3">
             <div class="col-md-3">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('PackageDistributeHealthFacilities')}}</mat-label>
@@ -92,7 +92,8 @@
                 <th mat-header-cell class="text-center" *matHeaderCellDef >
                     {{l("Thời gian sử dụng")}} </th>
                 <td mat-cell *matCellDef="let element" class="text-center">
-                    {{'Tháng ' + element.monthStart + ' - ' + element.monthEnd + '/' + element.year}} </td>
+                    {{element.monthStart + '/' + element.yearStart + ' - ' + element.monthEnd + '/' + element.yearEnd}}
+                </td>
             </ng-container>
             <ng-container matColumnDef="pk">
                 <th mat-header-cell *matHeaderCellDef class="text-center"> {{l("PackageDistributeSmsPackages")}}</th>
@@ -100,7 +101,7 @@
             </ng-container>
             <ng-container matColumnDef="sms">
                 <th mat-header-cell *matHeaderCellDef class="text-center"> {{'Số tin nhắn đã gửi'}}</th>
-                <td mat-cell *matCellDef="let element" style="text-align: right;">0/{{element.quantity | mask: 'dot_separator'}} </td>
+                <td mat-cell *matCellDef="let element" style="text-align: right;">{{ element.quantity - element.smsPackageUsed.quantityused }}/{{element.quantity | mask: 'dot_separator'}} </td>
             </ng-container>
             <ng-container matColumnDef="isActive">
                 <th mat-header-cell *matHeaderCellDef class="min-w-55 text-center"> {{l("Using")}}</th>
@@ -115,7 +116,7 @@
                         <button mat-icon-button (click)="openEdit(element)">
                             <mat-icon class="text-muted f-18">edit</mat-icon>
                         </button>
-                        <button mat-icon-button (click)="deleteDialog(element, 'packageName')" >
+                        <button mat-icon-button (click)="deleteDialogPackage(element, 'packageName')" >
                             <mat-icon class="text-danger f-18">delete</mat-icon>
                         </button>
                     </div>

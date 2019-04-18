@@ -21,7 +21,7 @@ export class packagedistributeEditComponent extends AppComponentBase implements 
   api: string = 'smspackagedistribute';
 
   _frmpackagedistributeedit: FormGroup;
-  _obj: IPachkageDistribute | any = { smsBrandsId: '', healthFacilitiesId: '', monthStart: '', monthEnd: '', year: '', smsPackageId: '', isActive: false };
+    _obj: IPachkageDistribute | any = { smsBrandsId: '', healthFacilitiesId: '', monthStart: '', monthEnd: '', yearStart: '', yearEnd: '', smsPackageId: '', isActive: false };
   _context: any;
   _isNew: boolean = true;
   _month = [{ id: 1, name: 'Tháng 1' }, { id: 2, name: 'Tháng 2' }, { id: 3, name: 'Tháng 3' }, { id: 4, name: 'Tháng 4' }, { id: 5, name: 'Tháng 5' }, { id: 6, name: 'Tháng 6' },
@@ -40,10 +40,12 @@ export class packagedistributeEditComponent extends AppComponentBase implements 
 
   ngOnInit() {
     if (this.obj) {
-      this._obj = _.clone(this.obj);
+        this._obj = _.clone(this.obj);
+        console.log(this._obj);
       this._obj.monthStart = this.obj.monthStart;
       this._obj.monthEnd = this.obj.monthEnd;
-      this._obj.year = this.obj.year;
+        this._obj.yearStart = this.obj.yearStart;
+        this._obj.yearEnd = this.obj.yearEnd;
     }
 
     this._dataService.getAll('smsbrands-all').subscribe(resp => this._brands = resp.items);
@@ -54,7 +56,8 @@ export class packagedistributeEditComponent extends AppComponentBase implements 
       smsBrandsId: [this._obj.smsBrandsId, Validators.required],
       monthStart: [this._obj.monthStart, ],
       monthEnd: [this._obj.monthEnd, ],
-      year: [this._obj.year, [Validators.maxLength(4), Validators.pattern('[0-9]*')]],
+        yearStart: [this._obj.yearStart, [Validators.maxLength(4), Validators.pattern('[0-9]*')]],
+        yearEnd: [this._obj.yearEnd, [Validators.maxLength(4), Validators.pattern('[0-9]*')]],
       smsPackageId: [this._obj.smsPackageId, Validators.required],
       isActive: [this._obj.isActive],
       userId: [],
@@ -64,7 +67,9 @@ export class packagedistributeEditComponent extends AppComponentBase implements 
 
   submit() {
     this._frmpackagedistributeedit.value.month = this._frmpackagedistributeedit.value.month == null || this._frmpackagedistributeedit.value.month == "" ? 1 : this._frmpackagedistributeedit.value.month;
-    this._frmpackagedistributeedit.value.userId = this.appSession.userId;
+      this._frmpackagedistributeedit.value.userId = this.appSession.userId;
+
+      console.log(this._frmpackagedistributeedit.value);
     
     this._dataService.update(this.api, standardized(Object.assign(this._frmpackagedistributeedit.value, { id: this.obj.id }), this.rules)).subscribe(() => {
       swal(this.l('SaveSuccess'), '', 'success');

@@ -221,15 +221,18 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
             params.id = this.packageData.id;
         }
 
-        this._isNew ?
-            this._dataService.create(this.api, params).subscribe(() => {
-                swal(this.l('SaveSuccess'), '', 'success');
-                this.dialogRef.close();
-            }, err => {}) :
-            this._dataService.update(this.api, params).subscribe(() => {
-                swal(this.l('SaveSuccess'), '', 'success');
-                this.dialogRef.close()
-            }, err => {});
+        setTimeout(() => {
+            this._isNew ?
+                this._dataService.create(this.api, params).subscribe(() => {
+                    swal(this.l('SaveSuccess'), '', 'success');
+                    this.dialogRef.close();
+                }, err => { }) :
+                this._dataService.update(this.api, params).subscribe(() => {
+                    swal(this.l('SaveSuccess'), '', 'success');
+                    this.dialogRef.close()
+                }, err => { });
+        }, 1000);
+
     }
 
     compare(from: string, to: string){

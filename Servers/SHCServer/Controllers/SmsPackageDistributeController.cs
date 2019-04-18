@@ -54,11 +54,11 @@ namespace SHCServer.Controllers
             }
             if (toYear != null && toYear != "")
             {
-                objs = objs.Where(o => o.Year <= int.Parse(toYear));
+                objs = objs.Where(o => o.YearEnd <= int.Parse(toYear));
             }
             if (fromYear != null && fromYear != "")
             {
-                objs = objs.Where(o => o.Year >= int.Parse(fromYear));
+                objs = objs.Where(o => o.YearStart >= int.Parse(fromYear));
             }
 
             if (filters.Status != null && filters.Status != 2) objs = objs.Where(o => o.IsActive == (filters.Status == 1 ? true : false));
@@ -95,7 +95,8 @@ namespace SHCServer.Controllers
                 pd.HealthFacilitiesId = obj.HealthFacilitiesId[i];
                 pd.MonthStart = obj.MonthStart;
                 pd.MonthEnd = obj.MonthEnd;
-                pd.Year = obj.Year;
+                pd.YearStart = obj.YearStart;
+                pd.YearEnd = obj.YearEnd;
                 pd.IsActive = obj.IsActive;
                 pd.SmsPackageId = obj.SmsPackageId;
                 pd.SmsBrandsId = obj.SmsBrandsId;
@@ -152,7 +153,8 @@ namespace SHCServer.Controllers
                     HealthFacilitiesId = obj.HealthFacilitiesId,
                     MonthEnd = obj.MonthEnd,
                     MonthStart = obj.MonthStart,
-                    Year = obj.Year,
+                    YearStart = obj.YearStart,
+                    YearEnd = obj.YearEnd,
                     IsActive = obj.IsActive,
 
                     UpdateDate = DateTime.Now,

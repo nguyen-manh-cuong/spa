@@ -84,10 +84,13 @@
                     <input formControlName="phoneNumber" matInput mask="0*" maxlength="20">
                 </mat-form-field>
             </div>
-            <div class="col-md-6 p-t-4">
-                <label class="primary-label custom-label">Giới tính:</label>
-                <mat-checkbox formControlName="male" class="m-l-25">Nam</mat-checkbox>
-                <mat-checkbox formControlName="female" class="m-l-25">Nữ</mat-checkbox>
+            <div class="col-md-3">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>{{l('Sex')}}</mat-label>
+                    <mat-select formControlName="sex">
+                        <mat-option *ngFor="let o of _sex" [value]="o.id">{{ o.name }}</mat-option>
+                    </mat-select>
+                </mat-form-field>
             </div>
             <div class="col-md-3"></div>
             <!-- 4 -->
@@ -187,7 +190,7 @@
             </ng-container>
             <ng-container matColumnDef="gender">
                 <th mat-header-cell *matHeaderCellDef class="min-w-50 text-center"> {{l('Giới tính')}} </th>
-                <td mat-cell *matCellDef="let element" class="min-w-50 text-center"> {{element.gender == 0 ? 'Nữ' : 'Nam'}} </td>
+                <td mat-cell *matCellDef="let element" class="min-w-50 text-center"> {{element.gender == 2 ? 'Nữ' : (element.gender == 1 ? 'Nam' : 'Không xác định')}} </td>
             </ng-container>
             <ng-container matColumnDef="phoneNumber">
                 <th mat-header-cell *matHeaderCellDef class="text-center"> {{l('Điện thoại')}} </th>
