@@ -27,13 +27,12 @@ export class StatusComponent extends AppComponentBase implements OnInit {
 
     ngOnInit() {
         this.frmSearch = this._formBuilder.group({
-            keyFilter: [],
-            healthfacilities: [this.appSession.user.healthFacilitiesId],
-            bookingServiceType: [],
-            bookingInformationsTime: [],
-            doctor: [],
-            startTime: new Date(),
-            endTime: new Date(),
+          healthfacilities: [this.appSession.user.healthFacilitiesId],
+          doctor : [],      
+          status: [4],         
+          startTime: new Date(),
+          endTime: new Date(),
+          time: [0],
         });
         this._dataService.get('bookinginformations', JSON.stringify(standardized(omitBy(this.frmSearch.value, isNil), this.ruleSearch)), '', 0, 1000).subscribe(resp => {
             for (var item of resp.items) {                
@@ -44,8 +43,6 @@ export class StatusComponent extends AppComponentBase implements OnInit {
             }
           this.dataSources.data = this.arrayStatus;
         });
-    
-
   }
 
 

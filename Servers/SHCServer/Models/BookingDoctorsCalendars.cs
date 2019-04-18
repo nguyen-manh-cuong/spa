@@ -19,5 +19,11 @@ namespace SHCServer.Models
         public int TimeSlotId { set; get; }
         public int DoctorId { set; get; }
         public DateTime CalendarDate { set; get; }
+        public int Status { set; get; }
+        public string Address { set; get; }
+        public bool IsActive { set; get; }
+        public bool IsDelete { set; get; }
+        public int? ApproveUserId { set; get; }
+        public DateTime? ApproveDate { set; get; }
     }
 }
