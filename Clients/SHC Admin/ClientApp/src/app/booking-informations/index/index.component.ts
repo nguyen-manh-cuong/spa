@@ -4,12 +4,14 @@ import { MAT_DIALOG_DATA, MatButton, MatDialog, MatDialogRef, MatTableDataSource
 import { Subject, merge, of } from 'rxjs';
 import { Observable } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
-import { compact, isEmpty, omitBy, zipObject } from 'lodash';
+import { standardized } from '../../../shared/helpers/Utils';
+import { isEmpty, isNil, isNull, omitBy, zipObject } from 'lodash';
 import { SelectionModel } from '@angular/cdk/collections';
 import { DataService } from '@shared/service-proxies/service-data';
 import { IBookingInformations, IHealthfacilities, IMedicalHealthcareHistories } from '@shared/Interfaces';
 import { PagedListingComponentBase } from '@shared/paged-listing-component-base';
 import { TaskComponent } from '../task/task.component';
+import { StatusComponent } from '../status-table/status.component';
 import * as moment from 'moment';
 import swal from 'sweetalert2';
 import {MomentDateAdapter} from '@angular/material-moment-adapter';
@@ -34,15 +36,19 @@ export const MY_FORMATS = {
     {provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE]},
     {provide: MAT_DATE_FORMATS, useValue: MY_FORMATS},
 ],
+
 })
 export class IndexComponent extends PagedListingComponentBase<IBookingInformations> implements OnInit {
   _healthfacilities = [];
   _doctors = [];
   quantityByStatusCancel: any;
+  dataSourcesStatus = new MatTableDataSource();
+  _status: any;
 
   filteredOptions: Observable<IHealthfacilities[]>;
   healthfacilities = new FormControl();
   bookingServiceType = new FormControl();
+  arrayStatus = [{ position: 1, status: 'Đã khám', quantitystatus: 0 }, { position: 2, status: 'Chờ khám', quantitystatus: 0 }, { position: 3, status: 'Hủy khám', quantitystatus: 0 }, { position: 4, status: 'Mới đăng ký', quantitystatus: 0 }];
 
   displayedColumns = [ 'orderNumber', 'healthFacilitiesName', 'doctorName',  'quantity'];
   @ViewChild("endTime") endTime;
@@ -63,8 +69,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
        startTime: new Date(),
        endTime: new Date(),
        time: [0],
-      });
-     
+      });     
     this.dataService.getAll('healthfacilities', (this.appSession.user.healthFacilitiesId ? String(this.appSession.user.healthFacilitiesId) : '')).subscribe(resp => 
     {
       this._healthfacilities = resp.items;      
@@ -176,7 +181,28 @@ customSearch() {
   }
   
   this.btnSearchClicks$.next();
+
 }
+
+// reloadStatus(){
+//   console.log('vao ham reloadStatus')
+//   console.log(186, this.frmSearch.value);
+//   this._dataService.get('bookinginformations', JSON.stringify(standardized(omitBy(this.frmSearch.value, isNil), this.ruleSearch)), '', 0, 1000).subscribe(resp => {
+//     for (var item of resp.items) {                
+//         this.arrayStatus[0].quantitystatus = item.quantityByStatusDone;
+//         this.arrayStatus[1].quantitystatus = item.quantityByStatusPending;
+//         console.log('cho kham', item.quantityByStatusPending);
+//         console.log('moi dang ky', item.quantityByStatusNew);
+//         console.log('huy dang ky', item.quantityByStatusCancel);
+//         console.log('da kham', item.quantityByStatusDone);
+//         this.arrayStatus[2].quantitystatus = item.quantityByStatusCancel;
+//         this.arrayStatus[3].quantitystatus = item.quantityByStatusNew;         
+//     }
+//   this.dataSourcesStatus.data = this.arrayStatus;
+//   console.log(this.dataSourcesStatus);
+// });
+// }
+
 onSelectHealthFacilities(obj: any){
    this._doctors = [];
   this.dataService.getAll('doctors', obj.healthFacilitiesId).subscribe(resp => 
