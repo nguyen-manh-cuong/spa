@@ -1,4 +1,4 @@
-﻿import { AfterViewInit, Component, Injector, OnInit, ViewChild, Output } from '@angular/core';
+import { AfterViewInit, Component, Injector, OnInit, ViewChild, Output, Input } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatButton, MatDialog, MatPaginator, MatTableDataSource } from '@angular/material';
 import { Subject, merge, of } from 'rxjs';
@@ -19,6 +19,8 @@ export class StatusComponent extends AppComponentBase implements OnInit {
     arrayStatus = [{ position: 1, status: 'Đã khám', quantitystatus: 0 }, { position: 2, status: 'Chờ khám', quantitystatus: 0 }, { position: 3, status: 'Hủy khám', quantitystatus: 0 }, { position: 4, status: 'Mới đăng ký', quantitystatus: 0 }];
     frmSearch: FormGroup;
     ruleSearch = {};
+
+    @Input() childMessage2: string;
 
     displayedColumns = ['orderNumber', 'status', 'quantitystatus'];
   constructor(injector: Injector, private _dataService: DataService, public dialog: MatDialog, private _formBuilder: FormBuilder) { super(injector); }

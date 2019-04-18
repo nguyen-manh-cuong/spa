@@ -125,10 +125,10 @@
         <div class="col-md-5">
             <div class="mb-4">
                     <div class="mb-2">Số lượng bệnh nhân theo giới tính</div>
-                    <app-gender></app-gender>
+                    <app-gender [childMessage]="parentMessage"></app-gender>
             </div>
             <div class="mb-2">Số lượng bệnh nhân theo trạng thái</div>
-            <app-status></app-status>
+            <app-status [childMessage2]="parentMessage"></app-status>
         </div>
     </div>                                 
     </div>

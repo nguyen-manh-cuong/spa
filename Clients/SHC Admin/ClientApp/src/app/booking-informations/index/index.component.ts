@@ -42,12 +42,12 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
   _healthfacilities = [];
   _doctors = [];
   quantityByStatusCancel: any;
-  dataSourcesStatus = new MatTableDataSource();
-  _status: any;
+    _status: any;
 
   filteredOptions: Observable<IHealthfacilities[]>;
   healthfacilities = new FormControl();
-  bookingServiceType = new FormControl();
+    bookingServiceType = new FormControl();
+    parentMessage: any;
   arrayStatus = [{ position: 1, status: 'Đã khám', quantitystatus: 0 }, { position: 2, status: 'Chờ khám', quantitystatus: 0 }, { position: 3, status: 'Hủy khám', quantitystatus: 0 }, { position: 4, status: 'Mới đăng ký', quantitystatus: 0 }];
 
   displayedColumns = [ 'orderNumber', 'healthFacilitiesName', 'doctorName',  'quantity'];
@@ -69,12 +69,13 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
        startTime: new Date(),
        endTime: new Date(),
        time: [0],
-      });     
+      });
+
+      this.parentMessage = this.frmSearch;
     this.dataService.getAll('healthfacilities', (this.appSession.user.healthFacilitiesId ? String(this.appSession.user.healthFacilitiesId) : '')).subscribe(resp => 
     {
       this._healthfacilities = resp.items;      
     });
-
 
     setTimeout(() => {
       this.startTime.nativeElement.value = moment(new Date().setDate(new Date().getDate())).format("DD/MM/YYYY");
@@ -172,36 +173,10 @@ customSearch() {
   }
   this.startTime.nativeElement.value ? this.frmSearch.controls['startTime'].setValue(moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').toDate()) : '';
   this.endTime.nativeElement.value ? this.frmSearch.controls['endTime'].setValue(moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').toDate()) : '';  
-  var _status = this.frmSearch.controls['status'].value;
-  if(_status == 0){
-    console.log('vao den day');
-    var span = document.getElementById('table-status');
-    // var row = span.getElementsByTagName('tbody').childNodes[2];
-    // document.getElementById("table-status").classList.add("hidden");
-  }
   
   this.btnSearchClicks$.next();
 
 }
-
-// reloadStatus(){
-//   console.log('vao ham reloadStatus')
-//   console.log(186, this.frmSearch.value);
-//   this._dataService.get('bookinginformations', JSON.stringify(standardized(omitBy(this.frmSearch.value, isNil), this.ruleSearch)), '', 0, 1000).subscribe(resp => {
-//     for (var item of resp.items) {                
-//         this.arrayStatus[0].quantitystatus = item.quantityByStatusDone;
-//         this.arrayStatus[1].quantitystatus = item.quantityByStatusPending;
-//         console.log('cho kham', item.quantityByStatusPending);
-//         console.log('moi dang ky', item.quantityByStatusNew);
-//         console.log('huy dang ky', item.quantityByStatusCancel);
-//         console.log('da kham', item.quantityByStatusDone);
-//         this.arrayStatus[2].quantitystatus = item.quantityByStatusCancel;
-//         this.arrayStatus[3].quantitystatus = item.quantityByStatusNew;         
-//     }
-//   this.dataSourcesStatus.data = this.arrayStatus;
-//   console.log(this.dataSourcesStatus);
-// });
-// }
 
 onSelectHealthFacilities(obj: any){
    this._doctors = [];

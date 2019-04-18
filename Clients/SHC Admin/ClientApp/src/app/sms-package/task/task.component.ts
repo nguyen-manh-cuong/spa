@@ -47,6 +47,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
 
         if (this.packageData) {
             this._package = _.clone(this.packageData);
+            console.log(this._package);
             this._isNew = false;
             this._details = _.orderBy(this.packageData.details, ['smsFrom'], ['asc']);
         }

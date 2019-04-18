@@ -1,4 +1,4 @@
-﻿import { AfterViewInit, Component, Injector, OnInit, ViewChild } from '@angular/core';
+﻿import { AfterViewInit, Component, Injector, OnInit, ViewChild, Input  } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatButton, MatDialog, MatPaginator, MatTableDataSource } from '@angular/material';
 import { Subject, merge, of } from 'rxjs';
@@ -17,6 +17,8 @@ import { DataService } from '@shared/service-proxies/service-data';
 export class GenderComponent extends AppComponentBase implements OnInit {
     dataSources = new MatTableDataSource();
 
+    @Input() childMessage: string;
+
     arrayGender = [{ position: 1, sex: 'Nam', quantity: 0 }, { position: 2, sex: 'Nữ', quantity: 0 }];
     frmSearch: FormGroup;
     ruleSearch = {};
@@ -25,6 +27,9 @@ export class GenderComponent extends AppComponentBase implements OnInit {
 
 
     ngOnInit() {
+
+        console.log(this.childMessage);
+
         this.frmSearch = this._formBuilder.group({
           healthfacilities: [this.appSession.user.healthFacilitiesId],
           doctor : [],      
@@ -33,6 +38,7 @@ export class GenderComponent extends AppComponentBase implements OnInit {
           endTime: new Date(),
           time: [0],
         });
+
         this._dataService.get('bookinginformations', JSON.stringify(standardized(omitBy(this.frmSearch.value, isNil), this.ruleSearch)), '', 0, 1000).subscribe(resp => {
             var count = 0;
             for (var item of resp.items) {
