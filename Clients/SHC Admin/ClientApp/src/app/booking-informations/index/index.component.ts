@@ -38,6 +38,7 @@ export const MY_FORMATS = {
 export class IndexComponent extends PagedListingComponentBase<IBookingInformations> implements OnInit {
   _healthfacilities = [];
   _doctors = [];
+  quantityByStatusCancel: any;
 
   filteredOptions: Observable<IHealthfacilities[]>;
   healthfacilities = new FormControl();
@@ -48,7 +49,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
   @ViewChild("startTime") startTime;
   constructor(injector: Injector, private _dataService: DataService, public dialog: MatDialog, private _formBuilder: FormBuilder) { super(injector); }
   _bookingServiceTypes = [{ id: 0, name: 'Mới đăng ký' }, { id: 1, name: 'Chưa khám' }, { id: 2, name: 'Đã khám' }, { id: 3, name: 'Hủy khám' }, { id: 4, name: 'Tất cả' }];
-  _bookingInformationsTime = [{ id: 0, name: 'Hôm nay' }, { id: 1, name: 'Hôm qua' }, { id: 2, name: 'Tuần này' }, { id: 3, name: 'Tuần trước' }, { id: 4, name: 'Tháng này'}, { id: 5, name: 'Tháng tước'}, { id: 6, name: 'Quý này'}, { id: 7, name: 'Quý trước'}, { id: 8, name: 'Năm nay'}, { id: 9, name: 'Năm trước'}, { id: 10, name: 'Theo khoảng thời gian'} ];
+  _bookingInformationsTime = [{ id: 0, name: 'Hôm nay' }, { id: 1, name: 'Hôm qua' }, { id: 2, name: 'Tuần này' }, { id: 3, name: 'Tuần trước' }, { id: 4, name: 'Tháng này'}, { id: 5, name: 'Tháng trước'}, { id: 6, name: 'Quý này'}, { id: 7, name: 'Quý trước'}, { id: 8, name: 'Năm nay'}, { id: 9, name: 'Năm trước'}, { id: 10, name: 'Theo khoảng thời gian'} ];
 
 
   ngOnInit() {  
@@ -57,10 +58,11 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
     this.dialogComponent = TaskComponent;
     this.frmSearch = this._formBuilder.group({
        healthfacilities: [this.appSession.user.healthFacilitiesId],
-       doctor : [],
-       status: [],         
+       doctor : [],      
+       status: [4],         
        startTime: new Date(),
        endTime: new Date(),
+       time: [0],
       });
      
     this.dataService.getAll('healthfacilities', (this.appSession.user.healthFacilitiesId ? String(this.appSession.user.healthFacilitiesId) : '')).subscribe(resp => 
@@ -82,14 +84,8 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
     const filterValue = name.toLowerCase();
     return this._healthfacilities.filter(h => h.name.toLowerCase().indexOf(filterValue) === 0);
 }
-
-showMess(){
-  swal(this.l('Xóa khung giờ khám không thành công. Không thể xóa khung giờ khám đang hoạt động'), '', 'error');
-}
-
-  clickCbo() { 
-    console.log('vao ham clickCbo')   
-    !this.healthfacilities.value ? this.filterOptions() : '';
+clickCbo() {    
+  !this.healthfacilities.value ? this.filterOptions() : '';
 }
  
 filterOptions() {
@@ -158,7 +154,7 @@ onselectBookingInformationsTime(obj: any){
     document.getElementById("cbo-endTime").classList.remove("disabled");
    }
 }
-customSearch() {  
+customSearch() {
   if(this.appSession.user.healthFacilitiesId != null){
     this.healthfacilities.value 
       ? this.frmSearch.controls['healthfacilities'].setValue(this.healthfacilities.value.healthFacilitiesId) 
@@ -170,20 +166,17 @@ customSearch() {
       : this.frmSearch.controls['healthfacilities'].setValue('');  
   }
   this.startTime.nativeElement.value ? this.frmSearch.controls['startTime'].setValue(moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').toDate()) : '';
-  this.endTime.nativeElement.value ? this.frmSearch.controls['endTime'].setValue(moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').toDate()) : '';
-  console.log(173, this.startTime.nativeElement.value);
-  console.log(174, this.endTime.nativeElement.value);
+  this.endTime.nativeElement.value ? this.frmSearch.controls['endTime'].setValue(moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').toDate()) : '';  
+  var _status = this.frmSearch.controls['status'].value;
+  if(_status == 0){
+    console.log('vao den day');
+    var span = document.getElementById('table-status');
+    // var row = span.getElementsByTagName('tbody').childNodes[2];
+    // document.getElementById("table-status").classList.add("hidden");
+  }
+  
   this.btnSearchClicks$.next();
 }
-changeEndDate(value: any, type: number) {
-  // if(type == 2){
-  //   console.log(value);
-  //   return this.endTime.nativeElement.value = moment(new Date(new Date().setDate(new Date().getDate() + Number(value)))).format("DD/MM/YYYY");
-  // }  
-  // var days = moment(value, 'DD/MM/YYYY').dayOfYear() - moment(new Date()).dayOfYear() > 0 ? moment(value, 'DD/MM/YYYY').dayOfYear() - moment(new Date()).dayOfYear() : 0;
- 
-}
-
 onSelectHealthFacilities(obj: any){
    this._doctors = [];
   this.dataService.getAll('doctors', obj.healthFacilitiesId).subscribe(resp => 
@@ -192,7 +185,6 @@ onSelectHealthFacilities(obj: any){
     });    
 }
 onChangeHealthfacilities() {
-  console.log(92)
   var val = this.healthfacilities.value;
   
   if (val && val.trim()) {
@@ -206,9 +198,6 @@ onChangeHealthfacilities() {
   } else {
     this.healthfacilities.setValue('');
   }
-  // this._doctor = [];
-  // this.dataService.getAll('doctors', obj.healthFacilitiesId).subscribe(resp => this._doctor = resp.items);
-  // console.log(this._doctor);
 }
 
 
