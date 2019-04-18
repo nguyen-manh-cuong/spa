@@ -39,9 +39,12 @@
             <mat-form-field appearance="outline" class="w-100">
               <mat-label>{{l('PackageDistributeMonth')}}</mat-label>
               <mat-select formControlName="monthStart">
-                <mat-option *ngFor="let o of _month" [value]="o.id"
+                  <mat-option *ngFor="let o of _month" [value]="o.id">
+                      {{ o.name }}
+                  </mat-option>
+                <!--<mat-option *ngFor="let o of _month" [value]="o.id"
                   [disabled]="_frmpackagedistributeedit.controls['year'].value < _currentYear || (_frmpackagedistributeedit.controls['year'].value <= _currentYear &&  o.id < _currentMonth)">
-                  {{ o.name }}</mat-option>
+                  {{ o.name }}</mat-option>-->
               </mat-select>
             </mat-form-field>
           </div>
@@ -49,43 +52,38 @@
             <mat-form-field appearance="outline" class="w-100">
               <mat-label>{{l('Đến tháng')}}</mat-label>
               <mat-select formControlName="monthEnd">
-                <mat-option *ngFor="let o of _month" [value]="o.id"
+                  <mat-option *ngFor="let o of _month" [value]="o.id">
+                      {{ o.name }}
+                  </mat-option>
+                <!--<mat-option *ngFor="let o of _month" [value]="o.id"
                 [disabled]="_frmpackagedistributeedit.controls['year'].value < _currentYear || (_frmpackagedistributeedit.controls['year'].value <= _currentYear &&  o.id < _currentMonth)">
-                  {{ o.name }}</mat-option>
+                  {{ o.name }}</mat-option>-->
               </mat-select>
               <mat-icon matSuffix *ngIf="_frmpackagedistributeedit.controls['monthStart'].value > _frmpackagedistributeedit.controls['monthEnd'].value" [matTooltipPosition]="'before'" matTooltipClass="bg-danger text-light mr-1" matTooltip="{{l('Đến tháng phải lớn hơn hoặc bằng Từ tháng')}}" color="warn">info</mat-icon>
             </mat-form-field>
           </div>
           <div class="col-md-6">
-            <mat-form-field appearance="outline" class="w-100">
-              <mat-label>{{l("Năm")}}</mat-label>
-              <input min="0" max="9999" maxlength="4" formControlName="year" mask="0*"
-                matInput autocomplete [required]="true">
-              <mat-icon matSuffix
-                *ngIf="_frmpackagedistributeedit.controls['year'].invalid && (_frmpackagedistributeedit.controls['year'].dirty || _frmpackagedistributeedit.controls['year'].touched)"
-                [matTooltipPosition]="'before'" matTooltipClass="bg-danger text-light mr-1"
-                matTooltip="{{l('NotBeEmpty')}}" color="warn">info</mat-icon>
-              <mat-icon matSuffix
-                *ngIf="!_frmpackagedistributeedit.controls['year'].invalid && (_frmpackagedistributeedit.controls['year'].value < _currentYear) && (_frmpackagedistributeedit.controls['year'].dirty || _frmpackagedistributeedit.controls['year'].touched)"
-                [matTooltipPosition]="'before'" matTooltipClass="bg-danger text-light mr-1"
-                matTooltip="{{l('PackageDistributeCompareYears')}}" color="warn">info</mat-icon>
-            </mat-form-field>
+              <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>{{l("Từ Năm")}}</mat-label>
+                  <input min="0" max="9999" maxlength="4" formControlName="yearStart" mask="0*"
+                         matInput autocomplete [required]="true">
+                  <mat-icon matSuffix
+                            *ngIf="_frmpackagedistributeedit.controls['yearStart'].invalid && (_frmpackagedistributeedit.controls['yearStart'].dirty || _frmpackagedistributeedit.controls['yearStart'].touched)"
+                            [matTooltipPosition]="'before'" matTooltipClass="bg-danger text-light mr-1"
+                            matTooltip="{{l('NotBeEmpty')}}" color="warn">info</mat-icon>
+              </mat-form-field>
           </div>
-          <!-- <div class="col-md-6">
-            <mat-form-field appearance="outline" class="w-100">
-              <mat-label>{{l("Đến năm")}}</mat-label>
-              <input min="0" max="9999" maxlength="4" formControlName="year" mask="0*"
-                matInput autocomplete [required]="true">
-              <mat-icon matSuffix
-                *ngIf="_frmpackagedistributeedit.controls['year'].invalid && (_frmpackagedistributeedit.controls['year'].dirty || _frmpackagedistributeedit.controls['year'].touched)"
-                [matTooltipPosition]="'before'" matTooltipClass="bg-danger text-light mr-1"
-                matTooltip="{{l('NotBeEmpty')}}" color="warn">info</mat-icon>
-              <mat-icon matSuffix
-                *ngIf="!_frmpackagedistributeedit.controls['year'].invalid && (_frmpackagedistributeedit.controls['year'].value < _currentYear) && (_frmpackagedistributeedit.controls['year'].dirty || _frmpackagedistributeedit.controls['year'].touched)"
-                [matTooltipPosition]="'before'" matTooltipClass="bg-danger text-light mr-1"
-                matTooltip="{{l('PackageDistributeCompareYears')}}" color="warn">info</mat-icon>
-            </mat-form-field>
-          </div> -->
+           <div class="col-md-6">
+               <mat-form-field appearance="outline" class="w-100">
+                   <mat-label>{{l("Đến năm")}}</mat-label>
+                   <input min="0" max="9999" maxlength="4" formControlName="yearEnd" mask="0*"
+                          matInput autocomplete [required]="true">
+                   <mat-icon matSuffix
+                             *ngIf="_frmpackagedistributeedit.controls['yearEnd'].invalid && (_frmpackagedistributeedit.controls['yearEnd'].dirty || _frmpackagedistributeedit.controls['yearEnd'].touched)"
+                             [matTooltipPosition]="'before'" matTooltipClass="bg-danger text-light mr-1"
+                             matTooltip="{{l('NotBeEmpty')}}" color="warn">info</mat-icon>
+               </mat-form-field>
+          </div> 
           <div class="col-md-6" >
             <mat-form-field appearance="outline" class="w-100">
                 <mat-label>{{l('Đầu số')}}</mat-label>
@@ -104,8 +102,9 @@
             {{l("Close")}}
           </button>
           <button mat-raised-button color="primary"
-            [disabled]="_frmpackagedistributeedit.invalid || (_frmpackagedistributeedit.controls['monthStart'].value > _frmpackagedistributeedit.controls['monthEnd'].value) || (!_frmpackagedistributeedit.controls['year'].invalid && (_frmpackagedistributeedit.controls['year'].value < _currentYear)) ? true : false"
-            (click)="submit()">
+                    (click)="submit()"
+            [disabled]="((_frmpackagedistributeedit.controls['yearStart'].invalid) || (_frmpackagedistributeedit.controls['yearEnd'].invalid) || (_frmpackagedistributeedit.controls['yearStart'].value > _currentYear) || (_frmpackagedistributeedit.controls['yearEnd'].value) < (_frmpackagedistributeedit.controls['yearStart'].value))">
+          
             {{l("Save")}}
           </button>
         </div>

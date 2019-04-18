@@ -19,7 +19,7 @@
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('Phòng khám')}}</mat-label>
                     <input matInput [formControl]="healthfacilities" (click)="clickCbo()" [matAutocomplete]="auto">
-                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" >
+                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
                         <mat-option *ngFor="let o of filteredOptions | async" [value]="o">
                             {{o.name}}
                         </mat-option>
@@ -61,7 +61,7 @@
             <div class="col-md-3">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('Đến ngày')}}</mat-label>
-                    <input matInput  #endTime [matDatepicker]="picker1" mask="00/00/0000" required maxlength="10">
+                    <input matInput #endTime [matDatepicker]="picker1" mask="00/00/0000" required maxlength="10">
                     <mat-datepicker-toggle matSuffix [for]="picker1" class="t-2"></mat-datepicker-toggle>
                     <mat-datepicker #picker1></mat-datepicker>
                 </mat-form-field>
@@ -74,18 +74,26 @@
                     </mat-select>
                 </mat-form-field>
             </div>
+            <div class="col-md-3">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>{{l('Telco')}}</mat-label>
+                    <mat-select formControlName="telco">
+                        <mat-option *ngFor="let o of _telco" [value]="o.code">{{ o.name }}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
             <div class="col-md-3 text-center d-flex align-self-center">
                 <button #btnSearch mat-stroked-button color="primary" (click)="customSearch()" class="w-100 mb-4">
                     <mat-icon class="mr-2">search</mat-icon>{{l("Search")}}
                 </button>
             </div>
             <!-- <div class="col-md-3 text-center d-flex align-self-center">
-                <mat-form-field>
-                    <input matInput [matDatepicker]="dp" placeholder="Different locale">
-                    <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
-                    <mat-datepicker #dp></mat-datepicker>
-                  </mat-form-field>
-            </div> -->
+        <mat-form-field>
+            <input matInput [matDatepicker]="dp" placeholder="Different locale">
+            <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
+            <mat-datepicker #dp></mat-datepicker>
+          </mat-form-field>
+    </div> -->
         </div>
     </form>
     <div class="table-content" [perfectScrollbar]="{}">
@@ -113,7 +121,7 @@
             </ng-container>
             <ng-container matColumnDef="sentDate">
                 <th mat-header-cell *matHeaderCellDef class="min-w-100 text-center"> {{l('Ngày gửi')}} </th>
-                <td mat-cell *matCellDef="let element" class="text-center"> {{element.sentDate | date: 'dd/MM/yyyy'}} </td>
+                <td mat-cell *matCellDef="let element" class="text-center"> {{element.sentDate | date: 'dd/MM/yyyy hh:mm:ss'}} </td>
             </ng-container>
             <ng-container matColumnDef="status">
             <th mat-header-cell *matHeaderCellDef class="min-w-50 text-center"> {{l('Trạng thái')}} </th>

@@ -191,7 +191,8 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
                 type: 2, 
                 content: ''
             })
-            .subscribe(resp => {
+                .subscribe(resp => {
+                    console.log(resp);
                 swal('Thông báo', resp, 'error');
                 this.selection = new SelectionModel<IMedicalHealthcareHistories>(true, []);
             }, err => {});

@@ -42,6 +42,7 @@ export class IndexComponent extends PagedListingComponentBase<ISmsLogs> implemen
     _healthfacilities: IHealthfacilities[] = [];
     _status = [{ id: 0, name: 'Tất cả' }, { id: 1, name: 'Thành công' }, { id: 2, name: 'Lỗi' }];
     _type = [{ id: 0, name: 'Tất cả' }, { id: 1, name: 'Gửi chủ động' }, { id: 2, name: 'Gửi tự động' }];
+    _telco = [{ id: 0, name: 'Tất cả', code: 'all' }, { id: 1, name: 'Viettel', code: 'viettel' }, { id: 2, name: 'Vinaphone', code: 'vinaphone' }, { id: 3, name: 'Mobifone', code: 'mobifone' }, { id: 4, name: 'Vietnamobile', code: 'vietnamobile' }, { id: 5, name: 'Gmobile', code: 'gmobile' }];
 
     filteredOptions: Observable<IHealthfacilities[]>;
     healthfacilities = new FormControl();
@@ -62,7 +63,8 @@ export class IndexComponent extends PagedListingComponentBase<ISmsLogs> implemen
             status: [],
             startTime: [],
             endTime: [],
-            type: []
+            type: [],
+            telco: []
         });
         this.dataService = this._dataService;
         this.dataService.getAll('healthfacilities', (this.appSession.user.healthFacilitiesId ? String(this.appSession.user.healthFacilitiesId) : '')).subscribe(resp => this._healthfacilities = resp.items);
