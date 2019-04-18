@@ -45,12 +45,16 @@ export class packagedistributeIndexComponent extends PagedListingComponentBase<I
     this.frmSearch = this._formBuilder.group({
       monthStart: [13,],
       monthEnd: [13,],
-      year: ['', [Validators.maxLength(4), Validators.min(0), Validators.max(9999), Validators.pattern('[0-9]*')]],
+        toYear: ['', [Validators.maxLength(4), Validators.min(0), Validators.max(9999), Validators.pattern('[0-9]*')]],
+        fromYear: ['', [Validators.maxLength(4), Validators.min(0), Validators.max(9999), Validators.pattern('[0-9]*')]],
       HealthFacilitiesId: ['',],
-      Status: [2,]
+        Status: [2,],
     });
 
-    this._dataService.getAll('healthfacilities').subscribe(resp => this._medicalFacility = resp.items);
+      this._dataService.getAll('healthfacilities').subscribe(resp => {
+          console.log(resp.items);
+          this._medicalFacility = resp.items;
+      });
   }
 
   getMedicalById(id: number): string {

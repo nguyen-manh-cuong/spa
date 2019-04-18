@@ -101,10 +101,10 @@ namespace SHCServer.Controllers
         {
             try
             {
-                //if (_context.Query<SmsPackagesDistribute>().Where(pd => pd.SmsPackageId == package.Id).Count() > 0)
-                //{
-                //    return StatusCode(500, _excep.Throw("Sửa gói thất bại.", "Gói SMS đang được sử dụng!"));
-                //}
+                if (_context.Query<SmsPackagesDistribute>().Where(pd => pd.SmsPackageId == package.Id).Count() > 0)
+                {
+                    return StatusCode(500, _excep.Throw("Sửa gói thất bại.", "Gói SMS đang được sử dụng!"));
+                }
                 if (_context.Query<SmsPackage>().Where(p => p.Name == package.Name && p.Id != package.Id && p.IsDelete == false).Count() > 0)
                 {
                     //return Json(new ActionResultDto { Success = false, Error = new { Code = 401, Message = "Chỉnh sửa gói thất bại.", Details = "Gói SMS đã tồn tại!" } });
@@ -175,7 +175,7 @@ namespace SHCServer.Controllers
 
                 _context.Update<SmsPackage>(t => t.Id == id, a => new SmsPackage
                 {
-                    IsDelete = true
+                    IsActive= false
                 });
 
                 _context.Session.CommitTransaction();

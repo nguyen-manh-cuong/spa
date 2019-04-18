@@ -1,0 +1,9 @@
+mat-cell {
+    display: flex !important;
+    justify-content: center !important; // or flex-end
+}
+
+mat-header-cell {
+    display: flex;
+    justify-content: center; // or flex-end
+}

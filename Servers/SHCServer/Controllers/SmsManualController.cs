@@ -47,8 +47,8 @@ namespace SHCServer.Controllers
                                     p.PhoneNumber,
                                     p.Address,
                                     p.Email
-                                from medical_healthcare_histories h
-                                inner join cats_patients p on h.PatientId = p.PatientId
+                                from smarthealthcare.medical_healthcare_histories h
+                                inner join smarthealthcare.cats_patients p on h.PatientId = p.PatientId
                                 where 1=1 ";
             List<string> clause = new List<string>(); ;
             List<DbParam> param = new List<DbParam>();
@@ -97,7 +97,7 @@ namespace SHCServer.Controllers
                             clause.Add("and h.IsReExamination != 1");
                         }
                     }
-                    if (string.Equals(key, "statusB"))
+                    if (string.Equals(key, "status"))
                     {
                         if (value == "1")
                         {
@@ -144,26 +144,15 @@ namespace SHCServer.Controllers
                         clause.Add("and p.WardCode = @WardCode");
                         param.Add(DbParam.Create("@WardCode", value));
                     }
-                    if (string.Equals(key, "birthday"))
+                    if (string.Equals(key, "day") && value != "32")
                     {
-                        var birthday = DateTime.Parse(value);
-
-                        clause.Add("and p.BirthDate = @BirthDate and p.BirthMonth = @BirthMonth and p.BirthYear = @BirthYear");
-                        param.Add(DbParam.Create("@BirthDate", birthday.Day));
-                        param.Add(DbParam.Create("@BirthMonth", birthday.Month));
-                        param.Add(DbParam.Create("@BirthYear", birthday.Year));
+                        clause.Add("and p.BirthDate = @BirthDate");
+                        param.Add(DbParam.Create("@BirthDate", value));
                     }
-                    if (string.Equals(key, "birthdayTo"))
+                    if (string.Equals(key, "month") && value != "13")
                     {
-                        var birthday = DateTime.Parse(value).ToString("yyyy-MM-dd");
-                        clause.Add("and STR_TO_DATE(CONCAT(p.BirthDate, '-', p.BirthMonth, '-', p.BirthYear),'%d-%m-%Y') <= @birthdayTo");
-                        param.Add(DbParam.Create("@birthdayTo", birthday));
-                    }
-                    if (string.Equals(key, "birthdayFrom"))
-                    {
-                        var birthday = DateTime.Parse(value).ToString("yyyy-MM-dd");
-                        clause.Add("and STR_TO_DATE(CONCAT(p.BirthDate, '-', p.BirthMonth, '-', p.BirthYear),'%d-%m-%Y') >= @birthdayFrom");
-                        param.Add(DbParam.Create("@birthdayFrom", birthday));
+                        clause.Add("and p.BirthMonth = @BirthMonth");
+                        param.Add(DbParam.Create("@BirthMonth", value));
                     }
                     if (string.Equals(key, "male")) male = true;
                     if (string.Equals(key, "female")) female = true;
@@ -175,13 +164,38 @@ namespace SHCServer.Controllers
                 }
             }
 
+            if (sorting != null)
+            {
+                foreach (var (key, value) in JsonConvert.DeserializeObject<Dictionary<string, string>>(sorting))
+                {
+                        switch (key)
+                        {
+                            case "id":
+                                clause.Add("ORDER BY p.PatientId " + value);
+                                break;
+                            case "fullName":
+                                clause.Add("ORDER BY SUBSTR(p.FullName, INSTR(p.FullName, ' ')) " + value);
+                                break;
+                            case "ReExaminationDate":
+                                clause.Add("ORDER BY ReExaminationDate " + value);
+                                break;
+                        case "birthday":
+                            clause.Add("ORDER BY p.BirthDate " + value + " ,p.BirthMonth, p.BirthYear");
+                            break;
+                    }
+                }
+            }
+
 
             clause.Add("limit @skipCount, @resultCount");
             param.Add(DbParam.Create("@skipCount", skipCount * maxResultCount));
             param.Add(DbParam.Create("@resultCount", maxResultCount));
 
+
             var str = $"{query} {string.Join(" ", clause)}";
             var reader = _context.Session.ExecuteReader($"{query} {string.Join(" ", clause)}", param);
+
+
 
             while (reader.Read())
             {

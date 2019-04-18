@@ -24,7 +24,7 @@ namespace SHCServer.Controllers
             _connectionString = configuration.GetConnectionString("DefaultConnection");
             _excep = new FriendlyException();
         }
-        
+
 
         [HttpPost]
         [Route("api/bookinginformations")]
@@ -52,9 +52,31 @@ namespace SHCServer.Controllers
             if (filter != null)
             {
                 foreach (var (key, value) in JsonConvert.DeserializeObject<Dictionary<string, string>>(filter))
-                {                    
+                {
                     if (string.Equals(key, "healthfacilities") && !string.IsNullOrWhiteSpace(value))
                         objs = objs.Where(b => b.HealthFacilitiesId.ToString() == value.Trim() || b.HealthFacilitiesId.ToString() == null);
+                    if (string.Equals(key, "doctor") && !string.IsNullOrWhiteSpace(value))
+                        objs = objs.Where(b => b.DoctorId.ToString() == value.Trim());
+                    if (string.Equals(key, "status") && !string.IsNullOrWhiteSpace(value))
+                        if(Convert.ToInt32(value) != 4)
+                        {
+                            objs = objs.Where(b => b.Status.ToString() == value.Trim());
+                        }                        
+
+                    if (string.Equals(key, "startTime") && !string.IsNullOrWhiteSpace(value))
+                    {
+                        DateTime _startTime = DateTime.Parse(value);
+                        objs = objs.Where(b => b.ExaminationDate >= _startTime);
+                    }
+                    if (string.Equals(key, "endTime") && !string.IsNullOrWhiteSpace(value))
+                    {
+                        DateTime _enTime = DateTime.Parse(value);
+                        objs = objs.Where(b => b.ExaminationDate >= _enTime);
+                    }
+
+
+
+
                 }
 
             }
@@ -73,9 +95,18 @@ namespace SHCServer.Controllers
                 objs = objs.OrderByDesc(b => b.CreateDate);
             }
 
-            return Json(new ActionResultDto { Result = new { Items = objs.TakePage(skipCount == 0 ? 1 : skipCount + 1, maxResultCount).ToList(), TotalCount = objs.Count() } });
-        }
+ 
+            var rs = objs.GroupBy(p => p.DoctorId).Select(p => new BookingInformationsViewModel(p, _connectionString) {
+                Quantity = objs.Where(o=>o.DoctorId==p.DoctorId).Count(),
+                //QuantityByStatusPending = objs.Where(o => o.Status == 1).Count(),
+                //QuantityByStatusDone = objs.Where(o => o.Status == 2).Count(),
+                //QuantityByStatusCancel = objs.Where(o => o.Status == 3).Count(),
+                //QuantityByStatusNew = objs.Where(o => o.Status == 0).Count(),
+            });
 
+            //return Json(new ActionResultDto { Result = new { Items = objs.TakePage(skipCount == 0 ? 1 : skipCount + 1, maxResultCount).ToList(), TotalCount = objs.Count() } });
+            return Json(new ActionResultDto { Result = new { Items = rs.TakePage(skipCount == 0 ? 1 : skipCount + 1, maxResultCount).ToList(), TotalCount = objs.Count() } });
+        }
 
 
     }

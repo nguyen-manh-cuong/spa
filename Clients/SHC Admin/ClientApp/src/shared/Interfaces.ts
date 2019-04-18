@@ -66,6 +66,16 @@ export interface IBookingInformations{
     healthFacilitiesId: number;
     doctorId: number;
     status: number;
+    healthFacilitiesName: string;
+    doctorName: string;
+    quantity;
+    quantityByGederFemale: number;
+    quantityByGederMale: number;
+    quantityByStatusNew: number;
+    quantityByStatusPending: number;
+    quantityByStatusDone: number;
+    quantityByStatusCancel: number;
+    examinationDate: Date;
 }
 
 export interface IPackage {
