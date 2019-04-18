@@ -31,3 +31,11 @@
 .restore{
     background-color: deepskyblue;
 }
+
+.btn {
+    .mat-checkbox-inner-container-no-side-margin {
+        margin-top: 2px;
+        margin-right: 4px;
+        background: white;
+    }
+}
