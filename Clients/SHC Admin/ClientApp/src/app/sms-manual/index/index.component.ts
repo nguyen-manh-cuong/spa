@@ -48,6 +48,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     _doctors = [];
     _healthfacilities = [];
     _currentYear = new Date().getFullYear();
+    _sex = [{ id: 0, name: 'Tất cả' }, { id: 1, name: 'Nam' }, { id: 2, name: 'Nữ' }, { id: 3, name: 'Không xác định' }];
     selection = new SelectionModel<IMedicalHealthcareHistories>(true, []);
 
     filteredOptions: Observable<IHealthfacilities[]>;
@@ -75,8 +76,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
             districtCode: [],
             wardCode: [],
             birthday: [],
-            male: [],
-            female: []
+            sex: [],
         });
 
         this.dialogComponent = TaskComponent;

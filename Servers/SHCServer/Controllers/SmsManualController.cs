@@ -27,8 +27,6 @@ namespace SHCServer.Controllers
         [Route("api/smsmanual")]
         public IActionResult GetAll(int skipCount = 0, int maxResultCount = 10, string sorting = null, string filter = null)
         {
-            bool male = false;
-            bool female = false;
             string query = @"select 
 	                                PatientHistoriesId,
 	                                HealthFacilitiesId,
@@ -49,7 +47,7 @@ namespace SHCServer.Controllers
                                     p.Email
                                 from smarthealthcare.medical_healthcare_histories h
                                 inner join smarthealthcare.cats_patients p on h.PatientId = p.PatientId
-                                where 1=1 ";
+                                group by p.Code";
             List<string> clause = new List<string>(); ;
             List<DbParam> param = new List<DbParam>();
             List<MedicalHealthcareHistoriesViewModel> lst = new List<MedicalHealthcareHistoriesViewModel>();
@@ -154,13 +152,11 @@ namespace SHCServer.Controllers
                         clause.Add("and p.BirthMonth = @BirthMonth");
                         param.Add(DbParam.Create("@BirthMonth", value));
                     }
-                    if (string.Equals(key, "male")) male = true;
-                    if (string.Equals(key, "female")) female = true;
-                }
-                if ((male == true && female == false) || (male == false && female == true))
-                {
-                    clause.Add("and p.Gender = @Gender");
-                    param.Add(DbParam.Create("@Gender", male ? 1 : 0));
+                    if (string.Equals(key, "sex"))
+                    {
+                        clause.Add("and p.Gender = @Gender");
+                        param.Add(DbParam.Create("@Gender", value));
+                    }
                 }
             }
 
