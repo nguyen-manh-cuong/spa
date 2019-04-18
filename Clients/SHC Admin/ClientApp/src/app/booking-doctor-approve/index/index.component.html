@@ -1,9 +1,6 @@
 <div class="toolbar fadeIn animated">
     <div class="row w-100 m-0">
         <div class="col-4 text-left d-flex align-items-center">
-            <button mat-stroked-button color="primary" (click)="openDialog()">
-                <mat-icon class="f-20 m-l--10 mat-icon m-t-2 material-icons">add</mat-icon>{{l("CreateNew")}}
-            </button>
             <div class="separate"></div>
             <mat-slide-toggle class="ml-2" [checked]="showFilter" (change)="toggedFilter()">
                 <ng-container *ngIf="showFilter">{{l("ShowFilter")}}</ng-container>
