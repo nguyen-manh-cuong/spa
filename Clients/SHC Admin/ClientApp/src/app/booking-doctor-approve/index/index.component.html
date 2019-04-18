@@ -1,0 +1,135 @@
+<div class="toolbar fadeIn animated">
+    <div class="row w-100 m-0">
+        <div class="col-4 text-left d-flex align-items-center">
+            <button mat-stroked-button color="primary" (click)="openDialog()">
+                <mat-icon class="f-20 m-l--10 mat-icon m-t-2 material-icons">add</mat-icon>{{l("CreateNew")}}
+            </button>
+            <div class="separate"></div>
+            <mat-slide-toggle class="ml-2" [checked]="showFilter" (change)="toggedFilter()">
+                <ng-container *ngIf="showFilter">{{l("ShowFilter")}}</ng-container>
+                <ng-container *ngIf="!showFilter">{{l("HideFilter")}}</ng-container>
+            </mat-slide-toggle>
+        </div>
+        <div class="col-8">
+            <mat-paginator #paginator [pageSizeOptions]="pageSizeOptions" [length]="totalItems" [pageSize]="pageSize"
+                showFirstLastButtons></mat-paginator>
+        </div>
+    </div>
+</div>
+<div class="content fadeIn animated">
+    <form [formGroup]="frmSearch" class="form-filter pl-2 pr-2" novalidate>
+        <div class="row m-0 pt-4">
+            <div class="col-md-6" [hidden]="this.appSession.user.healthFacilitiesId">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>{{l('Phòng khám')}}</mat-label>
+                    <input matInput formControlName="healthfacilities" (click)="clickCbo()" [matAutocomplete]="auto">
+                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="onSelectHealthFacilities($event.option.value)">
+                        <mat-option *ngFor="let o of filteredOptions | async" [value]="o">
+                            {{o.code + ' - ' + o.name}}
+                        </mat-option>
+                    </mat-autocomplete>
+                </mat-form-field>
+            </div>
+            <div class="col-md-6 disabled" [hidden]="!this.appSession.user.healthFacilitiesId">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>{{l('Phòng khám')}}</mat-label>
+                    <mat-select formControlName="healthfacilities">
+                        <mat-option *ngFor="let o of _healthfacilities" [value]="o.healthFacilitiesId">{{ o.name }}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="col-md-6">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>{{l('Bác sĩ')}}</mat-label>
+                    <mat-select formControlName="doctor">
+                        <mat-option *ngIf="_doctors.length" class="text-center" [innerHTML]="'<div class=\'text-center border-bottom w-100\'>'+ l('Bỏ chọn') +'</div>'"></mat-option>
+                        <mat-option *ngFor="let o of _doctors" [value]="o.doctorId">{{ o.fullName }}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="col-md-4">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>{{l('Tái khám từ')}}</mat-label>
+                    <input matInput [matDatepicker]="picker1" #startTime mask="00/00/0000" maxlength="10" required>
+                    <mat-datepicker-toggle matSuffix [for]="picker1" class="t-2"></mat-datepicker-toggle>
+                    <mat-datepicker #picker1></mat-datepicker>
+                </mat-form-field>
+            </div>
+            <div class="col-md-4">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>{{l('Đến ngày')}}</mat-label>
+                    <input matInput [min]="cDate" [matDatepicker]="picker2" #endTime mask="00/00/0000" maxlength="10" required>
+                    <mat-datepicker-toggle matSuffix [for]="picker2" class="t-2"></mat-datepicker-toggle>
+                    <mat-datepicker #picker2></mat-datepicker>
+                </mat-form-field>
+            </div>
+            <div class="col-md-4">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>{{l('CStatus')}}</mat-label>
+                    <mat-select formControlName="status">
+                        <mat-option *ngFor="let o of status" [value]="o.id">{{ o.name }}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div><div class="col-md-3"></div>
+            <div class="col-md-3 text-center d-flex align-self-center fadeIn animated">
+                <button #btnSearch mat-stroked-button color="primary" (click)="customSearch()"
+                    class="w-100 mb-4">
+                    <mat-icon class="mr-2">search</mat-icon>{{l("Search")}}
+                </button>
+            </div>
+            <div class="col-md-3 text-center d-flex align-self-center">
+                <button mat-stroked-button color="primary" (click)="update(null)" class="w-100 mb-4">
+                    {{l("Duyệt lịch khám")}}
+                </button>
+            </div>
+        </div>
+    </form>
+    
+    <div class="table-content" style="height: calc(100vh - 245px);">
+        <table mat-table [dataSource]="dataSources" matSort #sort="matSort" matSortDisableClear matSortActive="id"
+            matSortDirection="desc" class="w-100 task">
+
+            <ng-container matColumnDef="orderNumber">
+                <th mat-header-cell *matHeaderCellDef class="min-w-30 text-center pl-0"> {{l("OrderNumber")}} </th>
+                <td mat-cell *matCellDef="let element; let i = index;" class="min-w-30 text-center">
+                    {{(i + 1) + (paginator.pageIndex * paginator.pageSize)}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="select">
+                <th mat-header-cell *matHeaderCellDef class="min-w-50 text-center pl-0 p-t-8">
+                    <mat-checkbox (change)="$event ? masterToggle() : null"
+                                    [checked]="selection.hasValue() && isAllSelected()"
+                                    [indeterminate]="selection.hasValue() && !isAllSelected()">
+                    </mat-checkbox>
+                </th>
+                <td mat-cell *matCellDef="let row" class="min-w-50 p-t-8 text-center">
+                    <mat-checkbox (click)="$event.stopPropagation()"
+                                    (change)="$event ? selection.toggle(row) : null"
+                                    [checked]="selection.isSelected(row)">
+                    </mat-checkbox>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef class="text-center"> {{'Bác sĩ'}} </th>
+                <td mat-cell *matCellDef="let element" class="td-ellipsis" title="{{element.name}}">{{element.name}}</td>
+            </ng-container>
+        
+            <ng-container matColumnDef="{{item.index}}" *ngFor="let item of _lstWorkingTimes; index as i">
+                <th mat-header-cell *matHeaderCellDef class="text-center"> {{item.dayCol}} </th>
+                <td mat-cell *matCellDef="let element" class="text-center">
+                    <div *ngFor="let dc of element.lstBookingDoctorsCalendars; index as j" class="{{item.date == dc.strCalendarDate ? 'btn' : ''}} {{dc.status == 0 ? 'wait' : (dc.status == 1 ? 'approve' : 'restore' )}}">
+                        <span *ngIf="item.date == dc.strCalendarDate">
+                            <mat-checkbox *ngIf="dc.status == 0" (change)="getCalendarId(dc.calendarId, $event.checked)"></mat-checkbox>
+                            <a *ngIf="dc.status != 2" (click)="detail(dc)">{{item.date == dc.strCalendarDate ? dc.hoursStart + 'h' + dc.minuteStart + ' - ' + dc.hoursEnd + 'h' + dc.minuteEnd : ''}}</a>
+                            <del *ngIf="dc.status == 2" style="color: red;" (click)="detail(dc)">{{item.date == dc.strCalendarDate ? dc.hoursStart + 'h' + dc.minuteStart + ' - ' + dc.hoursEnd + 'h' + dc.minuteEnd : ''}}</del>
+                            <i *ngIf="dc.status == 1 || dc.status == 2" class="fa fa-{{dc.status == 1 ? 'times-circle' : 'history'}} icon" aria-hidden="true" (click)="update(dc)"></i>
+                        </span>
+                    </div>
+                </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns;sticky:true"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="fadeIn animated"></tr>
+        </table>
+    </div>
+</div>

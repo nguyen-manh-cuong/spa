@@ -63,7 +63,6 @@ export class packagedistributeIndexComponent extends PagedListingComponentBase<I
   }
 
   deleteDialogPackage(obj: IPachkageDistribute, key: string, benhvien: number, id?: number | string) {
-    console.log(this.l('DeletedInSystem', obj[key] + " - " + this.getMedicalById(benhvien)));
     swal({
       title: this.l('AreYouSure'),
       html: this.l('DeleteWarningMessage', this.getMedicalById(benhvien) + " - " + obj[key]),

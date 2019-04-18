@@ -172,6 +172,28 @@ export interface IMedicalHealthcareHistories{
     address?: string;
 }
 
+export interface IBookingDoctorsCalendars{
+    calendarDate?: string;
+    calendarId: number;
+    hoursEnd: string;
+    hoursStart: string;
+    minuteEnd: string;
+    minuteStart: string;
+    status?: number;
+    strCalendarDate?: string;
+    timeSlotId?: number;
+    address?: string;
+    doctorId?: number,
+    fullName: string;
+}
+
+export interface IBookingDoctorsCalendarsView{
+    doctorId?: number,
+    name: string;
+
+    lstBookingDoctorsCalendars: Array<IBookingDoctorsCalendars>;
+}
+
 
 // tslint:disable-next-line:no-empty-interface
 export interface IAddHeadersToRequest {
