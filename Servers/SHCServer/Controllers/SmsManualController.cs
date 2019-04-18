@@ -179,7 +179,10 @@ namespace SHCServer.Controllers
                             case "ReExaminationDate":
                                 clause.Add("ORDER BY ReExaminationDate " + value);
                                 break;
-                        }
+                        case "birthday":
+                            clause.Add("ORDER BY p.BirthDate " + value + " ,p.BirthMonth, p.BirthYear");
+                            break;
+                    }
                 }
             }
 
