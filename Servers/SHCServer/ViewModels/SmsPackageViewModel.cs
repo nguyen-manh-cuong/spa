@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using SHCServer.Models;
 using Viettel;
 using Viettel.MySql;
@@ -31,6 +32,7 @@ namespace SHCServer.ViewModels
                              .ToList();
 
             Distribute = context.Query<SmsPackagesDistribute>().Where(pd => pd.SmsPackageId == obj.Id).Count();
+            IsDeleteDistribute = context.Query<SmsPackagesDistribute>().Where(pd => pd.SmsPackageId == obj.Id && pd.IsDelete == true).Count();
         }
 
         public int Id { set; get; }
@@ -45,9 +47,11 @@ namespace SHCServer.ViewModels
 
         public bool? IsActive { set; get; }
 
+
         public IList<SmsPackageDetailViewModel> Details { get; set; }
 
         public int Distribute { get; set; }
+        public int? IsDeleteDistribute { set; get; }
     }
 
     public class PackageInputViewModel

@@ -67,9 +67,10 @@ export class packagedistributeIndexComponent extends PagedListingComponentBase<I
   }
 
   deleteDialogPackage(obj: IPachkageDistribute, key: string, benhvien: number, id?: number | string) {
+    console.log(this.l('DeletedInSystem', obj[key] + " - " + this.getMedicalById(benhvien)));
     swal({
       title: this.l('AreYouSure'),
-      html: this.l('DeleteWarningMessage', this.getMedicalById(benhvien) + " - " + obj[key]),
+      html: this.l('DeleteWarningMessage', obj[key]),
       type: 'warning',
       showCancelButton: true,
       confirmButtonClass: 'mat-raised-button mat-primary bg-danger',
@@ -78,13 +79,18 @@ export class packagedistributeIndexComponent extends PagedListingComponentBase<I
       cancelButtonText: this.l('Cancel'),
       buttonsStyling: false
     }).then((result) => {
-      if (result.value) {
-        this.dataService.delete(this.api, obj[id ? id : 'id']).subscribe(e => {
-          this.paginator._changePageSize(this.paginator.pageSize);
-          this.paginator.pageIndex = 0;
-          swal(this.l('SuccessfullyDeleted'), this.l('DeletedInSystem', this.getMedicalById(benhvien) + " - " + obj[key]), 'success');
-        });
-      }
+        if (obj.quantity == obj.smsPackageUsed.quantityused) {
+            if (result.value) {
+                this.dataService.delete(this.api, obj[id ? id : 'id']).subscribe(e => {
+                    this.paginator._changePageSize(this.paginator.pageSize);
+                    this.paginator.pageIndex = 0;
+                    swal(this.l('SuccessfullyDeleted'), this.l('DeletedInSystem', obj[key]), 'success');
+                });
+            }
+        }
+        else {
+            swal(this.l('ErrorDelete'), this.l('ErrorDeletedInSystem', obj[key]), 'error');
+        }
     });
   }
 

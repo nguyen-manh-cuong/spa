@@ -14,9 +14,9 @@
 <div class="content">
     <form [formGroup]="frmSearch" class="form-filter pl-2 pr-2 pt-4 mb-4" novalidate>
         <div class="row">
-            <div class="col-md-6" [hidden]="this.appSession.user.healthFacilitiesId">
+            <div class="col-md-6 d-flex" [hidden]="this.appSession.user.healthFacilitiesId">
                 <mat-form-field appearance="outline" class="w-100">
-                    <mat-label>{{l('Tất cả')}}</mat-label>
+                    <mat-label>{{l('Đơn vị')}}</mat-label>
                     <input matInput [formControl]="healthfacilities" (click)="clickCbo()" [matAutocomplete]="auto" (change)="onChangeHealthfacilities()">
                     <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="onSelectHealthFacilities($event.option.value)">
                         <mat-option *ngFor="let o of filteredOptions | async" [value]="o">
@@ -34,7 +34,7 @@
             </div>
             <div class="col-md-3">
                 <mat-form-field appearance="outline" class="w-100">
-                    <mat-label>{{l('Tất cả')}}</mat-label>
+                    <mat-label>{{l('Bác sĩ')}}</mat-label>
                     <mat-select formControlName="doctor">
                         <mat-option *ngIf="_doctors.length" class="text-center" [innerHTML]="'<div class=\'text-center border-bottom w-100\'>'+ l('Bỏ chọn') +'</div>'"></mat-option>
                         <mat-option *ngFor="let o of _doctors" [value]="o.doctorId">{{ o.fullName }}</mat-option>
@@ -128,7 +128,7 @@
                     <app-gender></app-gender>
             </div>
             <div class="mb-2">Số lượng bệnh nhân theo trạng thái</div>
-            <app-status></app-status>
+            <app-status [control]="9999"></app-status>
         </div>
     </div>                                 
     </div>

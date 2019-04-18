@@ -12,7 +12,8 @@ namespace SHCServer.Models
         public int SmsPackageId { set; get; }
         public int HealthFacilitiesId { set; get; }
         public int SmsBrandsId { set; get; }
-        public int Year { set; get; }
+        public int YearStart { set; get; }
+        public int YearEnd { set; get; }
         public int MonthStart { set; get; }
         public int MonthEnd { set; get; }
         public bool IsActive { set; get; }

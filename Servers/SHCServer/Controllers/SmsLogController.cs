@@ -40,6 +40,7 @@ namespace SHCServer.Controllers
                     if (string.Equals(key, "startTime")) objs = objs.Where(s => s.SentDate >= DateTime.Parse(value));
                     if (string.Equals(key, "endTime")) objs = objs.Where(s => s.SentDate <= DateTime.Parse(value));
                     if (string.Equals(key, "type")) objs = objs.Where(s => s.LogType == int.Parse(value));
+                    if (string.Equals(key, "telco") && value != "all") objs = objs.Where(s => s.Telco == value);
                 }
             }
 

@@ -105,8 +105,19 @@ export interface IPachkageDistribute{
     healthFacilitiesId : number;
     monthStart : Number;
     monthEnd : Number;
-    year : Number;
+    yearStart: Number;
+    yearEnd: Number;
     status: number;
+    quantity: number;
+    smsPackageUsed: ISmsPackageUsed;
+}
+
+export interface ISmsPackageUsed {
+    id: number;
+    smsPackageId: number;
+    healthFacilitiesId: number;
+    quantityused: number;
+    createDate: Date;
 }
 
 export interface ISmsTemplate {

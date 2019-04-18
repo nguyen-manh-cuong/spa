@@ -47,6 +47,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     _doctors = [];
     _healthfacilities = [];
     _status = [{ id: 0, name: 'Tất cả' }, { id: 1, name: 'Đã gửi SMS' }, { id: 2, name: 'Chưa gửi SMS' }];
+    _sex = [{ id: 0, name: 'Tất cả' }, { id: 1, name: 'Nam' }, { id: 2, name: 'Nữ' }, { id: 3, name: 'Không xác định' }];
     _currentYear = new Date().getFullYear();
     selection = new SelectionModel<IMedicalHealthcareHistories>(true, []);
 
@@ -77,8 +78,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
             wardCode: [],
             day: [32],
             month: [13],
-            male: [],
-            female: [],
+            sex: [],
             about: 3
         });
 
@@ -191,7 +191,8 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
                 type: 2, 
                 content: ''
             })
-            .subscribe(resp => {
+                .subscribe(resp => {
+                    console.log(resp);
                 swal('Thông báo', resp, 'error');
                 this.selection = new SelectionModel<IMedicalHealthcareHistories>(true, []);
             }, err => {});
