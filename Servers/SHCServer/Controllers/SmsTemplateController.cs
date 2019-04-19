@@ -99,9 +99,6 @@ namespace SHCServer.Controllers
                 if (_context.Query<SmsTemplate>().Where(g => g.SmsContent == sms.SmsContent && g.Id != sms.Id && sms.IsDelete == false).Count() > 0)
                     return StatusCode(500, _excep.Throw("Sửa mẫu tin nhắn thất bại.", "Nội dung tin nhắn đã tồn tại !"));
 
-                if (_context.Query<SmsTemplate>().Where(g => g.Id == sms.Id && isTemplate == true).Count() > 0)
-                    return StatusCode(500, _excep.Throw("Sửa mẫu tin nhắn thất bại.", "Nội dung tin nhắn có chứa template !"));
-
                 if (_context.Query<SmsLogs>().Where(g => g.SmsTemplateId == sms.Id && g.Status == 1).Count() > 0)
                     return StatusCode(500, _excep.Throw("Sửa mẫu tin nhắn không thành công.", "Mẫu tin nhắn đã được sử dụng !"));
 

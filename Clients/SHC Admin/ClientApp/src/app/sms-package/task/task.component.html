@@ -39,7 +39,7 @@
                             <input type="text" mask="dot_separator" formControlName="quantity" matInput>
                         </mat-form-field>
                     </div>
-                    <section class="col-md-12 m-b-20">
+                    <section class="col-md-12 m-b-20" [ngClass]="{'disabled': _isNew == false && _package.isDeleteDistribute > 0}">
                         <mat-checkbox formControlName="isActive">{{l('Using')}}</mat-checkbox>
                     </section><br>
 
@@ -53,7 +53,7 @@
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l('PackageSmsTo')}}</mat-label>
                             <input type="text" mask="dot_separator" formControlName="smsTo" matInput [required]="true"
-                                (keyup)="getValue($event.target.value, -1, 1)" (input)="inputOnlyNumber($event)"
+                                (keyup)="getValue($event.target.value, -1, 1)" (input)="inputOnlyNumber($event, 'smsTo')"
                                 maxlength="11">
                             <validation matSuffix [control]="_frm.controls['smsTo']"></validation>
                         </mat-form-field>
@@ -63,7 +63,7 @@
                             <mat-label>{{l('PackageDetailCost')}}</mat-label>
                             <input type="text" mask="dot_separator" formControlName="detailCost" matInput
                                 [required]="true" (keyup)="getValue($event.target.value, -1, 2)"
-                                (input)="inputOnlyNumber($event)" maxlength="11">
+                                (input)="inputOnlyNumber($event, 'detailCost')" maxlength="11">
                             <validation matSuffix [control]="_frm.controls['detailCost']"></validation>
                         </mat-form-field>
                     </div>
@@ -81,7 +81,7 @@
                                     <mat-label>{{l('PackageSmsTo')}}</mat-label>
                                     <input type="text" id="{{_smsTo + item.index}}" mask="dot_separator" formControlName="{{_smsTo + item.index}}"
                                         matInput [required]="true" (keyup)="getValue($event.target.value, i, 1)"
-                                        (input)="inputOnlyNumber($event)" maxlength="11">
+                                        (input)="inputOnlyNumber($event, _smsTo + item.index)" maxlength="11">
                                     <validation matSuffix [control]="_frm.controls[_smsTo + item.index]"></validation>
                                 </mat-form-field>
                             </div>
@@ -90,7 +90,7 @@
                                     <mat-label>{{l('PackageDetailCost')}}</mat-label>
                                     <input type="text" mask="dot_separator"
                                         formControlName="{{_detailCost + item.index}}" matInput [required]="true"
-                                        (keyup)="getValue($event.target.value, i, 2)" (input)="inputOnlyNumber($event)"
+                                        (keyup)="getValue($event.target.value, i, 2)" (input)="inputOnlyNumber($event, _detailCost + item.index)"
                                         maxlength="11">
                                     <validation matSuffix [control]="_frm.controls[_detailCost + item.index]">
                                     </validation>
@@ -111,7 +111,7 @@
     <div class="row">
         <div class="col-md-4" [ngClass]="{'disabled': _isNew == false && _package.isDeleteDistribute > 0}">
             <button mat-raised-button color="primary" (click)="addDetail()"
-                [disabled]="!_frm.controls['smsTo'].value || !_frm.controls['detailCost'].value || checkPackageDetail()">Thêm</button>
+                [disabled]="!_frm.controls['smsTo'].value || _frm.controls['detailCost'].value == 0 || checkPackageDetail()">Thêm</button>
         </div>
         <div class="col-md-8">
             <div class="text-right mb-3"><button class="mr-3" mat-raised-button color="primary"

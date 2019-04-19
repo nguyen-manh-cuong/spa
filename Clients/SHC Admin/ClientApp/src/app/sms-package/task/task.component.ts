@@ -200,7 +200,9 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
                 }
             })
 
-            this._frm.controls['cost'].setValue(totalCost);
+            if (totalCost > -1) {
+                this._frm.controls['cost'].setValue(totalCost);
+            }
         }
     }
 
@@ -250,10 +252,13 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
         return 0;
     }
 
-    inputOnlyNumber(event: any) {
+    inputOnlyNumber(event: any, control: string) {
         const pattern = /['\\\-,]/g;
         if (pattern.test(event.target.value)) {
             event.target.value = event.target.value.replace(/['\\\-,]/g, "");
+        }
+        if (!pattern.test(event.target.value) && event.target.value > 0) {
+            this._frm.controls[control].setErrors(null);
         }
     }
 }
