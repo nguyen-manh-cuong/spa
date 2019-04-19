@@ -31,8 +31,8 @@ namespace SHCServer.ViewModels
                              .Select((p, pd) => new SmsPackageDetailViewModel(pd))
                              .ToList();
 
-            Distribute = context.Query<SmsPackagesDistribute>().Where(pd => pd.SmsPackageId == obj.Id).Count();
-            IsDeleteDistribute = context.Query<SmsPackagesDistribute>().Where(pd => pd.SmsPackageId == obj.Id && pd.IsDelete == true).Count();
+            //Distribute = context.Query<SmsPackagesDistribute>().Where(pd => pd.SmsPackageId == obj.Id).Count();
+            IsDeleteDistribute = context.Query<SmsPackagesDistribute>().Where(pd => pd.SmsPackageId == obj.Id && pd.IsDelete == false).Count();
         }
 
         public int Id { set; get; }
