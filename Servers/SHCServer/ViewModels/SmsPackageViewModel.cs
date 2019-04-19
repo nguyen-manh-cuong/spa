@@ -47,10 +47,10 @@ namespace SHCServer.ViewModels
 
         public bool? IsActive { set; get; }
 
-
         public IList<SmsPackageDetailViewModel> Details { get; set; }
 
         public int Distribute { get; set; }
+
         public int? IsDeleteDistribute { set; get; }
     }
 

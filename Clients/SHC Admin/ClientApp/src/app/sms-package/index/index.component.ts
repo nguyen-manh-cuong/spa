@@ -39,6 +39,6 @@ export class IndexComponent extends PagedListingComponentBase<IUser> implements 
     }
 
     showMessage(title: string, content: string, type: string){
-        swal(this.l('Sửa gói thất bại.'), this.l('Gói SMS đang được sử dụng!'), 'error');
+        swal(this.l('PackagesMessageTitle.'), this.l('PackagesMessageContent'), 'error');
     }
 }

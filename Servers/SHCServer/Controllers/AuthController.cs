@@ -97,7 +97,7 @@ namespace SHCServer.Controllers
                                 {
                                     new MenuItem {Name = "HomePage", Icon      = "home", Route        = "/app/dashboard"},
                                     //new MenuItem {Name = "UsersManager", Icon = "people", Route = "/app/users"},
-                                    //new MenuItem {Name = "Language", Icon = "g_translate", Route = "/app/languages"},
+                                    new MenuItem {Name = "Language", Icon = "g_translate", Route = "/app/languages"},
                                     new MenuItem {Name = "SMS", Icon = "sms", Items = new List<MenuItem>{
                                          new MenuItem {Name = "PackagesMenu", Icon = "", Route = "/app/sms-package"},
                                          new MenuItem {Name = "PackagesDistributeSmsPackage", Icon = "", Route = "/app/sms-package-distribute"},
