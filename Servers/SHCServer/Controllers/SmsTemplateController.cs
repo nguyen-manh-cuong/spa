@@ -86,12 +86,9 @@ namespace SHCServer.Controllers
         [Route("api/sms-templates")]
         public IActionResult Update([FromBody] SmsTemplateInputViewModel sms)
         {
-            const string template = "<PHONGKHAM> <PHONGKHAM> <HOTEN> <EMAIL> <GIOITINH> <NGAYHIENTAI> <NGAYTAIKHAM> <PHONGBAN> <TENDICHVU> <TENTHUOC>";
             try
             {
                 _context.Session.BeginTransaction();
-
-                var isTemplate = sms.SmsContent.Any(s => template.Contains(s));
 
                 if (_context.Query<SmsTemplate>().Where(g => g.SmsTemplateName == sms.SmsTemplateName && g.Id != sms.Id && sms.IsDelete == false).Count() > 0)
                     return StatusCode(500, _excep.Throw("Sửa mẫu tin nhắn thất bại.", "Tên mẫu tin nhắn đã tồn tại !"));

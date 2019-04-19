@@ -23,6 +23,8 @@ namespace SHCServer.Models
             IsActive = packages.IsActive;
             CreateDate = DateTime.Now;
             CreateUserId = packages.UserId;
+            UpdateDate = DateTime.Now;
+            UpdateUserId = packages.UserId;
         }
 
         [Column(IsPrimaryKey = true)]
@@ -34,7 +36,6 @@ namespace SHCServer.Models
         public long Cost { get; set; }
         public bool? IsActive { get; set; }
         public bool IsDelete { get; set; }
-
         public DateTime? CreateDate { get; set; }
         public int? CreateUserId { get; set; }
         public DateTime? UpdateDate { get; set; }
