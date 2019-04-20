@@ -97,7 +97,7 @@ namespace SHCServer.Controllers
                                 {
                                     new MenuItem {Name = "HomePage", Icon      = "home", Route        = "/app/dashboard"},
                                     //new MenuItem {Name = "UsersManager", Icon = "people", Route = "/app/users"},
-                                    //new MenuItem {Name = "Language", Icon = "g_translate", Route = "/app/languages"},
+                                    new MenuItem {Name = "Language", Icon = "g_translate", Route = "/app/languages"},
                                     new MenuItem {Name = "SMS", Icon = "sms", Items = new List<MenuItem>{
                                          new MenuItem {Name = "PackagesMenu", Icon = "", Route = "/app/sms-package"},
                                          new MenuItem {Name = "PackagesDistributeSmsPackage", Icon = "", Route = "/app/sms-package-distribute"},
@@ -106,7 +106,7 @@ namespace SHCServer.Controllers
                                     new MenuItem {Name = "SmsManual", Icon = "sms", Items = new List<MenuItem>{
                                          new MenuItem {Name = "SmsManualReExamination", Icon = "", Route = "/app/sms-manual-re-examination"},
                                          new MenuItem {Name = "SmsManualBirthday", Icon = "", Route = "/app/sms-manual-birthday"},
-                                         new MenuItem {Name = "SmsManual", Icon = "", Route = "/app/sms-manual"},
+                                         new MenuItem {Name = "SmsUserManual", Icon = "", Route = "/app/sms-manual"},
                                          new MenuItem {Name = "SmsLog", Icon = "", Route = "/app/sms-log"}
                                     }},
                                     new MenuItem {Name = "Danh mục khung giờ khám", Icon = "av_timer", Route = "/app/booking-timeslots"},
@@ -170,19 +170,19 @@ namespace SHCServer.Controllers
 
             if (User.Where(u => u.UserName == obj.UserName).Count() > 0)
             {
-                return StatusCode(409, _excep.Throw("Đăng ký thất bại.", "Tài khoản đã tồn tại!"));
+                return StatusCode(409, _excep.Throw("Đăng ký không thành công.", "Tài khoản đã tồn tại!"));
             }
             if (User.Where(u => u.Email == obj.Email).Count() > 0)
             {
-                return StatusCode(409, _excep.Throw("Đăng ký thất bại.", "Email đã tồn tại!"));
+                return StatusCode(409, _excep.Throw("Đăng ký không thành công.", "Email đã tồn tại!"));
             }
             if (User.Where(u => u.PhoneNumber == obj.PhoneNumber).Count() > 0)
             {
-                return StatusCode(409, _excep.Throw("Đăng ký thất bại.", "Số điện thoại đã tồn tại!"));
+                return StatusCode(409, _excep.Throw("Đăng ký không thành công.", "Số điện thoại đã tồn tại!"));
             }
             if (obj.Identification != null && User.Where(u => u.Identification == obj.Identification).Count() > 0)
             {
-                return StatusCode(409, _excep.Throw("Đăng ký thất bại.", "Số CMND đã tồn tại!"));
+                return StatusCode(409, _excep.Throw("Đăng ký không thành công.", "Số CMND đã tồn tại!"));
             }
 
             try

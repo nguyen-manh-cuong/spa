@@ -110,10 +110,10 @@ namespace SHCServer.Controllers
                 pu.CreateDate = DateTime.Now;
                 pu.CreateUserId = obj.UserId;
 
-                if (_context.Query<SmsPackagesDistribute>().Where(g => g.HealthFacilitiesId == pd.HealthFacilitiesId && g.SmsPackageId == obj.SmsPackageId).Count() > 0)
+                if (_context.Query<SmsPackagesDistribute>().Where(g => g.HealthFacilitiesId == pd.HealthFacilitiesId && g.SmsPackageId == obj.SmsPackageId && g.IsDelete == false).Count() > 0)
                 {
                     var healthFacilities = _context.Query<HealthFacilities>().Where(h => h.HealthFacilitiesId == pd.HealthFacilitiesId).FirstOrDefault();
-                    return StatusCode(500, _excep.Throw("Đăng ký gói thất bại.", (healthFacilities != null ? healthFacilities.Name : "") + " đã đăng ký gói SMS."));
+                    return StatusCode(500, _excep.Throw("Đăng ký gói không thành công.", (healthFacilities != null ? healthFacilities.Name : "") + " đã đăng ký gói SMS."));
                 }
 
                 //add

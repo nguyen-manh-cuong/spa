@@ -59,8 +59,8 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
             quantity: [this._package.quantity],
             isActive: true,
             smsFrom: 1,
-            smsTo: [this._package.smsTo, [Validators.required, validationRule.hasValue, validationRule.hasSpecialCharacter, validationRule.compare('smsFrom', 'smsTo')]],
-            detailCost: [this._package.detailCost, [Validators.required, validationRule.hasValue, validationRule.hasSpecialCharacter]]
+            smsTo: [this._package.smsTo, [Validators.required, validationRule.hasValue, validationRule.compare('smsFrom', 'smsTo')]],
+            detailCost: [this._package.detailCost, [Validators.required, validationRule.hasValue]]
         };
 
         this._frm = this._formBuilder.group(this._context);
@@ -75,12 +75,10 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
             this._details.forEach((el, i) => {
                 this._details[i].index = i;
                 this._frm.addControl(this._smsFrom + i, new FormControl(el.smsFrom));
-                this._frm.addControl(this._smsTo + i, new FormControl(el.smsTo, [Validators.required, this.ValidationRule.hasValue, validationRule.hasSpecialCharacter, this.ValidationRule.compare(this._smsFrom + i, this._smsTo + i)]));
-                this._frm.addControl(this._detailCost + i, new FormControl(el.cost, [Validators.required, this.ValidationRule.hasValue, validationRule.hasSpecialCharacter]));
+                this._frm.addControl(this._smsTo + i, new FormControl(el.smsTo, [Validators.required, this.ValidationRule.hasValue, this.ValidationRule.compare(this._smsFrom + i, this._smsTo + i)]));
+                this._frm.addControl(this._detailCost + i, new FormControl(el.cost, [Validators.required, this.ValidationRule.hasValue]));
             })
         }
-
-        console.log(83, this._frm)
     }
 
     ngAfterViewInit(): void {
@@ -139,8 +137,8 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
         }
 
         this._frm.addControl(this._smsFrom + length, new FormControl(''));
-        this._frm.addControl(this._smsTo + length, new FormControl('', [Validators.required, this.ValidationRule.hasValue, this.ValidationRule.hasSpecialCharacter, this.ValidationRule.compare(this._smsFrom + length, this._smsTo + length)]));
-        this._frm.addControl(this._detailCost + length, new FormControl('', [Validators.required, this.ValidationRule.hasValue, this.ValidationRule.hasSpecialCharacter]));
+        this._frm.addControl(this._smsTo + length, new FormControl('', [Validators.required, this.ValidationRule.hasValue, this.ValidationRule.compare(this._smsFrom + length, this._smsTo + length)]));
+        this._frm.addControl(this._detailCost + length, new FormControl('', [Validators.required, this.ValidationRule.hasValue]));
 
         this._frm.controls[this._smsFrom + length].setValue(smsTo);
         this._details.push({ smsFrom: smsTo, smsTo: undefined, cost: undefined, index: length });
@@ -152,6 +150,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
 
     checkPackageDetail() {
         var result: boolean = false;
+        
         this._details.forEach(value => {
             if (!value.cost || !value.smsFrom || !value.smsTo) {
                 result = true;
@@ -199,7 +198,9 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
                 }
             })
 
-            this._frm.controls['cost'].setValue(totalCost);
+            if (totalCost > -1) {
+                this._frm.controls['cost'].setValue(totalCost);
+            }
         }
     }
 
@@ -249,10 +250,16 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
         return 0;
     }
 
-    inputOnlyNumber(event: any) {
+    inputOnlyNumber(event: any, control: string) {
         const pattern = /['\\\-,]/g;
         if (pattern.test(event.target.value)) {
             event.target.value = event.target.value.replace(/['\\\-,]/g, "");
+        } 
+        if(!event.target.value){
+            this._frm.controls[control].setValue(null);
+        }
+        if (!pattern.test(event.target.value) && event.target.value > 0) {
+            this._frm.controls[control].setErrors(null);
         }
     }
 }

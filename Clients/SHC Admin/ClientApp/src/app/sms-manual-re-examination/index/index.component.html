@@ -190,7 +190,7 @@
                 <td mat-cell *matCellDef="let element" class="td-ellipsis"> {{element.code}} </td>
             </ng-container>
             <ng-container matColumnDef="name">
-                <th mat-header-cell *matHeaderCellDef class="text-center"> {{l('Tên bệnh nhân')}} </th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-center"> {{l('Tên bệnh nhân')}} </th>
                 <td mat-cell *matCellDef="let element" class="td-ellipsis"> {{element.fullName}} </td>
             </ng-container>
             <ng-container matColumnDef="birthday">
@@ -214,7 +214,7 @@
                 <td mat-cell *matCellDef="let element" class="td-ellipsis" title="{{element.address}}"> {{element.address}} </td>
             </ng-container>
             <ng-container matColumnDef="ReExaminationDate">
-                <th mat-header-cell *matHeaderCellDef class="text-center"> {{l('Ngày tái khám')}} </th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-center"> {{l('Ngày tái khám')}} </th>
                 <td mat-cell *matCellDef="let element" class="text-center"> {{element.reExaminationDate | date: 'dd/MM/yyyy'}} </td>
             </ng-container>
             <ng-container matColumnDef="status">
