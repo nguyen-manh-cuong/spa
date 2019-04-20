@@ -79,17 +79,17 @@ export class packagedistributeIndexComponent extends PagedListingComponentBase<I
       cancelButtonText: this.l('Cancel'),
       buttonsStyling: false
     }).then((result) => {
-        if (obj.quantity == obj.smsPackageUsed.quantityused) {
-            if (result.value) {
+        if (result.value) {
+            if (obj.quantity == obj.smsPackageUsed.quantityused) {
                 this.dataService.delete(this.api, obj[id ? id : 'id']).subscribe(e => {
                     this.paginator._changePageSize(this.paginator.pageSize);
                     this.paginator.pageIndex = 0;
                     swal(this.l('SuccessfullyDeleted'), this.l('DeletedInSystem', obj[key]), 'success');
                 });
             }
-        }
-        else {
-            swal(this.l('ErrorDelete'), this.l('ErrorDeletedInSystem', obj[key]), 'error');
+            else {
+                swal(this.l('ErrorDelete'), this.l('ErrorDeletedInSystem', obj[key]), 'error');
+            }
         }
     });
   }
