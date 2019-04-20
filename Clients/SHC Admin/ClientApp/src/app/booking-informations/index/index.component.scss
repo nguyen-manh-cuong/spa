@@ -49,3 +49,9 @@ td, th {
 .w-13{
   width: 13%!important;
 }
+
+form:not(.task-form) .mat-form-field:not(.mat-focused) .mat-form-field-label.mat-empty:not(.mat-form-field-invalid), .mat-form-field-label{
+  font-size: 18px!important;
+  font-weight:500!important;
+  color:black!important;
+}
