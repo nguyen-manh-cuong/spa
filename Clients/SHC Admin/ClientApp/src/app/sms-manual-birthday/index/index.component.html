@@ -122,21 +122,48 @@
                 </mat-form-field>
             </div>
             <!--  -->
-            <div class="col-md-4">
-                <mat-form-field appearance="outline" class="w-100">
-                    <mat-label>{{l('Ngày')}}</mat-label>
-                    <mat-select formControlName="day">
-                        <mat-option *ngFor="let o of _days" [value]="o.id">{{ o.name }}</mat-option>
-                    </mat-select>
-                </mat-form-field>
+            <div class="col-md-6">
+                <mat-label>{{l('Ngày sinh từ')}}</mat-label>
+                <div class="row m-0 pt-4">
+                    <div class="col-md-6">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l('Ngày')}}</mat-label>
+                            <mat-select formControlName="fromDay">
+                                <mat-option *ngFor="let o of _days" [value]="o.id">{{ o.name }}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-6">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l('Tháng')}}</mat-label>
+                            <mat-select formControlName="fromMonth">
+                                <mat-option *ngFor="let o of _months" [value]="o.id">{{ o.name }}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                </div>
             </div>
-            <div class="col-md-4">
-                <mat-form-field appearance="outline" class="w-100">
-                    <mat-label>{{l('Tháng')}}</mat-label>
-                    <mat-select formControlName="month">
-                        <mat-option *ngFor="let o of _months" [value]="o.id">{{ o.name }}</mat-option>
-                    </mat-select>
-                </mat-form-field>
+
+            <div class="col-md-6">
+                <mat-label>{{l('Ngày sinh đến')}}</mat-label>
+                <div class="row m-0 pt-4">
+                    <div class="col-md-6">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l('Ngày')}}</mat-label>
+                            <mat-select formControlName="toDay">
+                                <mat-option *ngFor="let o of _days" [value]="o.id">{{ o.name }}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-6">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l('Tháng')}}</mat-label>
+                            <mat-select formControlName="toMonth">
+                                <mat-option *ngFor="let o of _months" [value]="o.id">{{ o.name }}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                </div>
             </div>
             <!--  -->
             <div class="col-md-3"></div>
