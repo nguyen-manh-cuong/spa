@@ -99,7 +99,11 @@ export class packagedistributeIndexComponent extends PagedListingComponentBase<I
   }
 
   openView(obj?: IPachkageDistribute): void {
-    const dialogRef = this.dialog.open(this.ViewComponent, { minWidth: 'calc(100vw/2)', maxWidth: 'calc(100vw - 300px)', data: obj ? obj : null });
+      const dialogRef = this.dialog.open(this.ViewComponent, { minWidth: 'calc(100vw/2)', maxWidth: 'calc(100vw - 300px)', data: obj ? obj : null });
+      dialogRef.afterClosed().subscribe(() => {
+          this.paginator.pageIndex = 0;
+          this.paginator._changePageSize(this.paginator.pageSize);
+      });
   }
 
   openEdit(obj?: IPachkageDistribute): void {
