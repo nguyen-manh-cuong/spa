@@ -37,8 +37,9 @@ export class packagedistributeViewComponent extends AppComponentBase implements 
     this._dataService.getAll('smsbrands-all').subscribe(resp => this._brands = resp.items);
     this._dataService.getAll('healthfacilities').subscribe(resp => this._medicalFacility = resp.items);
     this._dataService.getAll('smspackages-all').subscribe(resp => this._package = resp.items);
-    if (this.obj) {
-      this._obj = _.clone(this.obj);
+      if (this.obj) {
+          this._obj = _.clone(this.obj);
+          console.log(this._obj);
       this._obj.monthStart = this.obj.monthStart;
         this._obj.monthEnd = this.obj.monthEnd;
         this._obj.yearStart = this.obj.yearStart;
@@ -50,7 +51,8 @@ export class packagedistributeViewComponent extends AppComponentBase implements 
       smsBrandsId: [this._obj.smsBrandsId, Validators.required],
       monthStart: [this._obj.monthStart, ],
       monthEnd: [this._obj.monthEnd, ],
-      year: [this._obj.year, [Validators.maxLength(4), Validators.min(1), Validators.max(moment().year())]],
+        toYear: [this._obj.yearStart, [Validators.maxLength(4), Validators.min(0), Validators.max(9999), Validators.pattern('[0-9]*')]],
+        fromYear: [this._obj.yearEnd, [Validators.maxLength(4), Validators.min(0), Validators.max(9999), Validators.pattern('[0-9]*')]],
       smsPackageId: [this._obj.smsPackageId, Validators.required],
       isActive: [this._obj.isActive],
       quantity: [this._obj.quantity]

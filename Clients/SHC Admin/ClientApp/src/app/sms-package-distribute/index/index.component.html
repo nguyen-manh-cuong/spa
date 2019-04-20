@@ -87,7 +87,7 @@
             </ng-container>
             <ng-container matColumnDef="HealthFacilitiesId">
                 <th mat-header-cell *matHeaderCellDef class="text-center"> {{l("PackageDistributeNameHealthFacilities")}} </th>
-                <td mat-cell (click)="openView(element)" *matCellDef="let element" title="{{element.HealthFacilitiesCode + '-' + element.healthFacilitiesName}}">
+                <td mat-cell (click)="openView(element)" *matCellDef="let element" title="{{element.healthFacilitiesCode + '-' + element.healthFacilitiesName}}">
                     <u><b>{{element.healthFacilitiesCode + '-' + element.healthFacilitiesName}}</b></u></td>
             </ng-container>
             <ng-container matColumnDef="StartTime">
