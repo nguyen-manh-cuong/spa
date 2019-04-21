@@ -1,5 +1,6 @@
 import * as _ from 'lodash';
 import * as moment from 'moment';
+import swal from 'sweetalert2';
 
 import { Component, Injector, OnInit, ViewEncapsulation, AfterViewInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
@@ -23,6 +24,7 @@ export class BookingComponent extends AppComponentBase implements OnInit, AfterV
   public frmBooking: FormGroup;
 
   public _relationship: Array<{ id: number, name: string }> = [{ id: 1, name: 'Vợ/Chồng' }, { id: 2, name: 'Bố/Mẹ' }, { id: 3, name: 'Anh/Chị' }, { id: 4, name: 'Con' }];
+  public _gender: Array<{ id: number, name: string }> = [{ id: 1, name: 'Nam' }, { id: 2, name: 'Nữ' }, { id: 3, name: 'Không xác định' }];
 
   public _provinces = [];
   public _districts = [];
@@ -36,6 +38,7 @@ export class BookingComponent extends AppComponentBase implements OnInit, AfterV
   public _districtsExamination = [];
   public _specialists = [];
   public _specialist = "";
+  public _specialistHealthfacilities = "";
   public _healthfacilities = [];
   public _healthfacility: IHealthfacilities;
   public _doctors = [];
@@ -121,6 +124,12 @@ export class BookingComponent extends AppComponentBase implements OnInit, AfterV
 
     if (i >= 3) {
       this.validateAllFormFields(this.frmBooking, ['bookingSecondUser', 'phoneSecondNumber', 'reason', 'birthYear']);
+
+      if(this.checkBirthDate()){
+        this.frmBooking.controls.birthYear;
+        return;
+      } 
+
       if (this.frmBooking.controls.reason.invalid || this.frmBooking.controls.birthYear.invalid || this.frmBooking.controls.email.invalid) { return; }
 
       if (this.frmBooking.get('bookingType').value === 2) {
@@ -198,17 +207,26 @@ export class BookingComponent extends AppComponentBase implements OnInit, AfterV
   onSelectHealthFacilities(obj: any){
     this.onClickHealthFacilities();
     this._healthfacility = this._healthfacilities.find(o => o.healthFacilitiesId == obj);
+    this._specialistHealthfacilities = this._healthfacility ? this._healthfacility.specialist.map(e => e.specialist).join(", ") : "";
+  }
+
+  onSelectBirthDay(obj: any){
+    this.checkBirthDate();
+  }
+
+  onSelectBirthMonth(obj: any){
+    this.checkBirthDate();
   }
 
   onClickDoctor(doctor: any){
     this.isDoctor = 1;    
     this._doctor = doctor;
     this._lstWorkingTimes = [];
-    this._specialist = this._doctor.specialist.map(e => e.specialist).join(","); 
+    this._specialist = this._doctor.specialist.map(e => e.specialist).join(", ");  
     this.frmBooking.controls['doctorId'].patchValue(this._doctor.doctorId);
     this.frmBooking.controls.examinationDate.setErrors({required: true});
     
-    this._dataService.get('workingtime', this._doctor.doctorId, '', 0, 0).subscribe(resp => {
+    this._dataService.get('workingtime', String(this._doctor.doctorId), '', 0, 0).subscribe(resp => {
       this._workingTimes = resp.items
 
       for (let i = 0; i < 7; i++) {
@@ -242,6 +260,7 @@ export class BookingComponent extends AppComponentBase implements OnInit, AfterV
     this.getDate();
     this.isDoctor = 0;
     this.type = -1;
+    
     this.frmBooking.patchValue({examinationWorkingTime: null, examinationTime: null, timeSlotId: null, doctorId: null});
     this.frmBooking.controls.examinationDate.setErrors({required: true});
   }
@@ -292,6 +311,16 @@ export class BookingComponent extends AppComponentBase implements OnInit, AfterV
     this._dataService.create('bookinginformations', _.pickBy(this.frmBooking.value, _.identity)).subscribe(
       () => {
         this.success = 1;
+        // this._dataService.create('infosms', {
+        //     lstMedicalHealthcareHistories: [], 
+        //     healthFacilitiesId: this.appSession.user.healthFacilitiesId,           
+        //     smsTemplateId: null,
+        //     type: 1, 
+        //     content: ''                                                                                                                       
+        // })
+        // .subscribe(resp => {
+        //   swal('Thông báo', resp, 'error');
+        // }, err => {});
       }, err => {
         this.success = -1;
       })
@@ -334,16 +363,23 @@ export class BookingComponent extends AppComponentBase implements OnInit, AfterV
     this._dataService.getAny('get-captcha-image').subscribe(res => this._capcha = { code: res.code, data: this._sanitizer.bypassSecurityTrustResourceUrl('data:image/jpg;base64,' + res.data) });
   }
 
+  checkBirthDate(){
+    if(this.frmBooking.controls.birthDay.value && this.frmBooking.controls.birthMonth.value){
+      if(!moment(this.frmBooking.controls.birthDay.value + "/" + this.frmBooking.controls.birthMonth.value + "/" + this.frmBooking.controls.birthYear.value, "DD/MM/YYYY").isValid()){
+        this.frmBooking.controls.birthYear.setErrors({birthDate : true});
+        return false;
+      }
+    }
+
+    this.frmBooking.controls.birthYear.value ? this.frmBooking.controls.birthYear.setErrors(null) : this.frmBooking.controls.birthYear.setErrors({required : true});
+    return false;
+  }
+
   rulePhoneNumber(event: any){
-    const pattern = /^[0-9\+]*$/;
     const patternNum = /^[0-9]*$/; 
 
     if(event.target.value && event.target.value.length > 1 && !patternNum.test(event.target.value.trim().substring(1))){
       this.frmBooking.controls['phoneNumber'].setErrors({special: true});
-    }
-
-    if (!pattern.test(event.target.value)) {
-      event.target.value = event.target.value.replace(/[^0-9\+]/g, "");
     }
   }
 

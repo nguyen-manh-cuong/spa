@@ -37,6 +37,7 @@ export class RegisterComponent implements OnInit {
     _user: CreateUserDto;
 
     _capcha: { code: string, data: any } = { code: '', data: '' };
+    _sex: Array<{ id: number, name: string }> = [{ id: 1, name: 'Nam' }, { id: 2, name: 'Nữ' }, { id: 3, name: 'Không xác định' }];
     capcha = false;
 
     @ViewChild("fullName") fullName: ElementRef;
@@ -65,7 +66,9 @@ export class RegisterComponent implements OnInit {
             workPlace: [this._user.workPlace],
             healthFacilitiesName: [this._user.healthFacilitiesName],
             specialist: [this._user.specialist],
-            codeCapcha: ['']
+            codeCapcha: [''],
+            cmnd:[],
+            gp: []
         };
 
         this.frmUser = this._formBuilder.group(this._context);
@@ -170,20 +173,11 @@ export class RegisterComponent implements OnInit {
     }
 
     rulePhoneNumber(event: any) {
-        const pattern = /^[0-9\+]*$/;
         const patternNum = /^[0-9]*$/;
 
-        if (event.target.value && event.target.value.length > 1 && !patternNum.test(event.target.value.substring(1))) {
+        if (event.target.value && event.target.value.length > 1 && !patternNum.test(event.target.value.trim().substring(1))) {
             this.frmUser.controls['phoneNumber'].setErrors({ special: true });
         }
-
-        if (!pattern.test(event.target.value)) {
-            event.target.value = event.target.value.replace(/[^0-9\+]/g, "");
-        }
-    }
-
-    getCapcha() {
-        this._dataService.getAny('get-captcha-image').subscribe(res => this._capcha = { code: res.code, data: this._sanitizer.bypassSecurityTrustResourceUrl('data:image/jpg;base64,' + res.data) });
     }
 
     ruleEmail(event: any) {
@@ -191,6 +185,10 @@ export class RegisterComponent implements OnInit {
         if (!pattern.test(event.target.value)) {
             event.target.value = event.target.value.replace(/[^a-zA-Z0-9\.\-\_\@]/g, "");
         }
+    }
+
+    getCapcha() {
+        this._dataService.getAny('get-captcha-image').subscribe(res => this._capcha = { code: res.code, data: this._sanitizer.bypassSecurityTrustResourceUrl('data:image/jpg;base64,' + res.data) });
     }
 
     cleanControl(listControl) {

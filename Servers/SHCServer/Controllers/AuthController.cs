@@ -15,6 +15,7 @@ using System.Security.Claims;
 using System.Text;
 using Viettel.MySql;
 using AuthServer;
+using System.IO;
 
 namespace SHCServer.Controllers
 {
@@ -159,7 +160,7 @@ namespace SHCServer.Controllers
             }
 
             //return Json(new ActionResultDto { Error = new { code = 0, message = "Login failed!", details = "Invalid user name or password" } });
-            return StatusCode(422, _excep.Throw("Đăng nhập không thành công! Tài khoản hoặc mật khẩu không đúng."));
+            return StatusCode(422, _excep.Throw("Đăng nhập không thành công!", "Tài khoản hoặc mật khẩu không đúng."));
         }
 
         [HttpPost]
@@ -188,31 +189,45 @@ namespace SHCServer.Controllers
             try
             {
                 _context.Session.BeginTransaction();
-                _context.Insert(() => new User
+                //_context.Insert(() => new User
+                //{
+                //    UserName = obj.UserName,
+                //    Password = Utils.HashPassword(obj.Password),
+                //    AccountType = obj.AccountType,
+
+                //    FullName = obj.FullName,
+                //    Sex = obj.Sex,
+                //    BirthDay = obj.BirthDay,
+
+                //    Email = obj.Email,
+                //    PhoneNumber = obj.PhoneNumber,
+                //    Address = obj.Address,
+
+                //    ProvinceCode = obj.ProvinceCode,
+                //    DistrictCode = obj.DistrictCode,
+                //    WardCode = obj.WardCode,
+
+                //    Register = obj.Register,
+                //    Identification = obj.Identification,
+                //    Insurrance = obj.Insurrance,
+                //    WorkPlace = obj.WorkPlace,
+                //    HealthFacilitiesName = obj.HealthFacilitiesName,
+                //    Specialist = obj.Specialist
+                //});
+
+                var _files = Request.Form.Files;
+                var _fileUpload = "";
+                if (_files.Count > 0)
                 {
-                    UserName = obj.UserName,
-                    Password = Utils.HashPassword(obj.Password),
-                    AccountType = obj.AccountType,
-
-                    FullName = obj.FullName,
-                    Sex = obj.Sex,
-                    BirthDay = obj.BirthDay,
-
-                    Email = obj.Email,
-                    PhoneNumber = obj.PhoneNumber,
-                    Address = obj.Address,
-
-                    ProvinceCode = obj.ProvinceCode,
-                    DistrictCode = obj.DistrictCode,
-                    WardCode = obj.WardCode,
-
-                    Register = obj.Register,
-                    Identification = obj.Identification,
-                    Insurrance = obj.Insurrance,
-                    WorkPlace = obj.WorkPlace,
-                    HealthFacilitiesName = obj.HealthFacilitiesName,
-                    Specialist = obj.Specialist
-                });
+                    foreach (var file in _files)
+                    {
+                        var uniqueFileName = GetUniqueFileName(file.FileName);
+                        var uploads = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+                        var filePath = Path.Combine(uploads, uniqueFileName);
+                        _fileUpload = "/uploads/" + uniqueFileName;
+                        file.CopyTo(new FileStream(filePath, FileMode.Create));
+                    }
+                }
 
                 _context.Session.CommitTransaction();
                 return Json(new ActionResultDto());
@@ -234,7 +249,14 @@ namespace SHCServer.Controllers
 
             return Json(new { Code = result.CaptchaCode, Data = result.CaptchBase64Data });
         }
-
+        private string GetUniqueFileName(string fileName)
+        {
+            fileName = Path.GetFileName(fileName);
+            return Path.GetFileNameWithoutExtension(fileName)
+                      + "_"
+                      + Guid.NewGuid().ToString().Substring(0, 4)
+                      + Path.GetExtension(fileName);
+        }
         private static AuthenticateResultModel GenerateJwtToken(string email, User user, IOptions<Audience> settings)
         {
             List<Claim> claims = new List<Claim>

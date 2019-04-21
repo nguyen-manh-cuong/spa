@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 
-import { Component, Inject, Injector, OnInit } from '@angular/core';
+import { Component, Inject, Injector, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 
@@ -14,7 +14,8 @@ import * as moment from 'moment';
 @Component({
   selector: 'app-packagedistributeview',
   templateUrl: './view.component.html',
-  styleUrls: ['./view.component.scss']
+  styleUrls: ['./view.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class packagedistributeViewComponent extends AppComponentBase implements OnInit {
   api: string = 'smspackagedistribute';

@@ -52,7 +52,7 @@ export interface ILanguage {
 }
 
 export interface IDoctor {
-    doctorId: string;
+    doctorId: number;
     fullName: string;
     avatar: string;
     academic: string;
@@ -73,8 +73,14 @@ export interface IHealthfacilities {
     code: string
     address: string,
     avatar: string,
-    specialistName: string,
+    specialist: IHealthfacilitiesSpecialists[];
     totalDoctor: NgMultiLabelTemplateDirective
+}
+
+export interface IHealthfacilitiesSpecialists {
+    healthFacilitiesId: number;
+    specialistCode: string;
+    specialist: string;
 }
 
 // tslint:disable-next-line:no-empty-interface
@@ -147,6 +153,23 @@ export interface ISecurityOptions {
     ipAllowedList: any[];
     ipBlockedList: any[];
 }
+
+export interface IPatient{
+    patientId: number;
+    code: number;
+    fullName: string;
+    birthDate: number;
+    birthMonth: number;
+    birthYear: number;
+    gender: number;
+    identification: number;
+    address: string;
+    phoneNumber: number;
+
+    healthInsuranceNumber: number;
+    provinceCode: string;
+    districtCode: string;
+ }
 
 export interface IRouter {
     serviceTitle?: string;

@@ -44,6 +44,8 @@ namespace SHCServer.Models
             ExaminationWorkingTime = obj.examinationWorkingTime;
             TimeSlotId = obj.timeSlotId;
             Status = 0;
+            CreateDate = DateTime.Now;
+            BookingServiceType = 1;
         }
 
         [Column(IsPrimaryKey = true)]
@@ -78,7 +80,6 @@ namespace SHCServer.Models
         public int Status { set; get; }
         public DateTime CreateDate { set; get; }
         public int? BookingServiceType { get; set; }
-
 
     }
 }

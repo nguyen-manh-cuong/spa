@@ -64,7 +64,10 @@ namespace SHCServer.Controllers
             //return Json(new ActionResultDto { Result = new { Items = objs.TakePage(skipCount == 0 ? 1 : skipCount + 1, maxResultCount).ToList(), TotalCount = objs.Count() } });
             return Json(new ActionResultDto { Result = new { Items = objs.OrderByDesc(p => p.CreateDate).TakePage(skipCount == 0 ? 1 : skipCount + 1, maxResultCount).Select(p => new BookingTimeSlotsViewModel(p, _connectionString)).ToList(), TotalCount = objs.Count() } });
         }
+        public void InitObjec()
+        {
 
+        }
         /// <summary>
         /// Create
         /// </summary>
@@ -76,32 +79,68 @@ namespace SHCServer.Controllers
         {
             try
             {
-                _context.Session.BeginTransaction();
-                var t = _context.Query<BookingTimeslots>().Where(ts => ts.Code.Equals(obj.Code)).FirstOrDefault();
-                if(t == null)
+                _context.Session.BeginTransaction();               
+                #region [Tài khoản phòng khám, bệnh viện]                
+                if (obj.HealthFacilitiesId != null && !string.IsNullOrWhiteSpace(obj.HealthFacilitiesId.ToString()))
                 {
-                    _context.Insert(() => new BookingTimeslots
+                    var code = _context.Query<BookingTimeslots>().Where(ts => ts.Code.Equals(obj.Code) && ts.IsDelete == false).Where(ts => ts.HealthFacilitiesId.Equals(obj.HealthFacilitiesId) || ts.HealthFacilitiesId.ToString() == null).FirstOrDefault();
+                    // lay ma code của dơn vị hiện tại + admin
+                    if(code != null)
                     {
-                        Name = obj.Name.Trim(),
-                        Code = obj.Code.Trim(),
-                        HoursStart = obj.HoursStart,
-                        HoursEnd = obj.HoursEnd,
-                        MinuteStart = obj.MinuteStart,
-                        MinuteEnd = obj.MinuteEnd,
-                        IsDelete = false,
-                        IsActive = obj.IsActive,
-                        CreateUserId = obj.CreateUserId,
-                        UpdateUserId = obj.UpdateUserId,
-                        HealthFacilitiesId = obj.HealthFacilitiesId,
-                        UpdateDate = DateTime.Now,
-                        CreateDate = DateTime.Now
+                        return StatusCode(422, _excep.Throw("Tạo khung giờ khám không thành công !", "Mã khung giờ khám đã tồn tại!"));
+                    }
+                    else
+                    {
+                        _context.Insert(() => new BookingTimeslots
+                        {
+                            Name = obj.Name.Trim(),
+                            Code = obj.Code.Trim(),
+                            HoursStart = obj.HoursStart,
+                            HoursEnd = obj.HoursEnd,
+                            MinuteStart = obj.MinuteStart,
+                            MinuteEnd = obj.MinuteEnd,
+                            IsDelete = false,
+                            IsActive = obj.IsActive,
+                            CreateUserId = obj.CreateUserId,
+                            UpdateUserId = obj.UpdateUserId,
+                            HealthFacilitiesId = obj.HealthFacilitiesId,
+                            UpdateDate = DateTime.Now,
+                            CreateDate = DateTime.Now
 
-                    });
+                        });
+                    }
                 }
+                #endregion
+                #region [Tài khoản admin]
                 else
                 {
-                    return StatusCode(422, _excep.Throw("Tạo khung giờ khám không thành công !", "Mã khung giờ khám đã tồn tại"));
+                    var t = _context.Query<BookingTimeslots>().Where(ts => ts.Code.Equals(obj.Code) && ts.IsDelete == false).FirstOrDefault();
+                    if (t == null)
+                    {
+                        _context.Insert(() => new BookingTimeslots
+                        {
+                            Name = obj.Name.Trim(),
+                            Code = obj.Code.Trim(),
+                            HoursStart = obj.HoursStart,
+                            HoursEnd = obj.HoursEnd,
+                            MinuteStart = obj.MinuteStart,
+                            MinuteEnd = obj.MinuteEnd,
+                            IsDelete = false,
+                            IsActive = obj.IsActive,
+                            CreateUserId = obj.CreateUserId,
+                            UpdateUserId = obj.UpdateUserId,
+                            HealthFacilitiesId = obj.HealthFacilitiesId,
+                            UpdateDate = DateTime.Now,
+                            CreateDate = DateTime.Now
+
+                        });
+                    }
+                    else
+                    {
+                        return StatusCode(422, _excep.Throw("Tạo khung giờ khám không thành công !", "Mã khung giờ khám đã tồn tại"));
+                    }
                 }
+                #endregion
                 _context.Session.CommitTransaction();
 
                 return Json(new ActionResultDto());
@@ -113,7 +152,7 @@ namespace SHCServer.Controllers
                 return StatusCode(500, _excep.Throw("Có lỗi xảy ra !", e.Message));
             }
         }
-
+        
         /// <summary>
         /// update
         /// </summary>
