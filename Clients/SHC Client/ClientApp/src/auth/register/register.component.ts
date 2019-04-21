@@ -14,6 +14,7 @@ import swal from 'sweetalert2';
     templateUrl: './register.component.html',
     styleUrls: ['./register.component.css']
 })
+
 export class RegisterComponent implements OnInit {
     frmUser: FormGroup;
     validateRule = new ValidationRule();
@@ -27,6 +28,8 @@ export class RegisterComponent implements OnInit {
     _provinces: any = [];
     _districts: any = [];
     _wards: any = [];
+    _idCardError = "";
+    _certificateError = "";
 
     _dates = _.range(1, 32);
     _months = _.range(1, 13);
@@ -34,6 +37,8 @@ export class RegisterComponent implements OnInit {
 
     _specialist: any = [];
     _context: any;
+    _idCardUrls = new Array<string>();
+    _certificateUrls = new Array<string>();
     _user: CreateUserDto;
 
     _capcha: { code: string, data: any } = { code: '', data: '' };
@@ -46,6 +51,8 @@ export class RegisterComponent implements OnInit {
 
     ngOnInit() {
         this._user = new CreateUserDto();
+        this._idCardUrls = [];
+        this._certificateUrls = [];
         this._context = {
             userName: [this._user.userName, [Validators.required, this.validateRule.hasValue]],
             password: ['', [Validators.required, this.validateRule.passwordStrong]],
@@ -177,6 +184,35 @@ export class RegisterComponent implements OnInit {
 
         if (event.target.value && event.target.value.length > 1 && !patternNum.test(event.target.value.trim().substring(1))) {
             this.frmUser.controls['phoneNumber'].setErrors({ special: true });
+        }
+    }
+
+    detectFiles(event, type) {
+        this._idCardError = "";
+        this._certificateError = "";
+        let files = event.target.files;
+        if (files) {
+            for (let file of files) {
+                let reader = new FileReader();
+                if (file.type == 'image/jpeg' || file.type == 'image/png') {
+                    reader.onload = (e: any) => {
+                        if (type == 'idCard') {
+                            this._idCardUrls.push(e.target.result);
+                        }
+                        if (type == 'certificate') {
+                            this._certificateUrls.push(e.target.result);
+                        }
+                    }
+                    reader.readAsDataURL(file);
+                } else {
+                    if (type == 'idCard') {
+                        this._idCardError = "File tải lên không phải file ảnh";
+                    }
+                    if (type == 'certificate') {
+                        this._certificateError = "File tải lên không phải file ảnh";
+                    }
+                }
+            }
         }
     }
 

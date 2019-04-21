@@ -198,12 +198,12 @@
                 <td mat-cell *matCellDef="let element" class="text-center"> {{(element.birthDate ? element.birthDate + '/' : '') + (element.birthMonth ? element.birthMonth + '/' : '') + element.birthYear}} </td>
             </ng-container>
             <ng-container matColumnDef="age">
-                <th mat-header-cell *matHeaderCellDef class="min-w-50 text-center"> {{l('Tuổi')}} </th>
-                <td mat-cell *matCellDef="let element" class="min-w-50 text-center"> {{convertAge(element.birthDate, element.birthMonth, element.birthYear)}} </td>
+                <th mat-header-cell *matHeaderCellDef class="min-w-70 text-center"> {{l('Tuổi')}} </th>
+                <td mat-cell *matCellDef="let element" class="min-w-70 text-center"> {{convertAge(element.birthDate, element.birthMonth, element.birthYear)}} </td>
             </ng-container>
             <ng-container matColumnDef="gender">
                 <th mat-header-cell *matHeaderCellDef class="min-w-50 text-center"> {{l('Giới tính')}} </th>
-                <td mat-cell *matCellDef="let element" class="min-w-50 text-center"> {{element.gender == 0 ? 'Nữ' : 'Nam'}} </td>
+                <td mat-cell *matCellDef="let element" class="min-w-50 text-center"> {{element.gender == 2 ? 'Nữ' : 'Nam'}} </td>
             </ng-container>
             <ng-container matColumnDef="phoneNumber">
                 <th mat-header-cell *matHeaderCellDef class="text-center"> {{l('Điện thoại')}} </th>

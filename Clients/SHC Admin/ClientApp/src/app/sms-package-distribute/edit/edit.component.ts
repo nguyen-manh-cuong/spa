@@ -22,9 +22,10 @@ export class packagedistributeEditComponent extends AppComponentBase implements 
 
   _frmpackagedistributeedit: FormGroup;
     _obj: IPachkageDistribute | any = {
-        smsBrandsId: '', healthFacilitiesId: '', monthStart: '', monthEnd: '', yearStart: '', yearEnd: '', smsPackageId: '', isActive: false, quantity: 0, smsPackageUsed: {} };
+        id: 0, smsBrandsId: '', healthFacilitiesId: '', monthStart: '', monthEnd: '', yearStart: '', yearEnd: '', smsPackageId: '', isActive: false, quantity: 0, smsPackageUsed: {} };
   _context: any;
-  _isNew: boolean = true;
+    _isNew: boolean = true;
+    _smsLogs = [];
   _month = [{ id: 1, name: 'Tháng 1' }, { id: 2, name: 'Tháng 2' }, { id: 3, name: 'Tháng 3' }, { id: 4, name: 'Tháng 4' }, { id: 5, name: 'Tháng 5' }, { id: 6, name: 'Tháng 6' },
             { id: 7, name: 'Tháng 7' }, { id: 8, name: 'Tháng 8' }, { id: 9, name: 'Tháng 9' }, { id: 10, name: 'Tháng 10' }, { id: 11, name: 'Tháng 11' }, { id: 12, name: 'Tháng 12' },];
   _currentYear = moment().year();
@@ -42,7 +43,7 @@ export class packagedistributeEditComponent extends AppComponentBase implements 
   ngOnInit() {
     if (this.obj) {
         this._obj = _.clone(this.obj);
-        console.log(this._obj);
+        this._obj.id = this.obj.id;
       this._obj.monthStart = this.obj.monthStart;
       this._obj.monthEnd = this.obj.monthEnd;
         this._obj.yearStart = this.obj.yearStart;
@@ -53,7 +54,12 @@ export class packagedistributeEditComponent extends AppComponentBase implements 
 
     this._dataService.getAll('smsbrands-all').subscribe(resp => this._brands = resp.items);
     this._dataService.getAll('healthfacilities').subscribe(resp => this._medicalFacility = resp.items);
-    this._dataService.getAll('smspackages-all').subscribe(resp => this._package = resp.items);
+      this._dataService.getAll('smspackages-all').subscribe(resp => this._package = resp.items);
+      console.log(this._obj.id);
+      this._dataService.get('smslog', JSON.stringify({ smsPackagesDistributeId: this._obj.id, status: 1 }), '', 0, 20).subscribe(resp => {
+          console.log(resp.items);
+          this._smsLogs = resp.items
+      });
     this._context = {
       healthFacilitiesId: [this._obj.healthFacilitiesId, Validators.required],
       smsBrandsId: [this._obj.smsBrandsId, Validators.required],
