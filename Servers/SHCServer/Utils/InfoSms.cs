@@ -22,6 +22,7 @@ namespace SHCServer
                 SmsLogs smsLog = new SmsLogs();
                 smsLog.PhoneNumber = resp.PhoneNumber;
                 smsLog.Message = resp.Message;
+                smsLog.ResultMessage = resp.Result;
                 smsLog.Status = resp.Code == 0 ? 0 : 1;
                 smsLog.HealthFacilitiesId = resp.HealthFacilitiesId;
                 smsLog.SmsTemplateId = resp.SmsTemplateId;
