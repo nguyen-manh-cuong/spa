@@ -2,16 +2,6 @@ import * as _ from 'lodash';
 import * as moment from 'moment';
 import { AbstractControl } from '@angular/forms';
 
-
-export class Common {
-    inputOnlyNumber(event: any) {
-        const pattern = /^[0-9]*$/;
-        if (!pattern.test(event.target.value)) {
-            event.target.value = event.target.value.replace(/[^0-9]/g, "");
-        }
-    }
-}
-
 export class ValidationRule {   
     compare(frmFirst: string, codeCapcha: string) {
         return (ac: AbstractControl) => {
@@ -64,8 +54,13 @@ export class ValidationRule {
         '089', '090', '093', '070', '079', '077', '076', '078',
         '091', '094', '088', '083', '084', '085', '081', '082',
         '092', '056', '058', '099', '059'];
+        const pattern = /^[0-9\+]*$/;
 
-        if (control.value && control.value.charAt(0) != '+' && control.value.length >= 3 && (arr.indexOf(control.value.trim().substring(0, 3)) < 0)) {
+        if (control.value && !pattern.test(control.value)) {
+            control.setValue(control.value.replace(/[^0-9\+]/g, ""));
+        }
+
+        if (control.value && control.value.charAt(0) != '+' && control.value.length >= 3 && (arr.indexOf(control.value.substring(0, 3)) < 0)) {
             return {topnumber: true};
         }
         return null;

@@ -83,7 +83,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
 
     ngAfterViewInit(): void {
         setTimeout(() => {
-            this._package.distribute == 0 || this._isNew == true ? this.txtName.focus() : '';
+            this._package.isDeleteDistribute == 0 || this._isNew == true ? this.txtName.focus() : '';
         }, 1000);
     }
 
@@ -220,7 +220,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
             params.id = this.packageData.id;
         }
 
-        setTimeout(() => {
+        // setTimeout(() => {
             this._isNew ?
                 this._dataService.create(this.api, params).subscribe(() => {
                     swal(this.l('SaveSuccess'), '', 'success');
@@ -230,8 +230,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
                     swal(this.l('SaveSuccess'), '', 'success');
                     this.dialogRef.close()
                 }, err => { });
-        }, 1000);
-
+        // }, 1000);
     }
 
     compare(from: string, to: string){

@@ -19,4 +19,11 @@ namespace SHCServer.ViewModels
         public int type { set; get; }
         public string content { set; get; }
     }
+
+    //public class SmsInfoInputPhoneNumberViewModel
+    //{
+    //    public int? healthFacilitiesId { set; get; }
+    //    public List<string> lstPhoneNumber { set; get; }
+    //    public string ticketId { set; get; }
+    //}
 }

@@ -191,10 +191,10 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
                 type: 2, 
                 content: ''
             })
-                .subscribe(resp => {
-                    console.log(resp);
+            .subscribe(resp => {
                 swal('Thông báo', resp, 'error');
                 this.selection = new SelectionModel<IMedicalHealthcareHistories>(true, []);
+                abp.ui.clearBusy('#main-container');
             }, err => {});
         });   
     }
