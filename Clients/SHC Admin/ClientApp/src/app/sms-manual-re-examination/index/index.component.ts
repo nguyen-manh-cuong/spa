@@ -271,8 +271,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
         if(!this.appSession.user.healthFacilitiesId){
             return this.openCustomDialog();
         }
-
-        abp.ui.setBusy('#main-container');
+        
         this._dataService.get('healthfacilitiesconfigs', JSON.stringify({ 
             code: "A01.SMSTAIKHAM",
             healthFacilitiesId: this.appSession.user.healthFacilitiesId
@@ -281,6 +280,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
                 return this.openCustomDialog();
             } 
 
+            abp.ui.setBusy('#main-container');
             this._dataService.create('infosms', {
                 lstMedicalHealthcareHistories: this.selection.selected, 
                 healthFacilitiesId: this.appSession.user.healthFacilitiesId,           
