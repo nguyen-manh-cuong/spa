@@ -82,7 +82,7 @@ namespace SHCServer.Controllers
 
             if (query == 1)
             {
-                clause.Add(" AND ds.IsDelete=0 AND hd.IsDelete=0 GROUP BY d.DoctorId ORDER BY d.FullName,d.CreateDate DESC LIMIT @skipCount, @resultCount");
+                clause.Add(" AND ds.IsDelete=0 GROUP BY d.DoctorId ORDER BY d.FullName,d.CreateDate DESC LIMIT @skipCount, @resultCount");
             }
 
             param.Add(DbParam.Create("@skipCount", skipCount * maxResultCount));

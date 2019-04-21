@@ -128,18 +128,7 @@ namespace SHCServer.Controllers
         {
             var objs = _context.Query<HealthFacilities>();
 
-            if (!string.IsNullOrEmpty(filter))
-                foreach (var (key, value) in JsonConvert.DeserializeObject<Dictionary<string, string>>(filter))
-                {
-                    if (string.IsNullOrEmpty(value))
-                        continue;
-                    if (string.Equals(key, "provinceCode"))
-                        objs = objs.Where(o => o.ProvinceCode.Contains(value.ToString().Trim()));
-                    if (string.Equals(key, "districtCode"))
-                        objs = objs.Where(o => o.DistrictCode.Contains(value.ToString().Trim()));
-                    if (string.Equals(key, "id"))
-                        objs = objs.Where(o => o.HealthFacilitiesId == int.Parse(value.Trim()));
-                }
+            if (!string.IsNullOrEmpty(filter)) objs = objs.Where(o => o.HealthFacilitiesId == int.Parse(filter));
 
             return Json(new ActionResultDto { Result = new { Items = objs.OrderBy(h => h.Name).Take(500).ToList() } });
         }
@@ -181,6 +170,23 @@ namespace SHCServer.Controllers
             var objs = _context.Query<BookingDoctorsCalendars>().Where((o) => o.DoctorId == int.Parse(filter));
 
             return Json(new ActionResultDto { Result = new { Items = objs.Select(h => new BookingDoctorsCalendarsViewModel(h, _connectionString)).ToList() } });
+        }
+
+        [HttpGet]
+        [Route("api/nations")]
+        public IActionResult GetNations()
+        {
+            var objs = _context.Query<Nation>().Where(o=>o.IsActive==true&&o.IsDelete==false).OrderBy(o=>o.OrderNumber);
+            return Json(new ActionResultDto() { Result = new { Items = objs.ToList() } });
+        }
+
+
+        [HttpGet]
+        [Route("api/ethnicity")]
+        public IActionResult GetEthnicities()
+        {
+            var objs = _context.Query<Ethnicity>().Where(o => o.IsActive == true && o.IsDelete == false).OrderBy(o => o.OrderNumber);
+            return Json(new ActionResultDto() { Result = new { Items = objs.ToList() } });
         }
 
         public class FilterHealthFacilities

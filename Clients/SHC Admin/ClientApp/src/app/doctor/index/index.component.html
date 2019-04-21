@@ -1,7 +1,7 @@
 <div class="toolbar fadeIn animated">
     <div class="row w-100 m-0">
         <div class="col-4 text-left d-flex align-items-center">
-            <button mat-stroked-button color="primary" (click)="openDialog()">
+            <button mat-stroked-button color="primary" (click)="openDialogDoctor()">
                 <mat-icon class="f-20 m-l--10 mat-icon m-t-2 material-icons">add</mat-icon>{{l("CreateNew")}}
             </button>
             <div class="separate"></div>
@@ -21,7 +21,7 @@
         <div class="row m-0 pt-4">
             <div class="col-md-3 fadeIn animated">
                 <mat-form-field appearance="outline" class="w-100">
-                    <mat-label>{{l("DoctorProvince")}}</mat-label>
+                    <mat-label>{{l("Province")}}</mat-label>
                     <mat-select #province formControlName="provinceCode" (selectionChange)="provinceChange($event)">
                         <mat-option class="text-center">{{l('CancelSelect')}}</mat-option>
                         <mat-option *ngFor="let p of provinces" [value]="p.provinceCode">{{p.name}}</mat-option>
@@ -30,7 +30,7 @@
             </div>
             <div class="col-md-3 fadeIn animated">
                 <mat-form-field appearance="outline" class="w-100">
-                    <mat-label>{{l("DoctorDistrict")}}</mat-label>
+                    <mat-label>{{l("District")}}</mat-label>
                     <mat-select formControlName="districtCode" (selectionChange)="districtChange(province,$event)">
                         <mat-option *ngIf="checkProvince" class="text-center">{{l('CancelSelect')}}</mat-option>
                         <mat-option *ngFor="let d of districts" [value]="d.districtCode">{{d.name}}</mat-option>
@@ -44,14 +44,23 @@
                 </mat-form-field>
             </div>
         </div>
-        <div class="row m-0 pt-4">
-            <div class="col-md-5 fadeIn animated">
+        <div class="row m-0 pt-0">
+            <div class="col-md-5" [hidden]="this.appSession.user.healthFacilitiesId">
                 <mat-form-field appearance="outline" class="w-100">
-                    <mat-label>{{l("DoctorHealthFacilities")}}</mat-label>
-                    <mat-select formControlName="healthFacilitiesId">
-                        <mat-option *ngIf="checkProvince" class="text-center">{{l('CancelSelect')}}</mat-option>
-                        <mat-option *ngFor="let h of healthFacilities" [value]="h.healthFacilitiesId">{{h.name}}
+                    <mat-label>{{l('HealthFacilities')}}</mat-label>
+                    <input matInput [formControl]="healthfacilities" (click)="clickCbo()" [matAutocomplete]="auto"> 
+                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                        <mat-option *ngFor="let o of filteredHealthFacilitiesOptions | async" [value]="o">
+                            {{o.name}}
                         </mat-option>
+                    </mat-autocomplete>
+                </mat-form-field>
+            </div>
+            <div class="col-md-5 disabled" [hidden]="!this.appSession.user.healthFacilitiesId">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>{{l('HealthFacilities')}}</mat-label>
+                    <mat-select formControlName="healthfacilities">
+                        <mat-option *ngFor="let o of _healthfacilities" [value]="o.healthFacilitiesId">{{ o.name }}</mat-option>
                     </mat-select>
                 </mat-form-field>
             </div>
@@ -83,7 +92,7 @@
             </ng-container>
             <ng-container matColumnDef="fullName">
                 <th mat-header-cell *matHeaderCellDef class="min-w-150 text-center"> {{l('DoctorName')}} </th>
-                <td mat-cell *matCellDef="let element" class="min-w-150 td-left"> {{element.fullName}}</td>
+                <td mat-cell *matCellDef="let element" class="min-w-150 td-left" (click)="openDialogDoctor(element)"><b><u>{{element.fullName}}</u></b> </td>
             </ng-container>
             <ng-container matColumnDef="specialistName">
                 <th mat-header-cell *matHeaderCellDef class="min-w-150 text-center"> {{l('DoctorSpecialist')}} </th>
@@ -108,21 +117,21 @@
             <ng-container matColumnDef="allowBooking">
                 <th mat-header-cell *matHeaderCellDef class="min-w-30 text-center"> {{l('DoctorAllowBooking')}}</th>
                 <td mat-cell *matCellDef="let element" class="min-w-30 text-center">
-                    <mat-checkbox #cbxAllowBooking [checked]="element.allowBooking"
+                    <mat-checkbox [checked]="element.allowBooking"
                         (click)="doctorUpdateAllowBooking(element)" color="primary"></mat-checkbox>
                 </td>
             </ng-container>
             <ng-container matColumnDef="allowFilter">
                 <th mat-header-cell *matHeaderCellDef class="min-w-30 text-center"> {{l('DoctorAllowFilter')}}</th>
                 <td mat-cell *matCellDef="let element" class="min-w-30 text-center">
-                    <mat-checkbox #cbxAllowFilter [checked]="element.allowFilter"
+                    <mat-checkbox [checked]="element.allowFilter"
                         (click)="doctorUpdateAllowFilter(element)" color="primary"></mat-checkbox>
                 </td>
             </ng-container>
             <ng-container matColumnDef="allowSearch">
                 <th mat-header-cell *matHeaderCellDef class="min-w-30 text-center"> {{l('DoctorAllowSearch')}}</th>
                 <td mat-cell *matCellDef="let element" class="min-w-30 text-center">
-                    <mat-checkbox #cbxAllowSearch [checked]="element.allowSearch"
+                    <mat-checkbox [checked]="element.allowSearch"
                         (click)="doctorUpdateAllowSearch(element)" color="primary"></mat-checkbox>
                 </td>
             </ng-container>
@@ -130,7 +139,7 @@
                 <th mat-header-cell *matHeaderCellDef class="text-center">{{l('Task')}}</th>
                 <td mat-cell *matCellDef="let element" class="w-px-30 pr-0">
                     <div class="d-flex">
-                        <button mat-icon-button (click)="openDialog(element)">
+                        <button mat-icon-button (click)="openDialogDoctor(element)">
                             <mat-icon class="text-muted f-18">edit</mat-icon>
                         </button>
                         <button mat-icon-button (click)="deleteDialogDoctor(element, 'fullName')">

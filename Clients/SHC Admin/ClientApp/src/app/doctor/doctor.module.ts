@@ -11,9 +11,12 @@ import { ValidationModule } from '@app/validation/validation.module';
 import { NgxMaskModule } from 'ngx-mask';
 import { CustomCurrencyPipe } from 'pipes/custom-currency.pipe';
 import { MAT_CHECKBOX_CLICK_ACTION } from '@angular/material';
+import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
+
 
 @NgModule({
   imports: [
+    CKEditorModule,
     CommonModule,
     FormsModule, ReactiveFormsModule,
     DoctorRoutingModule,

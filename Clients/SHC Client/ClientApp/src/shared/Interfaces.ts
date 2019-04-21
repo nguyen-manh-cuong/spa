@@ -61,6 +61,7 @@ export interface IDoctor {
     allowBooking:boolean;
     allowFilter:boolean;
     allowSearch:boolean;
+    updateUserId:number;
     specialist: IDoctorSpecialists[];
     healthFacilities: IHealthfacilitiesDoctor[];
 }

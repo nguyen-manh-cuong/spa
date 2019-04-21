@@ -1,5 +1,5 @@
 import { LOCALE_ID, NgModule } from '@angular/core';
-import { MAT_DATE_LOCALE, MatButtonModule, MatIconModule, MatListModule, MatSidenavModule, MatToolbarModule} from '@angular/material';
+import { MAT_DATE_LOCALE, MatButtonModule, MatIconModule, MatListModule, MatSidenavModule, MatToolbarModule,MatNativeDateModule} from '@angular/material';
 import { AppComponent } from '@app/app.component';
 import { AppRoutingModule } from '@app/app-routing.module';
 import { CommonModule } from '@angular/common';
@@ -25,6 +25,7 @@ import {MatInputModule} from '@angular/material';
         MatSidenavModule,
         MatIconModule,
         MatListModule ,
+        MatNativeDateModule
     ],
     providers: [{ provide: LOCALE_ID, useValue: 'vi' }, { provide: MAT_DATE_LOCALE, useValue: 'vi-VN' }, DatePipe],
     declarations: [AppComponent, DashboardComponent, SideBarNavComponent]
