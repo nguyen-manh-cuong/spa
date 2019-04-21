@@ -159,7 +159,7 @@
                 </button>
             </div>
             <div class="col-md-3 text-center d-flex align-self-center">
-                <button mat-stroked-button color="primary" (click)="selection.selected.length ? sendSms() : showMess(1)" class="w-100 mb-4">
+                <button mat-stroked-button color="primary" [ngClass]="{'disabled': _isRequest}" (click)="selection.selected.length ? sendSms() : showMess(1)" class="w-100 mb-4">
                     <mat-icon class="mr-2">sms</mat-icon>{{l("Gửi SMS nhắc lịch tái khám")}}
                 </button>
             </div>

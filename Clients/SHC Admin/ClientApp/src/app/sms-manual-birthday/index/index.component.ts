@@ -45,6 +45,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     _districts = [];
     _wards = [];
     _doctors = [];
+    _isRequest = false;
     _healthfacilities = [];
     _status = [{ id: 0, name: 'Tất cả' }, { id: 1, name: 'Đã gửi SMS' }, { id: 2, name: 'Chưa gửi SMS' }];
     _sex = [{ id: 0, name: 'Tất cả' }, { id: 1, name: 'Nam' }, { id: 2, name: 'Nữ' }, { id: 3, name: 'Không xác định' }];
@@ -174,7 +175,10 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
         });
     }
 
-    sendSms(){
+    sendSms() {
+        this._isRequest = true;
+        setTimeout(() => this._isRequest = false ,3000)
+
         if(!this.appSession.user.healthFacilitiesId){
             return this.openCustomDialog();
         }
