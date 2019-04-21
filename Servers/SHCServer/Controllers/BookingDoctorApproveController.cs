@@ -56,6 +56,7 @@ namespace SHCServer.Controllers
             //    }
             //}
 
+            var test = objs.Select((dc, t) => new BookingDoctorsCalendarsViewModel(dc, _connectionString));
             var _objs = objs.Select((dc, t) => new BookingDoctorsCalendarsViewModel(dc, _connectionString)).ToList();  //.TakePage(skipCount == 0 ? 1 : skipCount + 1, maxResultCount).ToList();
 
             return Json(GroupDoctor(_objs, skipCount, maxResultCount));

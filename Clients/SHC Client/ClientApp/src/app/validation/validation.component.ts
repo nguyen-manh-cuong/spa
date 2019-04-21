@@ -38,7 +38,8 @@ export class ValidationComponent implements OnInit {
             'topnumber' : isVi ? 'Đầu số sai định dạng.' : 'Top number invalidate',
             'identification' : isVi ? 'CMND/CCCD phải có độ dài là 9 hoặc 12 ký tự' : 'Identification invalidate',
             'capcha': isVi ? 'Mã capcha không khớp.' : 'Capcha invalidate',
-            'compareDate': isVi ? "Ngày khám phải lớn hơn hoặc bằng ngày hiên tại" : 'Date invalidate' 
+            'compareDate': isVi ? "Ngày khám phải lớn hơn hoặc bằng ngày hiên tại" : 'Date invalidate',
+            'birthDate': isVi ? "Ngày sinh không đúng định dạng" : 'Date invalidate',
         }
         return messages[err]
     }

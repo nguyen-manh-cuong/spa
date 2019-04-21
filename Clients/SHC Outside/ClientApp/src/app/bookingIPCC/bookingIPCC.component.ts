@@ -27,6 +27,7 @@ export class BookingIPCCComponent extends AppComponentBase implements OnInit {
   public frmBooking: FormGroup;
 
   public _relationship: Array<{ id: number, name: string }> = [{ id: 1, name: 'Vợ/Chồng' }, { id: 2, name: 'Bố/Mẹ' }, { id: 3, name: 'Anh/Chị' }, { id: 4, name: 'Con' }];
+  public _gender: Array<{ id: number, name: string }> = [{ id: 1, name: 'Nam' }, { id: 2, name: 'Nữ' }, { id: 3, name: 'Không xác định' }];
   public _dates = _.range(1, 32);
   public _months = _.range(1, 13);
   public _years = _.range(moment().year() - 100, moment().year() + 1);
@@ -133,9 +134,12 @@ export class BookingIPCCComponent extends AppComponentBase implements OnInit {
     var controls = this.frmBooking.controls['bookingType'].value == 1 ? ['bookingUser', 'phoneNumber', 'reason', 'birthYear', 'provinceCodeExamination', 'districtCodeExamination', 'healthFacilitiesId', 'examinationDate', 'examinationTime', 'email'] : ['bookingUser', 'phoneNumber', 'bookingRepresent', 'phoneRepresent', 'reason', 'birthYear', 'provinceCodeExamination', 'districtCodeExamination', 'healthFacilitiesId', 'examinationDate', 'examinationTime', 'email'];
     this.frmBooking.patchValue({bookingUser: this.frmBooking.value.bookingUser.trim(), reason: this.frmBooking.value.reason.trim(), address: this.frmBooking.value.address ? this.frmBooking.value.address.trim() : null, examinationDate: this.examinationDate.nativeElement.value ? this.examinationDate.nativeElement.value : null});
 
+    if(this.checkBirthDate()) return;
+
     if(this.frmBooking.controls['bookingType'].value == 2){
       this.frmBooking.patchValue({bookingRepresent: this.frmBooking.value.bookingRepresent.trim(), phoneRepresent: this.frmBooking.value.phoneRepresent.trim()});
     }
+
     if (this.frmBooking.invalid) {
       this.validateAllFormFields(this.frmBooking, controls);
       var check = 0;
@@ -204,13 +208,28 @@ export class BookingIPCCComponent extends AppComponentBase implements OnInit {
     }
   }
 
-  rulePhoneNumber(event: any){
-    const pattern = /^[0-9\+]*$/;
-    const patternNum = /^[0-9]*$/; 
+  onSelectBirthDay(obj: any){
+    this.checkBirthDate();
+  }
 
-    if (!pattern.test(event.target.value)) {
-      event.target.value = event.target.value.replace(/[^0-9\+]/g, "");
+  onSelectBirthMonth(obj: any){
+    this.checkBirthDate();
+  }
+
+  checkBirthDate(){
+    if(this.frmBooking.controls.birthDay.value && this.frmBooking.controls.birthMonth.value){
+      if(!moment(this.frmBooking.controls.birthDay.value + "/" + this.frmBooking.controls.birthMonth.value + "/" + this.frmBooking.controls.birthYear.value, "DD/MM/YYYY").isValid()){
+        this.frmBooking.controls.birthYear.setErrors({birthYear : true});
+        return false;
+      }
     }
+
+    this.frmBooking.controls.birthYear.value ? this.frmBooking.controls.birthYear.setErrors(null) : this.frmBooking.controls.birthYear.setErrors({required : true});
+    return false;
+  }
+
+  rulePhoneNumber(event: any){
+    const patternNum = /^[0-9]*$/; 
 
     if(event.target.value && event.target.value.length > 1 && !patternNum.test(event.target.value.trim().substring(1))){
       this.frmBooking.controls['phoneNumber'].setErrors({special: true});

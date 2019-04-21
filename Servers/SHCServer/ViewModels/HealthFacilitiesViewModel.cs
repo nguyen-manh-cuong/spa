@@ -23,21 +23,18 @@ namespace SHCServer.ViewModels
             Code = obj.Code;
             DistrictCode = obj.DistrictCode;
             ProvinceCode = obj.ProvinceCode;
-            Specialist = obj.Specialist;
             Address = obj.Address;
             IsActive = obj.IsActive;
             IsDelete = obj.IsDelete;
 
-            var common = context.JoinQuery<HealthFacilities, CategoryCommon>((h, c) => new object[]
+            Specialist = context.JoinQuery<HealthFacilities, HealthFacilitiesSpecialists>((d, ds) => new object[]
                 {
-                    JoinType.InnerJoin, h.Specialist == c.Id
+                    JoinType.InnerJoin, d.HealthFacilitiesId == ds.HealthFacilitiesId
                 })
-                .Where((h, c) => h.HealthFacilitiesId == obj.HealthFacilitiesId)
-                .Select((h, c) => c).FirstOrDefault();
+                .Where((d, hs) => d.HealthFacilitiesId == obj.HealthFacilitiesId)
+                .Select((d, hs) => new HealthFacilitiesSpecialistsViewModel(hs, connectionString)).ToList();
 
-            SpecialistName = common != null ? common.Name : "";
-
-            totalDoctor = context.Query<HealthFacilitiesDoctors>().Where(o => o.HealthFacilitiesId == obj.HealthFacilitiesId).Count();
+            TotalDoctor = context.Query<HealthFacilitiesDoctors>().Where(o => o.HealthFacilitiesId == obj.HealthFacilitiesId).Count();
         }
 
         public int HealthFacilitiesId { set; get; }
@@ -45,10 +42,9 @@ namespace SHCServer.ViewModels
         public string Code { set; get; }
         public string DistrictCode { set; get; }
         public string ProvinceCode { set; get; }
-        public string Address { set; get; }
-        public string SpecialistName { set; get; }
-        public int? Specialist { set; get; }        
-        public int totalDoctor { set; get; }
+        public string Address { set; get; }  
+        public List<HealthFacilitiesSpecialistsViewModel> Specialist { set; get; }
+        public int TotalDoctor { set; get; }
         public bool IsActive { set; get; }
         public bool IsDelete { set; get; }
     }
