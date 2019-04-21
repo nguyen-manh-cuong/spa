@@ -73,10 +73,10 @@ namespace SHCServer.Controllers
         [Route("api/sms-templates")]
         public IActionResult Create([FromBody] SmsTemplateInputViewModel sms)
         {
-            if (_context.Query<SmsTemplate>().Where(g => g.SmsTemplateName == sms.SmsTemplateName && sms.IsDelete == false).Count() > 0)
+            if (_context.Query<SmsTemplate>().Where(g => g.SmsTemplateName == sms.SmsTemplateName && ((g.CreateUserId == sms.CreateUserId) || (g.CreateUserId == 1)) && sms.IsDelete == false).Count() > 0)
                 return StatusCode(500, _excep.Throw("Tạo mẫu tin nhắn không thành công.", "Tên mẫu tin nhắn đã tồn tại !"));
             
-            if (_context.Query<SmsTemplate>().Where(g => g.SmsContent  == sms.SmsContent && sms.IsDelete == false).Count() > 0)  
+            if (_context.Query<SmsTemplate>().Where(g => g.SmsContent  == sms.SmsContent && ((g.CreateUserId == sms.CreateUserId) || (g.CreateUserId == 1)) && sms.IsDelete == false).Count() > 0)  
                     return StatusCode(500, _excep.Throw("Tạo mẫu tin nhắn không thành công.", "Nội dung tin nhắn đã tồn tại !"));
 
             return Json(new ActionResultDto { Result = _context.Insert(new SmsTemplate(sms)) });

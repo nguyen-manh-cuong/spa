@@ -73,7 +73,8 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     this._frm.value.smsTemplateName = this._frm.value.smsTemplateName.trim();
     this._frm.value.smsContent = this._frm.value.smsContent.trim();
     this._frm.value.healthFacilitiesId = this.appSession.user.healthFacilitiesId;
-    this._frm.value.userId = this.appSession.userId;
+      this._frm.value.userId = this.appSession.userId;
+      this._frm.value.createUserId = this.appSession.user.id;
     this.appSession.user.healthFacilitiesId ? this._frm.value.applyAllSystem = false: '';
 
     this._isNew ?

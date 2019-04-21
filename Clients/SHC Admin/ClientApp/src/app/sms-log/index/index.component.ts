@@ -107,9 +107,29 @@ export class IndexComponent extends PagedListingComponentBase<ISmsLogs> implemen
             return swal('Thông báo', 'Đến ngày không đúng định dạng', 'warning');
         }
 
+        var startTime = moment(this.startTime.nativeElement.value, 'DD/MM/YYYY hh:mm:ss').toDate();
+        var endTime = moment(this.endTime.nativeElement.value + '23:59:59:', 'DD/MM/YYYY hh:mm:ss').toDate();
+
+        if (endTime.getFullYear() - startTime.getFullYear() > 1) {
+
+            return swal('Thông báo', 'Dữ liệu không được lấy quá 1 năm', 'warning');
+        }
+        if (endTime.getFullYear() - startTime.getFullYear() == 1) {
+            var monthStartTime = startTime.getMonth() + 1;
+            var monthEndTime = endTime.getMonth() + 1;
+            if (12 - monthStartTime + monthEndTime > 12) {
+                return swal('Thông báo', 'Dữ liệu không được lấy quá 1 năm', 'warning');
+            }
+            if (12 - monthStartTime + monthEndTime == 12) {
+                if (endTime.getDate() > startTime.getDate()) {
+                    return swal('Thông báo', 'Dữ liệu không được lấy quá 1 năm', 'warning');
+                }
+            }
+        }
+
         this.healthfacilities.value ? this.frmSearch.controls['healthfacilities'].setValue(this.healthfacilities.value.healthFacilitiesId) : '';
-        this.startTime.nativeElement.value ? this.frmSearch.controls['startTime'].setValue(moment(this.startTime.nativeElement.value, 'DD/MM/YYYY hh:mm:ss').add(7, 'hours').toDate()) : '';
-        this.endTime.nativeElement.value ? this.frmSearch.controls['endTime'].setValue(moment(this.endTime.nativeElement.value + '23:59:59:', 'DD/MM/YYYY hh:mm:ss').add(7, 'hours').toDate()) : '';
+        this.startTime.nativeElement.value ? this.frmSearch.controls['startTime'].setValue(startTime) : '';
+        this.endTime.nativeElement.value ? this.frmSearch.controls['endTime'].setValue(endTime) : '';
         this.btnSearchClicks$.next();
     }
 }
