@@ -94,17 +94,6 @@ namespace SHCServer.Controllers
                             clause.Add("and h.IsReExamination != 1");
                         }
                     }
-                    if (string.Equals(key, "status"))
-                    {
-                        if (value == "1")
-                        {
-                            clause.Add("and h.IsBirthDay = 1");
-                        }
-                        else
-                        {
-                            clause.Add("and h.IsBirthDay != 1");
-                        }
-                    }
 
                     if (string.Equals(key, "patientCode"))
                     {
@@ -141,25 +130,15 @@ namespace SHCServer.Controllers
                         clause.Add("and p.WardCode = @WardCode");
                         param.Add(DbParam.Create("@WardCode", value));
                     }
-                    if (string.Equals(key, "fromDay") && value != "32")
+                    if (string.Equals(key, "birthdayDate") && value != "32")
                     {
-                        clause.Add("and p.BirthDate >= @FromDate");
+                        clause.Add("and p.BirthDate = @FromDate");
                         param.Add(DbParam.Create("@FromDate", value));
                     }
-                    if (string.Equals(key, "fromMonth") && value != "13")
+                    if (string.Equals(key, "birthdayMonth") && value != "13")
                     {
-                        clause.Add("and p.BirthMonth >= @FromMonth");
+                        clause.Add("and p.BirthMonth = @FromMonth");
                         param.Add(DbParam.Create("@FromMonth", value));
-                    }
-                    if (string.Equals(key, "toDay") && value != "32")
-                    {
-                        clause.Add("and p.BirthDate <= @ToDate");
-                        param.Add(DbParam.Create("@ToDate", value));
-                    }
-                    if (string.Equals(key, "toMonth") && value != "13")
-                    {
-                        clause.Add("and p.BirthMonth <= @ToMonth");
-                        param.Add(DbParam.Create("@ToMonth", value));
                     }
                     if (string.Equals(key, "sex"))
                     {
