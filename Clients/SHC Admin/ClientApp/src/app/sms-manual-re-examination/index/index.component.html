@@ -165,7 +165,7 @@
             </div>
         </div>
     </form>
-    <div class="table-content" [perfectScrollbar]="{}">
+    <div class="table-content" style="height: calc(100vh - 245px);">
         <table mat-table [dataSource]="dataSources" matSort #sort="matSort" matSortDisableClear matSortActive="id" matSortDirection="desc" class="w-100 task">
             <ng-container matColumnDef="orderNumber">
                 <th mat-header-cell *matHeaderCellDef class="min-w-50 text-center pl-0"> {{l("OrderNumber")}} </th>
