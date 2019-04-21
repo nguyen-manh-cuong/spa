@@ -46,8 +46,7 @@ namespace SHCServer.Controllers
                                     p.Address,
                                     p.Email
                                 from smarthealthcare.medical_healthcare_histories h
-                                inner join smarthealthcare.cats_patients p on h.PatientId = p.PatientId
-                                group by p.Code";
+                                inner join smarthealthcare.cats_patients p on h.PatientId = p.PatientId";
             List<string> clause = new List<string>(); ;
             List<DbParam> param = new List<DbParam>();
             List<MedicalHealthcareHistoriesViewModel> lst = new List<MedicalHealthcareHistoriesViewModel>();
@@ -142,15 +141,25 @@ namespace SHCServer.Controllers
                         clause.Add("and p.WardCode = @WardCode");
                         param.Add(DbParam.Create("@WardCode", value));
                     }
-                    if (string.Equals(key, "day") && value != "32")
+                    if (string.Equals(key, "fromDay") && value != "32")
                     {
-                        clause.Add("and p.BirthDate = @BirthDate");
-                        param.Add(DbParam.Create("@BirthDate", value));
+                        clause.Add("and p.BirthDate >= @FromDate");
+                        param.Add(DbParam.Create("@FromDate", value));
                     }
-                    if (string.Equals(key, "month") && value != "13")
+                    if (string.Equals(key, "fromMonth") && value != "13")
                     {
-                        clause.Add("and p.BirthMonth = @BirthMonth");
-                        param.Add(DbParam.Create("@BirthMonth", value));
+                        clause.Add("and p.BirthMonth >= @FromMonth");
+                        param.Add(DbParam.Create("@FromMonth", value));
+                    }
+                    if (string.Equals(key, "toDay") && value != "32")
+                    {
+                        clause.Add("and p.BirthDate <= @ToDate");
+                        param.Add(DbParam.Create("@ToDate", value));
+                    }
+                    if (string.Equals(key, "toMonth") && value != "13")
+                    {
+                        clause.Add("and p.BirthMonth <= @ToMonth");
+                        param.Add(DbParam.Create("@ToMonth", value));
                     }
                     if (string.Equals(key, "sex"))
                     {
@@ -159,6 +168,8 @@ namespace SHCServer.Controllers
                     }
                 }
             }
+
+            clause.Add(" group by p.Code");
 
             if (sorting != null)
             {

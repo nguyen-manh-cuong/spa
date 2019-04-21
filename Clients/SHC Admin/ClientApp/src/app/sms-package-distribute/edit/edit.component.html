@@ -10,7 +10,7 @@
         {{l("Edit")}} {{l("PackageDistributeSmsPackageHead")}}
       </ng-template>
       <div class="pt-4">
-          <div class="row">
+          <div class="row"  [ngClass]="{'disabled': _obj.quantity > _obj.smsPackageUsed.quantityused }">
               <div class="col-md-6 disabled">
                   <mat-form-field appearance="outline" class="w-100">
                       <mat-label>{{l('PackageDistributeHealthFacilities')}}</mat-label>
@@ -50,7 +50,7 @@
               </div>
               <div class="col-md-6">
                   <mat-form-field appearance="outline" class="w-100">
-                      <mat-label>{{l("Từ Năm")}}</mat-label>
+                      <mat-label>{{l("Từ năm")}}</mat-label>
                       <input min="0" max="9999" maxlength="4" formControlName="yearStart" mask="0*"
                              matInput autocomplete [required]="true">
                       <mat-icon matSuffix

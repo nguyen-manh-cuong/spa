@@ -218,9 +218,30 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
             return swal('Thông báo', 'Ngày sinh không đúng định dạng', 'warning');
         }
 
+        var startTime = moment(this.frmSearch.controls['startTime'].value, 'DD/MM/YYYY').toDate();
+        var endTime = moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').toDate();
+
+        if (endTime.getFullYear() - startTime.getFullYear() > 1) {
+
+            return swal('Thông báo', 'Dữ liệu không được lấy quá 1 năm', 'warning');
+        }
+        if (endTime.getFullYear() - startTime.getFullYear() == 1) {
+            var monthStartTime = startTime.getMonth() + 1;
+            var monthEndTime = endTime.getMonth() + 1;
+            if (12 - monthStartTime + monthEndTime > 12) {
+                return swal('Thông báo', 'Dữ liệu không được lấy quá 1 năm', 'warning');
+            }
+            if (12 - monthStartTime + monthEndTime == 12) {
+                if (endTime.getDate() > startTime.getDate()) {
+                    return swal('Thông báo', 'Dữ liệu không được lấy quá 1 năm', 'warning');
+                }
+            }
+        }
+
+
         this.healthfacilities.value ? this.frmSearch.controls['healthfacilities'].setValue(this.healthfacilities.value.healthFacilitiesId) : (this.appSession.user.healthFacilitiesId == null ? this.frmSearch.controls['healthfacilities'].setValue(null) : '');
         this.birthday.nativeElement.value ? this.frmSearch.controls['birthday'].setValue(moment(this.birthday.nativeElement.value, 'DD/MM/YYYY').toDate()) : '';
-        this.endTime.nativeElement.value ? this.frmSearch.controls['endTime'].setValue(moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').toDate()) : '';
+        this.endTime.nativeElement.value ? this.frmSearch.controls['endTime'].setValue(endTime) : '';
         this.btnSearchClicks$.next();
     }
 

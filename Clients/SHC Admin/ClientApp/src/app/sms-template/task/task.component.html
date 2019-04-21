@@ -11,14 +11,14 @@
       </ng-template>
       <div class="pt-4">
         <div class="row">
-          <div class="col-md-12">
+          <div class="col-md-12" [ngClass]="{'disabled': _isUsedSuccess}">
             <mat-form-field appearance="outline" class="w-100">
               <mat-label>{{l("PackageTemplateName")}}</mat-label>
               <input #txtName="matInput" formControlName="smsTemplateName" matInput autocomplete required maxlength="255">
               <validation matSuffix [control]="_frm.controls['smsTemplateName']"></validation>
             </mat-form-field>
           </div>
-          <div class="col-md-8">
+          <div class="col-md-8" [ngClass]="{'disabled': _isUsedSuccess}">
             <mat-form-field appearance="outline" class="w-100">
               <mat-label>{{l("PackageTemplateMessageType")}}</mat-label>
               <mat-select formControlName="messageType">
@@ -27,20 +27,20 @@
               </mat-select>
             </mat-form-field>
           </div>
-          <div class="col-md-4 disabled">
+          <div class="col-md-4 disabled" [ngClass]="{'disabled': _isUsedSuccess}">
             <mat-form-field appearance="outline" class="w-100">
               <mat-label>{{l("PackageTemplateHeadNumberType")}}</mat-label>
               <input matInput autocomplete value="VTT_CSKH">
             </mat-form-field>
           </div>
-          <div class="col-md-12">
+          <div class="col-md-12" [ngClass]="{'disabled': _isUsedSuccess}">
             <mat-form-field appearance="outline" class="w-100">
               <mat-label>{{l("PackageTemplateMessageContent")}}</mat-label>
               <textarea formControlName="smsContent" rows="5" matInput required required maxlength="500"></textarea>
               <validation matSuffix [control]="_frm.controls['smsContent']"></validation>
             </mat-form-field>
           </div>
-          <div class="col-md-12">
+          <div class="col-md-12" [ngClass]="{'disabled': _isUsedSuccess}">
             <mat-form-field appearance="outline" class="w-100">
               <mat-label>{{l("PackageTemplateParameterValues")}}</mat-label>
               <mat-chip-list>
@@ -60,7 +60,7 @@
           <div class="col-md-12">
             <mat-checkbox formControlName="isActive">{{l("Using")}}</mat-checkbox>
           </div>
-          <div class="col-md-12" *ngIf="!appSession.user.healthFacilitiesId">
+          <div class="col-md-12" *ngIf="!appSession.user.healthFacilitiesId" [ngClass]="{'disabled': _isUsedSuccess}">
             <mat-checkbox formControlName="applyAllSystem">{{l("PackageTemplateApplyAllSystem")}}</mat-checkbox>
           </div>
         </div>

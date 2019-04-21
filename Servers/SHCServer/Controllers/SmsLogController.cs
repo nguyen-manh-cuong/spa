@@ -35,6 +35,7 @@ namespace SHCServer.Controllers
                 {
                     if (string.IsNullOrEmpty(value) || value == "false" || value == "0") continue;
                     if (string.Equals(key, "healthfacilities")) objs = objs.Where(s => s.HealthFacilitiesId == int.Parse(value));
+                    if (string.Equals(key, "smsTemplateId")) objs = objs.Where(s => s.SmsTemplateId == int.Parse(value));
                     if (string.Equals(key, "phoneNumber")) objs = objs.Where(s => s.PhoneNumber == value);
                     if (string.Equals(key, "status")) objs = objs.Where(s => s.Status == (value != "2" ? int.Parse(value) : 0));
                     if (string.Equals(key, "startTime")) objs = objs.Where(s => s.SentDate >= DateTime.Parse(value));
