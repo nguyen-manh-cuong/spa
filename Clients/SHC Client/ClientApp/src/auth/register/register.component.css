@@ -9,3 +9,10 @@
 .signup-form .form-group {
     margin-bottom: 10px;
 }
+
+.my-mat-hint {
+    padding-bottom: 10px;
+    line-height: 1.2em;
+    transform: translateY(10px);
+    font-size: 75%;
+}

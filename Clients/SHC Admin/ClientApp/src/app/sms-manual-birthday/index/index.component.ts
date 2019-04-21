@@ -86,7 +86,11 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
         });
 
         for (var i = 1; i < 32; i++) {
-            var obj = { id: i, name: 'ngày ' + i };
+            if (i < 10) {
+                var obj = { id: i, name: 'ngày 0' + i };
+            } else {
+                var obj = { id: i, name: 'ngày ' + i };
+            }
             this._days.push(obj);
         }
 
