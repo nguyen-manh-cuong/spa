@@ -40,6 +40,7 @@ export abstract class PagedListingComponentBase<EntityDto> extends AppComponentB
     api: string;
 
     displayedColumns = [];
+    _age = { years: 0, months: 0, days: 0 };
 
     data: EntityDto[] = [];
     dataSources = new MatTableDataSource();
@@ -77,6 +78,48 @@ export abstract class PagedListingComponentBase<EntityDto> extends AppComponentB
     setTableHeight(): void {
         // const _filter = $('form.form-filter');
         // if (_filter.length && $('div.table-content').length) { $('div.table-content').css('max-height', `calc(100vh - ${_filter.outerHeight() + 200}px)`) }
+    }
+
+    convertAge(date: number, month: number, year: number) {
+        const yearNow = new Date().getFullYear();
+        const monthNow = new Date().getMonth() + 1;
+        const dateNow = new Date().getDate();
+        var ageString = "";
+        var yearAge = yearNow - year;
+
+        if (monthNow >= month)
+            var monthAge = monthNow - month;
+        else {
+            yearAge--;
+            var monthAge = 12 + monthNow - month;
+        }
+
+        if (dateNow >= date)
+            var dateAge = dateNow - date;
+        else {
+            monthAge--;
+            var dateAge = 31 + dateNow - date;
+
+            if (monthAge < 0) {
+                monthAge = 11;
+                yearAge--;
+            }
+        }
+
+        this._age.years = yearAge;
+        this._age.months = monthAge;
+        this._age.days = dateAge;
+
+
+
+        if (this._age.years > 0)
+            ageString = this._age.years + "T";
+        else if ((this._age.years == 0) && (this._age.months == 0) && (this._age.days > 0))
+            ageString = this._age.days + "NG";
+        else if ((this._age.years == 0) && (this._age.months > 0) && (this._age.days >= 0))
+            ageString = this._age.months + "TH";
+
+        return ageString;
     }
 
     toggedFilter() {
@@ -129,6 +172,8 @@ export abstract class PagedListingComponentBase<EntityDto> extends AppComponentB
             this.paginator._changePageSize(this.paginator.pageSize);
         });
     }
+
+  
 
     deleteDialog(obj: EntityDto, key: string, id?: number | string) {
         swal({

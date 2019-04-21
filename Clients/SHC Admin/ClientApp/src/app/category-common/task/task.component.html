@@ -1,4 +1,9 @@
-<form [formGroup]="_frm" class="container" novalidate>
+<form [formGroup]="_frm" class="container p-relative" id="form-dialog" novalidate>
+        <div class="p-absolute t-5 r-5">
+                <button mat-icon-button mat-dialog-close style="z-index: 9;" [matTooltipPosition]="'left'" matTooltip="Đóng">
+                    <mat-icon>close</mat-icon>
+                </button>
+            </div>
     <mat-tab-group>
         <mat-tab>
             <ng-template mat-tab-label>

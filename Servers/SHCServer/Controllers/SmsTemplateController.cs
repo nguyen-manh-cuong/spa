@@ -73,11 +73,11 @@ namespace SHCServer.Controllers
         [Route("api/sms-templates")]
         public IActionResult Create([FromBody] SmsTemplateInputViewModel sms)
         {
-            if (_context.Query<SmsTemplate>().Where(g => g.SmsTemplateName == sms.SmsTemplateName && sms.IsDelete == false).Count() > 0)
-                return StatusCode(500, _excep.Throw("Tạo mẫu tin nhắn thất bại.", "Tên mẫu tin nhắn đã tồn tại !"));
+            if (_context.Query<SmsTemplate>().Where(g => g.SmsTemplateName == sms.SmsTemplateName && ((g.CreateUserId == sms.CreateUserId) || (g.CreateUserId == 1)) && sms.IsDelete == false).Count() > 0)
+                return StatusCode(500, _excep.Throw("Tạo mẫu tin nhắn không thành công.", "Tên mẫu tin nhắn đã tồn tại !"));
             
-            if (_context.Query<SmsTemplate>().Where(g => g.SmsContent  == sms.SmsContent && sms.IsDelete == false).Count() > 0)  
-                    return StatusCode(500, _excep.Throw("Tạo mẫu tin nhắn thất bại.", "Nội dung tin nhắn đã tồn tại !"));
+            if (_context.Query<SmsTemplate>().Where(g => g.SmsContent  == sms.SmsContent && ((g.CreateUserId == sms.CreateUserId) || (g.CreateUserId == 1)) && sms.IsDelete == false).Count() > 0)  
+                    return StatusCode(500, _excep.Throw("Tạo mẫu tin nhắn không thành công.", "Nội dung tin nhắn đã tồn tại !"));
 
             return Json(new ActionResultDto { Result = _context.Insert(new SmsTemplate(sms)) });
         }
@@ -91,13 +91,13 @@ namespace SHCServer.Controllers
                 _context.Session.BeginTransaction();
 
                 if (_context.Query<SmsTemplate>().Where(g => g.SmsTemplateName == sms.SmsTemplateName && g.Id != sms.Id && sms.IsDelete == false).Count() > 0)
-                    return StatusCode(500, _excep.Throw("Sửa mẫu tin nhắn thất bại.", "Tên mẫu tin nhắn đã tồn tại !"));
+                    return StatusCode(500, _excep.Throw("Sửa mẫu tin nhắn không thành công.", "Tên mẫu tin nhắn đã tồn tại !"));
 
                 if (_context.Query<SmsTemplate>().Where(g => g.SmsContent == sms.SmsContent && g.Id != sms.Id && sms.IsDelete == false).Count() > 0)
-                    return StatusCode(500, _excep.Throw("Sửa mẫu tin nhắn thất bại.", "Nội dung tin nhắn đã tồn tại !"));
+                    return StatusCode(500, _excep.Throw("Sửa mẫu tin nhắn không thành công.", "Nội dung tin nhắn đã tồn tại !"));
 
-                if (_context.Query<SmsLogs>().Where(g => g.SmsTemplateId == sms.Id && g.Status == 1).Count() > 0)
-                    return StatusCode(500, _excep.Throw("Sửa mẫu tin nhắn không thành công.", "Mẫu tin nhắn đã được sử dụng !"));
+                //if (_context.Query<SmsLogs>().Where(g => g.SmsTemplateId == sms.Id && g.Status == 1).Count() > 0)
+                //    return StatusCode(500, _excep.Throw("Sửa mẫu tin nhắn không thành công.", "Mẫu tin nhắn đã được sử dụng !"));
 
                 _context.Update<SmsTemplate>(g => g.Id == sms.Id, a => new SmsTemplate {
                     SmsTemplateName = sms.SmsTemplateName,

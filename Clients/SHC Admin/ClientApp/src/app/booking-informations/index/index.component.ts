@@ -1,9 +1,10 @@
+
 import { AfterViewInit, Component, Injector, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatButton, MatDialog, MatDialogRef, MatTableDataSource } from '@angular/material';
 import { Subject, merge, of } from 'rxjs';
 import { Observable } from 'rxjs';
-import { catchError, map, startWith, switchMap } from 'rxjs/operators';
+import { catchError, map, startWith, switchMap, filter } from 'rxjs/operators';
 import { standardized } from '../../../shared/helpers/Utils';
 import { isEmpty, isNil, isNull, omitBy, zipObject } from 'lodash';
 import { SelectionModel } from '@angular/cdk/collections';
@@ -12,6 +13,7 @@ import { IBookingInformations, IHealthfacilities, IMedicalHealthcareHistories } 
 import { PagedListingComponentBase } from '@shared/paged-listing-component-base';
 import { TaskComponent } from '../task/task.component';
 import { StatusComponent } from '../status-table/status.component';
+import { GenderComponent } from '../gender-table/gender.component';
 import * as moment from 'moment';
 import swal from 'sweetalert2';
 import {MomentDateAdapter} from '@angular/material-moment-adapter';
@@ -39,15 +41,28 @@ export const MY_FORMATS = {
 
 })
 export class IndexComponent extends PagedListingComponentBase<IBookingInformations> implements OnInit {
-  _healthfacilities = [];
-  _doctors = [];
-  quantityByStatusCancel: any;
-    _status: any;
+  @ViewChild(StatusComponent) statusComponent;
+  @ViewChild(GenderComponent) genderComponent;
 
+  //private statusComponent: ;
+  //private genderComponent: ;
+  _quantityCancel: any;
+  _quantityDone: any;
+  _quantityPending: any;
+  _quantityNew: any;
+  _quantityMale: any;
+  _quantityFemale: any;
+  master = 'Master';
+  listBooking: any;
+  _healthfacilities = [];
+  _doctors = [];  
+  quantityByStatusCancel: any;
+  dataSourcesStatus = new MatTableDataSource();
+  _status: any;
+  cDate = new Date();
   filteredOptions: Observable<IHealthfacilities[]>;
   healthfacilities = new FormControl();
-    bookingServiceType = new FormControl();
-    parentMessage: any;
+  bookingServiceType = new FormControl();
   arrayStatus = [{ position: 1, status: 'Đã khám', quantitystatus: 0 }, { position: 2, status: 'Chờ khám', quantitystatus: 0 }, { position: 3, status: 'Hủy khám', quantitystatus: 0 }, { position: 4, status: 'Mới đăng ký', quantitystatus: 0 }];
 
   displayedColumns = [ 'orderNumber', 'healthFacilitiesName', 'doctorName',  'quantity'];
@@ -56,7 +71,6 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
   constructor(injector: Injector, private _dataService: DataService, public dialog: MatDialog, private _formBuilder: FormBuilder) { super(injector); }
   _bookingServiceTypes = [{ id: 0, name: 'Mới đăng ký' }, { id: 1, name: 'Chưa khám' }, { id: 2, name: 'Đã khám' }, { id: 3, name: 'Hủy khám' }, { id: 4, name: 'Tất cả' }];
   _bookingInformationsTime = [{ id: 0, name: 'Hôm nay' }, { id: 1, name: 'Hôm qua' }, { id: 2, name: 'Tuần này' }, { id: 3, name: 'Tuần trước' }, { id: 4, name: 'Tháng này'}, { id: 5, name: 'Tháng trước'}, { id: 6, name: 'Quý này'}, { id: 7, name: 'Quý trước'}, { id: 8, name: 'Năm nay'}, { id: 9, name: 'Năm trước'}, { id: 10, name: 'Theo khoảng thời gian'} ];
-
 
   ngOnInit() {  
     this.api = 'bookinginformations';
@@ -68,14 +82,13 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
        status: [4],         
        startTime: new Date(),
        endTime: new Date(),
-       time: [0],
-      });
-
-      this.parentMessage = this.frmSearch;
+       time: [0],       
+      });     
     this.dataService.getAll('healthfacilities', (this.appSession.user.healthFacilitiesId ? String(this.appSession.user.healthFacilitiesId) : '')).subscribe(resp => 
     {
       this._healthfacilities = resp.items;      
     });
+
 
     setTimeout(() => {
       this.startTime.nativeElement.value = moment(new Date().setDate(new Date().getDate())).format("DD/MM/YYYY");
@@ -104,7 +117,6 @@ filterOptions() {
       );  
 }
 onselectBookingInformationsTime(obj: any){
-  //  console.log(obj);
    if(obj == 0){;    
     this.startTime.nativeElement.value = moment(new Date().setDate(new Date().getDate())).format("DD/MM/YYYY");
     this.endTime.nativeElement.value = moment(new Date().setDate(new Date().getDate())).format("DD/MM/YYYY");
@@ -160,7 +172,22 @@ onselectBookingInformationsTime(obj: any){
     document.getElementById("cbo-endTime").classList.remove("disabled");
    }
 }
-customSearch() {
+search(){
+  if(!this.endTime.nativeElement.value){
+    return swal('Thông báo', 'Đến ngày không được để trống', 'warning');
+}
+if(!moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').isValid()){
+    return swal('Thông báo', 'Đến ngày không đúng định dạng', 'warning');
+}
+if(!this.startTime.nativeElement.value){
+    return swal('Thông báo', 'Từ ngày không được để trống', 'warning');
+}
+if(!moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').isValid()){
+    return swal('Thông báo', 'Từ ngày không đúng định dạng', 'warning');
+}
+if(((moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').valueOf() - moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').valueOf()) / (1000*60*60*24)) < 0){
+    return swal('Thông báo', 'Từ ngày lớn hơn hoặc bằng đến ngày', 'warning');
+}
   if(this.appSession.user.healthFacilitiesId != null){
     this.healthfacilities.value 
       ? this.frmSearch.controls['healthfacilities'].setValue(this.healthfacilities.value.healthFacilitiesId) 
@@ -173,8 +200,40 @@ customSearch() {
   }
   this.startTime.nativeElement.value ? this.frmSearch.controls['startTime'].setValue(moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').toDate()) : '';
   this.endTime.nativeElement.value ? this.frmSearch.controls['endTime'].setValue(moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').toDate()) : '';  
-  
-  this.btnSearchClicks$.next();
+  var req = omitBy(this.frmSearch.value, isNil);
+  //req.healthfacilities = req && req.healthfacilities ? req.healthfacilities.healthFacilitiesId : "";
+
+  this.paginator.pageIndex = 0;
+  this.dataService
+  .get(this.api, JSON.stringify(req), '', this.paginator.pageIndex, this.paginator.pageSize)
+  .subscribe(resp => {
+      setTimeout(() => this.isTableLoading = true, 0);
+      this.totalItems = resp.totalCount;
+      this.dataSources.data = resp.items;      
+      setTimeout(() => {
+        this.listBooking = this.dataSources.data;        
+        if(this.listBooking.length == 0){
+          this._quantityCancel = 0;
+          this._quantityDone = 0;
+          this._quantityPending = 0;
+          this._quantityNew = 0;
+          this._quantityMale = 0;
+          this._quantityFemale = 0;
+        }
+        else{
+          for (var item of this.listBooking){
+            this._quantityCancel = item.quantityByStatusCancel;
+            this._quantityDone = item.quantityByStatusDone;
+            this._quantityPending = item.quantityByStatusPending;
+            this._quantityNew = item.quantityByStatusNew;
+            this._quantityMale = item.quantityByGenderMale;
+            this._quantityFemale = item.quantityByGenderFemale;
+          }
+        }
+        this.statusComponent.reloadStatus(this._quantityDone, this._quantityPending, this._quantityCancel, this._quantityNew);
+        this.genderComponent.reloadGender(this._quantityFemale, this._quantityMale);
+      }, 500);  
+  });
 
 }
 

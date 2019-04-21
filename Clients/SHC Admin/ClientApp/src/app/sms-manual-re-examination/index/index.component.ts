@@ -45,10 +45,11 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     _districts = [];
     _wards = [];
     _doctors = [];
+    _age = { years: 0, months: 0, days: 0 };
     _healthfacilities = [];
     _status = [{ id: 0, name: 'Tất cả' }, { id: 1, name: 'Đã gửi SMS' }, { id: 2, name: 'Chưa gửi SMS' }];
     _sex = [{ id: 0, name: 'Tất cả' }, { id: 1, name: 'Nam' }, { id: 2, name: 'Nữ' }, { id: 3, name: 'Không xác định' }];
-    _currentYear = new Date().getFullYear();
+    //_currentYear = new Date().getFullYear();
     
     selection = new SelectionModel<IMedicalHealthcareHistories>(true, []);
     filteredOptions: Observable<IHealthfacilities[]>;
@@ -95,6 +96,48 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
             this.endTime.nativeElement.focus();
         });
         this.appSession.user.healthFacilitiesId ? this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId) : this.filterOptions();
+    }
+
+    convertAge(date: number, month: number, year: number) {
+        const yearNow = new Date().getFullYear();
+        const monthNow = new Date().getMonth() + 1;
+        const dateNow = new Date().getDate();
+        var ageString = "";
+        var yearAge = yearNow - year;
+
+        if (monthNow >= month)
+            var monthAge = monthNow - month;
+        else {
+            yearAge--;
+            var monthAge = 12 + monthNow - month;
+        }
+
+        if (dateNow >= date)
+            var dateAge = dateNow - date;
+        else {
+            monthAge--;
+            var dateAge = 31 + dateNow - date;
+
+            if (monthAge < 0) {
+                monthAge = 11;
+                yearAge--;
+            }
+        }
+
+        this._age.years = yearAge;
+        this._age.months = monthAge;
+        this._age.days = dateAge;
+
+
+
+        if (this._age.years > 0)
+            ageString = this._age.years + "T";
+        else if ((this._age.years == 0) && (this._age.months == 0) && (this._age.days > 0))
+            ageString = this._age.days + "NG";
+        else if ((this._age.years == 0) && (this._age.months > 0) && (this._age.days >= 0))
+            ageString = this._age.months + "TH";
+
+        return ageString;
     }
 
     isAllSelected() {
@@ -175,9 +218,30 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
             return swal('Thông báo', 'Ngày sinh không đúng định dạng', 'warning');
         }
 
+        var startTime = moment(this.frmSearch.controls['startTime'].value, 'DD/MM/YYYY').toDate();
+        var endTime = moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').toDate();
+
+        if (endTime.getFullYear() - startTime.getFullYear() > 1) {
+
+            return swal('Thông báo', 'Dữ liệu không được lấy quá 1 năm', 'warning');
+        }
+        if (endTime.getFullYear() - startTime.getFullYear() == 1) {
+            var monthStartTime = startTime.getMonth() + 1;
+            var monthEndTime = endTime.getMonth() + 1;
+            if (12 - monthStartTime + monthEndTime > 12) {
+                return swal('Thông báo', 'Dữ liệu không được lấy quá 1 năm', 'warning');
+            }
+            if (12 - monthStartTime + monthEndTime == 12) {
+                if (endTime.getDate() > startTime.getDate()) {
+                    return swal('Thông báo', 'Dữ liệu không được lấy quá 1 năm', 'warning');
+                }
+            }
+        }
+
+
         this.healthfacilities.value ? this.frmSearch.controls['healthfacilities'].setValue(this.healthfacilities.value.healthFacilitiesId) : (this.appSession.user.healthFacilitiesId == null ? this.frmSearch.controls['healthfacilities'].setValue(null) : '');
         this.birthday.nativeElement.value ? this.frmSearch.controls['birthday'].setValue(moment(this.birthday.nativeElement.value, 'DD/MM/YYYY').toDate()) : '';
-        this.endTime.nativeElement.value ? this.frmSearch.controls['endTime'].setValue(moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').toDate()) : '';
+        this.endTime.nativeElement.value ? this.frmSearch.controls['endTime'].setValue(endTime) : '';
         this.btnSearchClicks$.next();
     }
 

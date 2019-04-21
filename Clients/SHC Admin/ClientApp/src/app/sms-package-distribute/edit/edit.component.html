@@ -10,93 +10,93 @@
         {{l("Edit")}} {{l("PackageDistributeSmsPackageHead")}}
       </ng-template>
       <div class="pt-4">
-        <div class="row">
-          <div class="col-md-6 disabled">
-            <mat-form-field appearance="outline" class="w-100">
-              <mat-label>{{l('PackageDistributeHealthFacilities')}}</mat-label>
-              <mat-select formControlName="healthFacilitiesId" [required]="true">
-                <mat-option *ngFor="let o of _medicalFacility" [value]="o.healthFacilitiesId">{{ o.code + '-' + o.name }}</mat-option>
-              </mat-select>
-              <mat-icon matSuffix
-                *ngIf="_frmpackagedistributeedit.controls['healthFacilitiesId'].invalid && (_frmpackagedistributeedit.controls['healthFacilitiesId'].dirty || _frmpackagedistributeedit.controls['healthFacilitiesId'].touched)"
-                [matTooltipPosition]="'before'" matTooltipClass="bg-danger text-light mr-1"
-                matTooltip="{{l('NotBeEmpty')}}" color="warn">info</mat-icon>
-            </mat-form-field>
-          </div>
-          <div class="col-md-6">
-            <mat-form-field appearance="outline" class="w-100 disabled">
-              <mat-label>{{l('PackageDistributeSmsPackages')}}</mat-label>
-              <mat-select formControlName="smsPackageId" [required]="true">
-                <mat-option *ngFor="let o of _package" [value]="o.id">{{ o.name }}</mat-option>
-              </mat-select>
-              <mat-icon matSuffix
-                *ngIf="_frmpackagedistributeedit.controls['smsPackageId'].invalid && (_frmpackagedistributeedit.controls['smsPackageId'].dirty || _frmpackagedistributeedit.controls['smsPackageId'].touched)"
-                [matTooltipPosition]="'before'" matTooltipClass="bg-danger text-light mr-1"
-                matTooltip="{{l('NotBeEmpty')}}" color="warn">info</mat-icon>
-            </mat-form-field>
-          </div>
-          <div class="col-md-6">
-            <mat-form-field appearance="outline" class="w-100">
-              <mat-label>{{l('PackageDistributeMonth')}}</mat-label>
-              <mat-select formControlName="monthStart">
-                  <mat-option *ngFor="let o of _month" [value]="o.id">
-                      {{ o.name }}
-                  </mat-option>
-                <!--<mat-option *ngFor="let o of _month" [value]="o.id"
+          <div class="row"  [ngClass]="{'disabled': _obj.quantity > _obj.smsPackageUsed.quantityused }">
+              <div class="col-md-6 disabled">
+                  <mat-form-field appearance="outline" class="w-100">
+                      <mat-label>{{l('PackageDistributeHealthFacilities')}}</mat-label>
+                      <mat-select formControlName="healthFacilitiesId" [required]="true">
+                          <mat-option *ngFor="let o of _medicalFacility" [value]="o.healthFacilitiesId">{{ o.code + '-' + o.name }}</mat-option>
+                      </mat-select>
+                      <mat-icon matSuffix
+                                *ngIf="_frmpackagedistributeedit.controls['healthFacilitiesId'].invalid && (_frmpackagedistributeedit.controls['healthFacilitiesId'].dirty || _frmpackagedistributeedit.controls['healthFacilitiesId'].touched)"
+                                [matTooltipPosition]="'before'" matTooltipClass="bg-danger text-light mr-1"
+                                matTooltip="{{l('NotBeEmpty')}}" color="warn">info</mat-icon>
+                  </mat-form-field>
+              </div>
+              <div class="col-md-6">
+                  <mat-form-field appearance="outline" class="w-100 disabled">
+                      <mat-label>{{l('PackageDistributeSmsPackages')}}</mat-label>
+                      <mat-select formControlName="smsPackageId" [required]="true">
+                          <mat-option *ngFor="let o of _package" [value]="o.id">{{ o.name }}</mat-option>
+                      </mat-select>
+                      <mat-icon matSuffix
+                                *ngIf="_frmpackagedistributeedit.controls['smsPackageId'].invalid && (_frmpackagedistributeedit.controls['smsPackageId'].dirty || _frmpackagedistributeedit.controls['smsPackageId'].touched)"
+                                [matTooltipPosition]="'before'" matTooltipClass="bg-danger text-light mr-1"
+                                matTooltip="{{l('NotBeEmpty')}}" color="warn">info</mat-icon>
+                  </mat-form-field>
+              </div>
+              <div class="col-md-6">
+                  <mat-form-field appearance="outline" class="w-100">
+                      <mat-label>{{l('PackageDistributeMonth')}}</mat-label>
+                      <mat-select formControlName="monthStart">
+                          <mat-option *ngFor="let o of _month" [value]="o.id">
+                              {{ o.name }}
+                          </mat-option>
+                          <!--<mat-option *ngFor="let o of _month" [value]="o.id"
                   [disabled]="_frmpackagedistributeedit.controls['year'].value < _currentYear || (_frmpackagedistributeedit.controls['year'].value <= _currentYear &&  o.id < _currentMonth)">
                   {{ o.name }}</mat-option>-->
-              </mat-select>
-            </mat-form-field>
-          </div>
-          <div class="col-md-6">
-            <mat-form-field appearance="outline" class="w-100">
-              <mat-label>{{l('Đến tháng')}}</mat-label>
-              <mat-select formControlName="monthEnd">
-                  <mat-option *ngFor="let o of _month" [value]="o.id">
-                      {{ o.name }}
-                  </mat-option>
-                <!--<mat-option *ngFor="let o of _month" [value]="o.id"
+                      </mat-select>
+                  </mat-form-field>
+              </div>
+              <div class="col-md-6">
+                  <mat-form-field appearance="outline" class="w-100">
+                      <mat-label>{{l("Từ năm")}}</mat-label>
+                      <input min="0" max="9999" maxlength="4" formControlName="yearStart" mask="0*"
+                             matInput autocomplete [required]="true">
+                      <mat-icon matSuffix
+                                *ngIf="_frmpackagedistributeedit.controls['yearStart'].invalid && (_frmpackagedistributeedit.controls['yearStart'].dirty || _frmpackagedistributeedit.controls['yearStart'].touched)"
+                                [matTooltipPosition]="'before'" matTooltipClass="bg-danger text-light mr-1"
+                                matTooltip="{{l('NotBeEmpty')}}" color="warn">info</mat-icon>
+                  </mat-form-field>
+              </div>
+              <div class="col-md-6">
+                  <mat-form-field appearance="outline" class="w-100">
+                      <mat-label>{{l('Đến tháng')}}</mat-label>
+                      <mat-select formControlName="monthEnd">
+                          <mat-option *ngFor="let o of _month" [value]="o.id">
+                              {{ o.name }}
+                          </mat-option>
+                          <!--<mat-option *ngFor="let o of _month" [value]="o.id"
                 [disabled]="_frmpackagedistributeedit.controls['year'].value < _currentYear || (_frmpackagedistributeedit.controls['year'].value <= _currentYear &&  o.id < _currentMonth)">
                   {{ o.name }}</mat-option>-->
-              </mat-select>
-              <mat-icon matSuffix *ngIf="_frmpackagedistributeedit.controls['monthStart'].value > _frmpackagedistributeedit.controls['monthEnd'].value" [matTooltipPosition]="'before'" matTooltipClass="bg-danger text-light mr-1" matTooltip="{{l('Đến tháng phải lớn hơn hoặc bằng Từ tháng')}}" color="warn">info</mat-icon>
-            </mat-form-field>
+                      </mat-select>
+                      <mat-icon matSuffix *ngIf="_frmpackagedistributeedit.controls['monthStart'].value > _frmpackagedistributeedit.controls['monthEnd'].value" [matTooltipPosition]="'before'" matTooltipClass="bg-danger text-light mr-1" matTooltip="{{l('Đến tháng phải lớn hơn hoặc bằng Từ tháng')}}" color="warn">info</mat-icon>
+                  </mat-form-field>
+              </div>
+              <div class="col-md-6">
+                  <mat-form-field appearance="outline" class="w-100">
+                      <mat-label>{{l("Đến năm")}}</mat-label>
+                      <input min="0" max="9999" maxlength="4" formControlName="yearEnd" mask="0*"
+                             matInput autocomplete [required]="true">
+                      <mat-icon matSuffix
+                                *ngIf="_frmpackagedistributeedit.controls['yearEnd'].invalid && (_frmpackagedistributeedit.controls['yearEnd'].dirty || _frmpackagedistributeedit.controls['yearEnd'].touched)"
+                                [matTooltipPosition]="'before'" matTooltipClass="bg-danger text-light mr-1"
+                                matTooltip="{{l('NotBeEmpty')}}" color="warn">info</mat-icon>
+                  </mat-form-field>
+              </div>
+              <div class="col-md-6">
+                  <mat-form-field appearance="outline" class="w-100">
+                      <mat-label>{{l('Đầu số')}}</mat-label>
+                      <mat-select formControlName="smsBrandsId" required>
+                          <mat-option *ngFor="let o of _brands" [value]="o.smsBrandId">{{ o.brandName }}</mat-option>
+                      </mat-select>
+                      <mat-icon matSuffix *ngIf="_frmpackagedistributeedit.controls['smsBrandsId'].invalid && (_frmpackagedistributeedit.controls['smsBrandsId'].dirty || _frmpackagedistributeedit.controls['smsBrandsId'].touched)" [matTooltipPosition]="'before'" matTooltipClass="bg-danger text-light mr-1" matTooltip="{{l('NotBeEmpty')}}" color="warn">info</mat-icon>
+                  </mat-form-field>
+              </div>
+              <div class="col-md-6">
+                  <mat-checkbox formControlName="isActive">{{l("Using")}}</mat-checkbox>
+              </div>
           </div>
-          <div class="col-md-6">
-              <mat-form-field appearance="outline" class="w-100">
-                  <mat-label>{{l("Từ Năm")}}</mat-label>
-                  <input min="0" max="9999" maxlength="4" formControlName="yearStart" mask="0*"
-                         matInput autocomplete [required]="true">
-                  <mat-icon matSuffix
-                            *ngIf="_frmpackagedistributeedit.controls['yearStart'].invalid && (_frmpackagedistributeedit.controls['yearStart'].dirty || _frmpackagedistributeedit.controls['yearStart'].touched)"
-                            [matTooltipPosition]="'before'" matTooltipClass="bg-danger text-light mr-1"
-                            matTooltip="{{l('NotBeEmpty')}}" color="warn">info</mat-icon>
-              </mat-form-field>
-          </div>
-           <div class="col-md-6">
-               <mat-form-field appearance="outline" class="w-100">
-                   <mat-label>{{l("Đến năm")}}</mat-label>
-                   <input min="0" max="9999" maxlength="4" formControlName="yearEnd" mask="0*"
-                          matInput autocomplete [required]="true">
-                   <mat-icon matSuffix
-                             *ngIf="_frmpackagedistributeedit.controls['yearEnd'].invalid && (_frmpackagedistributeedit.controls['yearEnd'].dirty || _frmpackagedistributeedit.controls['yearEnd'].touched)"
-                             [matTooltipPosition]="'before'" matTooltipClass="bg-danger text-light mr-1"
-                             matTooltip="{{l('NotBeEmpty')}}" color="warn">info</mat-icon>
-               </mat-form-field>
-          </div> 
-          <div class="col-md-6" >
-            <mat-form-field appearance="outline" class="w-100">
-                <mat-label>{{l('Đầu số')}}</mat-label>
-                <mat-select formControlName="smsBrandsId" required>
-                    <mat-option *ngFor="let o of _brands" [value]="o.smsBrandId">{{ o.brandName }}</mat-option>
-                </mat-select>
-                <mat-icon matSuffix *ngIf="_frmpackagedistributeedit.controls['smsBrandsId'].invalid && (_frmpackagedistributeedit.controls['smsBrandsId'].dirty || _frmpackagedistributeedit.controls['smsBrandsId'].touched)" [matTooltipPosition]="'before'" matTooltipClass="bg-danger text-light mr-1" matTooltip="{{l('NotBeEmpty')}}" color="warn">info</mat-icon>
-            </mat-form-field>
-          </div>
-          <div class="col-md-6">
-            <mat-checkbox formControlName="isActive">{{l("Using")}}</mat-checkbox>
-          </div>
-        </div>
         <div class="text-right mb-3">
           <button class="mr-3" mat-raised-button color="primary" mat-dialog-close>
             {{l("Close")}}

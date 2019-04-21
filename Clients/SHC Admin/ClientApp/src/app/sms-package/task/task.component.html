@@ -1,4 +1,5 @@
-<form [formGroup]="_frm" id="form-dialog" class="container p-relative" novalidate>
+
+<form [formGroup]="_frm" class="container p-relative" id="form-dialog" novalidate>
     <div class="p-absolute t-5 r-5">
         <button mat-icon-button mat-dialog-close style="z-index: 9;" [matTooltipPosition]="'left'" matTooltip="Đóng">
             <mat-icon>close</mat-icon>
@@ -39,7 +40,7 @@
                             <input type="text" mask="dot_separator" formControlName="quantity" matInput>
                         </mat-form-field>
                     </div>
-                    <section class="col-md-12 m-b-20">
+                    <section class="col-md-12 m-b-20" [ngClass]="{'disabled': _isNew == false && _package.isDeleteDistribute > 0}">
                         <mat-checkbox formControlName="isActive">{{l('Using')}}</mat-checkbox>
                     </section><br>
 
@@ -111,7 +112,7 @@
     <div class="row">
         <div class="col-md-4" [ngClass]="{'disabled': _isNew == false && _package.isDeleteDistribute > 0}">
             <button mat-raised-button color="primary" (click)="addDetail()"
-                [disabled]="!_frm.controls['smsTo'].value || !_frm.controls['smsTo'].value || checkPackageDetail()">Thêm</button>
+                [disabled]="!_frm.controls['smsTo'].value || _frm.controls['detailCost'].value == 0 || checkPackageDetail()">Thêm</button>
         </div>
         <div class="col-md-8">
             <div class="text-right mb-3"><button class="mr-3" mat-raised-button color="primary"

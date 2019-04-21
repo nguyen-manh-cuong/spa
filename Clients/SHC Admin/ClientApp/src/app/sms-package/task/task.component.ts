@@ -198,7 +198,9 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
                 }
             })
 
-            this._frm.controls['cost'].setValue(totalCost);
+            if (totalCost > -1) {
+                this._frm.controls['cost'].setValue(totalCost);
+            }
         }
     }
 
@@ -254,6 +256,9 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
         } 
         if(!event.target.value){
             this._frm.controls[control].setValue(null);
+        }
+        if (!pattern.test(event.target.value) && event.target.value > 0) {
+            this._frm.controls[control].setErrors(null);
         }
     }
 }

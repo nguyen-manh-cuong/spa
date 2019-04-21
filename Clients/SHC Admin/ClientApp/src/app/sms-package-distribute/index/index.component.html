@@ -36,6 +36,14 @@
             </div>
             <div class="col-md-3">
                 <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>{{l("Từ Năm")}}</mat-label>
+                    <input mask="0*" maxlength="4" formControlName="fromYear" matInput autocomplete>
+                </mat-form-field>
+            </div>
+            <div class="col-md-3">
+                </div>
+            <div class="col-md-3">
+                <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('Đến tháng')}}</mat-label>
                     <mat-select formControlName="monthEnd">
                         <mat-option *ngFor="let o of _month" [value]="o.id">{{ o.name }}</mat-option>
@@ -50,16 +58,10 @@
     </div> -->
             <div class="col-md-3">
                 <mat-form-field appearance="outline" class="w-100">
-                    <mat-label>{{l("Từ Năm")}}</mat-label>
-                    <input mask="0*" maxlength="4" formControlName="fromYear" matInput autocomplete>
+                    <mat-label>{{l("Đến năm")}}</mat-label>
+                    <input mask="0*" maxlength="4" formControlName="toYear" matInput autocomplete>
                 </mat-form-field>
             </div>
-             <div class="col-md-3">
-        <mat-form-field appearance="outline" class="w-100">
-            <mat-label>{{l("Đến năm")}}</mat-label>
-            <input mask="0*" maxlength="4" formControlName="toYear" matInput autocomplete>
-        </mat-form-field>
-    </div> 
 
             <div class="col-md-3">
                 <mat-form-field appearance="outline" class="w-100">
@@ -85,7 +87,7 @@
             </ng-container>
             <ng-container matColumnDef="HealthFacilitiesId">
                 <th mat-header-cell *matHeaderCellDef class="text-center"> {{l("PackageDistributeNameHealthFacilities")}} </th>
-                <td mat-cell (click)="openView(element)" *matCellDef="let element" title="{{element.HealthFacilitiesCode + '-' + element.healthFacilitiesName}}">
+                <td mat-cell (click)="openView(element)" *matCellDef="let element" title="{{element.healthFacilitiesCode + '-' + element.healthFacilitiesName}}">
                     <u><b>{{element.healthFacilitiesCode + '-' + element.healthFacilitiesName}}</b></u></td>
             </ng-container>
             <ng-container matColumnDef="StartTime">

@@ -21,7 +21,8 @@ export class packagedistributeEditComponent extends AppComponentBase implements 
   api: string = 'smspackagedistribute';
 
   _frmpackagedistributeedit: FormGroup;
-    _obj: IPachkageDistribute | any = { smsBrandsId: '', healthFacilitiesId: '', monthStart: '', monthEnd: '', yearStart: '', yearEnd: '', smsPackageId: '', isActive: false };
+    _obj: IPachkageDistribute | any = {
+        smsBrandsId: '', healthFacilitiesId: '', monthStart: '', monthEnd: '', yearStart: '', yearEnd: '', smsPackageId: '', isActive: false, quantity: 0, smsPackageUsed: {} };
   _context: any;
   _isNew: boolean = true;
   _month = [{ id: 1, name: 'Tháng 1' }, { id: 2, name: 'Tháng 2' }, { id: 3, name: 'Tháng 3' }, { id: 4, name: 'Tháng 4' }, { id: 5, name: 'Tháng 5' }, { id: 6, name: 'Tháng 6' },
@@ -46,6 +47,8 @@ export class packagedistributeEditComponent extends AppComponentBase implements 
       this._obj.monthEnd = this.obj.monthEnd;
         this._obj.yearStart = this.obj.yearStart;
         this._obj.yearEnd = this.obj.yearEnd;
+        this._obj.quantity = this.obj.quantity;
+        this._obj.smsPackageUsed = this.obj.smsPackageUsed;
     }
 
     this._dataService.getAll('smsbrands-all').subscribe(resp => this._brands = resp.items);

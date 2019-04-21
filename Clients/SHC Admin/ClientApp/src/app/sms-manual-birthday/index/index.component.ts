@@ -76,8 +76,10 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
             provinceCode: [],
             districtCode: [],
             wardCode: [],
-            day: [32],
-            month: [13],
+            toDay: [32],
+            toMonth: [13],
+            fromDay: [32],
+            fromMonth: [13],
             sex: [],
             about: 3
         });
