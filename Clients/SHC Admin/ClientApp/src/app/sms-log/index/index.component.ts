@@ -66,6 +66,12 @@ export class IndexComponent extends PagedListingComponentBase<ISmsLogs> implemen
             type: [],
             telco: []
         });
+
+        setTimeout(() => {
+            this.startTime.nativeElement.value = moment(new Date()).format("DD/MM/YYYY");
+            this.endTime.nativeElement.value = moment(new Date()).format("DD/MM/YYYY");
+        });
+
         this.dataService = this._dataService;
         this.dataService.getAll('healthfacilities', (this.appSession.user.healthFacilitiesId ? String(this.appSession.user.healthFacilitiesId) : '')).subscribe(resp => this._healthfacilities = resp.items);
         this.appSession.user.healthFacilitiesId ? this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId) : this.filterOptions();
