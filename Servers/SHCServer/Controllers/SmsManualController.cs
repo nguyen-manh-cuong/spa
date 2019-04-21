@@ -334,9 +334,12 @@ namespace SHCServer.Controllers
                 case 2:
                     code = "A02.SMSSINHNHAT";
                     break;
+                case 4:
+                    code = "A06.SMSDATKHAM";
+                    break;
             }
 
-            if (infoInput.type != 3 && string.IsNullOrEmpty(infoInput.content))
+            if (string.IsNullOrEmpty(infoInput.content))
             {
                 var config = _context.Query<HealthFacilitiesConfigs>().Where(hp => hp.Code == code).FirstOrDefault();
                 templateId = config != null ? config.Values : 0;
@@ -387,12 +390,12 @@ namespace SHCServer.Controllers
             {
                 _content = _content
                     .Replace("<PHONGKHAM>", packageName)
-                    .Replace("<NGAYSINH>", mhh.BirthYear.ToString())
+                    .Replace("<NGAYSINH>", mhh.BirthYear != 0 ? mhh.BirthYear.ToString() : "")
                     .Replace("<HOTEN>", mhh.FullName)
                     .Replace("<EMAIL>", mhh.Email)
                     .Replace("<GIOITINH>", mhh.Gender == 1 ? "Nam" : "Nữ")
                     .Replace("<NGAYHIENTAI>", DateTime.Now.ToString("dd/MM/yyyy"))
-                    .Replace("<NGAYTAIKHAM>", mhh.ReExaminationDate.Value.ToString("dd/MM/yyyy"));
+                    .Replace("<NGAYTAIKHAM>", mhh.ReExaminationDate != null ? mhh.ReExaminationDate.Value.ToString("dd/MM/yyyy") : "");
             }
 
             return _content;
