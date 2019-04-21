@@ -173,7 +173,7 @@
                 </button>
             </div>
             <div class="col-md-3 text-center d-flex align-self-center">
-                <button mat-stroked-button color="primary" (click)="selection.selected.length ? sendSms() : showMess(1)" class="w-100 mb-4">
+                <button [ngClass]="{'disabled': _isRequest}" mat-stroked-button color="primary" (click)="selection.selected.length ? sendSms() : showMess(1)" class="w-100 mb-4">
                     <mat-icon class="mr-2">sms</mat-icon>{{l("Gửi SMS chúc sinh nhật")}}
                 </button>
             </div>
