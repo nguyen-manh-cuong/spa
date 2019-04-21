@@ -227,7 +227,7 @@ export class BookingComponent extends AppComponentBase implements OnInit, AfterV
     this.frmBooking.controls.examinationDate.setErrors({required: true});
     
     this._dataService.get('workingtime', String(this._doctor.doctorId), '', 0, 0).subscribe(resp => {
-      this._workingTimes = resp.items
+      this._workingTimes = resp.items;
 
       for (let i = 0; i < 7; i++) {
         var date = new Date();
