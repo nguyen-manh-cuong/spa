@@ -56,7 +56,6 @@ namespace SHCServer.Controllers
             //    }
             //}
 
-            var test = objs.Select((dc, t) => new BookingDoctorsCalendarsViewModel(dc, _connectionString));
             var _objs = objs.Select((dc, t) => new BookingDoctorsCalendarsViewModel(dc, _connectionString)).ToList();  //.TakePage(skipCount == 0 ? 1 : skipCount + 1, maxResultCount).ToList();
 
             return Json(GroupDoctor(_objs, skipCount, maxResultCount));
@@ -126,13 +125,14 @@ namespace SHCServer.Controllers
                     {
                         bookingDoctorsCalendarsView.DoctorId = item.DoctorId;
                         bookingDoctorsCalendarsView.Name = item.FullName;
+                        bookingDoctorsCalendarsView.HealthFacilitiesName = item.HealthFacilitiesName;
                         bookingDoctorsCalendarsView.LstBookingDoctorsCalendars.Add(item);
                     }
                 }
                 lstBookingDoctorsCalendarsViews.Add(bookingDoctorsCalendarsView);
             }
 
-            return new ActionResultDto { Result = new { Items = lstBookingDoctorsCalendarsViews.Skip(skipCount).Take(maxResultCount).ToList(), TotalCount = lstBookingDoctorsCalendarsViews.Count } };
+            return new ActionResultDto { Result = new { Items = lstBookingDoctorsCalendarsViews.Skip(maxResultCount * skipCount).Take(maxResultCount * (skipCount + 1)).ToList(), TotalCount = lstBookingDoctorsCalendarsViews.Count } };
         }
 
         public class BookingDoctorsCalendarsInput
@@ -146,6 +146,7 @@ namespace SHCServer.Controllers
         {
             public int DoctorId { set; get; }
             public string Name { set; get; }
+            public string HealthFacilitiesName { set; get; }            
             public List<BookingDoctorsCalendarsViewModel> LstBookingDoctorsCalendars { set; get; }
         }
     }

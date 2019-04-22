@@ -206,6 +206,7 @@ export interface IBookingDoctorsCalendars{
     address?: string;
     doctorId?: number,
     fullName: string;
+    healthFacilitiesName: string;
 }
 
 export interface IBookingDoctorsCalendarsView{

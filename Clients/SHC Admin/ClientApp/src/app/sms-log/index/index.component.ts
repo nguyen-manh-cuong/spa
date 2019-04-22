@@ -102,7 +102,7 @@ export class IndexComponent extends PagedListingComponentBase<ISmsLogs> implemen
 
     customSearch() {
         if(!this.endTime.nativeElement.value || !this.startTime.nativeElement.value){
-            return swal('Thông báo', 'Ngày gửi từ và đến ngày không được để trống', 'warning');
+            return swal('Thông báo', 'Ngày gửi từ và Đến ngày không được để trống', 'warning');
         }
         
         if(!moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').isValid()){
