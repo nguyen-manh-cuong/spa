@@ -12,20 +12,20 @@
         </div>
     </div>
 <div class="content">
-    <form [formGroup]="frmSearch" class="form-filter pl-2 pr-2 pt-4 mb-4" novalidate>
-        <div class="row">
-            <div class="col-md-6 d-flex" [hidden]="this.appSession.user.healthFacilitiesId">
+    <form [formGroup]="frmSearch" class="form-filter form-custom pl-2 pr-2  mb-4" novalidate>
+        <div class="row pt-4">
+            <div class="col-md-6" [hidden]="this.appSession.user.healthFacilitiesId">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('Đơn vị')}}</mat-label>
                     <input matInput [formControl]="healthfacilities" (click)="clickCbo()" [matAutocomplete]="auto" (change)="onChangeHealthfacilities()">
                     <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="onSelectHealthFacilities($event.option.value)">
                         <mat-option *ngFor="let o of filteredOptions | async" [value]="o">
-                            {{o.name}}
+                            {{o.code + ' - ' + o.name}}
                         </mat-option>
                     </mat-autocomplete>
                 </mat-form-field>
             </div>
-            <div class="col-md-6 disabled dynamic" [hidden]="!this.appSession.user.healthFacilitiesId">
+            <div class="col-md-6 disabled" [hidden]="!this.appSession.user.healthFacilitiesId">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-select formControlName="healthfacilities">
                         <mat-option *ngFor="let o of _healthfacilities" [value]="o.healthFacilitiesId">{{ o.name }}</mat-option>
@@ -51,7 +51,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('Thời gian')}}</mat-label>
                     <mat-select formControlName="time" (selectionChange)="onselectBookingInformationsTime($event.value)">
@@ -59,33 +59,34 @@
                     </mat-select>
                 </mat-form-field>
             </div>
-            <div class="col-md-4 disabled" id="cbo-startTime">
+            <div class="col-md-3 disabled" id="cbo-startTime">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('Từ ngày')}}</mat-label>
-                    <input matInput [matDatepicker]="picker1" required #startTime>
+                    <input matInput [matDatepicker]="picker1" mask="00/00/0000" required #startTime>
                     <mat-datepicker-toggle matSuffix [for]="picker1" class="t-2"></mat-datepicker-toggle>
                     <mat-datepicker #picker1></mat-datepicker>
                 </mat-form-field>
             </div>
-            <div class="col-md-4 disabled" id="cbo-endTime">
+            <div class="col-md-3 disabled" id="cbo-endTime">
                 <mat-form-field appearance="outline" class="w-100">
-                    <mat-label>{{l('Đến')}}</mat-label>
+                    <mat-label>{{l('Đến ngày')}}</mat-label>
                     <input matInput [matDatepicker]="picker2" #endTime mask="00/00/0000" maxlength="10" required>
                     <mat-datepicker-toggle matSuffix [for]="picker2" class="t-2"></mat-datepicker-toggle>
                     <mat-datepicker #picker2></mat-datepicker>
                 </mat-form-field>
             </div>
+            <div class="col-md-3  text-center d-flex align-self-center">
+                <button #btnSearch mat-stroked-button (click)="search()" color="primary" class="w-100 mb-4">
+                    <mat-icon class="text-danger mr-2">search</mat-icon>{{l("Search")}}
+                </button>
+            </div>
         </div>
-        <div class="col-md-2 pl-0 text-center d-flex align-self-center">
-            <button #btnSearch mat-stroked-button (click)="search()" class="w-100 mb-4">
-                <mat-icon class="text-danger mr-2">search</mat-icon>{{l("Search")}}
-            </button>
-        </div>
+        
     </form> 
     <div class="row">
         <div class="col-lg-7">
-            <div class="mb-2 pl-2">Số lượng bệnh nhân theo bác sỹ</div>
-            <div class="table table-content brd-right">
+            <div class="mb-2 pl-2 f14"> {{l('Số lượng bệnh nhân theo bác sỹ ')}} {{l('(Tổng số')}} {{totalPatientCount}} {{('bệnh nhân)')}}</div>
+            <div class="table table-content brd-right table-custom">
                 <table mat-table [dataSource]="dataSources" matSort #sort="matSort" matSortDisableClear matSortDirection="asc" class="w-100 task">
                     <ng-container matColumnDef="orderNumber">
                         <th mat-header-cell *matHeaderCellDef class="min-w-30 text-center"> {{l("OrderNumber")}} </th>
@@ -101,7 +102,7 @@
                     </ng-container>
                     <ng-container matColumnDef="quantity" sticky>
                         <th mat-header-cell *matHeaderCellDef class="text-center col-quantity"> {{l("Số lượng bệnh nhân")}} </th>
-                        <td mat-cell *matCellDef="let element" class="col-quantity"> {{element.quantity}} </td>
+                        <td mat-cell *matCellDef="let element" class="col-quantity text-right"> {{element.quantity}} </td>
                     </ng-container>                    
                     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
@@ -111,10 +112,10 @@
             
         <div class="col-md-5">
             <div class="mb-4">
-                    <div class="mb-2">Số lượng bệnh nhân theo giới tính</div>
+                    <div class="mb-2 f14"> {{l('Số lượng bệnh nhân theo giới tính')}}</div>
                     <app-gender [master]="master"></app-gender>
             </div>
-            <div class="mb-2">Số lượng bệnh nhân theo trạng thái</div>
+            <div class="mb-2 f14">{{l('Số lượng bệnh nhân theo trạng thái')}}</div>
             <app-status [master]="master"></app-status>
         </div>
     </div>                                 

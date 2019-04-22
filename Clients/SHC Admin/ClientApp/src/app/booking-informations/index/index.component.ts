@@ -43,9 +43,6 @@ export const MY_FORMATS = {
 export class IndexComponent extends PagedListingComponentBase<IBookingInformations> implements OnInit {
   @ViewChild(StatusComponent) statusComponent;
   @ViewChild(GenderComponent) genderComponent;
-
-  //private statusComponent: ;
-  //private genderComponent: ;
   _quantityCancel: any;
   _quantityDone: any;
   _quantityPending: any;
@@ -55,10 +52,12 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
   master = 'Master';
   listBooking: any;
   _healthfacilities = [];
+  healthFacilitiesId: any;
   _doctors = [];  
   quantityByStatusCancel: any;
   dataSourcesStatus = new MatTableDataSource();
   _status: any;
+  totalPatientCount: 0;
   cDate = new Date();
   filteredOptions: Observable<IHealthfacilities[]>;
   healthfacilities = new FormControl();
@@ -76,6 +75,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
     this.api = 'bookinginformations';
     this.dataService = this._dataService;
     this.dialogComponent = TaskComponent;
+    this.totalPatientCount = 0;
     this.frmSearch = this._formBuilder.group({
        healthfacilities: [this.appSession.user.healthFacilitiesId],
        doctor : [],      
@@ -88,7 +88,13 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
     {
       this._healthfacilities = resp.items;      
     });
-
+    if(this.appSession.user.healthFacilitiesId != null){
+      this.healthFacilitiesId = this.appSession.user.healthFacilitiesId;
+      this.dataService.getAll('doctors', this.healthFacilitiesId).subscribe(resp => 
+        {
+          this._doctors = resp.items;
+        }); 
+    }
 
     setTimeout(() => {
       this.startTime.nativeElement.value = moment(new Date().setDate(new Date().getDate())).format("DD/MM/YYYY");
@@ -173,8 +179,8 @@ onselectBookingInformationsTime(obj: any){
    }
 }
 search(){
-  if(!this.endTime.nativeElement.value){
-    return swal('Thông báo', 'Đến ngày không được để trống', 'warning');
+  if(!this.endTime.nativeElement.value && !this.startTime.nativeElement.value){
+    return swal('Thông báo', 'Từ ngày và Đến ngày không được để trống', 'warning');
 }
 if(!moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').isValid()){
     return swal('Thông báo', 'Đến ngày không đúng định dạng', 'warning');
@@ -182,11 +188,14 @@ if(!moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').isValid()){
 if(!this.startTime.nativeElement.value){
     return swal('Thông báo', 'Từ ngày không được để trống', 'warning');
 }
+if(!this.endTime.nativeElement.value){
+  return swal('Thông báo', 'Từ ngày không được để trống', 'warning');
+}
 if(!moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').isValid()){
     return swal('Thông báo', 'Từ ngày không đúng định dạng', 'warning');
 }
 if(((moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').valueOf() - moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').valueOf()) / (1000*60*60*24)) < 0){
-    return swal('Thông báo', 'Từ ngày lớn hơn hoặc bằng đến ngày', 'warning');
+    return swal('Thông báo', 'Đến ngày phải lớn hơn hoặc bằng Từ ngày', 'warning');
 }
   if(this.appSession.user.healthFacilitiesId != null){
     this.healthfacilities.value 
@@ -209,6 +218,7 @@ if(((moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').valueOf() - moment(t
   .subscribe(resp => {
       setTimeout(() => this.isTableLoading = true, 0);
       this.totalItems = resp.totalCount;
+      this.totalPatientCount = resp.totalPatientCount;
       this.dataSources.data = resp.items;      
       setTimeout(() => {
         this.listBooking = this.dataSources.data;        
