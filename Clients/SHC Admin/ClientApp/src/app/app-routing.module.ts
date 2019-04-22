@@ -62,9 +62,9 @@ import { NgModule } from '@angular/core';
                         loadChildren: 'app/category-common/category-common.module#CategoryCommonModule', canActivate:[AppRouteGuard]
                     },
                     {
-                        path: 'booking-doctor-approve',
-                        loadChildren: 'app/booking-doctor-approve/booking-doctor-approve.module#BookingDoctorApproveModule', canActivate:[AppRouteGuard]
-                    }
+                        path: 'doctor',
+                        loadChildren: 'app/doctor/doctor.module#DoctorModule', canActivate:[AppRouteGuard]
+                    },
                ]
             },
         ])
