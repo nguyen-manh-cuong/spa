@@ -74,11 +74,11 @@
 .f14{
     font-size: 14px!important;
 }
-.table-custom .mat-table.task td.mat-cell:last-of-type{    
+.table-custom  .mat-table.task td.mat-cell:last-of-type{    
     padding-left: 10px !important;
     padding-right: 10px!important;
 }
-.form-custom .mat-form-field.mat-form-field-should-float mat-label, .form-filter .mat-form-field.mat-form-field-should-float mat-label{
+.form-custom .mat-form-field.mat-form-field-should-float mat-label{
     font-size: 17px;
     font-weight: 500;
     color: black;

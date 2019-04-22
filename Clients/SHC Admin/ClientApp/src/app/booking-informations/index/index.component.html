@@ -12,7 +12,7 @@
         </div>
     </div>
 <div class="content">
-    <form [formGroup]="frmSearch" class="form-filter pl-2 pr-2  mb-4" novalidate>
+    <form [formGroup]="frmSearch" class="form-filter form-custom pl-2 pr-2  mb-4" novalidate>
         <div class="row pt-4">
             <div class="col-md-6" [hidden]="this.appSession.user.healthFacilitiesId">
                 <mat-form-field appearance="outline" class="w-100">
@@ -86,7 +86,7 @@
     <div class="row">
         <div class="col-lg-7">
             <div class="mb-2 pl-2 f14"> {{l('Số lượng bệnh nhân theo bác sỹ ')}} {{l('(Tổng số')}} {{totalPatientCount}} {{('bệnh nhân)')}}</div>
-            <div class="table table-content brd-right">
+            <div class="table table-content brd-right table-custom">
                 <table mat-table [dataSource]="dataSources" matSort #sort="matSort" matSortDisableClear matSortDirection="asc" class="w-100 task">
                     <ng-container matColumnDef="orderNumber">
                         <th mat-header-cell *matHeaderCellDef class="min-w-30 text-center"> {{l("OrderNumber")}} </th>
