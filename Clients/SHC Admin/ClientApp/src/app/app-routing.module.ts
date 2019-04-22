@@ -60,7 +60,11 @@ import { NgModule } from '@angular/core';
                     {
                         path: 'category-common',
                         loadChildren: 'app/category-common/category-common.module#CategoryCommonModule', canActivate:[AppRouteGuard]
-                    }
+                    },
+                    {
+                        path: 'doctor',
+                        loadChildren: 'app/doctor/doctor.module#DoctorModule', canActivate:[AppRouteGuard]
+                    },
                ]
             },
         ])

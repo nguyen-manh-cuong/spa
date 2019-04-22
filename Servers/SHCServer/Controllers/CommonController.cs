@@ -172,6 +172,23 @@ namespace SHCServer.Controllers
             return Json(new ActionResultDto { Result = new { Items = objs.Select(h => new BookingDoctorsCalendarsViewModel(h, _connectionString)).ToList() } });
         }
 
+        [HttpGet]
+        [Route("api/nations")]
+        public IActionResult GetNations()
+        {
+            var objs = _context.Query<Nation>().Where(o=>o.IsActive==true&&o.IsDelete==false).OrderBy(o=>o.OrderNumber);
+            return Json(new ActionResultDto() { Result = new { Items = objs.ToList() } });
+        }
+
+
+        [HttpGet]
+        [Route("api/ethnicity")]
+        public IActionResult GetEthnicities()
+        {
+            var objs = _context.Query<Ethnicity>().Where(o => o.IsActive == true && o.IsDelete == false).OrderBy(o => o.OrderNumber);
+            return Json(new ActionResultDto() { Result = new { Items = objs.ToList() } });
+        }
+
         public class FilterHealthFacilities
         {
             [JsonProperty("districtCode")]

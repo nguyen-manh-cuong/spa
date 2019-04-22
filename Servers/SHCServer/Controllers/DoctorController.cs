@@ -6,6 +6,7 @@ using SHCServer.Models;
 using SHCServer.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using Viettel;
 using Viettel.MySql;
 
@@ -31,83 +32,6 @@ namespace SHCServer.Controllers
             List<DbParam> param = new List<DbParam>();
             List<DoctorViewModel> doctorList = new List<DoctorViewModel>();
 
-            string doctorJoinSpecialistHealth = @"SELECT
-                                            d.DoctorId,
-                                            AcademicId,
-                                            Address,
-                                            AllowBooking,
-                                            AllowFilter,
-                                            AllowSearch,
-                                            Avatar,
-                                            BirthDate,
-                                            BirthMonth,
-                                            BirthYear,
-                                            CertificationCode,
-                                            CertificationDate,
-                                            DegreeId,Description,
-                                            DistrictCode,
-                                            ProvinceCode,
-                                            EducationCountryCode,
-                                            Email,
-                                            EthnicityCode,
-                                            FullName,
-                                            Gender,
-                                            HisId,
-                                            IsActive,
-                                            IsSync,
-                                            NationCode,
-                                            PhoneNumber,
-                                            PositionCode,
-                                            PriceDescription,
-                                            PriceFrom,
-                                            PriceTo,
-                                            Summary,
-                                            TitleCode,
-                                            SpecialistCode,
-                                            HealthFacilitiesId
-                                            FROM smarthealthcare.cats_doctors d
-                                            INNER JOIN smarthealthcare.cats_doctors_specialists ds
-                                            ON d.DoctorId = ds.DoctorId
-                                            INNER JOIN smarthealthcare.cats_healthfacilities_doctors hd
-                                            ON d.DoctorId = hd.DoctorId
-                                            WHERE 1 = 1 AND d.IsDelete = 0 AND ds.IsDelete=0 ";
-            string doctorJoinSpecialist = @"SELECT
-                                            d.DoctorId,
-                                            AcademicId,
-                                            Address,
-                                            AllowBooking,
-                                            AllowFilter,
-                                            AllowSearch,
-                                            Avatar,
-                                            BirthDate,
-                                            BirthMonth,
-                                            BirthYear,
-                                            CertificationCode,
-                                            CertificationDate,
-                                            DegreeId,Description,
-                                            DistrictCode,
-                                            ProvinceCode,
-                                            EducationCountryCode,
-                                            Email,
-                                            EthnicityCode,
-                                            FullName,
-                                            Gender,
-                                            HisId,
-                                            IsActive,
-                                            IsSync,
-                                            NationCode,
-                                            PhoneNumber,
-                                            PositionCode,
-                                            PriceDescription,
-                                            PriceFrom,
-                                            PriceTo,
-                                            Summary,
-                                            TitleCode,
-                                            SpecialistCode
-                                            FROM smarthealthcare.cats_doctors d
-                                            INNER JOIN smarthealthcare.cats_doctors_specialists ds
-                                            ON d.DoctorId = ds.DoctorId
-                                            WHERE 1 = 1 AND d.IsDelete = 0 AND ds.IsDelete=0 ";
             int query = 0;
 
             if (filter != null)
@@ -143,7 +67,7 @@ namespace SHCServer.Controllers
                         clause.Add("AND ds.SpecialistCode=@SpecialistCode");
                         param.Add(DbParam.Create("@SpecialistCode", value.Trim()));
                     }
-                    if (string.Equals(key, "fullNameOrPhone"))
+                    if (string.Equals(key, "info"))
                     {
                         clause.Add("AND d.FullName like '%' @FullNameOrPhone '%' OR d.PhoneNumber like '%' @FullNameOrPhone");
                         param.Add(DbParam.Create("@fullNameOrPhone", value.Trim()));
@@ -151,9 +75,14 @@ namespace SHCServer.Controllers
                 }
             }
 
-            if (query == 0 || query == 1)
+            if (query == 0)
             {
-                clause.Add(" GROUP BY d.DoctorId ORDER BY d.FullName,d.CreateDate DESC LIMIT @skipCount, @resultCount");
+                clause.Add(" AND ds.IsDelete=0 GROUP BY d.DoctorId ORDER BY d.FullName,d.CreateDate DESC LIMIT @skipCount, @resultCount");
+            }
+
+            if (query == 1)
+            {
+                clause.Add(" AND ds.IsDelete=0 GROUP BY d.DoctorId ORDER BY d.FullName,d.CreateDate DESC LIMIT @skipCount, @resultCount");
             }
 
             param.Add(DbParam.Create("@skipCount", skipCount * maxResultCount));
@@ -163,97 +92,54 @@ namespace SHCServer.Controllers
 
             if (query == 0)
             {
-                str = $"{doctorJoinSpecialist} {string.Join(" ", clause)}";
+                str = $"{DoctorJoin()} {string.Join(" ", clause)}";
             }
-            //Fixing
-            if (query == 1 || query == 2)
+
+            if (query == 1)
             {
-                str = $"{doctorJoinSpecialistHealth} {string.Join(" ", clause)}";
+                str = $"{DoctorJoin(true)} {string.Join(" ", clause)}";
+            }
+
+            if (query == 2)
+            {
+                var checkHelthFacilites = _context.Query<HealthFacilitiesDoctors>().Where(hf => hf.DoctorId == (int)param[0].Value).FirstOrDefault();
+
+                if (checkHelthFacilites != null)
+                    str = $"{DoctorJoin(true)} {string.Join(" ", clause)}";
+                else
+                    str = $"{DoctorJoin()} {string.Join(" ", clause)}";
             }
 
             var reader = _context.Session.ExecuteReader(str, param);
 
-            if(query==0)
+            if (query == 2)
             {
                 while (reader.Read())
                 {
-                    doctorList.Add(new DoctorViewModel()
+                    var checkHelthFacilites = _context.Query<HealthFacilitiesDoctors>().Where(hf => hf.DoctorId == (int)param[0].Value).FirstOrDefault();
+
+                    if (checkHelthFacilites == null)
                     {
-                        AcademicId = reader["AcademicId"] != DBNull.Value ? Convert.ToInt32(reader["AcademicId"]) : 0,
-                        Address = reader["Address"].ToString(),
-                        AllowBooking = Convert.ToInt16(reader["AllowBooking"]) == 0 ? false : true,
-                        AllowFilter = Convert.ToInt16(reader["AllowFilter"]) == 0 ? false : true,
-                        AllowSearch = Convert.ToInt16(reader["AllowSearch"]) == 0 ? false : true,
-                        Avatar = reader["Avatar"].ToString(),
-                        BirthDate = reader["BirthDate"] != DBNull.Value ? Convert.ToInt16(reader["BirthDate"]) : 0,
-                        BirthMonth = reader["BirthDate"] != DBNull.Value ? Convert.ToInt16(reader["BirthMonth"]) : 0,
-                        BirthYear = Convert.ToInt16(reader["BirthYear"]),
-                        CertificationCode = reader["CertificationCode"].ToString(),
-                        CertificationDate = reader["CertificationDate"] != DBNull.Value ? Convert.ToDateTime(reader["CertificationDate"]) : Convert.ToDateTime("0001-01-01T01:01:01"),
-                        DegreeId = reader["DegreeId"] != DBNull.Value ? Convert.ToInt16(reader["DegreeId"]) : 0,
-                        Description = reader["Description"].ToString(),
-                        DistrictCode = reader["DistrictCode"].ToString(),
-                        ProvinceCode = reader["ProvinceCode"].ToString(),
-                        EducationCountryCode = reader["EducationCountryCode"].ToString(),
-                        Email = reader["Email"].ToString(),
-                        EthnicityCode = reader["EthnicityCode"].ToString(),
-                        FullName = reader["FullName"].ToString(),
-                        Gender = Convert.ToInt16(reader["Gender"]),
-                        HisId = reader["HisId"].ToString(),
-                        IsActive = Convert.ToInt16(reader["IsActive"]) == 0 ? false : true,
-                        IsSync = Convert.ToInt16(reader["IsSync"]) == 0 ? false : true,
-                        NationCode = reader["NationCode"].ToString(),
-                        PhoneNumber = reader["PhoneNumber"].ToString(),
-                        PositionCode = reader["PositionCode"].ToString(),
-                        PriceDescription = reader["PriceDescription"].ToString(),
-                        PriceFrom = reader["PriceFrom"] != DBNull.Value ? Convert.ToInt32(reader["PriceFrom"]) : 0,
-                        PriceTo = reader["PriceTo"] != DBNull.Value ? Convert.ToInt32(reader["PriceTo"]) : 0,
-                        Summary = reader["Summary"].ToString(),
-                        TitleCode = reader["TitleCode"].ToString(),
-                        SpecialistCode = reader["SpecialistCode"].ToString(),
-                    });
+                        AddTolist(doctorList, reader);
+                    }
+                    else
+                    {
+                        AddTolistAll(doctorList, reader);
+                    }
+                }
+            }
+            else if (query == 1)
+            {
+                while (reader.Read())
+                {
+                    AddTolistAll(doctorList, reader);
                 }
             }
             else
             {
                 while (reader.Read())
                 {
-                    doctorList.Add(new DoctorViewModel()
-                    {
-                        AcademicId = reader["AcademicId"] != DBNull.Value ? Convert.ToInt32(reader["AcademicId"]) : 0,
-                        Address = reader["Address"].ToString(),
-                        AllowBooking = Convert.ToInt16(reader["AllowBooking"]) == 0 ? false : true,
-                        AllowFilter = Convert.ToInt16(reader["AllowFilter"]) == 0 ? false : true,
-                        AllowSearch = Convert.ToInt16(reader["AllowSearch"]) == 0 ? false : true,
-                        Avatar = reader["Avatar"].ToString(),
-                        BirthDate = reader["BirthDate"] != DBNull.Value ? Convert.ToInt16(reader["BirthDate"]) : 0,
-                        BirthMonth = reader["BirthDate"] != DBNull.Value ? Convert.ToInt16(reader["BirthMonth"]) : 0,
-                        BirthYear = Convert.ToInt16(reader["BirthYear"]),
-                        CertificationCode = reader["CertificationCode"].ToString(),
-                        CertificationDate = reader["CertificationDate"] != DBNull.Value ? Convert.ToDateTime(reader["CertificationDate"]) : Convert.ToDateTime("0001-01-01T01:01:01"),
-                        DegreeId = reader["DegreeId"] != DBNull.Value ? Convert.ToInt16(reader["DegreeId"]) : 0,
-                        Description = reader["Description"].ToString(),
-                        DistrictCode = reader["DistrictCode"].ToString(),
-                        ProvinceCode = reader["ProvinceCode"].ToString(),
-                        EducationCountryCode = reader["EducationCountryCode"].ToString(),
-                        Email = reader["Email"].ToString(),
-                        EthnicityCode = reader["EthnicityCode"].ToString(),
-                        FullName = reader["FullName"].ToString(),
-                        Gender = Convert.ToInt16(reader["Gender"]),
-                        HisId = reader["HisId"].ToString(),
-                        IsActive = Convert.ToInt16(reader["IsActive"]) == 0 ? false : true,
-                        IsSync = Convert.ToInt16(reader["IsSync"]) == 0 ? false : true,
-                        NationCode = reader["NationCode"].ToString(),
-                        PhoneNumber = reader["PhoneNumber"].ToString(),
-                        PositionCode = reader["PositionCode"].ToString(),
-                        PriceDescription = reader["PriceDescription"].ToString(),
-                        PriceFrom = reader["PriceFrom"] != DBNull.Value ? Convert.ToInt32(reader["PriceFrom"]) : 0,
-                        PriceTo = reader["PriceTo"] != DBNull.Value ? Convert.ToInt32(reader["PriceTo"]) : 0,
-                        Summary = reader["Summary"].ToString(),
-                        TitleCode = reader["TitleCode"].ToString(),
-                        SpecialistCode=reader["SpecialistCode"].ToString(),
-                        HealthFacilitiesId = reader["HealthFacilitiesId"] != DBNull.Value ? Convert.ToInt32(reader["HealthFacilitiesId"]) : 0
-                    });
+                    AddTolist(doctorList, reader);
                 }
             }
 
@@ -269,6 +155,7 @@ namespace SHCServer.Controllers
 
         [HttpPost]
         [Route("api/doctor")]
+        #region Old_Code
         public IActionResult Create([FromBody] DoctorViewModel doctor)
         {
             try
@@ -317,14 +204,14 @@ namespace SHCServer.Controllers
                 {
                     _context.Insert(() => new DoctorSpecialists()
                     {
-                        DoctorId =doctorFirst.DoctorId,
+                        DoctorId = doctorFirst.DoctorId,
                         SpecialistCode = item
                     });
                 }
 
-                if(doctor.HealthFacilities!=null)
+                if (doctor.HealthFacilities != null)
                 {
-                    foreach(var h in doctor.HealthFacilities)
+                    foreach (var h in doctor.HealthFacilities)
                     {
                         _context.Insert(() => new HealthFacilitiesDoctors()
                         {
@@ -348,8 +235,218 @@ namespace SHCServer.Controllers
 
         [HttpPut]
         [Route("api/doctor")]
-        public IActionResult Update([FromBody] DoctorViewModel doctor)
+        public IActionResult Update([FromBody] DoctorViewModel doctor,int? allow)
         {
+            var checkDoctor = _context.Query<Doctor>().Where(d => d.DoctorId == doctor.DoctorId).FirstOrDefault();
+
+            if (checkDoctor == null)
+            {
+                return StatusCode(404, _excep.Throw("Not Found"));
+            }
+            try
+            {
+                _context.BeginTransaction();
+
+                _context.Update<Doctor>(d => d.DoctorId == doctor.DoctorId, x => new Doctor()
+                {
+                    AcademicId = doctor.AcademicId,
+                    Address = doctor.Address,
+                    AllowBooking = doctor.AllowBooking,
+                    AllowFilter = doctor.AllowFilter,
+                    AllowSearch = doctor.AllowSearch,
+                    Avatar = doctor.Avatar,
+                    BirthDate = doctor.BirthDate,
+                    BirthMonth = doctor.BirthMonth,
+                    BirthYear = doctor.BirthYear,
+                    CertificationCode = doctor.CertificationCode,
+                    CertificationDate = doctor.CertificationDate,
+                    CreateUserId = doctor.CreateUserId,
+                    DegreeId = doctor.DegreeId,
+                    Description = doctor.Description,
+                    DistrictCode = doctor.DistrictCode,
+                    EducationCountryCode = doctor.EducationCountryCode,
+                    Email = doctor.Email,
+                    EthnicityCode = doctor.EthnicityCode,
+                    FullName = doctor.FullName,
+                    Gender = doctor.Gender,
+                    HisId = doctor.HisId,
+                    NationCode = doctor.NationCode,
+                    PhoneNumber = doctor.PhoneNumber,
+                    PositionCode = doctor.PositionCode,
+                    PriceDescription = doctor.PriceDescription,
+                    PriceFrom = doctor.PriceFrom,
+                    PriceTo = doctor.PriceTo,
+                    ProvinceCode = doctor.ProvinceCode,
+                    Summary = doctor.Summary,
+                    UpdateDate = DateTime.Now,
+                    UpdateUserId = doctor.UpdateUserId,
+                    TitleCode = doctor.TitleCode,
+                });
+
+                if(allow==null)
+                {
+                    var getListHealthF = _context.Query<HealthFacilitiesDoctors>().Where(h => h.DoctorId == doctor.DoctorId);
+
+                    if (doctor.HealthFacilities == null && getListHealthF.Count() > 0)
+                    {
+                        foreach (var item in getListHealthF.ToList())
+                        {
+                            _context.Update<HealthFacilitiesDoctors>(h => h.DoctorId == doctor.DoctorId && h.HealthFacilitiesId == doctor.HealthFacilitiesId, x => new HealthFacilitiesDoctors()
+                            {
+                                IsDelete = true
+                            });
+                        }
+                    }
+
+                    if (doctor.HealthFacilities != null && getListHealthF.Count() == 0)
+                    {
+                        foreach (var item in doctor.HealthFacilities)
+                        {
+                            _context.Insert(() => new HealthFacilitiesDoctors()
+                            {
+                                HealthFacilitiesId = (int)item,
+                                DoctorId = doctor.DoctorId
+                            });
+                        }
+                    }
+
+                    if (doctor.HealthFacilities != null && getListHealthF.Count() > 0)
+                    {
+                        bool insert = false;
+                        bool check = false;
+                        bool delete = false;
+                        List<int> index = new List<int>();
+                        foreach (var item in getListHealthF.ToList())
+                        {
+                            for (int i = 0; i < doctor.HealthFacilities.Length; i++)
+                            {
+                                if (check == false)
+                                {
+                                    var diff = getListHealthF.Where(h => h.HealthFacilitiesId == doctor.HealthFacilities[i]).FirstOrDefault();
+
+                                    if (diff == null)
+                                    {
+                                        insert = true;
+                                        index.Add(i);
+                                    }
+                                }
+
+                                if (item.HealthFacilitiesId != doctor.HealthFacilities[i])
+                                {
+                                    delete = true;
+                                }
+                            }
+                            if (insert == true && check == false)
+                            {
+                                foreach (var item3 in index)
+                                {
+                                    _context.Insert(new HealthFacilitiesDoctors()
+                                    {
+                                        DoctorId = doctor.DoctorId,
+                                        HealthFacilitiesId = (int)doctor.HealthFacilities[item3]
+                                    });
+                                }
+                                insert = false;
+                            }
+                            if (delete == true)
+                            {
+                                _context.Update<HealthFacilitiesDoctors>(h => h.DoctorId == doctor.DoctorId && h.HealthFacilitiesId == item.HealthFacilitiesId, x => new HealthFacilitiesDoctors()
+                                {
+                                    IsDelete = true
+                                });
+                                delete = false;
+                            }
+                        }
+                        check = true;
+                    }
+
+                    var getListSpecialist = _context.Query<DoctorSpecialists>().Where(h => h.DoctorId == doctor.DoctorId);
+
+                    if (doctor.DoctorSpecialists == null && getListSpecialist.Count() > 0)
+                    {
+                        foreach (var item in getListSpecialist.ToList())
+                        {
+                            _context.Update<DoctorSpecialists>(h => h.DoctorId == doctor.DoctorId && h.SpecialistCode == doctor.SpecialistCode, x => new DoctorSpecialists()
+                            {
+                                IsDelete = true
+                            });
+                        }
+                    }
+
+                    if (doctor.DoctorSpecialists != null && getListSpecialist.Count() == 0)
+                    {
+                        foreach (var item in doctor.DoctorSpecialists)
+                        {
+                            _context.Insert(() => new DoctorSpecialists()
+                            {
+                                SpecialistCode = item,
+                                DoctorId = doctor.DoctorId
+                            });
+                        }
+                    }
+
+                    if (doctor.DoctorSpecialists != null && getListSpecialist.Count() > 0)
+                    {
+                        bool insert = false;
+                        bool check = false;
+                        bool delete = false;
+                        List<int> index = new List<int>();
+                        foreach (var item in getListSpecialist.ToList())
+                        {
+                            for (int i = 0; i < doctor.DoctorSpecialists.Length; i++)
+                            {
+                                if (check == false)
+                                {
+                                    var diff = getListSpecialist.Where(h => h.DoctorId == doctor.DoctorId && h.SpecialistCode == doctor.DoctorSpecialists[i]).FirstOrDefault();
+
+                                    if (diff == null)
+                                    {
+                                        insert = true;
+                                        index.Add(i);
+                                    }
+                                }
+
+                                if (item.SpecialistCode != doctor.DoctorSpecialists[i])
+                                {
+                                    delete = true;
+                                }
+                            }
+                            if (insert == true && check == false)
+                            {
+                                foreach (var item3 in index)
+                                {
+                                    _context.Insert(new DoctorSpecialists()
+                                    {
+                                        DoctorId = doctor.DoctorId,
+                                        SpecialistCode = doctor.DoctorSpecialists[item3]
+                                    });
+                                }
+                                insert = false;
+                            }
+                            if (delete == true)
+                            {
+                                _context.Update<DoctorSpecialists>(h => h.DoctorId == doctor.DoctorId && h.SpecialistCode == item.SpecialistCode, x => new DoctorSpecialists()
+                                {
+                                    IsDelete = true
+                                });
+                                delete = false;
+                            }
+                        }
+                        check = true;
+                    }
+                }               
+
+                _context.Session.CommitTransaction();
+            }
+            catch (Exception e)
+            {
+                if (_context.Session.IsInTransaction)
+                {
+                    _context.Session.RollbackTransaction();
+                }
+                return StatusCode(500, _excep.Throw("Có lỗi xảy ra", e.Message));
+            }
+
             return Json(new ActionResultDto());
         }
 
@@ -357,7 +454,7 @@ namespace SHCServer.Controllers
         [Route("api/doctor")]
         public IActionResult Delete(int id)
         {
-            var cc = _context.Query<CategoryCommon>().Where(c => c.Id == id).FirstOrDefault();
+            var cc = _context.Query<Doctor>().Where(c => c.DoctorId == id).FirstOrDefault();
 
             if (cc == null)
                 return StatusCode(404, _excep.Throw("Not Found"));
@@ -376,7 +473,7 @@ namespace SHCServer.Controllers
 
             if (reader.Read() == true)
             {
-                return StatusCode(400, _excep.Throw("Xóa không thành công!", "Không thể xóa bác sĩ đang có lịch khám!"));
+                return StatusCode(422, _excep.Throw("Xóa không thành công!", "Không thể xóa bác sĩ đang có lịch khám!"));
             }
             else
             {
@@ -404,5 +501,136 @@ namespace SHCServer.Controllers
                 return Json(new ActionResultDto());
             }
         }
+
+        private void AddTolist(List<DoctorViewModel> doctorList, IDataReader reader)
+        {
+            doctorList.Add(new DoctorViewModel()
+            {
+                AcademicId = reader["AcademicId"] != DBNull.Value ? Convert.ToInt32(reader["AcademicId"]) : 0,
+                Address = reader["Address"].ToString(),
+                AllowBooking = Convert.ToInt16(reader["AllowBooking"]) == 0 ? false : true,
+                AllowFilter = Convert.ToInt16(reader["AllowFilter"]) == 0 ? false : true,
+                AllowSearch = Convert.ToInt16(reader["AllowSearch"]) == 0 ? false : true,
+                Avatar = reader["Avatar"].ToString(),
+                BirthDate = reader["BirthDate"] != DBNull.Value ? Convert.ToInt16(reader["BirthDate"]) : 0,
+                BirthMonth = reader["BirthDate"] != DBNull.Value ? Convert.ToInt16(reader["BirthMonth"]) : 0,
+                BirthYear = Convert.ToInt16(reader["BirthYear"]),
+                CertificationCode = reader["CertificationCode"].ToString(),
+                CertificationDate = reader["CertificationDate"] != DBNull.Value ? Convert.ToDateTime(reader["CertificationDate"]) : Convert.ToDateTime("0001-01-01T01:01:01"),
+                DegreeId = reader["DegreeId"] != DBNull.Value ? Convert.ToInt16(reader["DegreeId"]) : 0,
+                Description = reader["Description"].ToString(),
+                DistrictCode = reader["DistrictCode"].ToString(),
+                DoctorId=Convert.ToInt16(reader["DoctorId"]),
+                ProvinceCode = reader["ProvinceCode"].ToString(),
+                EducationCountryCode = reader["EducationCountryCode"].ToString(),
+                Email = reader["Email"].ToString(),
+                EthnicityCode = reader["EthnicityCode"].ToString(),
+                FullName = reader["FullName"].ToString(),
+                Gender = Convert.ToInt16(reader["Gender"]),
+                HisId = reader["HisId"].ToString(),
+                IsActive = Convert.ToInt16(reader["IsActive"]) == 0 ? false : true,
+                IsSync = Convert.ToInt16(reader["IsSync"]) == 0 ? false : true,
+                NationCode = reader["NationCode"].ToString(),
+                PhoneNumber = reader["PhoneNumber"].ToString(),
+                PositionCode = reader["PositionCode"].ToString(),
+                PriceDescription = reader["PriceDescription"].ToString(),
+                PriceFrom = reader["PriceFrom"] != DBNull.Value ? Convert.ToInt32(reader["PriceFrom"]) : 0,
+                PriceTo = reader["PriceTo"] != DBNull.Value ? Convert.ToInt32(reader["PriceTo"]) : 0,
+                Summary = reader["Summary"].ToString(),
+                TitleCode = reader["TitleCode"].ToString(),
+                SpecialistName = reader["SpecialistName"].ToString(),
+            });
+        }
+
+        private void AddTolistAll(List<DoctorViewModel> doctorList, IDataReader reader)
+        {
+            doctorList.Add(new DoctorViewModel()
+            {
+                AcademicId = reader["AcademicId"] != DBNull.Value ? Convert.ToInt32(reader["AcademicId"]) : 0,
+                Address = reader["Address"].ToString(),
+                AllowBooking = Convert.ToInt16(reader["AllowBooking"]) == 0 ? false : true,
+                AllowFilter = Convert.ToInt16(reader["AllowFilter"]) == 0 ? false : true,
+                AllowSearch = Convert.ToInt16(reader["AllowSearch"]) == 0 ? false : true,
+                Avatar = reader["Avatar"].ToString(),
+                BirthDate = reader["BirthDate"] != DBNull.Value ? Convert.ToInt16(reader["BirthDate"]) : 0,
+                BirthMonth = reader["BirthDate"] != DBNull.Value ? Convert.ToInt16(reader["BirthMonth"]) : 0,
+                BirthYear = Convert.ToInt16(reader["BirthYear"]),
+                CertificationCode = reader["CertificationCode"].ToString(),
+                CertificationDate = reader["CertificationDate"] != DBNull.Value ? Convert.ToDateTime(reader["CertificationDate"]) : Convert.ToDateTime("0001-01-01T01:01:01"),
+                DegreeId = reader["DegreeId"] != DBNull.Value ? Convert.ToInt16(reader["DegreeId"]) : 0,
+                Description = reader["Description"].ToString(),
+                DistrictCode = reader["DistrictCode"].ToString(),
+                DoctorId = Convert.ToInt16(reader["DoctorId"]),
+                ProvinceCode = reader["ProvinceCode"].ToString(),
+                EducationCountryCode = reader["EducationCountryCode"].ToString(),
+                Email = reader["Email"].ToString(),
+                EthnicityCode = reader["EthnicityCode"].ToString(),
+                FullName = reader["FullName"].ToString(),
+                Gender = Convert.ToInt16(reader["Gender"]),
+                HisId = reader["HisId"].ToString(),
+                IsActive = Convert.ToInt16(reader["IsActive"]) == 0 ? false : true,
+                IsSync = Convert.ToInt16(reader["IsSync"]) == 0 ? false : true,
+                NationCode = reader["NationCode"].ToString(),
+                PhoneNumber = reader["PhoneNumber"].ToString(),
+                PositionCode = reader["PositionCode"].ToString(),
+                PriceDescription = reader["PriceDescription"].ToString(),
+                PriceFrom = reader["PriceFrom"] != DBNull.Value ? Convert.ToInt32(reader["PriceFrom"]) : 0,
+                PriceTo = reader["PriceTo"] != DBNull.Value ? Convert.ToInt32(reader["PriceTo"]) : 0,
+                Summary = reader["Summary"].ToString(),
+                TitleCode = reader["TitleCode"].ToString(),
+                SpecialistName = reader["SpecialistName"].ToString(),
+                HealthFacilitiesName = reader["HealthFacilitiesName"].ToString()
+            });
+        }
+
+        private string DoctorJoin(bool joinHealthFacilities = false)
+        {
+            string query = @"SELECT
+                                            d.DoctorId,
+                                            AcademicId,
+                                            d.Address,
+                                            d.AllowBooking,
+                                            d.AllowFilter,
+                                            d.AllowSearch,
+                                            Avatar,
+                                            BirthDate,
+                                            BirthMonth,
+                                            BirthYear,
+                                            CertificationCode,
+                                            CertificationDate,
+                                            DegreeId,
+                                            d.Description,
+                                            d.DistrictCode,
+                                            d.ProvinceCode,
+                                            EducationCountryCode,
+                                            d.Email,
+                                            EthnicityCode,
+                                            FullName,
+                                            Gender,
+                                            HisId,
+                                            d.IsActive,
+                                            d.IsSync,
+                                            NationCode,
+                                            d.PhoneNumber,
+                                            PositionCode,
+                                            PriceDescription,
+                                            PriceFrom,
+                                            PriceTo,
+                                            Summary,
+                                            TitleCode,
+                                            cc.Name as SpecialistName";
+            string queryJoinSp = " FROM smarthealthcare.cats_doctors d INNER JOIN smarthealthcare.cats_doctors_specialists ds ON d.DoctorId = ds.DoctorId INNER JOIN smarthealthcare.cats_common cc ON ds.SpecialistCode=cc.Code WHERE 1 = 1 AND d.IsDelete = 0 AND ds.IsDelete = 0 ";
+            string queryJoinSpH = @",hf.Name as HealthFacilitiesName 
+                                    FROM smarthealthcare.cats_doctors d 
+                                    INNER JOIN smarthealthcare.cats_doctors_specialists ds ON d.DoctorId = ds.DoctorId 
+                                    INNER JOIN smarthealthcare.cats_healthfacilities_doctors hd ON d.DoctorId = hd.DoctorId 
+                                    INNER JOIN smarthealthcare.cats_common cc ON ds.SpecialistCode=cc.Code 
+                                    INNER JOIN smarthealthcare.cats_healthfacilities hf ON hd.HealthFacilitiesId=hf.HealthFacilitiesId WHERE 1 = 1 AND d.IsDelete = 0 AND ds.IsDelete = 0 ";
+            if (joinHealthFacilities == false)
+                return query + queryJoinSp;
+            else
+                return query + queryJoinSpH;
+        }
+        #endregion
     }
 }
