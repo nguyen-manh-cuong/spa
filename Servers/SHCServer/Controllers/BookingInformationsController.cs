@@ -152,7 +152,7 @@ namespace SHCServer.Controllers
                 QuantityByGenderMale = objs.Where(o => o.Gender == 1).Count(),//Nam
                 QuantityByGenderFemale = objs.Where(o => o.Gender == 2).Count(),//Nu               
             });           
-            return Json(new ActionResultDto { Result = new { Items = rs.TakePage(skipCount == 0 ? 1 : skipCount + 1, maxResultCount).ToList(), TotalCount = objs.Count() } });
+            return Json(new ActionResultDto { Result = new { Items = rs.TakePage(skipCount == 0 ? 1 : skipCount + 1, maxResultCount).ToList(), TotalCount = rs.Count(), TotalPatientCount = objs.Count() } });
         }
 
 
