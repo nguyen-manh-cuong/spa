@@ -100,6 +100,8 @@ export class IndexComponent extends PagedListingComponentBase<IBookingDoctorsCal
         this._healthfacilities.filter(h => h.name.toLowerCase().indexOf(filterValue) === 0) : 
         this._healthfacilities.filter(h => h.code.toLowerCase().indexOf(filterValue) === 0);
 
+        if(healthfacilities.length == 0 && filterValue.length) this.frmSearch.controls['healthfacilities'].setValue(0);
+
         return healthfacilities
     }
 
@@ -160,6 +162,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingDoctorsCal
                     this.paginator._changePageSize(this.paginator.pageSize);
                     this.paginator.pageIndex = 0;
                     this.selection = new SelectionModel<IBookingDoctorsCalendarsView>(true, []);
+                    this.lstCalendarId = [];
                     swal(this.l('Complete'), '', 'success');
                 }, err => {});
             }
