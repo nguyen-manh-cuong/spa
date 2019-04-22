@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using SHCServer.ViewModels;
 using Viettel.Annotations;
-using Viettel.Entity;
 
 namespace SHCServer.Models
 {
@@ -25,5 +22,6 @@ namespace SHCServer.Models
         public bool IsDelete { set; get; }
         public int? ApproveUserId { set; get; }
         public DateTime? ApproveDate { set; get; }
+        public int HealthFacilitiesId { set; get; }
     }
 }

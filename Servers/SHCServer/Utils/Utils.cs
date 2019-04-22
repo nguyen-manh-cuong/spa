@@ -24,7 +24,7 @@ namespace SHCServer
         public int SmsTemplateId { set; get; }
         public int SmsPackagesDistributeId { set; get; }
         public int SmsPackageUsedId { set; get; }
-        public int PatientHistoriesId { set; get; }
+        public int? PatientHistoriesId { set; get; }
         public string Telco { set; get; }
     }
 
@@ -37,7 +37,7 @@ namespace SHCServer
         public int SmsTemplateId { set; get; }
         public int SmsPackagesDistributeId { set; get; }
         public int SmsPackageUsedId { set; get; }
-        public int PatientHistoriesId { set; get; }
+        public int? PatientHistoriesId { set; get; }
     }
 
     public class Utils

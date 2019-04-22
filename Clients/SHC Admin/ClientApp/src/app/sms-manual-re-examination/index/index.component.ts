@@ -78,6 +78,8 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
             provinceCode: [],
             districtCode: [],
             wardCode: [],
+            birthdayDate: [],
+            birthdayMonth: [],
             birthday: [],
             sex: [],
             startTime: new Date(),
@@ -239,9 +241,11 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
             }
         }
 
+        console.log(moment(this.birthday.nativeElement.value, 'DD/MM/YYYY').toDate());
 
         this.healthfacilities.value ? this.frmSearch.controls['healthfacilities'].setValue(this.healthfacilities.value.healthFacilitiesId) : (this.appSession.user.healthFacilitiesId == null ? this.frmSearch.controls['healthfacilities'].setValue(null) : '');
-        this.birthday.nativeElement.value ? this.frmSearch.controls['birthday'].setValue(moment(this.birthday.nativeElement.value, 'DD/MM/YYYY').toDate()) : '';
+        this.birthday.nativeElement.value ? this.frmSearch.controls['birthdayDate'].setValue(moment(this.birthday.nativeElement.value, 'DD/MM/YYYY').toDate().getDate()) : '';
+        this.birthday.nativeElement.value ? this.frmSearch.controls['birthdayMonth'].setValue(moment(this.birthday.nativeElement.value, 'DD/MM/YYYY').toDate().getMonth() + 1) : '';
         this.endTime.nativeElement.value ? this.frmSearch.controls['endTime'].setValue(endTime) : '';
         this.btnSearchClicks$.next();
     }
@@ -271,8 +275,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
         if(!this.appSession.user.healthFacilitiesId){
             return this.openCustomDialog();
         }
-
-        abp.ui.setBusy('#main-container');
+        
         this._dataService.get('healthfacilitiesconfigs', JSON.stringify({ 
             code: "A01.SMSTAIKHAM",
             healthFacilitiesId: this.appSession.user.healthFacilitiesId
@@ -281,6 +284,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
                 return this.openCustomDialog();
             } 
 
+            abp.ui.setBusy('#main-container');
             this._dataService.create('infosms', {
                 lstMedicalHealthcareHistories: this.selection.selected, 
                 healthFacilitiesId: this.appSession.user.healthFacilitiesId,           

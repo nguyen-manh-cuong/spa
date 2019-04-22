@@ -1,20 +1,18 @@
 import { Component, Injector, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { IBookingDoctorsCalendarsView, IHealthfacilities } from '@shared/Interfaces';
-import { MatDialog, DateAdapter, MAT_DATE_LOCALE, MAT_DATE_FORMATS } from '@angular/material';
+import { MatDialog, DateAdapter, MAT_DATE_LOCALE, MAT_DATE_FORMATS, MatSort, MatSortable } from '@angular/material';
 import { DataService } from '@shared/service-proxies/service-data';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { PagedListingComponentBase } from '@shared/paged-listing-component-base';
 import { DetailComponent } from '../detail/detail.component';
-import { Observable } from 'rxjs';
 import { startWith, map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import { SelectionModel } from '@angular/cdk/collections';
 
 import swal from 'sweetalert2';
 import * as moment from 'moment';
 import * as _ from 'lodash';
-import { standardized } from '@shared/helpers/utils';
-import { omitBy, isNil } from 'lodash';
 
 export const MY_FORMATS = {
     parse: {
@@ -54,6 +52,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingDoctorsCal
 
     @ViewChild("startTime") startTime;
     @ViewChild("endTime") endTime;
+    @ViewChild(MatSort) sort: MatSort
 
     constructor(injector: Injector, private _dataService: DataService, public dialog: MatDialog, private _formBuilder: FormBuilder) {
         super(injector);
@@ -64,8 +63,8 @@ export class IndexComponent extends PagedListingComponentBase<IBookingDoctorsCal
         this.frmSearch = this._formBuilder.group({ 
             healthfacilities: [], 
             doctor: [], 
-            startTime: [new Date()],
-            endTime: [new Date(new Date().setDate(new Date().getDate() + 6))],
+            startTime: [moment(new Date().setHours(7, 0, 0, 0)).toDate()],
+            endTime: [moment(new Date()).add(6, 'days').toDate],
             status: [3] });
 
         this.dataService = this._dataService;
@@ -73,28 +72,35 @@ export class IndexComponent extends PagedListingComponentBase<IBookingDoctorsCal
         this.dataService.getAll('healthfacilities', (this.appSession.user.healthFacilitiesId ? String(this.appSession.user.healthFacilitiesId) : '')).subscribe(resp => this._healthfacilities = resp.items);
         this.appSession.user.healthFacilitiesId ? this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId) : this.filterOptions();
         if(this.appSession.user.healthFacilitiesId) this.dataService.getAll('doctors', String(this.appSession.user.healthFacilitiesId)).subscribe(resp => this._doctors = resp.items);
-        
+
+        this.sort.sort(<MatSortable>({id: 'name', start: 'asc'}));
+        this.dataSources.sort = this.sort;
+
         setTimeout(() => {
             this.startTime.nativeElement.value = moment(new Date()).format("DD/MM/YYYY");
             this.endTime.nativeElement.value = moment(new Date().setDate(new Date().getDate() + 6)).format("DD/MM/YYYY");
-            this.startTime.nativeElement.focus();
-            this.endTime.nativeElement.focus();
             this.getDate(this.startTime.nativeElement.value, this.endTime.nativeElement.value);
         }, 1000);
     }
 
+    //dialog detail
     detail(obj): void{
         const dialogRef = this.dialog.open(this.dialogDetail, { minWidth: 'calc(100vw/2)', maxWidth: 'calc(100vw - 300px)', data: obj ? obj : null });
         dialogRef.afterClosed().subscribe(() => this.paginator._changePageSize(this.paginator.pageSize));
     }
 
+    //filter autocomplete
     displayFn(h?: IHealthfacilities): string | undefined {
         return h ? h.name : undefined;
     }
 
-    _filter(name: string): IHealthfacilities[] {
+    _filter(name: any): IHealthfacilities[] {
         const filterValue = name.toLowerCase();
-        return this._healthfacilities.filter(h => h.name.toLowerCase().indexOf(filterValue) === 0);
+        var healthfacilities = isNaN(filterValue) ?         
+        this._healthfacilities.filter(h => h.name.toLowerCase().indexOf(filterValue) === 0) : 
+        this._healthfacilities.filter(h => h.code.toLowerCase().indexOf(filterValue) === 0);
+
+        return healthfacilities
     }
 
     clickCbo() {
@@ -111,7 +117,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingDoctorsCal
             );
     }
 
-    //selected
+    //selected checkbox table
     isAllSelected() {
         const numSelected = this.selection.selected.length;
         const numRows = this.dataSources.data.length;
@@ -133,9 +139,10 @@ export class IndexComponent extends PagedListingComponentBase<IBookingDoctorsCal
 
     //summit
     update(obj: any){
-        var content = obj ? (obj.status == 1 ? 'Lịch khám sẽ bị hủy.' : 'Lịch khám sẽ được khôi phục.') : 'Lịch khám sẽ được duyệt.';
+        var content = obj ? (obj.status == 1 ? this.l('ApproveExamScheduleCancel') : this.l('ApproveExamScheduleRestore')) :  this.l('ApproveExamScheduleWillApprove');
         var status = obj ? (obj.status == 1 ? 2 : 0) : 1;
         var lstCalendarId = obj ? [obj.calendarId] : this.getSelected();
+        if(!lstCalendarId.length) return swal(this.l('Notification'), this.l('NoWaitingSchedule'), 'warning');
 
         swal({
             title: this.l('AreYouSure'),
@@ -144,7 +151,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingDoctorsCal
             showCancelButton: true,
             confirmButtonClass: 'mat-raised-button mat-primary bg-danger',
             cancelButtonClass: 'mat-button',
-            confirmButtonText: this.l('Đồng ý'),
+            confirmButtonText: this.l('YesUpdate'),
             cancelButtonText: this.l('Cancel'),
             buttonsStyling: false
           }).then((result) => {
@@ -153,7 +160,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingDoctorsCal
                     this.paginator._changePageSize(this.paginator.pageSize);
                     this.paginator.pageIndex = 0;
                     this.selection = new SelectionModel<IBookingDoctorsCalendarsView>(true, []);
-                    swal('Thành công', '', 'success');
+                    swal(this.l('Complete'), '', 'success');
                 }, err => {});
             }
         });
@@ -180,52 +187,50 @@ export class IndexComponent extends PagedListingComponentBase<IBookingDoctorsCal
     }
 
     search(){
-        var req = omitBy(this.frmSearch.value, isNil);
+        var req = _.omitBy(this.frmSearch.value, _.isNil);
         req.healthfacilities = req && req.healthfacilities ? req.healthfacilities.healthFacilitiesId : "";
 
         this.paginator.pageIndex = 0;
         this.dataService
         .get(this.api, JSON.stringify(req), '', this.paginator.pageIndex, this.paginator.pageSize)
         .subscribe(resp => {
-            setTimeout(() => this.isTableLoading = true, 0);
+            setTimeout(() => this.isTableLoading = true, 100);
             this.totalItems = resp.totalCount;
             this.dataSources.data = resp.items;
         });
     }
 
+    //handle search
     customSearch() {
-        if(!this.endTime.nativeElement.value){
-            return swal('Thông báo', 'Đến ngày không được để trống', 'warning');
-        }
-
-        if(!moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').isValid()){
-            return swal('Thông báo', 'Đến ngày không đúng định dạng', 'warning');
-        }
-
-        if(!this.startTime.nativeElement.value){
-            return swal('Thông báo', 'Từ ngày không được để trống', 'warning');
+        if(!this.startTime.nativeElement.value || !this.endTime.nativeElement.value){
+            return swal(this.l('Notification'), this.l('FromDateToDateCannotBlank'), 'warning');
         }
 
         if(!moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').isValid()){
-            return swal('Thông báo', 'Từ ngày không đúng định dạng', 'warning');
+            return swal(this.l('Notification'), this.l('FromDateIncorrectFormat'), 'warning');
+        }
+
+        if(!moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').isValid()){
+            return swal(this.l('Notification'), this.l('ToDateIncorrectFormat'), 'warning');
         }
         
         if(((moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').valueOf() - moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').valueOf()) / (1000*60*60*24)) < 0){
-            return swal('Thông báo', 'Từ ngày lớn hơn hoặc bằng đến ngày', 'warning');
+            return swal(this.l('Notification'), this.l('FromDateMustBeGreaterThanOrEqualToDate'), 'warning');
         }
 
         if(((moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').valueOf() - moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').valueOf()) / (1000*60*60*24)) > 6){
-            return swal('Thông báo', 'Từ ngày lớn hơn đến ngày không quá 7 ngày', 'warning');
+            return swal(this.l('Notification'), this.l('SearchWithin7Day'), 'warning');
         }
 
         //this.healthfacilities.value ? this.frmSearch.controls['healthfacilities'].setValue(this.healthfacilities.value.healthFacilitiesId) : (this.appSession.user.healthFacilitiesId == null ? this.frmSearch.controls['healthfacilities'].setValue(null) : '');
-        this.startTime.nativeElement.value ? this.frmSearch.controls['startTime'].setValue(moment(this.startTime.nativeElement.value + '00:00:01', 'DD/MM/YYYY hh:mm:ss').add(7, 'hours').toDate()) : '';
+        this.startTime.nativeElement.value ? this.frmSearch.controls['startTime'].setValue(moment(this.startTime.nativeElement.value + '00:00:00', 'DD/MM/YYYY hh:mm:ss').add(7, 'hours').toDate()) : '';
         this.endTime.nativeElement.value ? this.frmSearch.controls['endTime'].setValue(moment(this.endTime.nativeElement.value + '23:59:59', 'DD/MM/YYYY hh:mm:ss').add(7, 'hours').toDate()) : '';
         this.getDate(this.startTime.nativeElement.value, this.endTime.nativeElement.value);
         //this.btnSearchClicks$.next();
         this.search();
     }
 
+    //gen date -> column
     getDate(startTime: string, endTime: string) {   
         var start = moment(startTime, "DD/MM/YYYY").toDate();
         var end = moment(endTime, "DD/MM/YYYY").toDate();

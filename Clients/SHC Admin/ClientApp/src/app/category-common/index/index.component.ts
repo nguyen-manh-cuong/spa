@@ -14,7 +14,7 @@ import swal from 'sweetalert2';
 
 export class EntityDto {
   id: number;
-  isActive:number;
+  isActive: number;
 }
 
 @Component({
@@ -24,7 +24,7 @@ export class EntityDto {
 })
 export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> implements OnInit {
 
-  displayedColumns = [ 'orderNumber', 'code', 'name', 'isActive', 'task'];
+  displayedColumns = ['orderNumber', 'code', 'name', 'isActive', 'task'];
 
   constructor(injector: Injector, private _dataService: DataService, public dialog: MatDialog, private _formBuilder: FormBuilder) { super(injector); }
 
@@ -32,27 +32,27 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
     this.api = 'catcommon';
     this.dataService = this._dataService;
     this.dialogComponent = TaskComponent;
-    this.frmSearch = this._formBuilder.group({ name: []});
+    this.frmSearch = this._formBuilder.group({ name: [] });
   }
   showErrorDeleteMessage() {
-    swal(this.l('ErrorDelete'),this.l('CategoryCommonErrorDeleted',''),'error');
+    swal(this.l('ErrorDelete'), this.l('CategoryCommonErrorDeleted', ''), 'error');
   }
 
   deleteDialogMessage(obj: EntityDto, key: string, id?: number | string) {
     swal({
-        title: this.l('AreYouSure'),
-        html: this.l('DeleteWarningMessage', obj[key]),
-        type: 'warning',
-        showCancelButton: true,
-        confirmButtonClass: 'mat-raised-button mat-primary bg-danger',
-        cancelButtonClass: 'mat-button',
-        confirmButtonText: this.l('YesDelete'),
-        cancelButtonText: this.l('Cancel'),
-        buttonsStyling: false
+      title: this.l('AreYouSure'),
+      html: this.l('DeleteWarningMessage', obj[key]),
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonClass: 'mat-raised-button mat-primary bg-danger',
+      cancelButtonClass: 'mat-button',
+      confirmButtonText: this.l('YesDelete'),
+      cancelButtonText: this.l('Cancel'),
+      buttonsStyling: false
     }).then((result) => {
-        if (result.value) {
-          this.showErrorDeleteMessage();
-        }
+      if (result.value) {
+        this.showErrorDeleteMessage();
+      }
     });
-}
+  }
 }

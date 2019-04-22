@@ -139,12 +139,9 @@ namespace SHCServer.Controllers
         {
             try
             {
-                var SmsPackage = _context.Query<SmsPackage>().Where(g => g.Id == obj.SmsPackageId).FirstOrDefault();
-                var SmsPackageUsed = _context.Query<SmsPackageUsed>().Where(g => g.SmsPackageId == obj.SmsPackageId && g.HealthFacilitiesId == obj.HealthFacilitiesId).FirstOrDefault();
-
-                if (SmsPackageUsed.Quantityused < SmsPackage.Quantity)
+                if (_context.Query<SmsLogs>().Where(pd => pd.SmsPackagesDistributeId == obj.Id && pd.Status == 1).Count() > 0)
                 {
-                    return StatusCode(500, _excep.Throw("Sửa phân gói SMS không thành công.", "Gói SMS đã được sử dụng tại đơn vị!"));
+                    return StatusCode(500, _excep.Throw("Sửa gói không thành công.", "Gói SMS đang được sử dụng!"));
                 }
 
                 _context.Session.BeginTransaction();
@@ -178,6 +175,10 @@ namespace SHCServer.Controllers
         {
             try
             {
+                if (_context.Query<SmsLogs>().Where(pd => pd.SmsPackagesDistributeId == id && pd.Status == 1).Count() > 0)
+                {
+                    return StatusCode(500, _excep.Throw("Xóa gói không thành công.", "Gói SMS đang được sử dụng!"));
+                }
                 _context.Session.BeginTransaction();
 
                 //_context.Delete<SmsPackagesDistribute>(g => g.Id == id);

@@ -1,4 +1,3 @@
-
 export interface IUser {
     id?: number;
     userName: string;
@@ -206,6 +205,7 @@ export interface IBookingDoctorsCalendars{
     address?: string;
     doctorId?: number,
     fullName: string;
+    healthFacilitiesName: string;
 }
 
 export interface IBookingDoctorsCalendarsView{

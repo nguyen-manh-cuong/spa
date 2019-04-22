@@ -111,9 +111,9 @@ namespace SHCServer.Controllers
                                          new MenuItem {Name = "SmsLog", Icon = "", Route = "/app/sms-log"}
                                     }},
                                     new MenuItem {Name = "Danh mục khung giờ khám", Icon = "av_timer", Route = "/app/booking-timeslots"},
-                                    new MenuItem {Name = "Thống kê danh sách bệnh nhân đặt khám", Icon = "av_timer", Route = "/app/booking-informations"},
+                                    //new MenuItem {Name = "Thống kê danh sách bệnh nhân đặt khám", Icon = "av_timer", Route = "/app/booking-informations"},
                                     new MenuItem{Name = "CategoryCommon", Icon="account_circle", Route="/app/category-common"},
-                                    new MenuItem{Name = "Lịch khám bác sĩ", Icon="assignment_turned_in", Route="/app/booking-doctor-approve"}
+                                    new MenuItem{Name = "ApproveExamScheduleDoctor", Icon="assignment_turned_in", Route="/app/booking-doctor-approve"}
                                 } 
                             }
                         }
@@ -189,45 +189,45 @@ namespace SHCServer.Controllers
             try
             {
                 _context.Session.BeginTransaction();
-                //_context.Insert(() => new User
-                //{
-                //    UserName = obj.UserName,
-                //    Password = Utils.HashPassword(obj.Password),
-                //    AccountType = obj.AccountType,
-
-                //    FullName = obj.FullName,
-                //    Sex = obj.Sex,
-                //    BirthDay = obj.BirthDay,
-
-                //    Email = obj.Email,
-                //    PhoneNumber = obj.PhoneNumber,
-                //    Address = obj.Address,
-
-                //    ProvinceCode = obj.ProvinceCode,
-                //    DistrictCode = obj.DistrictCode,
-                //    WardCode = obj.WardCode,
-
-                //    Register = obj.Register,
-                //    Identification = obj.Identification,
-                //    Insurrance = obj.Insurrance,
-                //    WorkPlace = obj.WorkPlace,
-                //    HealthFacilitiesName = obj.HealthFacilitiesName,
-                //    Specialist = obj.Specialist
-                //});
-
-                var _files = Request.Form.Files;
-                var _fileUpload = "";
-                if (_files.Count > 0)
+                _context.Insert(() => new User
                 {
-                    foreach (var file in _files)
-                    {
-                        var uniqueFileName = GetUniqueFileName(file.FileName);
-                        var uploads = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
-                        var filePath = Path.Combine(uploads, uniqueFileName);
-                        _fileUpload = "/uploads/" + uniqueFileName;
-                        file.CopyTo(new FileStream(filePath, FileMode.Create));
-                    }
-                }
+                    UserName = obj.UserName,
+                    Password = Utils.HashPassword(obj.Password),
+                    AccountType = obj.AccountType,
+
+                    FullName = obj.FullName,
+                    Sex = obj.Sex,
+                    BirthDay = obj.BirthDay,
+
+                    Email = obj.Email,
+                    PhoneNumber = obj.PhoneNumber,
+                    Address = obj.Address,
+
+                    ProvinceCode = obj.ProvinceCode,
+                    DistrictCode = obj.DistrictCode,
+                    WardCode = obj.WardCode,
+
+                    Register = obj.Register,
+                    Identification = obj.Identification,
+                    Insurrance = obj.Insurrance,
+                    WorkPlace = obj.WorkPlace,
+                    HealthFacilitiesName = obj.HealthFacilitiesName,
+                    Specialist = obj.Specialist
+                });
+
+                //var _files = Request.Form.Files;
+                //var _fileUpload = "";
+                //if (_files.Count > 0)
+                //{
+                //    foreach (var file in _files)
+                //    {
+                //        var uniqueFileName = GetUniqueFileName(file.FileName);
+                //        var uploads = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+                //        var filePath = Path.Combine(uploads, uniqueFileName);
+                //        _fileUpload = "/uploads/" + uniqueFileName;
+                //        file.CopyTo(new FileStream(filePath, FileMode.Create));
+                //    }
+                //}
 
                 _context.Session.CommitTransaction();
                 return Json(new ActionResultDto());

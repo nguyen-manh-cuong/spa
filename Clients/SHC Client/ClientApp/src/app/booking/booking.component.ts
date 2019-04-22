@@ -116,7 +116,7 @@ export class BookingComponent extends AppComponentBase implements OnInit, AfterV
 
   setStep(i: number) {
     if (i >= 2) {
-      this.onSelectType(this.frmBooking.get('bookingType').value);
+      if(i == 2) this.onSelectType(this.frmBooking.get('bookingType').value);
       this.validateAllFormFields(this.frmBooking, ['bookingUser', 'phoneNumber']);
       this.frmBooking.controls['bookingUser'].patchValue(this.frmBooking.value.bookingUser.trim())
       if (this.frmBooking.controls.bookingUser.invalid || this.frmBooking.controls.phoneNumber.invalid) { return; }
@@ -179,6 +179,7 @@ export class BookingComponent extends AppComponentBase implements OnInit, AfterV
   onSelectType(num: number) {
     const u = _.trim(this.frmBooking.get('bookingUser').value);
     const p = _.trim(this.frmBooking.get('phoneNumber').value);
+    
     if (num === 2) {
       if(!this.frmBooking.controls['bookingRepresent'].value) this.frmBooking.patchValue({ bookingRepresent: u, phoneRepresent: p, bookingSecondUser: null, phoneSecondNumber: null });
     } else {
@@ -227,7 +228,7 @@ export class BookingComponent extends AppComponentBase implements OnInit, AfterV
     this.frmBooking.controls.examinationDate.setErrors({required: true});
     
     this._dataService.get('workingtime', String(this._doctor.doctorId), '', 0, 0).subscribe(resp => {
-      this._workingTimes = resp.items
+      this._workingTimes = resp.items;
 
       for (let i = 0; i < 7; i++) {
         var date = new Date();
@@ -311,16 +312,14 @@ export class BookingComponent extends AppComponentBase implements OnInit, AfterV
     this._dataService.create('bookinginformations', _.pickBy(this.frmBooking.value, _.identity)).subscribe(
       () => {
         this.success = 1;
-        // this._dataService.create('infosms', {
-        //     lstMedicalHealthcareHistories: [], 
-        //     healthFacilitiesId: this.appSession.user.healthFacilitiesId,           
-        //     smsTemplateId: null,
-        //     type: 1, 
-        //     content: ''                                                                                                                       
-        // })
-        // .subscribe(resp => {
-        //   swal('Thông báo', resp, 'error');
-        // }, err => {});
+        this._dataService.create('infosms', {
+            lstMedicalHealthcareHistories: [{phoneNumber: this.frmBooking.value.phoneSecondNumber}], 
+            healthFacilitiesId: this.frmBooking.value.healthFacilitiesId,           
+            smsTemplateId: null,
+            type: 4, 
+            content: ''                                                                                                                       
+        })
+        .subscribe(resp => {}, err => {});
       }, err => {
         this.success = -1;
       })

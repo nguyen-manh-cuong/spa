@@ -25,63 +25,6 @@ namespace SHCServer.Controllers
             _excep = new FriendlyException();
         }
 
-        //[HttpPost]
-        //[Route("api/infosms")]
-        //public IActionResult InfoSms([FromBody] SmsInfoInputPhoneNumberViewModel infoInput)
-        //{
-        //    //
-        //    var packages = _context.Query<SmsPackagesDistribute>().Where(pd => pd.HealthFacilitiesId == infoInput.healthFacilitiesId && pd.YearEnd >= DateTime.Now.Year && pd.MonthEnd >= DateTime.Now.Month && pd.IsDelete == false && pd.IsActive == true).Select(u => new PackageDistributeViewModel(u, _connectionString)).ToList();
-        //    if (packages.Count == 0) return StatusCode(422, _excep.Throw("Không thể gửi tin do số lượng tin nhắn vượt quá gói SMS hiện tại. Mời bạn mua thêm gói SMS"));
-
-        //    long totalSms = 0;
-        //    int totalSmsSend = infoInput.lstPhoneNumber.Count;
-
-        //    foreach (var s in packages)
-        //    {
-        //        totalSms += s.SmsPackageUsed.Quantityused;
-        //    }
-
-        //    if (totalSms < 1) return StatusCode(422, _excep.Throw("Không thể gửi tin do số lượng tin nhắn vượt quá gói SMS hiện tại. Mời bạn mua thêm gói SMS"));  
-
-        //    //Xu ly tin nhan
-        //    int indexM = 0;
-        //    int indexUsed = 0;
-
-        //    //danh sach sms content
-        //    List<SmsContent> lstContent = new List<SmsContent>();
-
-        //    foreach (var phoneNumber in infoInput.lstPhoneNumber)
-        //    {
-        //        indexM++;
-        //        if (indexM > packages[indexUsed].SmsPackageUsed.Quantityused)
-        //        {
-        //            indexM = 0;
-        //            indexUsed++;
-        //        }
-
-        //        SmsContent scontent = new SmsContent();
-        //        scontent.SmsBrand = packages[indexUsed].SmsBrand;
-        //        scontent.Message = "Mã đặt khám của bạn là: " + infoInput.ticketId;
-        //        scontent.PhoneNumber = phoneNumber;
-
-        //        if(infoInput.healthFacilitiesId != null)
-        //        {
-        //            scontent.HealthFacilitiesId = infoInput.healthFacilitiesId.Value;
-        //            //scontent.SmsTemplateId = templateId;
-        //            scontent.SmsPackagesDistributeId = packages[indexUsed].Id;
-        //            scontent.SmsPackageUsedId = packages[indexUsed].SmsPackageUsed.SmsPackageUsedId;
-        //            //scontent.PatientHistoriesId = m.PatientHistoriesId;
-        //        }
-
-        //        lstContent.Add(scontent);
-        //    }
-
-        //    var sendSMS = Utils.SendListSMS(lstContent, 3);
-        //    var infoSms = SMS.SaveInfoSMS(_connectionString, sendSMS, 3);
-
-        //    return Json(new ActionResultDto { Result = infoSms });
-        //}
-
         [HttpPost]
         [Route("api/bookinginformations")]
         public IActionResult Create([FromBody] BookingInformationsInputViewModel bi)

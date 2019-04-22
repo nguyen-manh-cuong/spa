@@ -94,17 +94,6 @@ namespace SHCServer.Controllers
                             clause.Add("and h.IsReExamination != 1");
                         }
                     }
-                    if (string.Equals(key, "status"))
-                    {
-                        if (value == "1")
-                        {
-                            clause.Add("and h.IsBirthDay = 1");
-                        }
-                        else
-                        {
-                            clause.Add("and h.IsBirthDay != 1");
-                        }
-                    }
 
                     if (string.Equals(key, "patientCode"))
                     {
@@ -141,25 +130,15 @@ namespace SHCServer.Controllers
                         clause.Add("and p.WardCode = @WardCode");
                         param.Add(DbParam.Create("@WardCode", value));
                     }
-                    if (string.Equals(key, "fromDay") && value != "32")
+                    if (string.Equals(key, "birthdayDate") && value != "32")
                     {
-                        clause.Add("and p.BirthDate >= @FromDate");
+                        clause.Add("and p.BirthDate = @FromDate");
                         param.Add(DbParam.Create("@FromDate", value));
                     }
-                    if (string.Equals(key, "fromMonth") && value != "13")
+                    if (string.Equals(key, "birthdayMonth") && value != "13")
                     {
-                        clause.Add("and p.BirthMonth >= @FromMonth");
+                        clause.Add("and p.BirthMonth = @FromMonth");
                         param.Add(DbParam.Create("@FromMonth", value));
-                    }
-                    if (string.Equals(key, "toDay") && value != "32")
-                    {
-                        clause.Add("and p.BirthDate <= @ToDate");
-                        param.Add(DbParam.Create("@ToDate", value));
-                    }
-                    if (string.Equals(key, "toMonth") && value != "13")
-                    {
-                        clause.Add("and p.BirthMonth <= @ToMonth");
-                        param.Add(DbParam.Create("@ToMonth", value));
                     }
                     if (string.Equals(key, "sex"))
                     {
@@ -355,9 +334,12 @@ namespace SHCServer.Controllers
                 case 2:
                     code = "A02.SMSSINHNHAT";
                     break;
+                case 4:
+                    code = "A06.SMSDATKHAM";
+                    break;
             }
 
-            if (infoInput.type != 3 && string.IsNullOrEmpty(infoInput.content))
+            if (string.IsNullOrEmpty(infoInput.content))
             {
                 var config = _context.Query<HealthFacilitiesConfigs>().Where(hp => hp.Code == code).FirstOrDefault();
                 templateId = config != null ? config.Values : 0;
@@ -408,12 +390,12 @@ namespace SHCServer.Controllers
             {
                 _content = _content
                     .Replace("<PHONGKHAM>", packageName)
-                    .Replace("<NGAYSINH>", mhh.BirthYear.ToString())
+                    .Replace("<NGAYSINH>", mhh.BirthYear != 0 ? mhh.BirthYear.ToString() : "")
                     .Replace("<HOTEN>", mhh.FullName)
                     .Replace("<EMAIL>", mhh.Email)
                     .Replace("<GIOITINH>", mhh.Gender == 1 ? "Nam" : "Nữ")
                     .Replace("<NGAYHIENTAI>", DateTime.Now.ToString("dd/MM/yyyy"))
-                    .Replace("<NGAYTAIKHAM>", mhh.ReExaminationDate.Value.ToString("dd/MM/yyyy"));
+                    .Replace("<NGAYTAIKHAM>", mhh.ReExaminationDate != null ? mhh.ReExaminationDate.Value.ToString("dd/MM/yyyy") : "");
             }
 
             return _content;

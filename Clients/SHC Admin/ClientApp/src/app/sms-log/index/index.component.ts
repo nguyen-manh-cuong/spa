@@ -66,6 +66,12 @@ export class IndexComponent extends PagedListingComponentBase<ISmsLogs> implemen
             type: [],
             telco: []
         });
+
+        setTimeout(() => {
+            this.startTime.nativeElement.value = moment(new Date()).format("DD/MM/YYYY");
+            this.endTime.nativeElement.value = moment(new Date()).format("DD/MM/YYYY");
+        });
+
         this.dataService = this._dataService;
         this.dataService.getAll('healthfacilities', (this.appSession.user.healthFacilitiesId ? String(this.appSession.user.healthFacilitiesId) : '')).subscribe(resp => this._healthfacilities = resp.items);
         this.appSession.user.healthFacilitiesId ? this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId) : this.filterOptions();
@@ -96,7 +102,7 @@ export class IndexComponent extends PagedListingComponentBase<ISmsLogs> implemen
 
     customSearch() {
         if(!this.endTime.nativeElement.value || !this.startTime.nativeElement.value){
-            return swal('Thông báo', 'Ngày gửi từ và đến ngày không được để trống', 'warning');
+            return swal('Thông báo', 'Ngày gửi từ và Đến ngày không được để trống', 'warning');
         }
         
         if(!moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').isValid()){

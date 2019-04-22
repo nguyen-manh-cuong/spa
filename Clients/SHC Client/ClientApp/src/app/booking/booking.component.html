@@ -291,7 +291,7 @@
 
                     <div class="tab-content" *ngIf="isDoctor == 1">
                       <ul *ngFor="let el of _lstWorkingTimes; index as i" id="{{i}}" class="nav nav-tabs tab-pane fade{{i == 0 ? ' in active' : ''}}" style="margin-top: 10px;">
-                        <li *ngFor="let wt of el.workingTime; index as i" id="{{j}}"><button class="btn btn-default button-time" [ngClass]="{'clicked': (isClicked == j && type == wt.hoursStart)}" (click)="onClickWorkingTime(el, wt, isDoctor, j)">{{wt.hoursStart}} : {{wt.minuteStart}}</button></li>
+                        <li *ngFor="let wt of el.workingTime; index as j" id="{{j}}"><button class="btn btn-default button-time" [ngClass]="{'clicked': (isClicked == j && type == wt.hoursStart)}" (click)="onClickWorkingTime(el, wt, isDoctor, j)">{{wt.hoursStart}} : {{wt.minuteStart}}</button></li>
                       </ul>
                     </div>
 

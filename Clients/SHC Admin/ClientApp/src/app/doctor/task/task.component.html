@@ -1,0 +1,312 @@
+<form [formGroup]="_frm" class="container" novalidate>
+    <mat-tab-group>
+        <mat-tab>
+            <ng-template mat-tab-label>
+                {{_isNew ? l("CreateNew") : l("Edit")}} {{ll("DoctorTitle")}}
+            </ng-template>
+            <div class="pt-4">
+                <div class="row">
+                    <div class="col-md-6">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l("DoctorName")}}</mat-label>
+                            <input formControlName="fullName" matInput [required]="true" maxlength="255">
+                            <validation matSuffix [control]="_frm.controls['fullName']"></validation>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-4">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l("DoctorBirthDay")}}</mat-label>
+                            <!-- <input [matDatepicker]="picker" matInput mask="00/00/0000" maxlength="10">
+                            <mat-datepicker-toggle matSuffix [for]="picker" class="t-2"></mat-datepicker-toggle>
+                            <mat-datepicker #picker ></mat-datepicker> -->
+
+                            <input matInput [matDatepicker]="picker" #birthDayPicker mask="00/00/0000"
+                                maxlength="10" required>
+                            <mat-datepicker-toggle matSuffix [for]="picker" class="t-2"></mat-datepicker-toggle>
+                            <mat-datepicker #picker [startAt]="_birthDay"></mat-datepicker>
+                        </mat-form-field>
+                    </div>
+                </div>
+
+                <div class="row pb-2">
+                    <div class="col-md-6">
+                        <mat-radio-group formControlName="gender" appearance="outline" class="w-100">
+                            <mat-radio-button [checked]="_obj.gender==1" value="1" color="primary" class="ml-3">
+                                {{l('Male')}}</mat-radio-button>
+                            <mat-radio-button [checked]="_obj.gender==2" value="2" color="primary" class="ml-3">
+                                {{l('Female')}}</mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l("Province")}}</mat-label>
+                            <mat-select #province formControlName="provinceCode"
+                                (selectionChange)="provinceChange($event)">
+                                <mat-option class="text-center">{{l('CancelSelect')}}</mat-option>
+                                <mat-option *ngFor="let p of provinces" [value]="p.provinceCode">{{p.name}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-6">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l("District")}}</mat-label>
+                            <mat-select formControlName="districtCode"
+                                (selectionChange)="districtChange(province,$event)">
+                                <mat-option *ngIf="checkProvince" class="text-center">{{l('CancelSelect')}}</mat-option>
+                                <mat-option *ngFor="let d of districts" [value]="d.districtCode">{{d.name}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l("Address")}}</mat-label>
+                            <input formControlName="address" matInput [required]="true" maxlength="255">
+                        </mat-form-field>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l("PhoneNumber")}}</mat-label>
+                            <input formControlName="phoneNumber" matInput [required]="true" maxlength="255">
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-6">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l("Email")}}</mat-label>
+                            <input formControlName="email" matInput [required]="true" maxlength="255">
+                        </mat-form-field>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l("DoctorCertificationCode")}}</mat-label>
+                            <input formControlName="certificationCode" matInput [required]="true" maxlength="255">
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-4">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l("DoctorCertificationDate")}}</mat-label>
+                            <input #certificationDatePicker matInput [matDatepicker]="certificationDatePicker" matInput mask="00/00/0000"
+                                maxlength="10">
+                            <mat-datepicker-toggle matSuffix [for]="certificationDatePicker" class="t-2">
+                            </mat-datepicker-toggle>
+                            <mat-datepicker #certificationDatePicker [startAt]="startDate">
+                            </mat-datepicker>
+                        </mat-form-field>
+
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l("DoctorTitleCode")}}</mat-label>
+                            <mat-select formControlName="titleCode">
+                                <mat-option class="text-center">{{l('CancelSelect')}}</mat-option>
+                                <mat-option *ngFor="let t of titles" [value]="t.code">{{t.name}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+
+                    </div>
+                    <div class="col-md-6">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l("DoctorPosition")}}</mat-label>
+                            <mat-select formControlName="posittionCode">
+                                <mat-option class="text-center">{{l('CancelSelect')}}</mat-option>
+                                <mat-option *ngFor="let p of positions" [value]="p.code">{{p.name}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l("DoctorAcademic")}}</mat-label>
+                            <mat-select formControlName="academicId">
+                                <mat-option class="text-center">{{l('CancelSelect')}}</mat-option>
+                                <mat-option *ngFor="let a of academics" [value]="a.code">{{a.name}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-6">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l("DoctorDegree")}}</mat-label>
+                            <mat-select formControlName="degreeId">
+                                <mat-option class="text-center">{{l('CancelSelect')}}</mat-option>
+                                <mat-option *ngFor="let d of degrees" [value]="d.code">{{d.name}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l("DoctorNation")}}</mat-label>
+                            <mat-select formControlName="nationCode">
+                                <mat-option class="text-center">{{l('CancelSelect')}}</mat-option>
+                                <mat-option *ngFor="let n of nations" [value]="n.nationCode">{{n.nationName}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-6">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l("DoctorEthnicity")}}</mat-label>
+                            <mat-select formControlName="ethnicityCode">
+                                <mat-option class="text-center">{{l('CancelSelect')}}</mat-option>
+                                <mat-option *ngFor="let e of ethnicities" [value]="e.ethnicityCode">{{e.name}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l("DoctorSpecialist")}}</mat-label>
+                            <mat-select formControlName="specialist">
+                                <mat-option class="text-center">{{l('CancelSelect')}}</mat-option>
+                                <mat-option *ngFor="let s of specialist" [value]="s.code">{{s.name}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l("EducationCountryCode")}}</mat-label>
+                            <mat-select formControlName="educationCountryCode">
+                                <mat-option class="text-center">{{l('CancelSelect')}}</mat-option>
+                                <mat-option *ngFor="let n of nations" [value]="n.nationCode">{{n.nationName}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-3 ml-3">
+                        <input #img formControlName="avatar" [hidden]="true">
+                        <img height="175px" width="200px" [src]="img.value">
+                    </div>
+                    <div class="col-md-4">
+                        <div class="col-md-3 btn btn-primary">
+                            <br>
+                            <button mat-stroked-button color="primary">
+                                <mat-icon class="f-20 m-l--10 mat-icon m-t-2 material-icons">add</mat-icon>
+                                {{l("DoctorSelectAvatar")}}
+                            </button>
+                        </div>
+                        <div class="pl-3">
+                            <br>
+                            <mat-label>Ảnh định dạng png, jpg, jpeg</mat-label>
+                            <br>
+                            <mat-label>Dung lượng ảnh không quá 2Mb</mat-label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12 pt-4">
+                        <ckeditor formControlName="sumary" [editor]="Editor">
+                        </ckeditor>
+                    </div>
+                </div>
+
+                <div class="row pt-4">
+                    <div class="col-md-6">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l("DoctorPriceFrom")}}</mat-label>
+                            <input mask="comma_separator" maxlength="14" formControlName="priceFrom" matInput
+                                [required]="true">
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-6">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l("DoctorPriceTo")}}</mat-label>
+                            <input mask="comma_separator" maxlength="14" formControlName="priceTo" matInput
+                                [required]="true">
+                        </mat-form-field>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l("DoctorPriceDescription")}}</mat-label>
+                            <input formControlName="priceDescription" matInput [required]="true" maxlength="255">
+                        </mat-form-field>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l("DoctorDescription")}}</mat-label>
+                            <input formControlName="description" matInput [required]="true" maxlength="255"
+                                ngDefaultControl>
+                        </mat-form-field>
+
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l("HealthFacilities")}}</mat-label>
+                            <input formControlName="healthFacilities" matInput [required]="true" maxlength="255">
+                        </mat-form-field>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <mat-checkbox formControlName="allowBooking" (click)="checkBoxChange('allowBooking')"
+                            class="pl-3" color="primary">
+                            {{l('DoctorAllowBooking')}}</mat-checkbox>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <mat-checkbox formControlName="allowFilter" (click)="checkBoxChange('allowFilter')" class="pl-3"
+                            color="primary">
+                            {{l('DoctorAllowFilter')}}</mat-checkbox>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <mat-checkbox formControlName="allowSearch" (click)="checkBoxChange('allowSearch')" class="pl-3"
+                            color="primary">
+                            {{l('DoctorAllowSearch')}}</mat-checkbox>
+                    </div>
+                </div>
+
+                <div class="text-right mb-3">
+                    <div *ngIf="_isNew" class="mb-2 mr-3">
+                        <mat-checkbox #continueAdd (click)="checkBoxChange()" color="primary">{{l('DoctorContinueAdd')}}
+                        </mat-checkbox>
+                    </div>
+                    <button class="mr-3" mat-button mat-dialog-close>{{l("Close")}}</button>
+                    <button mat-raised-button color="primary" [disabled]="_frm.invalid"
+                        (click)="submit()">{{l("Save")}}</button>
+                </div>
+            </div>
+        </mat-tab>
+    </mat-tab-group>
+</form>
