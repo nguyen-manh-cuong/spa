@@ -14,11 +14,11 @@
     </div>
 </div>
 <div class="content fadeIn animated">
-    <form [formGroup]="frmSearch" class="form-filter pl-2 pr-2" novalidate>
+    <form [formGroup]="frmSearch" class="form-filter form-custom pl-2 pr-2" novalidate>
         <div class="row m-0 pt-4">
             <div class="col-md-6" [hidden]="this.appSession.user.healthFacilitiesId">
                 <mat-form-field appearance="outline" class="w-100">
-                    <mat-label>{{l('Phòng khám')}}</mat-label>
+                    <mat-label>{{l('Unit')}}</mat-label>
                     <input matInput [formControl]="healthfacilities" (click)="clickCbo()" [matAutocomplete]="auto">
                     <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="onSelectHealthFacilities($event.option.value)">
                         <mat-option *ngFor="let o of filteredOptions | async" [value]="o">
@@ -83,7 +83,7 @@
         </div>
     </form>
     
-    <div class="table-content" style="height: calc(100vh - 245px);">
+    <div class="table-content table-custom" style="height: calc(100vh - 245px);">
         <table mat-table [dataSource]="dataSources" matSort #sort="matSort" matSortActive="name"
             matSortDirection="asc" class="w-100 task">
 

@@ -96,14 +96,14 @@ export class IndexComponent extends PagedListingComponentBase<IBookingDoctorsCal
 
     _filter(name: any): IHealthfacilities[] {
         const filterValue = name.toLowerCase();
-        if(isNaN(filterValue)){
-            return this._healthfacilities.filter(h => h.name.toLowerCase().indexOf(filterValue) === 0);
-        }
-        return this._healthfacilities.filter(h => h.code.toLowerCase().indexOf(filterValue) === 0);
+        var healthfacilities = isNaN(filterValue) ?         
+        this._healthfacilities.filter(h => h.name.toLowerCase().indexOf(filterValue) === 0) : 
+        this._healthfacilities.filter(h => h.code.toLowerCase().indexOf(filterValue) === 0);
+
+        return healthfacilities
     }
 
     clickCbo() {
-        console.log(1, this.healthfacilities.value);
         !this.healthfacilities.value ? this.filterOptions() : '';
     }
 
@@ -111,7 +111,6 @@ export class IndexComponent extends PagedListingComponentBase<IBookingDoctorsCal
         this.filteredOptions = this.healthfacilities.valueChanges
             .pipe(
                 startWith<string | IHealthfacilities>(''),
-                // map(value => typeof value === 'string' ? value : value.name),
                 map(value => typeof value === 'string' ? value : value.name),
                 map(name => name ? this._filter(name) : this._healthfacilities.slice()),
                 map(data => data.slice(0, 30))

@@ -1,7 +1,7 @@
 
 import { IDoctor } from './../../../../../../SHC Client/ClientApp/src/shared/Interfaces';
 import * as _ from 'lodash';
-import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+// import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { Component, Inject, Injector, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef, MatInput, MatCheckbox } from '@angular/material';
@@ -92,7 +92,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   _context: any;
   _isNew: boolean = true;
 
-  public Editor = ClassicEditor;
+  // public Editor = ClassicEditor;
 
   constructor(
     injector: Injector,
