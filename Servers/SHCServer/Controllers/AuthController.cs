@@ -15,6 +15,7 @@ using System.Security.Claims;
 using System.Text;
 using Viettel.MySql;
 using AuthServer;
+using System.IO;
 
 namespace SHCServer.Controllers
 {
@@ -97,7 +98,7 @@ namespace SHCServer.Controllers
                                 {
                                     new MenuItem {Name = "HomePage", Icon      = "home", Route        = "/app/dashboard"},
                                     //new MenuItem {Name = "UsersManager", Icon = "people", Route = "/app/users"},
-                                    //new MenuItem {Name = "Language", Icon = "g_translate", Route = "/app/languages"},
+                                    new MenuItem {Name = "Language", Icon = "g_translate", Route = "/app/languages"},
                                     new MenuItem {Name = "SMS", Icon = "sms", Items = new List<MenuItem>{
                                          new MenuItem {Name = "PackagesMenu", Icon = "", Route = "/app/sms-package"},
                                          new MenuItem {Name = "PackagesDistributeSmsPackage", Icon = "", Route = "/app/sms-package-distribute"},
@@ -106,12 +107,13 @@ namespace SHCServer.Controllers
                                     new MenuItem {Name = "SmsManual", Icon = "sms", Items = new List<MenuItem>{
                                          new MenuItem {Name = "SmsManualReExamination", Icon = "", Route = "/app/sms-manual-re-examination"},
                                          new MenuItem {Name = "SmsManualBirthday", Icon = "", Route = "/app/sms-manual-birthday"},
-                                         new MenuItem {Name = "SmsManual", Icon = "", Route = "/app/sms-manual"},
+                                         new MenuItem {Name = "SmsUserManual", Icon = "", Route = "/app/sms-manual"},
                                          new MenuItem {Name = "SmsLog", Icon = "", Route = "/app/sms-log"}
                                     }},
                                     new MenuItem {Name = "Danh mục khung giờ khám", Icon = "av_timer", Route = "/app/booking-timeslots"},
                                     //new MenuItem {Name = "Thống kê danh sách bệnh nhân đặt khám", Icon = "av_timer", Route = "/app/booking-informations"},
-                                    new MenuItem{Name = "CategoryCommon", Icon="account_circle", Route="/app/category-common"}
+                                    new MenuItem{Name = "CategoryCommon", Icon="account_circle", Route="/app/category-common"},
+                                    //new MenuItem{Name = "Lịch khám bác sĩ", Icon="assignment_turned_in", Route="/app/booking-doctor-approve"}
                                 } 
                             }
                         }
@@ -158,7 +160,7 @@ namespace SHCServer.Controllers
             }
 
             //return Json(new ActionResultDto { Error = new { code = 0, message = "Login failed!", details = "Invalid user name or password" } });
-            return StatusCode(422, _excep.Throw("Đăng nhập không thành công! Tài khoản hoặc mật khẩu không đúng."));
+            return StatusCode(422, _excep.Throw("Đăng nhập không thành công!", "Tài khoản hoặc mật khẩu không đúng."));
         }
 
         [HttpPost]
@@ -169,19 +171,19 @@ namespace SHCServer.Controllers
 
             if (User.Where(u => u.UserName == obj.UserName).Count() > 0)
             {
-                return StatusCode(409, _excep.Throw("Đăng ký thất bại.", "Tài khoản đã tồn tại!"));
+                return StatusCode(409, _excep.Throw("Đăng ký không thành công.", "Tài khoản đã tồn tại!"));
             }
             if (User.Where(u => u.Email == obj.Email).Count() > 0)
             {
-                return StatusCode(409, _excep.Throw("Đăng ký thất bại.", "Email đã tồn tại!"));
+                return StatusCode(409, _excep.Throw("Đăng ký không thành công.", "Email đã tồn tại!"));
             }
             if (User.Where(u => u.PhoneNumber == obj.PhoneNumber).Count() > 0)
             {
-                return StatusCode(409, _excep.Throw("Đăng ký thất bại.", "Số điện thoại đã tồn tại!"));
+                return StatusCode(409, _excep.Throw("Đăng ký không thành công.", "Số điện thoại đã tồn tại!"));
             }
             if (obj.Identification != null && User.Where(u => u.Identification == obj.Identification).Count() > 0)
             {
-                return StatusCode(409, _excep.Throw("Đăng ký thất bại.", "Số CMND đã tồn tại!"));
+                return StatusCode(409, _excep.Throw("Đăng ký không thành công.", "Số CMND đã tồn tại!"));
             }
 
             try
@@ -213,6 +215,20 @@ namespace SHCServer.Controllers
                     Specialist = obj.Specialist
                 });
 
+                //var _files = Request.Form.Files;
+                //var _fileUpload = "";
+                //if (_files.Count > 0)
+                //{
+                //    foreach (var file in _files)
+                //    {
+                //        var uniqueFileName = GetUniqueFileName(file.FileName);
+                //        var uploads = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+                //        var filePath = Path.Combine(uploads, uniqueFileName);
+                //        _fileUpload = "/uploads/" + uniqueFileName;
+                //        file.CopyTo(new FileStream(filePath, FileMode.Create));
+                //    }
+                //}
+
                 _context.Session.CommitTransaction();
                 return Json(new ActionResultDto());
             }
@@ -233,7 +249,14 @@ namespace SHCServer.Controllers
 
             return Json(new { Code = result.CaptchaCode, Data = result.CaptchBase64Data });
         }
-
+        private string GetUniqueFileName(string fileName)
+        {
+            fileName = Path.GetFileName(fileName);
+            return Path.GetFileNameWithoutExtension(fileName)
+                      + "_"
+                      + Guid.NewGuid().ToString().Substring(0, 4)
+                      + Path.GetExtension(fileName);
+        }
         private static AuthenticateResultModel GenerateJwtToken(string email, User user, IOptions<Audience> settings)
         {
             List<Claim> claims = new List<Claim>

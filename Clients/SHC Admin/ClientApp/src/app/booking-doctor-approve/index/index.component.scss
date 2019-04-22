@@ -1,0 +1,42 @@
+.btn{
+    margin-top: 8px;
+    margin-bottom: 8px;
+    border-radius: 5px;
+    padding: 3px;
+    height: 30px;
+}
+
+.btn:hover .icon {
+    display: inline-block;
+}
+
+.btn .icon{
+    display: none;
+    top: -7px;
+    left: 6px;
+    float: right;
+    position: relative;
+    font-size: 20px;
+    background-color: white;
+    border-radius: 50%;
+}
+
+.wait{
+    background-color: aquamarine;
+}
+
+.approve{
+    background-color: bisque;
+}
+
+.restore{
+    background-color: deepskyblue;
+}
+
+.btn {
+    .mat-checkbox-inner-container-no-side-margin {
+        margin-top: 2px;
+        margin-right: 4px;
+        background: white;
+    }
+}

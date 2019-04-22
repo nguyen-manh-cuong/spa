@@ -65,6 +65,16 @@ export interface IBookingInformations{
     healthFacilitiesId: number;
     doctorId: number;
     status: number;
+    healthFacilitiesName: string;
+    doctorName: string;
+    quantity;
+    quantityByGederFemale: number;
+    quantityByGederMale: number;
+    quantityByStatusNew: number;
+    quantityByStatusPending: number;
+    quantityByStatusDone: number;
+    quantityByStatusCancel: number;
+    examinationDate: Date;
 }
 
 export interface IPackage {
@@ -94,8 +104,19 @@ export interface IPachkageDistribute{
     healthFacilitiesId : number;
     monthStart : Number;
     monthEnd : Number;
-    year : Number;
+    yearStart: Number;
+    yearEnd: Number;
     status: number;
+    quantity: number;
+    smsPackageUsed: ISmsPackageUsed;
+}
+
+export interface ISmsPackageUsed {
+    id: number;
+    smsPackageId: number;
+    healthFacilitiesId: number;
+    quantityused: number;
+    createDate: Date;
 }
 
 export interface ISmsTemplate {
@@ -169,6 +190,28 @@ export interface IMedicalHealthcareHistories{
     gender: number;
     phoneNumber?: number;
     address?: string;
+}
+
+export interface IBookingDoctorsCalendars{
+    calendarDate?: string;
+    calendarId: number;
+    hoursEnd: string;
+    hoursStart: string;
+    minuteEnd: string;
+    minuteStart: string;
+    status?: number;
+    strCalendarDate?: string;
+    timeSlotId?: number;
+    address?: string;
+    doctorId?: number,
+    fullName: string;
+}
+
+export interface IBookingDoctorsCalendarsView{
+    doctorId?: number,
+    name: string;
+
+    lstBookingDoctorsCalendars: Array<IBookingDoctorsCalendars>;
 }
 
 

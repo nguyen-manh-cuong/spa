@@ -22,7 +22,7 @@ export class packagedistributeTaskComponent extends AppComponentBase implements 
   api: string = 'smspackagedistribute';
 
   _frmpackagedistribute: FormGroup;
-  _obj: IPachkageDistribute | any = { smsBrandsId: '', healthFacilitiesId: '', monthStart: '', monthEnd: '', year: '', smsPackageId: '', isActive: false };
+    _obj: IPachkageDistribute | any = { smsBrandsId: '', healthFacilitiesId: '', monthStart: '', monthEnd: '', yearStart: '', yearEnd: '', smsPackageId: '', isActive: false };
   _context: any;
   _isNew: boolean = true;
   _month = [{ id: 1, name: 'Tháng 1' }, { id: 2, name: 'Tháng 2' }, { id: 3, name: 'Tháng 3' }, { id: 4, name: 'Tháng 4' }, { id: 5, name: 'Tháng 5' }, { id: 6, name: 'Tháng 6' },
@@ -44,14 +44,16 @@ export class packagedistributeTaskComponent extends AppComponentBase implements 
       this._obj = _.clone(this.obj);
       this._obj.monthStart = this.obj.monthStart;
       this._obj.monthEnd = this.obj.monthEnd;
-      this._obj.year = this.obj.year;
+        this._obj.yearStart = this.obj.yearStart;
+        this._obj.yearEnd = this.obj.yearEnd;
       this._isNew = false;
     }
     else{
       this._obj.healthFacilitiesId = [];
       this._obj.monthStart = Number(this.datePipe.transform(Date.now(), "M"));
       this._obj.monthEnd = Number(this.datePipe.transform(Date.now(), "M"));
-      this._obj.year = Number(this.datePipe.transform(Date.now(), "yyyy"));
+        this._obj.yearStart = Number(this.datePipe.transform(Date.now(), "yyyy"));
+        this._obj.yearEnd = Number(this.datePipe.transform(Date.now(), "yyyy"));
       this._obj.isActive = true;
     }
 
@@ -63,7 +65,8 @@ export class packagedistributeTaskComponent extends AppComponentBase implements 
       smsBrandsId: [this._obj.smsBrandsId, Validators.required],
       monthStart: [this._obj.monthStart, ],
       monthEnd: [this._obj.monthEnd, ],
-      year: [this._obj.year, [Validators.maxLength(4), Validators.pattern('[0-9]*')]],
+        yearStart: [this._obj.yearStart, [Validators.maxLength(4), Validators.pattern('[0-9]*')]],
+        yearEnd: [this._obj.yearEnd, [Validators.maxLength(4), Validators.pattern('[0-9]*')]],
       smsPackageId: [this._obj.smsPackageId, Validators.required],
       isActive: [this._obj.isActive],
       userId: []

@@ -45,12 +45,16 @@ export class packagedistributeIndexComponent extends PagedListingComponentBase<I
     this.frmSearch = this._formBuilder.group({
       monthStart: [13,],
       monthEnd: [13,],
-      year: ['', [Validators.maxLength(4), Validators.min(0), Validators.max(9999), Validators.pattern('[0-9]*')]],
+        toYear: ['', [Validators.maxLength(4), Validators.min(0), Validators.max(9999), Validators.pattern('[0-9]*')]],
+        fromYear: ['', [Validators.maxLength(4), Validators.min(0), Validators.max(9999), Validators.pattern('[0-9]*')]],
       HealthFacilitiesId: ['',],
-      Status: [2,]
+        Status: [2,],
     });
 
-    this._dataService.getAll('healthfacilities').subscribe(resp => this._medicalFacility = resp.items);
+      this._dataService.getAll('healthfacilities').subscribe(resp => {
+          console.log(resp.items);
+          this._medicalFacility = resp.items;
+      });
   }
 
   getMedicalById(id: number): string {
@@ -66,7 +70,7 @@ export class packagedistributeIndexComponent extends PagedListingComponentBase<I
     console.log(this.l('DeletedInSystem', obj[key] + " - " + this.getMedicalById(benhvien)));
     swal({
       title: this.l('AreYouSure'),
-      html: this.l('DeleteWarningMessage', this.getMedicalById(benhvien) + " - " + obj[key]),
+      html: this.l('DeleteWarningMessage', obj[key]),
       type: 'warning',
       showCancelButton: true,
       confirmButtonClass: 'mat-raised-button mat-primary bg-danger',
@@ -75,13 +79,18 @@ export class packagedistributeIndexComponent extends PagedListingComponentBase<I
       cancelButtonText: this.l('Cancel'),
       buttonsStyling: false
     }).then((result) => {
-      if (result.value) {
-        this.dataService.delete(this.api, obj[id ? id : 'id']).subscribe(e => {
-          this.paginator._changePageSize(this.paginator.pageSize);
-          this.paginator.pageIndex = 0;
-          swal(this.l('SuccessfullyDeleted'), this.l('DeletedInSystem', this.getMedicalById(benhvien) + " - " + obj[key]), 'success');
-        });
-      }
+        if (result.value) {
+            if (obj.quantity == obj.smsPackageUsed.quantityused) {
+                this.dataService.delete(this.api, obj[id ? id : 'id']).subscribe(e => {
+                    this.paginator._changePageSize(this.paginator.pageSize);
+                    this.paginator.pageIndex = 0;
+                    swal(this.l('SuccessfullyDeleted'), this.l('DeletedInSystem', obj[key]), 'success');
+                });
+            }
+            else {
+                swal(this.l('ErrorDelete'), this.l('ErrorDeletedInSystem', obj[key]), 'error');
+            }
+        }
     });
   }
 
@@ -90,7 +99,11 @@ export class packagedistributeIndexComponent extends PagedListingComponentBase<I
   }
 
   openView(obj?: IPachkageDistribute): void {
-    const dialogRef = this.dialog.open(this.ViewComponent, { minWidth: 'calc(100vw/2)', maxWidth: 'calc(100vw - 300px)', data: obj ? obj : null });
+      const dialogRef = this.dialog.open(this.ViewComponent, { minWidth: 'calc(100vw/2)', maxWidth: 'calc(100vw - 300px)', data: obj ? obj : null });
+      dialogRef.afterClosed().subscribe(() => {
+          this.paginator.pageIndex = 0;
+          this.paginator._changePageSize(this.paginator.pageSize);
+      });
   }
 
   openEdit(obj?: IPachkageDistribute): void {

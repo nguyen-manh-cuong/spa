@@ -19,11 +19,13 @@ namespace SHCServer
         public long Code { set; get; } //0=fail
         public string Message { set; get; }
         public string PhoneNumber { set; get; }
+        public string Result { set; get; }
         public int HealthFacilitiesId { set; get; }
         public int SmsTemplateId { set; get; }
         public int SmsPackagesDistributeId { set; get; }
         public int SmsPackageUsedId { set; get; }
-        public int PatientHistoriesId { set; get; }
+        public int? PatientHistoriesId { set; get; }
+        public string Telco { set; get; }
     }
 
     public class SmsContent
@@ -35,7 +37,7 @@ namespace SHCServer
         public int SmsTemplateId { set; get; }
         public int SmsPackagesDistributeId { set; get; }
         public int SmsPackageUsedId { set; get; }
-        public int PatientHistoriesId { set; get; }
+        public int? PatientHistoriesId { set; get; }
     }
 
     public class Utils
@@ -199,6 +201,30 @@ namespace SHCServer
             string Content = content.Message;
             string ContentType = "1";
 
+            string telco = "";
+
+            if (CheckTelcoViettel(content.PhoneNumber) != null)
+            {
+                telco = "Viettel";
+            }
+            if (CheckTelcoMobifone(content.PhoneNumber) != null)
+            {
+                telco = "Mobifone";
+            }
+            if (CheckTelcoVinaphone(content.PhoneNumber) != null)
+            {
+                telco = "Vinaphone";
+            }
+            if (CheckTelcoGmobile(content.PhoneNumber) != null)
+            {
+                telco = "Gmobile";
+            }
+            if (CheckTelcoVietnamobile(content.PhoneNumber) != null)
+            {
+                telco = "Vietnamobile";
+            }
+
+
             if (type == 1)
             {
                 ContentType = "1";
@@ -216,14 +242,15 @@ namespace SHCServer
                 return new SmsRespone
                 {
                     Code = result.result1,
-                    //Message = result.message,
+                    Result = result.message,
                     Message = content.Message,
                     PhoneNumber = content.PhoneNumber,
                     HealthFacilitiesId = content.HealthFacilitiesId,
                     SmsTemplateId = content.SmsTemplateId,
                     SmsPackagesDistributeId = content.SmsPackagesDistributeId,
                     SmsPackageUsedId = content.SmsPackageUsedId,
-                    PatientHistoriesId = content.PatientHistoriesId
+                    PatientHistoriesId = content.PatientHistoriesId,
+                    Telco = telco
                 };
             }
             catch(Exception e)
@@ -238,7 +265,8 @@ namespace SHCServer
                     SmsTemplateId = content.SmsTemplateId,
                     SmsPackagesDistributeId = content.SmsPackagesDistributeId,
                     SmsPackageUsedId = content.SmsPackageUsedId,
-                    PatientHistoriesId = content.PatientHistoriesId
+                    PatientHistoriesId = content.PatientHistoriesId,
+                    Telco = telco,
                 };
             }
             finally
@@ -257,6 +285,105 @@ namespace SHCServer
             }
 
             return lstSmsRespones;
+        }
+
+        public static string CheckTelcoViettel(string phoneNumber)
+        {
+            var match = "";
+            const string telcoViettel = "086,096,097,098,032,033,034,035,036,037,038,039";
+            var dauso = Enumerable.Range(0, phoneNumber.Length / 3)
+        .Select(i => phoneNumber.Substring(i * 3, 3));
+            string[] viettelPhones = telcoViettel.Split(',');
+            foreach (string phone in viettelPhones)
+            {
+              match = dauso.FirstOrDefault(stringToCheck => stringToCheck.Contains(phone));
+                if (match != null)
+                {
+                    return match;
+                }
+            }
+            return match;
+
+        }
+
+
+        public static string CheckTelcoMobifone(string phoneNumber)
+        {
+            var match = "";
+            const string telcoMobifone = "089,090,093,070,079,077,076,078";
+            var dauso = Enumerable.Range(0, phoneNumber.Length / 3)
+        .Select(i => phoneNumber.Substring(i * 3, 3));
+            string[] viettelPhones = telcoMobifone.Split(',');
+            foreach (string phone in viettelPhones)
+            {
+                match = dauso
+.FirstOrDefault(stringToCheck => stringToCheck.Contains(phone));
+                if (match != null)
+                {
+                    return match;
+                }
+            }
+            return match;
+        }
+
+
+        public static string CheckTelcoVinaphone(string phoneNumber)
+        {
+            var match = "";
+            const string telcoVinaphone = "088,091,094,083,084,085,081,082";
+            var dauso = Enumerable.Range(0, phoneNumber.Length / 3)
+        .Select(i => phoneNumber.Substring(i * 3, 3));
+            string[] viettelPhones = telcoVinaphone.Split(',');
+            foreach (string phone in viettelPhones)
+            {
+                match = dauso
+.FirstOrDefault(stringToCheck => stringToCheck.Contains(phone));
+                if (match != null)
+                {
+                    return match;
+                }
+            }
+            return match;
+        }
+
+
+        public static string CheckTelcoVietnamobile(string phoneNumber)
+        {
+            var match = "";
+            const string telcoVietnamobile = "092,052,058";
+            var dauso = Enumerable.Range(0, phoneNumber.Length / 3)
+        .Select(i => phoneNumber.Substring(i * 3, 3));
+            string[] viettelPhones = telcoVietnamobile.Split(',');
+            foreach (string phone in viettelPhones)
+            {
+                match = dauso
+.FirstOrDefault(stringToCheck => stringToCheck.Contains(phone));
+                if (match != null)
+                {
+                    return match;
+                }
+            }
+            return match;
+        }
+
+
+        public static string CheckTelcoGmobile(string phoneNumber)
+        {
+            var match = "";
+            const string telcoGmobile = "099,059";
+            var dauso = Enumerable.Range(0, phoneNumber.Length / 3)
+        .Select(i => phoneNumber.Substring(i * 3, 3));
+            string[] viettelPhones = telcoGmobile.Split(',');
+            foreach (string phone in viettelPhones)
+            {
+                match = dauso
+.FirstOrDefault(stringToCheck => stringToCheck.Contains(phone));
+                if (match != null)
+                {
+                    return match;
+                }
+            }
+            return match;
         }
 
         //public static string GetLocalToken(HttpClient _httpClient, BearerToken _token, string key = null, string host = "127.0.0.1", double port = 9000)

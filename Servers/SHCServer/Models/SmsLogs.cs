@@ -24,5 +24,7 @@ namespace SHCServer.Models
         public int? Status { set; get; }
         public DateTime SentDate { set; get; }
         public int? LogType { set; get; }
+        public string Telco { set; get; }
+        public string ResultMessage { set; get; }
     }
 }

@@ -31,7 +31,7 @@ namespace SHCServer.ViewModels
             }
             else
             {
-                HealthFacilitiesName = "";
+                HealthFacilitiesName = "Toàn hệ thống";
             }
             HoursStart = bookingTimeslots.HoursStart;
             MinuteStart = bookingTimeslots.MinuteStart;

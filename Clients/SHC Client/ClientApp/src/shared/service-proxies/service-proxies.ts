@@ -2229,6 +2229,7 @@ export class UserLoginInfoDto implements IUserLoginInfoDto {
     id: number | undefined;
     accountType: number | undefined;
     groups: IGroup;
+    healthFacilitiesId: number | undefined;
 
     constructor(data?: IUserLoginInfoDto) {
         if (data) {
@@ -2248,6 +2249,7 @@ export class UserLoginInfoDto implements IUserLoginInfoDto {
             this.id = data["id"];
             this.accountType = data["accountType"];
             this.groups = data["groups"];
+            this.healthFacilitiesId = data["healthFacilitiesId"];
         }
     }
 

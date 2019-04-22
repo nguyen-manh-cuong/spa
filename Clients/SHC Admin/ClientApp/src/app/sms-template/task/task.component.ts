@@ -22,11 +22,12 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   api: string = 'sms-templates';
 
   _frm: FormGroup;
-  _smstemplates: ISmsTemplate | any = { smsTemplateName: '', messageType: '',messageContent:'',isActive:'',applyAllSystem:'' };
-  _users: Array<IUser> = [];
+  _smstemplates: ISmsTemplate | any = { smsTemplateName: '', messageType: '',messageContent:'',isActive:'',applyAllSystem:'', id: 0 };
+    _users: Array<IUser> = [];
   _selection = new SelectionModel<IUser>(true, []);
   _context: any;
-  _isNew: boolean = true;
+    _isNew: boolean = true;
+    _isUsedSuccess: boolean = false;
   _messageType: Array<ICategoryCommon> = [];
   dataService: DataService;
 
@@ -38,12 +39,14 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     const validationRule = new ValidationRule();
 
     this.dataService = this._dataService;
-    this.dataService.getAll('categorycommon', 'LOAITINNHAN').subscribe(resp => this._messageType = resp.items);
+      this.dataService.getAll('categorycommon', 'LOAITINNHAN').subscribe(resp => this._messageType = resp.items);
     this._smstemplates.isActive = true;
-    this._smstemplates.applyAllSystem = true;
+      this._smstemplates.applyAllSystem = true;
 
     if (this.smstemplate) {
-      this._smstemplates = _.clone(this.smstemplate);
+        this._smstemplates = _.clone(this.smstemplate);
+        console.log(this._smstemplates);
+        this.dataService.getAll('smslog', JSON.stringify({ smsTemplateId: this._smstemplates.id, status: '1' })).subscribe(resp => resp.items.length > 0 ? this._isUsedSuccess = true : this._isUsedSuccess = false);
       this._isNew = false;
     }
 
@@ -57,7 +60,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
       healthFacilitiesId: [],
       userId: []
     };
-    this._frm = this._formBuilder.group(this._context);
+      this._frm = this._formBuilder.group(this._context);
   }
 
   ngAfterViewInit(): void {
@@ -70,7 +73,8 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     this._frm.value.smsTemplateName = this._frm.value.smsTemplateName.trim();
     this._frm.value.smsContent = this._frm.value.smsContent.trim();
     this._frm.value.healthFacilitiesId = this.appSession.user.healthFacilitiesId;
-    this._frm.value.userId = this.appSession.userId;
+      this._frm.value.userId = this.appSession.userId;
+      this._frm.value.createUserId = this.appSession.user.id;
     this.appSession.user.healthFacilitiesId ? this._frm.value.applyAllSystem = false: '';
 
     this._isNew ?
@@ -85,68 +89,87 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   }
   
   mescontent : string = '';
-  changeSelected(e) { 
-    if(e == 1)
-    {
-      this._context.mescontent = this._frm.controls['smsContent'].value;
-      if(this._context.mescontent == null){
-        this._frm.controls['smsContent'].setValue(' <PHONGKHAM>');
-      }else{
-        this._frm.controls['smsContent'].setValue(this._context.mescontent + ' <PHONGKHAM>');
-      }
-    }
-    if(e == 2)
-    {
-      this._context.mescontent = this._frm.controls['smsContent'].value;
-      if(this._context.mescontent == null){
-        this._frm.controls['smsContent'].setValue(' <NGAYSINH>');
-      }else{
-        this._frm.controls['smsContent'].setValue(this._context.mescontent + ' <NGAYSINH>');
-      }
-    }
-    if(e == 3)
-    {
-      this._context.mescontent = this._frm.controls['smsContent'].value;
-      if(this._context.mescontent == null){
-        this._frm.controls['smsContent'].setValue(' <HOTEN>');
-      }else{
-        this._frm.controls['smsContent'].setValue(this._context.mescontent + ' <HOTEN>');
-      }
-    }
-    if(e == 4)
-    {
-      this._context.mescontent = this._frm.controls['smsContent'].value;
-      if(this._context.mescontent == null){
-        this._frm.controls['smsContent'].setValue(' <EMAIL>');
-      }else{
-        this._frm.controls['smsContent'].setValue(this._context.mescontent + ' <EMAIL>');
-      }
-    }
-    if(e == 5)
-    {
-      this._context.mescontent = this._frm.controls['smsContent'].value;
-      if(this._context.mescontent == null){
-        this._frm.controls['smsContent'].setValue(' <GIOITINH>');
-      }else{
-        this._frm.controls['smsContent'].setValue(this._context.mescontent + ' <GIOITINH>');
-      }
-    }
-    if(e == 6)
-    {
-      this._context.mescontent = this._frm.controls['smsContent'].value;
-      if(this._context.mescontent == null){
-        this._frm.controls['smsContent'].setValue(' <NGAYHIENTAI>');
-      }else{
-        this._frm.controls['smsContent'].setValue(this._context.mescontent + ' <NGAYHIENTAI>');
-      }
-    }
-    if(e == 7)
-    {
-      this._context.mescontent = this._frm.controls['smsContent'].value;
-      if(this._context.mescontent == null){
-        this._frm.controls['smsContent'].setValue(' <NGAYTAIKHAM>');
-      }else{
-        this._frm.controls['smsContent'].setValue(this._context.mescontent + ' <NGAYTAIKHAM>');
-      }
-    }
+    changeSelected(e) {
+        switch (e) {
+            case 1:
+                this._context.mescontent = this._frm.controls['smsContent'].value;
+                if (this._context.mescontent == null) {
+                    this._frm.controls['smsContent'].setValue(' <PHONGKHAM>');
+                } else {
+                    this._frm.controls['smsContent'].setValue(this._context.mescontent + ' <PHONGKHAM>');
+                }
+                break;
+            case 2:
+                this._context.mescontent = this._frm.controls['smsContent'].value;
+                if (this._context.mescontent == null) {
+                    this._frm.controls['smsContent'].setValue(' <PHONGKHAM>');
+                } else {
+                    this._frm.controls['smsContent'].setValue(this._context.mescontent + ' <NGAYSINH>');
+                }
+                break;
+            case 3:
+                this._context.mescontent = this._frm.controls['smsContent'].value;
+                if (this._context.mescontent == null) {
+                    this._frm.controls['smsContent'].setValue(' <HOTEN>');
+                } else {
+                    this._frm.controls['smsContent'].setValue(this._context.mescontent + ' <HOTEN>');
+                }
+                break;
+            case 4:
+                this._context.mescontent = this._frm.controls['smsContent'].value;
+                if (this._context.mescontent == null) {
+                    this._frm.controls['smsContent'].setValue(' <EMAIL>');
+                } else {
+                    this._frm.controls['smsContent'].setValue(this._context.mescontent + ' <EMAIL>');
+                }
+                break;
+            case 5:
+                this._context.mescontent = this._frm.controls['smsContent'].value;
+                if (this._context.mescontent == null) {
+                    this._frm.controls['smsContent'].setValue(' <GIOITINH>');
+                } else {
+                    this._frm.controls['smsContent'].setValue(this._context.mescontent + ' <GIOITINH>');
+                }
+                break;
+            case 6:
+                this._context.mescontent = this._frm.controls['smsContent'].value;
+                if (this._context.mescontent == null) {
+                    this._frm.controls['smsContent'].setValue(' <NGAYHIENTAI>');
+                } else {
+                    this._frm.controls['smsContent'].setValue(this._context.mescontent + ' <NGAYHIENTAI>');
+                }
+                break;
+            case 7:
+                this._context.mescontent = this._frm.controls['smsContent'].value;
+                if (this._context.mescontent == null) {
+                    this._frm.controls['smsContent'].setValue(' <NGAYTAIKHAM>');
+                } else {
+                    this._frm.controls['smsContent'].setValue(this._context.mescontent + ' <NGAYTAIKHAM>');
+                }
+                break;
+            case 8:
+                this._context.mescontent = this._frm.controls['smsContent'].value;
+                if (this._context.mescontent == null) {
+                    this._frm.controls['smsContent'].setValue(' <PHONGBAN>');
+                } else {
+                    this._frm.controls['smsContent'].setValue(this._context.mescontent + ' <PHONGBAN>');
+                }
+                break;
+            case 9:
+                this._context.mescontent = this._frm.controls['smsContent'].value;
+                if (this._context.mescontent == null) {
+                    this._frm.controls['smsContent'].setValue(' <TENDICHVU>');
+                } else {
+                    this._frm.controls['smsContent'].setValue(this._context.mescontent + ' <TENDICHVU>');
+                }
+                break;
+            case 10:
+                this._context.mescontent = this._frm.controls['smsContent'].value;
+                if (this._context.mescontent == null) {
+                    this._frm.controls['smsContent'].setValue(' <TENTHUOC>');
+                } else {
+                    this._frm.controls['smsContent'].setValue(this._context.mescontent + ' <TENTHUOC>');
+                }
+                break;
+        }
   }}

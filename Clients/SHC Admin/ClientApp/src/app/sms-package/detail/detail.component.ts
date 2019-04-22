@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 
-import { Component, Inject, Injector, OnInit } from '@angular/core';
+import { Component, Inject, Injector, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { IPackage, IPackageDetail } from '@shared/Interfaces';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
@@ -12,7 +12,9 @@ import { DataService } from '@shared/service-proxies/service-data';
 @Component({
     selector: 'app-task',
     templateUrl: './detail.component.html',
-    styleUrls: ['./detail.component.scss']
+    styleUrls: ['./detail.component.scss'],
+    encapsulation: ViewEncapsulation.None
+
 })
 export class DetailComponent extends AppComponentBase implements OnInit {
 

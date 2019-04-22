@@ -26,6 +26,9 @@ namespace SHCServer.ViewModels
             Status = obj.Status;
             SentDate = obj.SentDate;
             LogType = obj.LogType;
+            Telco = obj.Telco;
+            ResultMessage = obj.ResultMessage;
+
 
             var healthFacilities = context.JoinQuery<SmsLogs, HealthFacilities>((s, h) => new object[]
                 {
@@ -45,6 +48,8 @@ namespace SHCServer.ViewModels
         public int? Status { set; get; }
         public DateTime SentDate { set; get; }
         public int? LogType { set; get; }
+        public string Telco { set; get; }
+        public string ResultMessage { set; get; }
         public string healthfacilitiesName { set; get; }
     }
 }

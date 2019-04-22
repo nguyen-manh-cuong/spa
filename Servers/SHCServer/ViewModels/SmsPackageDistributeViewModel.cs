@@ -25,7 +25,8 @@ namespace SHCServer.ViewModels
             HealthFacilitiesId = PackagesDistribute.HealthFacilitiesId;
 
             SmsBrandsId = PackagesDistribute.SmsBrandsId;
-            Year = PackagesDistribute.Year;
+            YearStart = PackagesDistribute.YearStart;
+            YearEnd = PackagesDistribute.YearEnd;
             MonthStart = PackagesDistribute.MonthStart;
             MonthEnd = PackagesDistribute.MonthEnd;
             IsActive = PackagesDistribute.IsActive;
@@ -95,7 +96,8 @@ namespace SHCServer.ViewModels
         public List<int> HealthFacilitiesId { set; get; }
         public int MonthStart { get; set; }
         public int MonthEnd { get; set; }
-        public int Year { get; set; }
+        public int YearStart { get; set; }
+        public int YearEnd { get; set; }
         public bool IsActive { set; get; }
         public int UserId { set; get; }
 
@@ -113,7 +115,8 @@ namespace SHCServer.ViewModels
         public int HealthFacilitiesId { set; get; }
         public int MonthStart { get; set; }
         public int MonthEnd { get; set; }
-        public int Year { get; set; }
+        public int YearStart { get; set; }
+        public int YearEnd { get; set; }
         public bool IsActive { set; get; }
         public int UserId { set; get; }
 

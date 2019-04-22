@@ -37,11 +37,12 @@ export const MY_FORMATS = {
 
 export class IndexComponent extends PagedListingComponentBase<ISmsLogs> implements OnInit, AfterViewInit {
 
-    displayedColumns = ['orderNumber', 'healthfacilitiesName', 'phoneNumber', 'type', 'content', 'sentDate', 'status'];
+    displayedColumns = ['orderNumber', 'healthfacilitiesName', 'phoneNumber', 'type', 'content', 'sentDate', 'status', 'messageError', 'telco'];
 
     _healthfacilities: IHealthfacilities[] = [];
     _status = [{ id: 0, name: 'Tất cả' }, { id: 1, name: 'Thành công' }, { id: 2, name: 'Lỗi' }];
     _type = [{ id: 0, name: 'Tất cả' }, { id: 1, name: 'Gửi chủ động' }, { id: 2, name: 'Gửi tự động' }];
+    _telco = [{ id: 0, name: 'Tất cả', code: 'all' }, { id: 1, name: 'Viettel', code: 'viettel' }, { id: 2, name: 'Vinaphone', code: 'vinaphone' }, { id: 3, name: 'Mobifone', code: 'mobifone' }, { id: 4, name: 'Vietnamobile', code: 'vietnamobile' }, { id: 5, name: 'Gmobile', code: 'gmobile' }];
 
     filteredOptions: Observable<IHealthfacilities[]>;
     healthfacilities = new FormControl();
@@ -62,8 +63,15 @@ export class IndexComponent extends PagedListingComponentBase<ISmsLogs> implemen
             status: [],
             startTime: [],
             endTime: [],
-            type: []
+            type: [],
+            telco: []
         });
+
+        setTimeout(() => {
+            this.startTime.nativeElement.value = moment(new Date()).format("DD/MM/YYYY");
+            this.endTime.nativeElement.value = moment(new Date()).format("DD/MM/YYYY");
+        });
+
         this.dataService = this._dataService;
         this.dataService.getAll('healthfacilities', (this.appSession.user.healthFacilitiesId ? String(this.appSession.user.healthFacilitiesId) : '')).subscribe(resp => this._healthfacilities = resp.items);
         this.appSession.user.healthFacilitiesId ? this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId) : this.filterOptions();
@@ -105,9 +113,29 @@ export class IndexComponent extends PagedListingComponentBase<ISmsLogs> implemen
             return swal('Thông báo', 'Đến ngày không đúng định dạng', 'warning');
         }
 
+        var startTime = moment(this.startTime.nativeElement.value, 'DD/MM/YYYY hh:mm:ss').toDate();
+        var endTime = moment(this.endTime.nativeElement.value + '23:59:59:', 'DD/MM/YYYY hh:mm:ss').toDate();
+
+        if (endTime.getFullYear() - startTime.getFullYear() > 1) {
+
+            return swal('Thông báo', 'Dữ liệu không được lấy quá 1 năm', 'warning');
+        }
+        if (endTime.getFullYear() - startTime.getFullYear() == 1) {
+            var monthStartTime = startTime.getMonth() + 1;
+            var monthEndTime = endTime.getMonth() + 1;
+            if (12 - monthStartTime + monthEndTime > 12) {
+                return swal('Thông báo', 'Dữ liệu không được lấy quá 1 năm', 'warning');
+            }
+            if (12 - monthStartTime + monthEndTime == 12) {
+                if (endTime.getDate() > startTime.getDate()) {
+                    return swal('Thông báo', 'Dữ liệu không được lấy quá 1 năm', 'warning');
+                }
+            }
+        }
+
         this.healthfacilities.value ? this.frmSearch.controls['healthfacilities'].setValue(this.healthfacilities.value.healthFacilitiesId) : '';
-        this.startTime.nativeElement.value ? this.frmSearch.controls['startTime'].setValue(moment(this.startTime.nativeElement.value, 'DD/MM/YYYY hh:mm:ss').add(7, 'hours').toDate()) : '';
-        this.endTime.nativeElement.value ? this.frmSearch.controls['endTime'].setValue(moment(this.endTime.nativeElement.value + '23:59:59:', 'DD/MM/YYYY hh:mm:ss').add(7, 'hours').toDate()) : '';
+        this.startTime.nativeElement.value ? this.frmSearch.controls['startTime'].setValue(startTime) : '';
+        this.endTime.nativeElement.value ? this.frmSearch.controls['endTime'].setValue(endTime) : '';
         this.btnSearchClicks$.next();
     }
 }

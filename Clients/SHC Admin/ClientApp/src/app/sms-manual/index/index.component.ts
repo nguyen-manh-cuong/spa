@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Injector, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, Injector, OnInit, ViewEncapsulation, ViewChild, ElementRef } from '@angular/core';
 import { SelectionModel } from '@angular/cdk/collections';
 import { IPatient, IHealthfacilities, IMedicalHealthcareHistories } from '@shared/Interfaces';
 import { DataService } from '@shared/service-proxies/service-data';
@@ -7,6 +7,7 @@ import { PagedListingComponentBase } from '@shared/paged-listing-component-base'
 import { MatDialog } from '@angular/material/dialog';
 import { TaskComponent } from '@app/sms-template-task/task/task.component';
 import { Observable } from 'rxjs';
+import { MatPaginator, MatSort } from '@angular/material';
 import { startWith, map } from 'rxjs/operators';
 
 import * as moment from 'moment';
@@ -39,7 +40,7 @@ export const MY_FORMATS = {
 })
 export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcareHistories> implements OnInit, AfterViewInit {
 
-    displayedColumns = ['orderNumber', 'select', 'code', 'name', 'birthday', 'age', 'gender', 'phoneNumber', 'address', 'ReExaminationDate'];
+    displayedColumns = ['orderNumber', 'select', 'code', 'fullName', 'birthday', 'age', 'gender', 'phoneNumber', 'address', 'smsSend'];
 
     _provinces = [];
     _districts = [];
@@ -47,6 +48,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     _doctors = [];
     _healthfacilities = [];
     _currentYear = new Date().getFullYear();
+    _sex = [{ id: 0, name: 'Tất cả' }, { id: 1, name: 'Nam' }, { id: 2, name: 'Nữ' }, { id: 3, name: 'Không xác định' }];
     selection = new SelectionModel<IMedicalHealthcareHistories>(true, []);
 
     filteredOptions: Observable<IHealthfacilities[]>;
@@ -54,6 +56,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     cDate = new Date();
 
     @ViewChild("birthday") birthday;
+
 
     constructor(injector: Injector, private _dataService: DataService , public dialog: MatDialog, private _formBuilder: FormBuilder) {
         super(injector);
@@ -73,8 +76,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
             districtCode: [],
             wardCode: [],
             birthday: [],
-            male: [],
-            female: []
+            sex: [],
         });
 
         this.dialogComponent = TaskComponent;
@@ -85,6 +87,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
         
         this.appSession.user.healthFacilitiesId ? this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId) : this.filterOptions();
     }
+
 
     isAllSelected() {
         const numSelected = this.selection.selected.length;

@@ -115,7 +115,9 @@ namespace SHCServer.Controllers
         [Route("api/doctors")]
         public IActionResult GetDoctors(string filter)
         {
-            var objs = _context.JoinQuery<Doctor, HealthFacilitiesDoctors>((d, h) => new object[] { JoinType.InnerJoin, d.DoctorId == h.DoctorId });
+            var objs = _context
+                .JoinQuery<Doctor, HealthFacilitiesDoctors>((d, h) => new object[] { JoinType.InnerJoin, d.DoctorId == h.DoctorId })
+                .Where((d, h) => d.IsDelete == false && d.IsActive == true);
 
             if (!string.IsNullOrEmpty(filter)) objs = objs.Where((d, h) => h.HealthFacilitiesId == int.Parse(filter));
 

@@ -27,8 +27,6 @@ namespace SHCServer.Controllers
         [Route("api/smsmanual")]
         public IActionResult GetAll(int skipCount = 0, int maxResultCount = 10, string sorting = null, string filter = null)
         {
-            bool male = false;
-            bool female = false;
             string query = @"select 
 	                                PatientHistoriesId,
 	                                HealthFacilitiesId,
@@ -47,9 +45,8 @@ namespace SHCServer.Controllers
                                     p.PhoneNumber,
                                     p.Address,
                                     p.Email
-                                from medical_healthcare_histories h
-                                inner join cats_patients p on h.PatientId = p.PatientId
-                                where 1=1 ";
+                                from smarthealthcare.medical_healthcare_histories h
+                                inner join smarthealthcare.cats_patients p on h.PatientId = p.PatientId";
             List<string> clause = new List<string>(); ;
             List<DbParam> param = new List<DbParam>();
             List<MedicalHealthcareHistoriesViewModel> lst = new List<MedicalHealthcareHistoriesViewModel>();
@@ -97,17 +94,6 @@ namespace SHCServer.Controllers
                             clause.Add("and h.IsReExamination != 1");
                         }
                     }
-                    if (string.Equals(key, "statusB"))
-                    {
-                        if (value == "1")
-                        {
-                            clause.Add("and h.IsBirthDay = 1");
-                        }
-                        else
-                        {
-                            clause.Add("and h.IsBirthDay != 1");
-                        }
-                    }
 
                     if (string.Equals(key, "patientCode"))
                     {
@@ -144,34 +130,45 @@ namespace SHCServer.Controllers
                         clause.Add("and p.WardCode = @WardCode");
                         param.Add(DbParam.Create("@WardCode", value));
                     }
-                    if (string.Equals(key, "birthday"))
+                    if (string.Equals(key, "birthdayDate") && value != "32")
                     {
-                        var birthday = DateTime.Parse(value);
-
-                        clause.Add("and p.BirthDate = @BirthDate and p.BirthMonth = @BirthMonth and p.BirthYear = @BirthYear");
-                        param.Add(DbParam.Create("@BirthDate", birthday.Day));
-                        param.Add(DbParam.Create("@BirthMonth", birthday.Month));
-                        param.Add(DbParam.Create("@BirthYear", birthday.Year));
+                        clause.Add("and p.BirthDate = @FromDate");
+                        param.Add(DbParam.Create("@FromDate", value));
                     }
-                    if (string.Equals(key, "birthdayTo"))
+                    if (string.Equals(key, "birthdayMonth") && value != "13")
                     {
-                        var birthday = DateTime.Parse(value).ToString("yyyy-MM-dd");
-                        clause.Add("and STR_TO_DATE(CONCAT(p.BirthDate, '-', p.BirthMonth, '-', p.BirthYear),'%d-%m-%Y') <= @birthdayTo");
-                        param.Add(DbParam.Create("@birthdayTo", birthday));
+                        clause.Add("and p.BirthMonth = @FromMonth");
+                        param.Add(DbParam.Create("@FromMonth", value));
                     }
-                    if (string.Equals(key, "birthdayFrom"))
+                    if (string.Equals(key, "sex"))
                     {
-                        var birthday = DateTime.Parse(value).ToString("yyyy-MM-dd");
-                        clause.Add("and STR_TO_DATE(CONCAT(p.BirthDate, '-', p.BirthMonth, '-', p.BirthYear),'%d-%m-%Y') >= @birthdayFrom");
-                        param.Add(DbParam.Create("@birthdayFrom", birthday));
+                        clause.Add("and p.Gender = @Gender");
+                        param.Add(DbParam.Create("@Gender", value));
                     }
-                    if (string.Equals(key, "male")) male = true;
-                    if (string.Equals(key, "female")) female = true;
                 }
-                if ((male == true && female == false) || (male == false && female == true))
+            }
+
+            clause.Add(" group by p.Code");
+
+            if (sorting != null)
+            {
+                foreach (var (key, value) in JsonConvert.DeserializeObject<Dictionary<string, string>>(sorting))
                 {
-                    clause.Add("and p.Gender = @Gender");
-                    param.Add(DbParam.Create("@Gender", male ? 1 : 0));
+                        switch (key)
+                        {
+                            case "id":
+                                clause.Add("ORDER BY p.PatientId " + value);
+                                break;
+                            case "fullName":
+                                clause.Add("ORDER BY SUBSTR(p.FullName, INSTR(p.FullName, ' ')) " + value);
+                                break;
+                            case "ReExaminationDate":
+                                clause.Add("ORDER BY ReExaminationDate " + value);
+                                break;
+                        case "birthday":
+                            clause.Add("ORDER BY p.BirthDate " + value + " ,p.BirthMonth, p.BirthYear");
+                            break;
+                    }
                 }
             }
 
@@ -180,8 +177,11 @@ namespace SHCServer.Controllers
             param.Add(DbParam.Create("@skipCount", skipCount * maxResultCount));
             param.Add(DbParam.Create("@resultCount", maxResultCount));
 
+
             var str = $"{query} {string.Join(" ", clause)}";
             var reader = _context.Session.ExecuteReader($"{query} {string.Join(" ", clause)}", param);
+
+
 
             while (reader.Read())
             {
@@ -306,7 +306,7 @@ namespace SHCServer.Controllers
         public IActionResult InfoSms([FromBody] SmsInfoInputViewModel infoInput)
         {
             //danh sach goi sms su dung
-            var packages = _context.Query<SmsPackagesDistribute>().Where(pd => pd.HealthFacilitiesId == infoInput.healthFacilitiesId && pd.Year >= DateTime.Now.Year && pd.MonthEnd >= DateTime.Now.Month && pd.IsDelete == false && pd.IsActive == true).Select(u => new PackageDistributeViewModel(u, _connectionString)).ToList();
+            var packages = _context.Query<SmsPackagesDistribute>().Where(pd => pd.HealthFacilitiesId == infoInput.healthFacilitiesId && pd.YearEnd >= DateTime.Now.Year && pd.MonthEnd >= DateTime.Now.Month && pd.IsDelete == false && pd.IsActive == true).Select(u => new PackageDistributeViewModel(u, _connectionString)).ToList();
             if (packages.Count == 0) return StatusCode(422, _excep.Throw("Không thể gửi tin do số lượng tin nhắn vượt quá gói SMS hiện tại. Mời bạn mua thêm gói SMS"));
             
             long totalSms = 0;
@@ -334,9 +334,12 @@ namespace SHCServer.Controllers
                 case 2:
                     code = "A02.SMSSINHNHAT";
                     break;
+                case 4:
+                    code = "A06.SMSDATKHAM";
+                    break;
             }
 
-            if (infoInput.type != 3 && string.IsNullOrEmpty(infoInput.content))
+            if (string.IsNullOrEmpty(infoInput.content))
             {
                 var config = _context.Query<HealthFacilitiesConfigs>().Where(hp => hp.Code == code).FirstOrDefault();
                 templateId = config != null ? config.Values : 0;
@@ -387,12 +390,12 @@ namespace SHCServer.Controllers
             {
                 _content = _content
                     .Replace("<PHONGKHAM>", packageName)
-                    .Replace("<NGAYSINH>", mhh.BirthYear.ToString())
+                    .Replace("<NGAYSINH>", mhh.BirthYear != 0 ? mhh.BirthYear.ToString() : "")
                     .Replace("<HOTEN>", mhh.FullName)
                     .Replace("<EMAIL>", mhh.Email)
                     .Replace("<GIOITINH>", mhh.Gender == 1 ? "Nam" : "Nữ")
                     .Replace("<NGAYHIENTAI>", DateTime.Now.ToString("dd/MM/yyyy"))
-                    .Replace("<NGAYTAIKHAM>", mhh.ReExaminationDate.Value.ToString("dd/MM/yyyy"));
+                    .Replace("<NGAYTAIKHAM>", mhh.ReExaminationDate != null ? mhh.ReExaminationDate.Value.ToString("dd/MM/yyyy") : "");
             }
 
             return _content;

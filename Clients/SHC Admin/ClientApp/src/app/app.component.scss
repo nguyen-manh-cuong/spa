@@ -47,3 +47,25 @@
         line-height: normal;
     }
 }
+
+.wrap-text{
+    white-space: normal;
+    word-break: break-all;
+}
+.custom-form .mat-form-field-label-wrapper {
+    left: -5px;
+}
+.color-primary{
+    color: #00695c!important;
+}
+.mat-table td.mat-cell:not(.mat-column-HealthFacilitiesId) {
+    word-break: break-all!important;
+    white-space: normal!important;
+    overflow: visible!important;
+}
+.fw-500{
+    font-weight: 500;
+}
+.f14{
+    font-size: 14px!important;
+}

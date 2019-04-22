@@ -64,8 +64,8 @@ namespace SHCServer.Controllers
         {
             if (_context.Query<SmsPackage>().Where(g => g.Name == package.Name && g.IsDelete == false).Count() > 0)
             {
-                //return Json(new ActionResultDto { Success = false, Error = new { Code = 401, Message = "Tạo gói thất bại.", Details = "Gói SMS đã tồn tại!" } });
-                return StatusCode(500, _excep.Throw("Tạo gói thất bại.", "Gói SMS đã tồn tại!"));
+                //return Json(new ActionResultDto { Success = false, Error = new { Code = 401, Message = "Tạo gói không thành công.", Details = "Gói SMS đã tồn tại!" } });
+                return StatusCode(500, _excep.Throw("Tạo gói không thành công.", "Gói SMS đã tồn tại!"));
             }
 
             var packageResult = new ActionResultDto { Result = _context.Insert(new SmsPackage(package)) };
@@ -103,12 +103,12 @@ namespace SHCServer.Controllers
             {
                 //if (_context.Query<SmsPackagesDistribute>().Where(pd => pd.SmsPackageId == package.Id).Count() > 0)
                 //{
-                //    return StatusCode(500, _excep.Throw("Sửa gói thất bại.", "Gói SMS đang được sử dụng!"));
+                //    return StatusCode(500, _excep.Throw("Sửa gói không thành công.", "Gói SMS đang được sử dụng!"));
                 //}
                 if (_context.Query<SmsPackage>().Where(p => p.Name == package.Name && p.Id != package.Id && p.IsDelete == false).Count() > 0)
                 {
-                    //return Json(new ActionResultDto { Success = false, Error = new { Code = 401, Message = "Chỉnh sửa gói thất bại.", Details = "Gói SMS đã tồn tại!" } });
-                    return StatusCode(500, _excep.Throw("Sửa gói thất bại.", "Gói SMS đã tồn tại!"));
+                    //return Json(new ActionResultDto { Success = false, Error = new { Code = 401, Message = "Chỉnh sửa gói không thành công.", Details = "Gói SMS đã tồn tại!" } });
+                    return StatusCode(500, _excep.Throw("Sửa gói không thành công.", "Gói SMS đã tồn tại!"));
                 }
 
                 _context.Session.BeginTransaction();
@@ -164,7 +164,7 @@ namespace SHCServer.Controllers
             {
                 if (_context.Query<SmsPackagesDistribute>().Where(pd => pd.SmsPackageId == id && pd.IsDelete == false).Count() > 0)
                 {
-                    return StatusCode(500, _excep.Throw("Xóa gói thất bại.", "Gói SMS đang được sử dụng!"));
+                    return StatusCode(500, _excep.Throw("Xóa gói không thành công.", "Gói SMS đang được sử dụng!"));
                 }
 
                 _context.Session.BeginTransaction();

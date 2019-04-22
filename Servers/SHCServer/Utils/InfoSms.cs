@@ -15,21 +15,25 @@ namespace SHCServer
             List<SmsLogs> lstSmsLog = new List<SmsLogs>();
             List<string> lstSmsUsed = new List<string>();
             int fail = 0;
+            string result = "";
 
             foreach (var resp in resps)
             {
                 SmsLogs smsLog = new SmsLogs();
                 smsLog.PhoneNumber = resp.PhoneNumber;
                 smsLog.Message = resp.Message;
+                smsLog.ResultMessage = resp.Result;
                 smsLog.Status = resp.Code == 0 ? 0 : 1;
                 smsLog.HealthFacilitiesId = resp.HealthFacilitiesId;
                 smsLog.SmsTemplateId = resp.SmsTemplateId;
                 smsLog.SmsPackagesDistributeId = resp.SmsPackagesDistributeId;
                 smsLog.SentDate = DateTime.Now;
                 smsLog.LogType = 1;
+                smsLog.Telco = resp.Telco;
                 lstSmsLog.Add(smsLog);
 
-                if(resp.Code == 0) fail++;
+                result = resp.Result;
+                if (resp.Code == 0) fail++;
                 if (lstSmsUsed.IndexOf(resp.SmsPackageUsedId.ToString()) < 0 && resp.Code != 0)//
                 {
                     lstSmsUsed.Add(resp.SmsPackageUsedId.ToString());
@@ -67,7 +71,7 @@ namespace SHCServer
 
             _context.InsertRange(lstSmsLog);
 
-            return "Tổng số SMS đã gửi \\Số sms gửi lỗi:  " + resps.Count + "\\" + fail;
+            return "Tổng số SMS đã gửi\\Số sms gửi lỗi:  " + resps.Count + "\\" + fail + "<br> Thông tin lỗi: " + result;
         }
     }
 }

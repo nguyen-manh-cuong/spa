@@ -90,20 +90,20 @@
                 <div class="form-group">
                   <label for="relationship" class="col-sm-2 col-lg-4 control-label">Giới tính</label>
                   <div class="col-sm-10 col-lg-6">
-                    <label class="radio-inline"><input type="radio" formControlName="gender" name="gender" [value]="1">Nam</label>
-                    <label class="radio-inline"><input type="radio" formControlName="gender" name="gender" [value]="2">Nữ</label>
-                    <label class="radio-inline"><input type="radio" formControlName="gender" name="gender" [value]="3">Không xác định</label>
+                    <select formControlName="gender" class="form-control" id="gender">
+                      <option *ngFor="let o of _gender" [value]="o.id">{{o.name}}</option>
+                    </select>
                   </div>
                 </div>
-                <div class="form-group"  [ngClass]="{'has-error': frmBooking.get('birthYear').invalid && (frmBooking.get('birthYear').dirty || frmBooking.get('birthYear').touched)}">
-                  <label for="birthD" class="col-sm-2 col-lg-4 control-label">Ngày sinh <span class="text-danger">*</span></label>
+                <div class="form-group" [ngClass]="{'has-error': frmBooking.get('birthYear').invalid && (frmBooking.get('birthYear').dirty || frmBooking.get('birthYear').touched)}">
+                  <label for="birthY" class="col-sm-2 col-lg-4 control-label">Ngày sinh <span class="text-danger">*</span></label>
                   <div class="col-sm-10 col-lg-6">
                     <div class="row">
                       <div class="col-xs-3">
-                        <ng-select formControlName="birthDay" id="birthD" [items]="_dates" placeholder="Ngày"></ng-select>
+                        <ng-select formControlName="birthDay" id="birthD" [items]="_dates" (ngModelChange)="onSelectBirthDay($event)" placeholder="Ngày"></ng-select>
                       </div>
                       <div class="col-xs-5">
-                        <ng-select formControlName="birthMonth" id="birthM" placeholder="Tháng">
+                        <ng-select formControlName="birthMonth" id="birthM" (ngModelChange)="onSelectBirthMonth($event)" placeholder="Tháng">
                           <ng-option *ngFor="let o of _months" [value]="o">Tháng {{o}}</ng-option>
                         </ng-select>
                       </div>
@@ -268,7 +268,7 @@
                   <div class="col-md-8" style="padding-top: 30px;">
                     <p><b>{{isDoctor == 0 ? (_healthfacility ? _healthfacility.name : '') : _doctor.fullName}}</b></p>
                     <p><i class="fa fa-{{isDoctor? 'graduation-cap' : 'map-marker'}}" style="margin-right: 10px;"></i>{{isDoctor == 0 ? (_healthfacility ? _healthfacility.address : '') : (_doctor.academic + (_doctor.academic && _doctor.degree ? ", " : "") + _doctor.degree)}}</p>
-                    <p><i class='fa fa-medkit' style="margin-right: 10px;"></i>{{isDoctor == 0 ? (_healthfacility ? _healthfacility.specialistName : '') : _specialist}}</p>
+                    <p><i class='fa fa-medkit' style="margin-right: 10px;"></i>{{isDoctor == 0 ? _specialistHealthfacilities : _specialist}}</p>
                     <p><i class='fa fa-user-md' style="margin-right: 10px;"></i>{{isDoctor == 0 ? (_healthfacility ? _healthfacility.totalDoctor + ' bác sĩ' : '') : _doctor.description}}</p>
                   </div>
                 </div>
@@ -291,7 +291,7 @@
 
                     <div class="tab-content" *ngIf="isDoctor == 1">
                       <ul *ngFor="let el of _lstWorkingTimes; index as i" id="{{i}}" class="nav nav-tabs tab-pane fade{{i == 0 ? ' in active' : ''}}" style="margin-top: 10px;">
-                        <li *ngFor="let wt of el.workingTime; index as i" id="{{j}}"><button class="btn btn-default button-time" [ngClass]="{'clicked': (isClicked == j && type == wt.hoursStart)}" (click)="onClickWorkingTime(el, wt, isDoctor, j)">{{wt.hoursStart}} : {{wt.minuteStart}}</button></li>
+                        <li *ngFor="let wt of el.workingTime; index as j" id="{{j}}"><button class="btn btn-default button-time" [ngClass]="{'clicked': (isClicked == j && type == wt.hoursStart)}" (click)="onClickWorkingTime(el, wt, isDoctor, j)">{{wt.hoursStart}} : {{wt.minuteStart}}</button></li>
                       </ul>
                     </div>
 
@@ -358,7 +358,7 @@
         <button class="btn btn-default float-left" *ngIf="_currentStep > 1 && success == 0" (click)="setStep(_currentStep-1)"><i class="ion-chevron-left iq-mr-10"></i> Quay lại</button>
         <button class="btn btn-primary" style="float: right;" *ngIf="_currentStep < 5" (click)="setStep(_currentStep+1)">Tiếp theo <i class="ion-chevron-right iq-ml-10"></i></button>
         <button class="btn btn-primary" style="float: right;" *ngIf="_currentStep == 5 && success == 0" [disabled]="!frmBooking.value['rules']" (click)="submit()"><i class="ion-checkmark-circled iq-mr-10"></i> Xác nhận</button>
-        <button class="btn btn-default center-block" *ngIf="_currentStep == 5 && (success != 0)"><a [routerLink]="['/']"><i class="ion-home iq-mr-10"></i>Quay lại trang chủ</a></button>
+        <button class="btn btn-default center-block" *ngIf="_currentStep == 5 && (success != 0)" [routerLink]="['/']"><i class="ion-home iq-mr-10"></i>Quay lại trang chủ</button>
         <div class="clearfix"></div>
       </div>
     </div>

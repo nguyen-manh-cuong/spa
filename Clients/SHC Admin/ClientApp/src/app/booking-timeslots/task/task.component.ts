@@ -98,6 +98,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
   }
 
   submit() {
+    console.log('Vao ham sumbit booking-timeslots')
     var start = this._frm.controls['hoursStart'].value.concat(this._frm.controls['minuteStart'].value);
     var end = this._frm.controls['hoursEnd'].value.concat(this._frm.controls['minuteEnd'].value);
     if(start >= end){
