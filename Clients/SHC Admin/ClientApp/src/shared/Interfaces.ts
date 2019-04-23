@@ -65,6 +65,19 @@ export interface IBookingInformations{
     healthFacilitiesId: number;
     doctorId: number;
     status: number;
+    ticketId: string;
+    bookingUser: string;
+    phoneNumber: string;
+    birthDate: number;
+    birthMonth: number;
+    birthYear: number;
+    address: string;
+    provinceCodeExamination: string;
+    districtCodeExamination: string;
+    bookingRepresent: string;
+    phoneRepresent: string;
+    emailRepresent: string;
+    email: string;
     healthFacilitiesName: string;
     doctorName: string;
     quantity;
@@ -75,6 +88,11 @@ export interface IBookingInformations{
     quantityByStatusDone: number;
     quantityByStatusCancel: number;
     examinationDate: Date;
+    examinationTime: string;
+    examinationWorkingTime: number;
+    timeSlotId: number;
+    reason: string;
+    bookingTimeSlot: IBookingTimeslots;
 }
 
 export interface IPackage {

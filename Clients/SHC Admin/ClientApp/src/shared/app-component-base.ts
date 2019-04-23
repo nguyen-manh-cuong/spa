@@ -24,6 +24,8 @@ export abstract class AppComponentBase {
     appSession: AppSessionService;
     elementRef: ElementRef;
 
+    _age = { years: 0, months: 0, days: 0 };
+
     public isTableLoading = false;
 
     constructor(injector: Injector) {
@@ -48,6 +50,48 @@ export abstract class AppComponentBase {
         args.unshift(key);
         args.unshift(this.localizationSourceName);
         return this.l(key, args).toLocaleLowerCase();
+    }
+
+    convertAge(date: number, month: number, year: number) {
+        const yearNow = new Date().getFullYear();
+        const monthNow = new Date().getMonth() + 1;
+        const dateNow = new Date().getDate();
+        var ageString = "";
+        var yearAge = yearNow - year;
+
+        if (monthNow >= month)
+            var monthAge = monthNow - month;
+        else {
+            yearAge--;
+            var monthAge = 12 + monthNow - month;
+        }
+
+        if (dateNow >= date)
+            var dateAge = dateNow - date;
+        else {
+            monthAge--;
+            var dateAge = 31 + dateNow - date;
+
+            if (monthAge < 0) {
+                monthAge = 11;
+                yearAge--;
+            }
+        }
+
+        this._age.years = yearAge;
+        this._age.months = monthAge;
+        this._age.days = dateAge;
+
+
+
+        if (this._age.years > 0)
+            ageString = this._age.years + "T";
+        else if ((this._age.years == 0) && (this._age.months == 0) && (this._age.days > 0))
+            ageString = this._age.days + "NG";
+        else if ((this._age.years == 0) && (this._age.months > 0) && (this._age.days >= 0))
+            ageString = this._age.months + "TH";
+
+        return ageString;
     }
 
     ls(sourcename: string, key: string, ...args: any[]): string {
