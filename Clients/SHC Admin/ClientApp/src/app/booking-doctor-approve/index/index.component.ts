@@ -1,6 +1,6 @@
 import { Component, Injector, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { IBookingDoctorsCalendarsView, IHealthfacilities } from '@shared/Interfaces';
-import { MatDialog, DateAdapter, MAT_DATE_LOCALE, MAT_DATE_FORMATS, MatSort, MatSortable } from '@angular/material';
+import { MatDialog, DateAdapter, MAT_DATE_LOCALE, MAT_DATE_FORMATS } from '@angular/material';
 import { DataService } from '@shared/service-proxies/service-data';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { PagedListingComponentBase } from '@shared/paged-listing-component-base';
@@ -52,7 +52,6 @@ export class IndexComponent extends PagedListingComponentBase<IBookingDoctorsCal
 
     @ViewChild("startTime") startTime;
     @ViewChild("endTime") endTime;
-    @ViewChild(MatSort) sort: MatSort
 
     constructor(injector: Injector, private _dataService: DataService, public dialog: MatDialog, private _formBuilder: FormBuilder) {
         super(injector);
@@ -73,12 +72,11 @@ export class IndexComponent extends PagedListingComponentBase<IBookingDoctorsCal
         this.appSession.user.healthFacilitiesId ? this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId) : this.filterOptions();
         if(this.appSession.user.healthFacilitiesId) this.dataService.getAll('doctors', String(this.appSession.user.healthFacilitiesId)).subscribe(resp => this._doctors = resp.items);
 
-        this.sort.sort(<MatSortable>({id: 'name', start: 'asc'}));
-        this.dataSources.sort = this.sort;
-
         setTimeout(() => {
             this.startTime.nativeElement.value = moment(new Date()).format("DD/MM/YYYY");
             this.endTime.nativeElement.value = moment(new Date().setDate(new Date().getDate() + 6)).format("DD/MM/YYYY");
+            this.startTime.nativeElement.focus();
+            this.endTime.nativeElement.focus();
             this.getDate(this.startTime.nativeElement.value, this.endTime.nativeElement.value);
         }, 1000);
     }
@@ -99,9 +97,8 @@ export class IndexComponent extends PagedListingComponentBase<IBookingDoctorsCal
         var healthfacilities = isNaN(filterValue) ?         
         this._healthfacilities.filter(h => h.name.toLowerCase().indexOf(filterValue) === 0) : 
         this._healthfacilities.filter(h => h.code.toLowerCase().indexOf(filterValue) === 0);
-
-        if(healthfacilities.length == 0 && filterValue.length) this.frmSearch.controls['healthfacilities'].setValue(0);
-
+        //if(healthfacilities.length == 0 && filterValue.length) this.frmSearch.controls['healthfacilities'].setValue(0);
+        
         return healthfacilities
     }
 
@@ -119,6 +116,10 @@ export class IndexComponent extends PagedListingComponentBase<IBookingDoctorsCal
             );
     }
 
+    onInputHealthfacilities(obj: any){
+        this.frmSearch.controls['healthfacilities'].setValue(0)
+    }
+
     //selected checkbox table
     isAllSelected() {
         const numSelected = this.selection.selected.length;
@@ -127,11 +128,39 @@ export class IndexComponent extends PagedListingComponentBase<IBookingDoctorsCal
     }
 
     masterToggle() {
-        this.isAllSelected() ?
-            this.selection.clear() :
+        if(this.isAllSelected()){
+            this.selection.clear() 
+
             this.dataSources.data.forEach((row: IBookingDoctorsCalendarsView) => {
+                this.tdChecked(row, false);
+            });
+        } else{
+            this.dataSources.data.forEach((row: IBookingDoctorsCalendarsView) => {
+                this.tdChecked(row, true);
                 this.selection.select(row)
             });
+        }
+    }
+
+    toggle(row: any, event: any){
+        this.tdChecked(row, event.checked);
+        this.selection.toggle(row);
+    }
+
+    tdChecked(row: any, checked: any) {
+        if(checked){
+            row.lstBookingDoctorsCalendars.forEach(el => {
+                if(el.status == 0){
+                    $('#' + el.calendarId).prop('checked', true).prop("disabled", true);
+                }
+            });
+        } else{
+            row.lstBookingDoctorsCalendars.forEach(el => {
+                if(el.status == 0){
+                    $('#' + el.calendarId).prop('checked', false).prop("disabled", false);;
+                }
+            });
+        }
     }
 
     onSelectHealthFacilities(obj: any) {
@@ -189,19 +218,19 @@ export class IndexComponent extends PagedListingComponentBase<IBookingDoctorsCal
         return _.uniq(this.lstCalendarId);
     }
 
-    search(){
-        var req = _.omitBy(this.frmSearch.value, _.isNil);
-        req.healthfacilities = req && req.healthfacilities ? req.healthfacilities.healthFacilitiesId : "";
+    // search(){
+    //     var req = _.omitBy(this.frmSearch.value, _.isNil);
+    //     req.healthfacilities = req && req.healthfacilities ? req.healthfacilities.healthFacilitiesId : "";
 
-        this.paginator.pageIndex = 0;
-        this.dataService
-        .get(this.api, JSON.stringify(req), '', this.paginator.pageIndex, this.paginator.pageSize)
-        .subscribe(resp => {
-            setTimeout(() => this.isTableLoading = true, 100);
-            this.totalItems = resp.totalCount;
-            this.dataSources.data = resp.items;
-        });
-    }
+    //     this.paginator.pageIndex = 0;
+    //     this.dataService
+    //     .get(this.api, JSON.stringify(req), '', this.paginator.pageIndex, this.paginator.pageSize)
+    //     .subscribe(resp => {
+    //         setTimeout(() => this.isTableLoading = true, 100);
+    //         this.totalItems = resp.totalCount;
+    //         this.dataSources.data = resp.items;
+    //     });
+    // }
 
     //handle search
     customSearch() {
@@ -225,12 +254,12 @@ export class IndexComponent extends PagedListingComponentBase<IBookingDoctorsCal
             return swal(this.l('Notification'), this.l('SearchWithin7Day'), 'warning');
         }
 
-        //this.healthfacilities.value ? this.frmSearch.controls['healthfacilities'].setValue(this.healthfacilities.value.healthFacilitiesId) : (this.appSession.user.healthFacilitiesId == null ? this.frmSearch.controls['healthfacilities'].setValue(null) : '');
+        this.healthfacilities.value ? this.frmSearch.controls['healthfacilities'].setValue(this.healthfacilities.value.healthFacilitiesId) : (this.appSession.user.healthFacilitiesId == null ? this.frmSearch.controls['healthfacilities'].setValue(null) : '');
         this.startTime.nativeElement.value ? this.frmSearch.controls['startTime'].setValue(moment(this.startTime.nativeElement.value + '00:00:00', 'DD/MM/YYYY hh:mm:ss').add(7, 'hours').toDate()) : '';
         this.endTime.nativeElement.value ? this.frmSearch.controls['endTime'].setValue(moment(this.endTime.nativeElement.value + '23:59:59', 'DD/MM/YYYY hh:mm:ss').add(7, 'hours').toDate()) : '';
         this.getDate(this.startTime.nativeElement.value, this.endTime.nativeElement.value);
-        //this.btnSearchClicks$.next();
-        this.search();
+        this.btnSearchClicks$.next();
+        //this.search();
     }
 
     //gen date -> column

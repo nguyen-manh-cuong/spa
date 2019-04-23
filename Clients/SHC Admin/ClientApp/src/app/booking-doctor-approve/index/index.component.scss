@@ -33,10 +33,19 @@
     background-color: deepskyblue;
 }
 
-.btn {
-    .mat-checkbox-inner-container-no-side-margin {
-        margin-top: 2px;
-        margin-right: 4px;
-        background: white;
-    }
+// .btn {
+//     .mat-checkbox-inner-container-no-side-margin {
+//         margin-top: 2px;
+//         margin-right: 4px;
+//         background: white;
+//     }
+// }
+
+.mycheckbox{
+    margin-right: 4px;
+    margin-top: 4px;
+    font-size: 110%;
+    transform: scale(1.5);
+    position: relative;
+    top: 2px;
 }
