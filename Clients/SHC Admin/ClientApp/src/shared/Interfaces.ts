@@ -65,6 +65,8 @@ export interface IBookingInformations{
     healthFacilitiesId: number;
     doctorId: number;
     status: number;
+    ticketId: string;
+    bookingUser: string;
     healthFacilitiesName: string;
     doctorName: string;
     quantity;
