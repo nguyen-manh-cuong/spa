@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Injector, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Injector, OnInit, ViewEncapsulation } from '@angular/core';
 
 import { DataService } from '@shared/service-proxies/service-data';
 import { FormBuilder } from '@angular/forms';
@@ -11,7 +11,8 @@ import swal from 'sweetalert2';
 @Component({
   selector: 'app-index',
   templateUrl: './index.component.html',
-  styleUrls: ['./index.component.scss']
+  styleUrls: ['./index.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class IndexComponent extends PagedListingComponentBase<ISmsTemplate> implements OnInit, AfterViewInit {
 

@@ -72,7 +72,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
   _bookingInformationsTime = [{ id: 0, name: 'Hôm nay' }, { id: 1, name: 'Hôm qua' }, { id: 2, name: 'Tuần này' }, { id: 3, name: 'Tuần trước' }, { id: 4, name: 'Tháng này'}, { id: 5, name: 'Tháng trước'}, { id: 6, name: 'Quý này'}, { id: 7, name: 'Quý trước'}, { id: 8, name: 'Năm nay'}, { id: 9, name: 'Năm trước'}, { id: 10, name: 'Theo khoảng thời gian'} ];
 
   ngOnInit() {  
-    this.api = 'bookinginformations';
+    this.api = 'bookinginformationsgroupby';
     this.dataService = this._dataService;
     this.dialogComponent = TaskComponent;
     this.totalPatientCount = 0;
