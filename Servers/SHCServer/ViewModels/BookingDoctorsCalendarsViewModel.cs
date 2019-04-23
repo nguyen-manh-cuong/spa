@@ -27,6 +27,7 @@ namespace SHCServer.ViewModels
             Address = obj.Address;
             Status = obj.Status;
             StrCalendarDate = obj.CalendarDate.ToString("dd/MM/yyyy");
+            HealthFacilitiesId = obj.HealthFacilitiesId;
 
             var Doctor = context.JoinQuery<BookingDoctorsCalendars, Doctor>((o, o1) => new object[]
                 {
@@ -35,18 +36,26 @@ namespace SHCServer.ViewModels
                 .Where((o, o1) => o.CalendarId == obj.CalendarId)
                 .Select((o, o1) => o1).FirstOrDefault();
 
-            var bookingDoctorsCalendars = context.JoinQuery<BookingDoctorsCalendars, BookingTimeslots>((o, o1) => new object[]
+            var BookingDoctorsCalendars = context.JoinQuery<BookingDoctorsCalendars, BookingTimeslots>((o, o1) => new object[]
                 {
                     JoinType.InnerJoin, o.TimeSlotId == o1.TimeSlotId
                 })
                 .Where((o, o1) => o.CalendarId == obj.CalendarId)
                 .Select((o, o1) => o1).FirstOrDefault();
 
+            var HealthFacilities = context.JoinQuery<BookingDoctorsCalendars, HealthFacilities>((d, h) => new object[]
+                       {
+                            JoinType.InnerJoin, d.HealthFacilitiesId == h.HealthFacilitiesId
+                       })
+                        .Where((d, h) => d.CalendarId == obj.CalendarId)
+                        .Select((d, h) => h).FirstOrDefault();
+
             FullName = Doctor != null ? Doctor.FullName : "";
-            HoursStart = bookingDoctorsCalendars != null ? bookingDoctorsCalendars.HoursStart : "";
-            MinuteStart = bookingDoctorsCalendars != null ? bookingDoctorsCalendars.MinuteStart : "";
-            HoursEnd = bookingDoctorsCalendars != null ? bookingDoctorsCalendars.HoursEnd : "";
-            MinuteEnd = bookingDoctorsCalendars != null ? bookingDoctorsCalendars.MinuteEnd : "";
+            HoursStart = BookingDoctorsCalendars != null ? BookingDoctorsCalendars.HoursStart : "";
+            MinuteStart = BookingDoctorsCalendars != null ? BookingDoctorsCalendars.MinuteStart : "";
+            HoursEnd = BookingDoctorsCalendars != null ? BookingDoctorsCalendars.HoursEnd : "";
+            MinuteEnd = BookingDoctorsCalendars != null ? BookingDoctorsCalendars.MinuteEnd : "";
+            HealthFacilitiesName = HealthFacilities != null ? HealthFacilities.Name : "";
         }
 
         public int CalendarId { set; get; }
@@ -61,5 +70,7 @@ namespace SHCServer.ViewModels
         public string StrCalendarDate { set; get; }
         public int Status { set; get; }
         public string Address { set; get; }
+        public int HealthFacilitiesId { set; get; }
+        public string HealthFacilitiesName { set; get; }        
     }
 }

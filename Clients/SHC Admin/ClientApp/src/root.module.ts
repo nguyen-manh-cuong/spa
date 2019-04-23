@@ -20,6 +20,7 @@ import { ServiceProxyModule } from '@shared/service-proxies/service-proxy.module
 import { SharedModule } from '@shared/shared.module';
 import swal from 'sweetalert2';
 
+
 export function appInitializerFactory(
     injector: Injector,
     platformLocation: PlatformLocation) {
@@ -91,7 +92,7 @@ export function convertAbpLocaleToAngularLocale(locale: string): string {
         HttpClientModule
     ],
     declarations: [
-        RootComponent
+        RootComponent,
     ],
     providers: [
         { provide: HTTP_INTERCEPTORS, useClass: AbpHttpInterceptor, multi: true },

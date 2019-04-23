@@ -19,7 +19,7 @@ export class DetailComponent extends AppComponentBase implements OnInit {
     _bookingDoctorsCalendars: IBookingDoctorsCalendars;
     _context: any;
 
-    constructor(injector: Injector, private _dataService: DataService, private _formBuilder: FormBuilder, public dialogRef: MatDialogRef<DetailComponent>, @Inject(MAT_DIALOG_DATA) public bookingDoctorsCalendars: IBookingDoctorsCalendars) { super(injector); }
+    constructor(injector: Injector, private _formBuilder: FormBuilder, public dialogRef: MatDialogRef<DetailComponent>, @Inject(MAT_DIALOG_DATA) public bookingDoctorsCalendars: IBookingDoctorsCalendars) { super(injector); }
 
     ngOnInit() {
         if (this.bookingDoctorsCalendars) {
@@ -27,7 +27,7 @@ export class DetailComponent extends AppComponentBase implements OnInit {
         }
 
         this._context = {
-            healthfacilities: [this.bookingDoctorsCalendars.fullName],
+            healthfacilities: [this.bookingDoctorsCalendars.healthFacilitiesName],
             doctor: [this.bookingDoctorsCalendars.fullName],
             address: [this.bookingDoctorsCalendars.address]  
         };
