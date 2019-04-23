@@ -12,24 +12,31 @@
             <div class="pt-4">
                 <div class="row disabled">
                     <div class="col-md-6">
-                        <mat-form-field appearance="outline" class="w-100">
+                        <label class="fw-500 f14">{{l("Unit")}}</label>
+                        <div class="wrap-text mb-4 color-primary f14">{{_bookingDoctorsCalendars.healthFacilitiesName}}</div>
+                        <!-- <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("Unit")}}</mat-label>
                             <input formControlName="healthfacilities" matInput>
-                        </mat-form-field>
+                        </mat-form-field> -->
                     </div>
 
                     <div class="col-md-6">
-                        <mat-form-field appearance="outline" class="w-100">
+                        <label class="fw-500 f14">{{l("Doctor")}}</label>
+                        <div class="wrap-text mb-4 color-primary f14">{{_bookingDoctorsCalendars.fullName}}</div>
+
+                        <!-- <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("Doctor")}}</mat-label>
                             <input formControlName="doctor" matInput required>
-                        </mat-form-field>
+                        </mat-form-field> -->
                     </div>
 
                     <div class="col-md-12">
-                        <mat-form-field appearance="outline" class="w-100">
+                        <label class="fw-500 f14">{{l("Place")}}</label>
+                        <div class="wrap-text mb-4 color-primary f14">{{_bookingDoctorsCalendars.address}}</div>
+                        <!-- <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("Place")}}</mat-label>
                             <textarea matInput formControlName="address" required></textarea>
-                        </mat-form-field>
+                        </mat-form-field> -->
                     </div>
                 </div>
             </div>

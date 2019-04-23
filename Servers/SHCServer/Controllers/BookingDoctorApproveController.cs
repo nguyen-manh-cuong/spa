@@ -129,8 +129,11 @@ namespace SHCServer.Controllers
                         bookingDoctorsCalendarsView.LstBookingDoctorsCalendars.Add(item);
                     }
                 }
+
                 lstBookingDoctorsCalendarsViews.Add(bookingDoctorsCalendarsView);
             }
+
+            lstBookingDoctorsCalendarsViews = lstBookingDoctorsCalendarsViews.OrderBy(o => o.Name).ToList();
 
             return new ActionResultDto { Result = new { Items = lstBookingDoctorsCalendarsViews.Skip(maxResultCount * skipCount).Take(maxResultCount * (skipCount + 1)).ToList(), TotalCount = lstBookingDoctorsCalendarsViews.Count } };
         }

@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Text;
 using Viettel.MySql;
 using Viettel;
+using System.Linq;
 
 namespace SHCServer.Controllers
 {
@@ -121,7 +122,11 @@ namespace SHCServer.Controllers
 
             if (!string.IsNullOrEmpty(filter)) objs = objs.Where((d, h) => h.HealthFacilitiesId == int.Parse(filter));
 
-            return Json(new ActionResultDto { Result = new { Items = objs.Select((d, h) => new DoctorViewModel(d, _connectionString)).ToList() } });
+            List<DoctorViewModel> lstDoctor = objs.Select((d, h) => new DoctorViewModel(d, _connectionString)).ToList();
+
+            lstDoctor = lstDoctor.OrderBy(o => o.FullName).ToList();
+
+            return Json(new ActionResultDto { Result = new { Items = lstDoctor } });
         }
 
         [HttpGet]
