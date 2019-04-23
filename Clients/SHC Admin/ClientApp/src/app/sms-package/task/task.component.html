@@ -11,9 +11,9 @@
                 {{_isNew ? l("CreateNew") : l("Edit")}} {{l("Package")}}
             </ng-template>
 
-            <div class="pt-4">
+            <div class="pt-4" ng-init="true">
                 <div class="row">
-                    <div class="col-md-12" [ngClass]="{'disabled': _isNew == false && _package.isDeleteDistribute > 0}">
+                    <div class="col-md-12"  [ngClass]="{'disabled': _isNew == false && _package.isDeleteDistribute > 0}">
                         <mat-form-field appearance="outline" class="w-100" autofocus>
                             <mat-label>{{l("PackageName")}}</mat-label>
                             <input #txtName="matInput" [required]="true" formControlName="name" matInput
