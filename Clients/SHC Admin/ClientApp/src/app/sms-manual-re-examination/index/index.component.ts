@@ -46,7 +46,6 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     _wards = [];
     _doctors = [];
     _isRequest = false;
-    _age = { years: 0, months: 0, days: 0 };
     _healthfacilities = [];
     _status = [{ id: 0, name: 'Tất cả' }, { id: 1, name: 'Đã gửi SMS' }, { id: 2, name: 'Chưa gửi SMS' }];
     _sex = [{ id: 0, name: 'Tất cả' }, { id: 1, name: 'Nam' }, { id: 2, name: 'Nữ' }, { id: 3, name: 'Không xác định' }];
@@ -99,48 +98,6 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
             this.endTime.nativeElement.focus();
         });
         this.appSession.user.healthFacilitiesId ? this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId) : this.filterOptions();
-    }
-
-    convertAge(date: number, month: number, year: number) {
-        const yearNow = new Date().getFullYear();
-        const monthNow = new Date().getMonth() + 1;
-        const dateNow = new Date().getDate();
-        var ageString = "";
-        var yearAge = yearNow - year;
-
-        if (monthNow >= month)
-            var monthAge = monthNow - month;
-        else {
-            yearAge--;
-            var monthAge = 12 + monthNow - month;
-        }
-
-        if (dateNow >= date)
-            var dateAge = dateNow - date;
-        else {
-            monthAge--;
-            var dateAge = 31 + dateNow - date;
-
-            if (monthAge < 0) {
-                monthAge = 11;
-                yearAge--;
-            }
-        }
-
-        this._age.years = yearAge;
-        this._age.months = monthAge;
-        this._age.days = dateAge;
-
-
-
-        if (this._age.years > 0)
-            ageString = this._age.years + "T";
-        else if ((this._age.years == 0) && (this._age.months == 0) && (this._age.days > 0))
-            ageString = this._age.days + "NG";
-        else if ((this._age.years == 0) && (this._age.months > 0) && (this._age.days >= 0))
-            ageString = this._age.months + "TH";
-
-        return ageString;
     }
 
     isAllSelected() {

@@ -51,8 +51,8 @@ namespace SHCServer.Controllers
                 .LeftJoin<Doctor>((b, s) => b.DoctorId == s.DoctorId)
                 .LeftJoin<BookingTimeslots>((b, s, d) => b.TimeSlotId == d.TimeSlotId)
                 .Select((b, s, d) => new { b.HealthFacilitiesId,
-                    b.TimeSlotId, b.DoctorId, b.Status, b.ExaminationDate, b.CreateDate, b.Gender,
-                b.PhoneNumber, b.Reason, b.BookingUser, b.TicketId, b.BirthYear, s.FullName, d.HoursStart, d.HoursEnd, d.MinuteEnd, d.MinuteStart});
+                    b.TimeSlotId, b.DoctorId, b.Status, b.ExaminationDate, b.CreateDate, b.Gender, b.ExaminationWorkingTime, b.ExaminationTime,
+                b.PhoneNumber, b.Reason, b.BookingUser, b.TicketId, b.BirthDate, b.BirthMonth, b.BirthYear, s.FullName, d.HoursStart, d.HoursEnd, d.MinuteEnd, d.MinuteStart});
 
             if (filter != null)
             {
@@ -69,7 +69,10 @@ namespace SHCServer.Controllers
                             objs = objs.Where(b => b.Status.ToString() == value.Trim());
                         }
                     }
-
+                    if (string.Equals(key, "packagesNameDescription") && !string.IsNullOrWhiteSpace(value))
+                    {
+                        objs = objs.Where(b => b.TicketId.Contains(value) || b.PhoneNumber.Contains(value) || b.BookingUser.Contains(value));
+                    }
                     if (string.Equals(key, "startTime")) objs = objs.Where(b => b.ExaminationDate>= DateTime.Parse(value));
                     if (string.Equals(key, "endTime")) objs = objs.Where(b => b.ExaminationDate <= DateTime.Parse(value));
 
