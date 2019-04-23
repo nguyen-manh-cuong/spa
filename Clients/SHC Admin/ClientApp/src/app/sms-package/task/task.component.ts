@@ -89,6 +89,10 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
                 this._frm.controls['smsFrom'].disable();
                 this._frm.controls['smsTo'].disable();
                 this._frm.controls['detailCost'].disable();
+            } else {
+                this._frm.controls['cost'].disable();
+                this._frm.controls['quantity'].disable();
+                this._frm.controls['smsFrom'].disable();
             }
         }, 100);
 
