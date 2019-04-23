@@ -53,8 +53,7 @@
                     <div class="col-md-6">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("District")}}</mat-label>
-                            <mat-select formControlName="districtCode"
-                                (selectionChange)="districtChange(province,$event)">
+                            <mat-select formControlName="districtCode">                        
                                 <mat-option *ngIf="checkProvince" class="text-center">{{l('CancelSelect')}}</mat-option>
                                 <mat-option *ngFor="let d of districts" [value]="d.districtCode">{{d.name}}</mat-option>
                             </mat-select>
@@ -222,8 +221,8 @@
 
                 <div class="row">
                     <div class="col-md-12 pt-4">
-                        <ckeditor formControlName="sumary" [editor]="Editor">
-                        </ckeditor>
+                        <!-- <ckeditor formControlName="sumary" [editor]="Editor">
+                        </ckeditor> -->
                     </div>
                 </div>
 
