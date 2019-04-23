@@ -110,9 +110,14 @@ namespace SHCServer.Controllers
                                          new MenuItem {Name = "SmsUserManual", Icon = "", Route = "/app/sms-manual"},
                                          new MenuItem {Name = "SmsLog", Icon = "", Route = "/app/sms-log"}
                                     }},
-                                    new MenuItem {Name = "Danh mục khung giờ khám", Icon = "av_timer", Route = "/app/booking-timeslots"},
+                                    new MenuItem {Name = "Booking", Icon = "book", Items = new List<MenuItem>{
+                                         new MenuItem {Name = "Danh mục khung giờ khám", Icon = "av_timer", Route = "/app/booking-timeslots"},
+                                         new MenuItem{Name = "CategoryCommon", Icon="account_circle", Route="/app/category-common"},
+                                         new MenuItem {Name = "Danh sách bệnh nhân đặt khám", Icon = "bookmark", Route = "/app/booking-list"},
+                                    }},
+                                    
                                     //new MenuItem {Name = "Thống kê danh sách bệnh nhân đặt khám", Icon = "av_timer", Route = "/app/booking-informations"},
-                                    new MenuItem{Name = "CategoryCommon", Icon="account_circle", Route="/app/category-common"},
+                                    
                                     //new MenuItem{Name = "Lịch khám bác sĩ", Icon="assignment_turned_in", Route="/app/booking-doctor-approve"}
                                 } 
                             }

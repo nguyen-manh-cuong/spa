@@ -27,9 +27,9 @@ namespace SHCServer.Controllers
 
         [HttpPost]
         [Route("api/bookinginformations")]
-        public IActionResult Create([FromBody] BookingInformationsInputViewModel bi)
+        public IActionResult Create([FromBody] BookingInformationsInputViewModel obj)
         {
-            var result = _context.Insert(new BookingInformations(bi));
+            var result = _context.Insert(new BookingInformations(obj));
 
             return Json(new ActionResultDto { Result = result });
         }
@@ -47,7 +47,13 @@ namespace SHCServer.Controllers
         [Route("api/bookinginformations")]
         public IActionResult GetAll(int skipCount = 0, int maxResultCount = 10, string sorting = null, string filter = null)
         {
-            var objs = _context.Query<BookingInformations>().Where(b => b.BookingServiceType == 1);
+            var objs = _context.Query<BookingInformations>().Where(b => b.BookingServiceType == 1)
+                .LeftJoin<Doctor>((b, s) => b.DoctorId == s.DoctorId)
+                .LeftJoin<BookingTimeslots>((b, s, d) => b.TimeSlotId == d.TimeSlotId)
+                .Select((b, s, d) => new { b.HealthFacilitiesId,
+                    b.TimeSlotId, b.DoctorId, b.Status, b.ExaminationDate, b.CreateDate, b.Gender,
+                b.PhoneNumber, b.Reason, b.BookingUser, b.TicketId, b.BirthYear, s.FullName, d.HoursStart, d.HoursEnd, d.MinuteEnd, d.MinuteStart});
+
             if (filter != null)
             {
                 foreach (var (key, value) in JsonConvert.DeserializeObject<Dictionary<string, string>>(filter))
@@ -84,18 +90,8 @@ namespace SHCServer.Controllers
             {
                 objs = objs.OrderByDesc(b => b.CreateDate);
             }
-
-
-            var rs = objs.GroupBy(p => p.DoctorId).Select(p => new BookingInformationsViewModel(p, _connectionString) {
-                Quantity = objs.Where(o=>o.DoctorId==p.DoctorId).Count(),
-                QuantityByStatusPending = objs.Where(o => o.Status == 1).Count(),
-                QuantityByStatusDone = objs.Where(o => o.Status == 2).Count(),
-                QuantityByStatusCancel = objs.Where(o => o.Status == 3).Count(),
-                QuantityByStatusNew = objs.Where(o => o.Status == 0).Count(),
-                QuantityByGenderMale = objs.Where(o => o.Gender == 1).Count(),//Nam
-                QuantityByGenderFemale = objs.Where(o => o.Gender == 2).Count(),//Nu               
-            });           
-            return Json(new ActionResultDto { Result = new { Items = rs.TakePage(skipCount == 0 ? 1 : skipCount + 1, maxResultCount).ToList(), TotalCount = objs.Count() } });
+          
+            return Json(new ActionResultDto { Result = new { Items = objs.TakePage(skipCount == 0 ? 1 : skipCount + 1, maxResultCount).ToList(), TotalCount = objs.Count() } });
         }
 
 
