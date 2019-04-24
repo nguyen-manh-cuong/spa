@@ -74,6 +74,8 @@ export interface IBookingInformations{
     address: string;
     provinceCodeExamination: string;
     districtCodeExamination: string;
+    provinceCode: string;
+    districtCode: string;
     bookingRepresent: string;
     phoneRepresent: string;
     emailRepresent: string;
@@ -163,7 +165,21 @@ export interface ISmsTemplate {
     createDate?: Date;
  
     users?: IUser[];
- }
+}
+
+export interface IProvince {
+    name: string;
+    isDelete: boolean;
+    isActive: boolean;
+    provinceCode: string;
+}
+
+export interface IDistrict {
+    districtCode: string;
+    name: string;
+    isDelete: boolean;
+    isActive: boolean;
+}
 
  export interface IPatient{
     patientId: number;

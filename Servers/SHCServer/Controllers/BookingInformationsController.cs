@@ -52,7 +52,9 @@ namespace SHCServer.Controllers
                 .LeftJoin<BookingTimeslots>((b, s, d) => b.TimeSlotId == d.TimeSlotId)
                 .Select((b, s, d) => new { b.HealthFacilitiesId,
                     b.TimeSlotId, b.DoctorId, b.Status, b.ExaminationDate, b.CreateDate, b.Gender, b.ExaminationWorkingTime, b.ExaminationTime,
-                b.PhoneNumber, b.Reason, b.BookingUser, b.TicketId, b.BirthDate, b.BirthMonth, b.BirthYear, s.FullName, d.HoursStart, d.HoursEnd, d.MinuteEnd, d.MinuteStart});
+                b.PhoneNumber, b.Reason, b.BookingUser, b.TicketId, b.BirthDate, b.BirthMonth, b.BirthYear,
+                b.DistrictCode, b.ProvinceCode,
+                    s.FullName, d.HoursStart, d.HoursEnd, d.MinuteEnd, d.MinuteStart});
 
             if (filter != null)
             {

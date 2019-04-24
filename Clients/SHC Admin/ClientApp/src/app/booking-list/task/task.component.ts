@@ -2,7 +2,7 @@ import * as _ from 'lodash';
 
 import { Component, Inject, Injector, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
-import { IPackage, IPackageDetail, IBookingInformations } from '@shared/Interfaces';
+import { IProvince, IPackageDetail, IBookingInformations, IDistrict } from '@shared/Interfaces';
 import { MAT_DIALOG_DATA, MatDialogRef, MatInput } from '@angular/material';
 
 import { AppComponentBase } from '@shared/app-component-base';
@@ -27,7 +27,8 @@ export class TaskComponent extends AppComponentBase implements OnInit {
     address: '', district: '', province: '', email: '', bookingRepresent: '', phoneRepresent: '', emailRepresent: ''  };
     _context: any;
     _isNew: boolean = true;
-    _details: Array<IPackageDetail> = [];
+    _province: Array<IProvince> = [];
+    _district: Array<IDistrict> = [];
 
     constructor(
         injector: Injector, 
@@ -45,6 +46,11 @@ export class TaskComponent extends AppComponentBase implements OnInit {
             this._booking = _.clone(this.bookingData);
         }
 
+        this._dataService.getAll('provinces').subscribe(resp => { this._province = resp.items });
+        this._dataService.getAll('districts').subscribe(resp => { this._district = resp.items });
+
+        setTimeout(() => { this.getAddress() }, 1000);
+
         this._context = {
             // name: [this._package.name, [Validators.required, validation.compare('name', 'description')]],
             doctorName: [this._booking.fullName],
@@ -55,13 +61,34 @@ export class TaskComponent extends AppComponentBase implements OnInit {
             gender: [this.getGender(this._booking.gender)],
             age: [this._booking.birthYear + " (" + this.convertAge(this._booking.birthDate, this._booking.birthMonth, this._booking.birthYear) + ")"],
             phoneNumber: [this._booking.phoneNumber],
-            email: [this._booking.email]
+            email: [this._booking.email],
+            address: [this._booking.address ? this._booking.address : ""],
         };
 
-        console.log(this._context);
-
         this._frm = this._formBuilder.group(this._context);
+    }
 
+    getAddress() {
+        console.log(this._province);
+        console.log(this._district);
+        var province = "";
+        var district = "";
+        var address = "";
+        for (var item of this._province) {
+            if (item.provinceCode == this._booking.provinceCode) {
+                province = item.name;
+            }
+        }
+        for (var data of this._district) {
+            if (data.districtCode == this._booking.districtCode) {
+                district = data.name
+            }
+        }
+        console.log(province);
+        console.log(district);
+        address = this._booking.address != undefined ? this._booking.address : "" + (district != "" ? " ," + district : "") + (province != "" ? " ," + province : "");
+        console.log(address);
+        this._frm.controls['address'].setValue(address);
     }
 
     getGender(status: number) {
