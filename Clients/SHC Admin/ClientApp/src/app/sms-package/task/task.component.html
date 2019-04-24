@@ -1,5 +1,4 @@
-
-<form [formGroup]="_frm" class="container p-relative" id="form-dialog" novalidate>
+<form [formGroup]="_frm" class="container p-relative" novalidate>
     <div class="p-absolute t-5 r-5">
         <button mat-icon-button mat-dialog-close style="z-index: 9;" [matTooltipPosition]="'left'" matTooltip="Đóng">
             <mat-icon>close</mat-icon>
@@ -13,7 +12,7 @@
 
             <div class="pt-4">
                 <div class="row">
-                    <div class="col-md-12" [ngClass]="{'disabled': _isNew == false && _package.isDeleteDistribute > 0}">
+                    <div class="col-md-12" [ngClass]="{'disabled': _package.distribute != 0 && _isNew == false }">
                         <mat-form-field appearance="outline" class="w-100" autofocus>
                             <mat-label>{{l("PackageName")}}</mat-label>
                             <input #txtName="matInput" [required]="true" formControlName="name" matInput
@@ -21,7 +20,7 @@
                             <validation matSuffix [control]="_frm.controls['name']"></validation>
                         </mat-form-field>
                     </div>
-                    <div class="col-md-12" [ngClass]="{'disabled': _isNew == false && _package.isDeleteDistribute > 0}">
+                    <div class="col-md-12" [ngClass]="{'disabled': _package.distribute != 0 && _isNew == false}">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("PackageDescription")}}</mat-label>
                             <input formControlName="description" matInput [required]="true" maxlength="4000">
@@ -50,7 +49,7 @@
                             <input type="text" formControlName="smsFrom" matInput [required]="true">
                         </mat-form-field>
                     </div>
-                    <div class="col-md-3" [ngClass]="{'disabled': _isNew == false && _package.isDeleteDistribute > 0}">
+                    <div class="col-md-3" [ngClass]="{'disabled': _package.distribute != 0 && _isNew == false}">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l('PackageSmsTo')}}</mat-label>
                             <input type="text" mask="dot_separator" formControlName="smsTo" matInput [required]="true"
@@ -59,18 +58,16 @@
                             <validation matSuffix [control]="_frm.controls['smsTo']"></validation>
                         </mat-form-field>
                     </div>
-                    <div class="col-md-4" [ngClass]="{'disabled': _isNew == false && _package.isDeleteDistribute > 0}">
+                    <div class="col-md-4" [ngClass]="{'disabled': _package.distribute != 0 && _isNew == false}">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l('PackageDetailCost')}}</mat-label>
                             <input type="text" mask="dot_separator" formControlName="detailCost" matInput
-                                [required]="true" 
-                                (input)="inputOnlyNumber($event, 'detailCost')"
-                                (keyup)="getValue($event.target.value, -1, 2)"
-                                maxlength="11" #detailCost>
+                                [required]="true" (keyup)="getValue($event.target.value, -1, 2)"
+                                (input)="inputOnlyNumber($event, 'detailCost')" maxlength="11" #detailCost>
                             <validation matSuffix [control]="_frm.controls['detailCost']"></validation>
                         </mat-form-field>
                     </div>
-                    <div class="col-md-12" [ngClass]="{'disabled': _isNew == false && _package.isDeleteDistribute > 0}">
+                    <div class="col-md-12" [ngClass]="{'disabled': _package.distribute != 0 && _isNew == false}">
                         <div class="row" *ngFor="let item of _details; index as i">
                             <div class="col-md-3 disabled">
                                 <mat-form-field appearance="outline" class="w-100">
@@ -112,7 +109,7 @@
         </mat-tab>
     </mat-tab-group>
     <div class="row">
-        <div class="col-md-4" [ngClass]="{'disabled': _isNew == false && _package.isDeleteDistribute > 0}">
+        <div class="col-md-4" [ngClass]="{'disabled': _package.distribute != 0 && _isNew == false}">
             <button mat-raised-button color="primary" (click)="addDetail()"
                 [disabled]="!smsTo.value || !detailCost.value || checkPackageDetail()">Thêm</button>
         </div>
