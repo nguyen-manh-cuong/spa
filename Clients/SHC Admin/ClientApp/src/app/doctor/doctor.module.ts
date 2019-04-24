@@ -11,12 +11,12 @@ import { ValidationModule } from '@app/validation/validation.module';
 import { NgxMaskModule } from 'ngx-mask';
 import { CustomCurrencyPipe } from 'pipes/custom-currency.pipe';
 import { MAT_CHECKBOX_CLICK_ACTION } from '@angular/material';
-// import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
+//import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 
 
 @NgModule({
   imports: [
-    // CKEditorModule,
+    //CKEditorModule,
     CommonModule,
     FormsModule, ReactiveFormsModule,
     DoctorRoutingModule,
@@ -27,6 +27,6 @@ import { MAT_CHECKBOX_CLICK_ACTION } from '@angular/material';
   ],
   declarations: [CustomCurrencyPipe,DoctorComponent, IndexComponent, TaskComponent],
   entryComponents: [TaskComponent],
-  providers:[{provide: MAT_CHECKBOX_CLICK_ACTION, useValue: 'noop'}]
+  //providers:[{provide: MAT_CHECKBOX_CLICK_ACTION, useValue: 'noop'}]
 })
 export class DoctorModule { }

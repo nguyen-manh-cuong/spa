@@ -115,6 +115,7 @@ namespace SHCServer.Controllers
                                          new MenuItem {Name = "CategoryCommon", Icon="", Route="/app/category-common"},
                                          new MenuItem {Name = "ApproveExamScheduleDoctor", Icon="", Route="/app/booking-doctor-approve"},
                                          new MenuItem {Name = "Thống kê DS bệnh nhân đặt khám", Icon="", Route="/app/booking-informations"},
+                                         new MenuItem {Name = "Danh sách bệnh nhân đặt khám", Icon="", Route="/app/booking-list"},
                                     }}
                                 } 
                             }

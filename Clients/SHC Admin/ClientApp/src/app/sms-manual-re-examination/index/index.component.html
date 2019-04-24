@@ -55,13 +55,13 @@
             <!-- 2 -->
             <div class="col-md-3">
                 <mat-form-field appearance="outline" class="w-100">
-                    <mat-label>{{l("Mã BN")}}</mat-label>
+                    <mat-label>{{l("Mã bệnh nhân")}}</mat-label>
                     <input formControlName="patientCode" mask="A*" matInput maxlength="10">
                 </mat-form-field>
             </div>
             <div class="col-md-3">
                 <mat-form-field appearance="outline" class="w-100">
-                    <mat-label>{{l("Tên BN")}}</mat-label>
+                    <mat-label>{{l("Tên bệnh nhân")}}</mat-label>
                     <input formControlName="patientName" matInput maxlength="255">
                 </mat-form-field>
             </div>
@@ -203,7 +203,7 @@
             </ng-container>
             <ng-container matColumnDef="gender">
                 <th mat-header-cell *matHeaderCellDef class="min-w-50 text-center"> {{l('Giới tính')}} </th>
-                <td mat-cell *matCellDef="let element" class="min-w-50 text-center"> {{element.gender == 2 ? 'Nữ' : 'Nam'}} </td>
+                <td mat-cell *matCellDef="let element" class="min-w-50 text-center"> {{element.gender == 2 ? 'Nữ' : (element.gender == 1 ? 'Nam' : 'Không xác định')}} </td>
             </ng-container>
             <ng-container matColumnDef="phoneNumber">
                 <th mat-header-cell *matHeaderCellDef class="text-center"> {{l('Điện thoại')}} </th>

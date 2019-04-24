@@ -70,6 +70,7 @@ export class IndexComponent extends PagedListingComponentBase<ISmsLogs> implemen
         setTimeout(() => {
             this.startTime.nativeElement.value = moment(new Date()).format("DD/MM/YYYY");
             this.endTime.nativeElement.value = moment(new Date()).format("DD/MM/YYYY");
+            this.customSearch();
         });
 
         this.dataService = this._dataService;

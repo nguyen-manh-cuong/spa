@@ -51,9 +51,59 @@ namespace SHCServer.Controllers
                 .LeftJoin<Doctor>((b, s) => b.DoctorId == s.DoctorId)
                 .LeftJoin<BookingTimeslots>((b, s, d) => b.TimeSlotId == d.TimeSlotId)
                 .Select((b, s, d) => new { b.HealthFacilitiesId,
-                    b.TimeSlotId, b.DoctorId, b.Status, b.ExaminationDate, b.CreateDate, b.Gender,
-                b.PhoneNumber, b.Reason, b.BookingUser, b.TicketId, b.BirthYear, s.FullName, d.HoursStart, d.HoursEnd, d.MinuteEnd, d.MinuteStart});
+                    b.TimeSlotId, b.DoctorId, b.Status, b.ExaminationDate, b.CreateDate, b.Gender, b.ExaminationWorkingTime, b.ExaminationTime,
+                b.PhoneNumber, b.Reason, b.BookingUser, b.TicketId, b.BirthDate, b.BirthMonth, b.BirthYear,
+                b.DistrictCode, b.ProvinceCode,
+                    s.FullName, d.HoursStart, d.HoursEnd, d.MinuteEnd, d.MinuteStart});
 
+            if (filter != null)
+            {
+                foreach (var (key, value) in JsonConvert.DeserializeObject<Dictionary<string, string>>(filter))
+                {
+                    if (string.Equals(key, "healthfacilities") && !string.IsNullOrWhiteSpace(value))
+                        objs = objs.Where(b => b.HealthFacilitiesId.ToString() == value.Trim() || b.HealthFacilitiesId.ToString() == null);
+                    if (string.Equals(key, "doctor") && !string.IsNullOrWhiteSpace(value))
+                        objs = objs.Where(b => b.DoctorId.ToString() == value.Trim());
+                    if (string.Equals(key, "status") && !string.IsNullOrWhiteSpace(value))
+                    {
+                        if (Convert.ToInt32(value) != 4)
+                        {
+                            objs = objs.Where(b => b.Status.ToString() == value.Trim());
+                        }
+                    }
+                    if (string.Equals(key, "packagesNameDescription") && !string.IsNullOrWhiteSpace(value))
+                    {
+                        objs = objs.Where(b => b.TicketId.Contains(value) || b.PhoneNumber.Contains(value) || b.BookingUser.Contains(value));
+                    }
+                    if (string.Equals(key, "startTime")) objs = objs.Where(b => b.ExaminationDate>= DateTime.Parse(value));
+                    if (string.Equals(key, "endTime")) objs = objs.Where(b => b.ExaminationDate <= DateTime.Parse(value));
+
+                }
+
+            }
+            if (sorting != null)
+            {
+                foreach (var (key, value) in JsonConvert.DeserializeObject<Dictionary<string, string>>(sorting))
+                {
+                    if (!Utils.PropertyExists<BookingInformations>(key))
+                        continue;
+
+                    objs = value == "asc" ? objs.OrderBy(u => key) : objs.OrderByDesc(u => key);
+                }
+            }
+            else
+            {
+                objs = objs.OrderByDesc(b => b.CreateDate);
+            }
+          
+            return Json(new ActionResultDto { Result = new { Items = objs.TakePage(skipCount == 0 ? 1 : skipCount + 1, maxResultCount).ToList(), TotalCount = objs.Count() } });
+        }
+
+        [HttpGet]
+        [Route("api/bookinginformationsgroupby")]
+         public IActionResult GetByGroup(int skipCount = 0, int maxResultCount = 10, string sorting = null, string filter = null)
+        {
+            var objs = _context.Query<BookingInformations>().Where(b => b.BookingServiceType == 1);
             if (filter != null)
             {
                 foreach (var (key, value) in JsonConvert.DeserializeObject<Dictionary<string, string>>(filter))
@@ -90,10 +140,18 @@ namespace SHCServer.Controllers
             {
                 objs = objs.OrderByDesc(b => b.CreateDate);
             }
-          
-            return Json(new ActionResultDto { Result = new { Items = objs.TakePage(skipCount == 0 ? 1 : skipCount + 1, maxResultCount).ToList(), TotalCount = objs.Count() } });
+
+
+            var rs = objs.GroupBy(p => p.DoctorId).Select(p => new BookingInformationsViewModel(p, _connectionString) {
+                Quantity = objs.Where(o=>o.DoctorId==p.DoctorId).Count(),
+                QuantityByStatusPending = objs.Where(o => o.Status == 1).Count(),
+                QuantityByStatusDone = objs.Where(o => o.Status == 2).Count(),
+                QuantityByStatusCancel = objs.Where(o => o.Status == 3).Count(),
+                QuantityByStatusNew = objs.Where(o => o.Status == 0).Count(),
+                QuantityByGenderMale = objs.Where(o => o.Gender == 1).Count(),//Nam
+                QuantityByGenderFemale = objs.Where(o => o.Gender == 2).Count(),//Nu               
+            });           
+            return Json(new ActionResultDto { Result = new { Items = rs.TakePage(skipCount == 0 ? 1 : skipCount + 1, maxResultCount).ToList(), TotalCount = rs.Count(), TotalPatientCount = objs.Count() } });
         }
-
-
     }
 }
