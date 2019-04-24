@@ -213,7 +213,7 @@ export class BookingComponent extends AppComponentBase implements OnInit, AfterV
     console.log(231, obj.healthFacilitiesId);
     this.frmBooking.controls['healthFacilitiesId'].setValue(obj.healthFacilitiesId);
     this.onClickHealthFacilities();
-    this._healthfacility = this._healthfacilities.find(o => o.healthFacilitiesId == obj);
+    this._healthfacility = this._healthfacilities.find(o => o.healthFacilitiesId == obj.healthFacilitiesId);
     this._specialistHealthfacilities = this._healthfacility ? this._healthfacility.specialist.map(e => e.specialist).join(", ") : "";
   }
 
@@ -240,7 +240,7 @@ export class BookingComponent extends AppComponentBase implements OnInit, AfterV
         var date = new Date();
         var workingTime = [];
         date.setDate(date.getDate() + i);
-        console.log(250, this._workingTimes);
+
         this._workingTimes.forEach(el => {
           if(moment(date).format("DD/MM/YYYY") == moment(el.calendarDate).format("DD/MM/YYYY")){
             workingTime.push({
@@ -250,7 +250,6 @@ export class BookingComponent extends AppComponentBase implements OnInit, AfterV
             })
           }
         });
-        console.log(252, this._workingTimes);
         this._lstWorkingTimes.push({
           dayWeek: this.getDayOfWeek(date.getDay()),
           dayMonth: ' (' + date.getDate() + '/' + (date.getMonth() + 1) + ')',
