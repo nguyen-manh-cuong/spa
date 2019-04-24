@@ -1,7 +1,7 @@
 
 import { AfterViewInit, Component, Injector, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatButton, MatDialog, MatDialogRef, MatTableDataSource } from '@angular/material';
+import { MAT_DIALOG_DATA, MatButton, MatDialog, MatDialogRef, MatTableDataSource, MatSort } from '@angular/material';
 import { Subject, merge, of } from 'rxjs';
 import { Observable } from 'rxjs';
 import { catchError, map, startWith, switchMap, filter } from 'rxjs/operators';
@@ -67,6 +67,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
   displayedColumns = ['orderNumber', 'healthFacilitiesName', 'doctorName', 'quantity'];
   @ViewChild("endTime") endTime;
   @ViewChild("startTime") startTime;
+  @ViewChild(MatSort) sort: MatSort;
   
   constructor(injector: Injector, private _dataService: DataService, public dialog: MatDialog, private _formBuilder: FormBuilder) { super(injector); }
   _bookingServiceTypes = [{ id: 0, name: 'Mới đăng ký' }, { id: 1, name: 'Chờ khám' }, { id: 2, name: 'Đã khám' }, { id: 3, name: 'Hủy khám' }, { id: 4, name: 'Tất cả' }];
@@ -85,6 +86,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
       endTime: new Date(),
       time: [0],
     });
+
     this.dataService.getAll('healthfacilities', (this.appSession.user.healthFacilitiesId ? String(this.appSession.user.healthFacilitiesId) : '')).subscribe(resp => {
       this._healthfacilities = resp.items;
     });
