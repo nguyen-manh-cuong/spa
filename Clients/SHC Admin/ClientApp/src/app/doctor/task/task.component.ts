@@ -151,8 +151,8 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
       fullName: [this._obj.fullName, [Validators.required, validationRule.hasValue]],
       specialist: [this._obj.specialist, [Validators.required, validationRule.hasValue]],
       birthDay: [this._birthDay],
-      gender: [this._obj.gender],
-      titleCode: [this._obj.titleCode],
+      gender: this._obj.gender,
+      titleCode: this._obj.titleCode,
       posittionCode: [this._obj.posittionCode],
       nationCode: [this._obj.nationCode],
       ethnicityCode: [this._obj.ethnicityCode],
@@ -167,10 +167,10 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
       phoneNumber: [this._obj.phoneNumber],
       educationCountryCode: [this._obj.educationCountryCode],
       avatar: [this._obj.avatar],
-      description: [this._obj.description],
+      description: this._obj.description,
       priceFrom: [this._obj.priceFrom],
       priceTo: [this._obj.priceTo],
-      priceDescription: [this._obj.priceDescription],
+      priceDescription: this._obj.priceDescription,
       sumary: [this._obj.sumary],
       allowBooking: [this._obj.allowBooking],
       allowFilter: [this._obj.allowFilter],
@@ -179,6 +179,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     };
 
     this._frm = this._formBuilder.group(this._context);
+    console.log('Gia tri form', this._context);
     if (this._obj.avatar == "") {
       this._frm.controls['avatar'].setValue("https://cmkt-image-prd.global.ssl.fastly.net/0.1.0/ps/1441527/1160/772/m1/fpnw/wm0/businessman-avatar-icon-01-.jpg?1468234792&s=e3a468692e15e93a2056bd848193e97a");
     }
@@ -198,9 +199,10 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   }
 
   submit() {
+    console.log(201, 'vao ham submit', this._frm.value);
     var params = _.pick(this._frm.value, ['id', 'fullName', , 'isActive', 'createUserId', 'updateUserId']);
 
-    params.fullName = _.trim(params.fullName);
+    params.fullName = _.trim(params.fullName);    
 
     if (!moment(this.birthDayPicker.nativeElement.value, 'DD/MM/YYYY').isValid()) {
       return swal('Thông báo', 'Ngày sinh không đúng định dạng', 'warning');
@@ -218,12 +220,12 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
       if (this.appSession.userId && this._isNew == false) {
         params.updateUserId = this.appSession.userId;
       }
-  
+      console.log('Gia tri params', params);
       this._isNew ?
         this._dataService.create(this.api, params).subscribe(() => {
           swal(this.l('SaveSuccess'), '', 'success');
           this.dialogRef.close();
-        }, err => { }) :
+        }, err => { }) :       
         this._dataService.update(this.api, params).subscribe(() => {
           swal(this.l('SaveSuccess'), '', 'success');
           this.dialogRef.close();

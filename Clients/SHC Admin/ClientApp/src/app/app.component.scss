@@ -63,7 +63,7 @@
 //     white-space: normal!important;
 //     overflow: visible!important;
 // }
-.mat-table td.mat-cell:not(.mat-column-healthFacilitiesName) {
+.wrap-text {
     word-break: break-all!important;
     white-space: normal!important;
     overflow: visible!important;
@@ -79,7 +79,7 @@
     padding-right: 10px!important;
 }
 .form-custom .mat-form-field.mat-form-field-should-float mat-label{
-    font-size: 18px;
+    font-size: 17px;
     font-weight: 500;
     color: black;
 }

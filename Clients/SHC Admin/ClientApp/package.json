@@ -36,6 +36,7 @@
         "ansi-html": "^0.0.7",
         "block-ui": "^2.70.1",
         "bootstrap": "4.1.3",
+        "ckeditor": "^4.11.4",
         "core-js": "^2.5.7",
         "famfamfam-flags": "^1.0.0",
         "font-awesome": "^4.7.0",
