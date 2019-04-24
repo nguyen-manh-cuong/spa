@@ -55,7 +55,7 @@
                             <mat-label>{{l('PackageSmsTo')}}</mat-label>
                             <input type="text" mask="dot_separator" formControlName="smsTo" matInput [required]="true"
                                 (keyup)="getValue($event.target.value, -1, 1)" (input)="inputOnlyNumber($event, 'smsTo')"
-                                maxlength="11">
+                                maxlength="11" #smsTo>
                             <validation matSuffix [control]="_frm.controls['smsTo']"></validation>
                         </mat-form-field>
                     </div>
@@ -63,8 +63,10 @@
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l('PackageDetailCost')}}</mat-label>
                             <input type="text" mask="dot_separator" formControlName="detailCost" matInput
-                                [required]="true" (keyup)="getValue($event.target.value, -1, 2)"
-                                (input)="inputOnlyNumber($event, 'detailCost')" maxlength="11">
+                                [required]="true" 
+                                (input)="inputOnlyNumber($event, 'detailCost')"
+                                (keyup)="getValue($event.target.value, -1, 2)"
+                                maxlength="11" #detailCost>
                             <validation matSuffix [control]="_frm.controls['detailCost']"></validation>
                         </mat-form-field>
                     </div>
@@ -112,7 +114,7 @@
     <div class="row">
         <div class="col-md-4" [ngClass]="{'disabled': _isNew == false && _package.isDeleteDistribute > 0}">
             <button mat-raised-button color="primary" (click)="addDetail()"
-                [disabled]="!_frm.controls['smsTo'].value || _frm.controls['detailCost'].value == 0 || checkPackageDetail()">Thêm</button>
+                [disabled]="!smsTo.value || !detailCost.value || checkPackageDetail()">Thêm</button>
         </div>
         <div class="col-md-8">
             <div class="text-right mb-3"><button class="mr-3" mat-raised-button color="primary"
