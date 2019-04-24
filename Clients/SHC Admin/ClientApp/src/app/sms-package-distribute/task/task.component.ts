@@ -55,7 +55,7 @@ export class packagedistributeTaskComponent extends AppComponentBase implements 
         this._obj.yearStart = Number(this.datePipe.transform(Date.now(), "yyyy"));
         this._obj.yearEnd = Number(this.datePipe.transform(Date.now(), "yyyy"));
       this._obj.isActive = true;
-    }
+      }
 
     this._dataService.getAll('smsbrands-all').subscribe(resp => this._brands = resp.items);
     this._dataService.getAll('healthfacilities').subscribe(resp => this._medicalFacility = resp.items);

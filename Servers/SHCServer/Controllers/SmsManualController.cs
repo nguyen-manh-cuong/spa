@@ -140,6 +140,26 @@ namespace SHCServer.Controllers
                         clause.Add("and p.BirthMonth = @FromMonth");
                         param.Add(DbParam.Create("@FromMonth", value));
                     }
+                    if (string.Equals(key, "fromDay") && value != "32")
+                    {
+                        clause.Add("and p.BirthDate >= @FromDay");
+                        param.Add(DbParam.Create("@FromDay", value));
+                    }
+                    if (string.Equals(key, "toDay") && value != "32")
+                    {
+                        clause.Add("and p.BirthDate <= @ToDay");
+                        param.Add(DbParam.Create("@ToDay", value));
+                    }
+                    if (string.Equals(key, "fromMonth") && value != "13")
+                    {
+                        clause.Add("and p.BirthMonth >= @FromMonth");
+                        param.Add(DbParam.Create("@FromMonth", value));
+                    }
+                    if (string.Equals(key, "toMonth") && value != "13")
+                    {
+                        clause.Add("and p.BirthMonth <= @ToMonth");
+                        param.Add(DbParam.Create("@ToMonth", value));
+                    }
                     if (string.Equals(key, "sex"))
                     {
                         clause.Add("and p.Gender = @Gender");

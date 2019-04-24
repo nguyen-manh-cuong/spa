@@ -179,9 +179,13 @@ export class BookingComponent extends AppComponentBase implements OnInit, AfterV
   onSelectType(num: number) {
     const u = _.trim(this.frmBooking.get('bookingUser').value);
     const p = _.trim(this.frmBooking.get('phoneNumber').value);
-    
+
     if (num === 2) {
-      if(!this.frmBooking.controls['bookingRepresent'].value) this.frmBooking.patchValue({ bookingRepresent: u, phoneRepresent: p, bookingSecondUser: null, phoneSecondNumber: null });
+      if(!this.frmBooking.controls['bookingRepresent'].value){
+        this.frmBooking.patchValue({ bookingRepresent: u, phoneRepresent: p, bookingSecondUser: null, phoneSecondNumber: null });
+      } else{
+        this.frmBooking.patchValue({ bookingRepresent: u, phoneRepresent: p});
+      }
     } else {
       this.frmBooking.patchValue({ bookingSecondUser: u, phoneSecondNumber: p, bookingRepresent: null, phoneRepresent: null });
     }

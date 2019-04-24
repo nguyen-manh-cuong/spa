@@ -59,7 +59,7 @@
                       <mat-label>{{l("Đến năm")}}</mat-label>
                       <input type="text" maxlength="4" formControlName="yearEnd" mask="0*" matInput autocomplete [required]="true">
                       <mat-icon matSuffix *ngIf="_frmpackagedistribute.controls['yearEnd'].invalid && (_frmpackagedistribute.controls['yearEnd'].dirty || _frmpackagedistribute.controls['yearEnd'].touched)" [matTooltipPosition]="'before'" matTooltipClass="bg-danger text-light mr-1" matTooltip="{{l('NotBeEmpty')}}" color="warn">info</mat-icon>
-                      <mat-icon matSuffix *ngIf="!_frmpackagedistribute.controls['yearEnd'].invalid && (_frmpackagedistribute.controls['yearEnd'].value < _frmpackagedistribute.controls['yearStart'].value) && (_frmpackagedistribute.controls['yearEnd'].dirty || _frmpackagedistribute.controls['yearEnd'].touched)" [matTooltipPosition]="'before'" matTooltipClass="bg-danger text-light mr-1" matTooltip="{{l('PackageDistributeCompareYears')}}" color="warn">info</mat-icon>
+                      <mat-icon matSuffix *ngIf="!_frmpackagedistribute.controls['yearEnd'].invalid && (_frmpackagedistribute.controls['yearEnd'].value < _currentYear) && (_frmpackagedistribute.controls['yearEnd'].value < _frmpackagedistribute.controls['yearStart'].value) && (_frmpackagedistribute.controls['yearEnd'].dirty || _frmpackagedistribute.controls['yearEnd'].touched)" [matTooltipPosition]="'before'" matTooltipClass="bg-danger text-light mr-1" matTooltip="{{l('PackageDistributeCompareYears')}}" color="warn">info</mat-icon>
                   </mat-form-field>
               </div>
 
@@ -78,7 +78,7 @@
           </div>
         <div class="text-right mb-3">
           <button class="mr-3" mat-raised-button color="primary" mat-dialog-close>{{l("Close")}}</button>
-          <button mat-raised-button color="primary" [disabled]="((_frmpackagedistribute.controls['yearStart'].invalid) || (_frmpackagedistribute.controls['yearEnd'].invalid) || (_frmpackagedistribute.controls['yearStart'].value > _currentYear) || (_frmpackagedistribute.controls['yearEnd'].value) < (_frmpackagedistribute.controls['yearStart'].value))" (click)="submit()">{{l("Save")}}</button>
+          <button mat-raised-button color="primary" [disabled]="((_frmpackagedistribute.controls['yearStart'].invalid) || (_frmpackagedistribute.controls['yearEnd'].invalid) || (_frmpackagedistribute.controls['yearStart'].value < _currentYear) || (_frmpackagedistribute.controls['yearEnd'].value < _frmpackagedistribute.controls['yearStart'].value))" (click)="submit()">{{l("Save")}}</button>
         </div>
       </div>
     </mat-tab>

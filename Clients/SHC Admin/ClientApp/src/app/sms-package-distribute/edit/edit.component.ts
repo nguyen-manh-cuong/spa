@@ -50,7 +50,7 @@ export class packagedistributeEditComponent extends AppComponentBase implements 
         this._obj.yearEnd = this.obj.yearEnd;
         this._obj.quantity = this.obj.quantity;
         this._obj.smsPackageUsed = this.obj.smsPackageUsed;
-    }
+      }
 
     this._dataService.getAll('smsbrands-all').subscribe(resp => this._brands = resp.items);
     this._dataService.getAll('healthfacilities').subscribe(resp => this._medicalFacility = resp.items);
@@ -60,6 +60,7 @@ export class packagedistributeEditComponent extends AppComponentBase implements 
           console.log(resp.items);
           this._smsLogs = resp.items
       });
+
     this._context = {
       healthFacilitiesId: [this._obj.healthFacilitiesId, Validators.required],
       smsBrandsId: [this._obj.smsBrandsId, Validators.required],
@@ -71,7 +72,24 @@ export class packagedistributeEditComponent extends AppComponentBase implements 
       isActive: [this._obj.isActive],
       userId: [],
     };
-    this._frmpackagedistributeedit = this._formBuilder.group(this._context);
+      this._frmpackagedistributeedit = this._formBuilder.group(this._context);
+
+
+      setTimeout(() => {
+          if (this._smsLogs.length > 0) {
+              this._frmpackagedistributeedit.controls['healthFacilitiesId'].disable();
+              this._frmpackagedistributeedit.controls['smsPackageId'].disable();
+              this._frmpackagedistributeedit.controls['monthStart'].disable();
+              this._frmpackagedistributeedit.controls['yearStart'].disable();
+              this._frmpackagedistributeedit.controls['monthEnd'].disable();
+              this._frmpackagedistributeedit.controls['yearEnd'].disable();
+              this._frmpackagedistributeedit.controls['smsBrandsId'].disable();
+              this._frmpackagedistributeedit.controls['isActive'].disable();
+          } else {
+              this._frmpackagedistributeedit.controls['smsPackageId'].disable();
+              this._frmpackagedistributeedit.controls['healthFacilitiesId'].disable();
+          }
+      }, 1000);
   }
 
   submit() {

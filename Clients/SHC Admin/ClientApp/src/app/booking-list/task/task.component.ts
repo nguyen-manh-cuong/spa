@@ -86,7 +86,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
         }
         console.log(province);
         console.log(district);
-        address = this._booking.address != undefined ? this._booking.address : "" + (district != "" ? " ," + district : "") + (province != "" ? " ," + province : "");
+        address = this._booking.address != undefined ? this._booking.address + ", " : "" + (district != "" ? district : "") + (province != "" ? ", " + province : "");
         console.log(address);
         this._frm.controls['address'].setValue(address);
     }
