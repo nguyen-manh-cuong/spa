@@ -78,8 +78,7 @@
           </div>
         <div class="text-right mb-3">
           <button class="mr-3" mat-raised-button color="primary" mat-dialog-close>{{l("Close")}}</button>
-          <button mat-raised-button color="primary" [disabled]="((_frmpackagedistribute.controls['yearStart'].invalid) || (_frmpackagedistribute.controls['yearEnd'].invalid) || (_frmpackagedistribute.controls['yearStart'].value < _currentYear) || (_frmpackagedistribute.controls['yearEnd'].value < _frmpackagedistribute.controls['yearStart'].value) || (_frmpackagedistributeedit.controls['monthStart'].value > _frmpackagedistributeedit.controls['monthEnd'].value))"
-                  (click)="submit()">{{l("Save")}}</button>
+          <button mat-raised-button color="primary" [disabled]="((_frmpackagedistribute.controls['yearStart'].invalid) || (_frmpackagedistribute.controls['yearEnd'].invalid) || (_frmpackagedistribute.controls['yearStart'].value < _currentYear) || (_frmpackagedistribute.controls['yearEnd'].value < _frmpackagedistribute.controls['yearStart'].value) || (_frmpackagedistribute.controls['monthEnd'].value < _frmpackagedistribute.controls['monthStart'].value))" (click)="submit()">{{l("Save")}}</button>
         </div>
       </div>
     </mat-tab>
