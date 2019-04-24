@@ -85,7 +85,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
 
     ngAfterViewInit(): void {
         setTimeout(() => {
-            this._package.distribute == 0 || this._isNew == true ? this.txtName.focus() : '';
+            this._package.isDeleteDistribute == 0 || this._isNew == true ? this.txtName.focus() : '';
         }, 1000);
     }
 
