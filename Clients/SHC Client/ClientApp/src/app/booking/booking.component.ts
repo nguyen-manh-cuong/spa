@@ -210,6 +210,7 @@ export class BookingComponent extends AppComponentBase implements OnInit, AfterV
   }
 
   onSelectHealthFacilities(obj: any){
+    console.log(213, obj);
     this.onClickHealthFacilities();
     this._healthfacility = this._healthfacilities.find(o => o.healthFacilitiesId == obj);
     this._specialistHealthfacilities = this._healthfacility ? this._healthfacility.specialist.map(e => e.specialist).join(", ") : "";

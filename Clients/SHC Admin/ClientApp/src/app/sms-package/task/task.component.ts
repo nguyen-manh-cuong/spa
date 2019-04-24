@@ -81,23 +81,6 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
                 this._frm.addControl(this._detailCost + i, new FormControl(el.cost, [Validators.required, this.ValidationRule.hasValue]));
             })
         }
-
-        setTimeout(() => {
-            if (this._isNew == false && this._package.isDeleteDistribute > 0) {
-                this._frm.controls['name'].disable();
-                this._frm.controls['description'].disable();
-                this._frm.controls['cost'].disable();
-                this._frm.controls['quantity'].disable();
-                this._frm.controls['smsFrom'].disable();
-                this._frm.controls['smsTo'].disable();
-                this._frm.controls['detailCost'].disable();
-            } else {
-                this._frm.controls['cost'].disable();
-                this._frm.controls['quantity'].disable();
-                this._frm.controls['smsFrom'].disable();
-            }
-        }, 100);
-
     }
 
     ngAfterViewInit(): void {
