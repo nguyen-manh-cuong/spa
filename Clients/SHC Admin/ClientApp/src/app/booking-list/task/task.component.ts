@@ -58,19 +58,21 @@ export class TaskComponent extends AppComponentBase implements OnInit {
             reason: [this._booking.reason, Validators.required],
             status: [this.getStatus(this._booking.status)],
             bookingUser: [this._booking.bookingUser,],
+            bookingRepresent: [this._booking.bookingRepresent,],
             gender: [this.getGender(this._booking.gender)],
             age: [this._booking.birthYear + " (" + this.convertAge(this._booking.birthDate, this._booking.birthMonth, this._booking.birthYear) + ")"],
             phoneNumber: [this._booking.phoneNumber],
+            phoneRepresent: [this._booking.phoneRepresent],
             email: [this._booking.email],
+            emailRepresent: [this._booking.emailRepresent],
             address: [this._booking.address ? this._booking.address : ""],
+
         };
 
         this._frm = this._formBuilder.group(this._context);
     }
 
     getAddress() {
-        console.log(this._province);
-        console.log(this._district);
         var province = "";
         var district = "";
         var address = "";
@@ -84,8 +86,6 @@ export class TaskComponent extends AppComponentBase implements OnInit {
                 district = data.name
             }
         }
-        console.log(province);
-        console.log(district);
         address = this._booking.address != undefined ? this._booking.address + ", " : "" + (district != "" ? district : "") + (province != "" ? ", " + province : "");
         console.log(address);
         this._frm.controls['address'].setValue(address);
@@ -138,6 +138,13 @@ export class TaskComponent extends AppComponentBase implements OnInit {
                 return 'Tất cả';
 
         }
+    }
+
+    submit() {
+        this._dataService.update(this.api, Object.assign(this._frm.value, { id: this._booking.id })).subscribe(() => {
+            swal(this.l('SaveSuccess'), '', 'success');
+            this.dialogRef.close();
+        }, err => console.log(err));
     }
 
 
