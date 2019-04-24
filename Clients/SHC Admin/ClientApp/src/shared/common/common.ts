@@ -16,7 +16,7 @@ export class ValidationRule {
 
     //Kiem tra space, null
     hasValue(control: AbstractControl) {
-        if (!control.value || (typeof control.value == 'string' && !control.value.trim())) {
+        if ((!control.value || (typeof control.value == 'string' && !control.value.trim())) && !isNaN(control.value)) {
             return {required: true};
         }
         return null;

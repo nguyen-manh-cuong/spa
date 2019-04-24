@@ -31,6 +31,8 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     _details: Array<IPackageDetail> = [];
 
     @ViewChild("txtName") txtName: MatInput;
+    @ViewChild("smsTo") smsTo;
+    @ViewChild("detailCost") detailCost;
 
     constructor(
         injector: Injector, 
@@ -79,23 +81,6 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
                 this._frm.addControl(this._detailCost + i, new FormControl(el.cost, [Validators.required, this.ValidationRule.hasValue]));
             })
         }
-
-        setTimeout(() => {
-            if (this._isNew == false && this._package.isDeleteDistribute > 0) {
-                this._frm.controls['name'].disable();
-                this._frm.controls['description'].disable();
-                this._frm.controls['cost'].disable();
-                this._frm.controls['quantity'].disable();
-                this._frm.controls['smsFrom'].disable();
-                this._frm.controls['smsTo'].disable();
-                this._frm.controls['detailCost'].disable();
-            } else {
-                this._frm.controls['cost'].disable();
-                this._frm.controls['quantity'].disable();
-                this._frm.controls['smsFrom'].disable();
-            }
-        }, 100);
-
     }
 
     ngAfterViewInit(): void {
@@ -180,7 +165,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
         var value = this.getNumber(values);
 
         if (type == 1) {
-            var valueSmsTo = Number(this._frm.controls['smsTo'].value);
+            var valueSmsTo = Number(this.smsTo.nativeElement.value);
             var length = this._details.length;
             var totalQuantity = !length ? valueSmsTo : (length ? this._frm.controls['quantity'].value : valueSmsTo);
             index > -1 ? this._details[index].smsTo = value : "";
@@ -206,7 +191,8 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
                 }
             }
         } else {
-            var totalCost: number = type == 1 ? Number(this._frm.controls['detailCost'].value) + Number(value) : Number(this._frm.controls['detailCost'].value);
+            var totalCost: number = type == 1 ? Number(this.detailCost.nativeElement.value) + Number(value) : Number(this.detailCost.nativeElement.value);
+
             index > -1 ? this._details[index].cost = value : "";
 
             this._details.forEach(el => {
