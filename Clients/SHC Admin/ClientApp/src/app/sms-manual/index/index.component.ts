@@ -50,6 +50,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     _currentYear = new Date().getFullYear();
     _sex = [{ id: 0, name: 'Tất cả' }, { id: 1, name: 'Nam' }, { id: 2, name: 'Nữ' }, { id: 3, name: 'Không xác định' }];
     selection = new SelectionModel<IMedicalHealthcareHistories>(true, []);
+
     filteredOptions: Observable<IHealthfacilities[]>;
     healthfacilities = new FormControl();
     cDate = new Date();

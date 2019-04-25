@@ -6,13 +6,15 @@ import { IndexComponent } from './index/index.component';
 import { NgModule } from '@angular/core';
 //import { SettingsComponent } from './settings/settings.component';
 import { SharedModule } from '@shared/shared.module';
-import { TaskComponent } from './task/task.component';
+import { EditComponent } from './edit/edit.component';
 import { DetailComponent } from './detail/detail.component';
 import { BookingListComponent } from './booking-list.component';
 import { BookingListRoutingModule } from './booking-list-routing.module';
 import { UtilsModule } from '@shared/utils/utils.module';
 import { NgxMaskModule } from 'ngx-mask';
-import { ValidationModule } from '@app/validation/validation.module';
+import { ValidationModule } from '@app/validation/validation.module'; 
+import { SmsTemplateTaskModule } from '@app/sms-template-task/sms-template-task.module';
+import { ReasonComponent } from './reason/reason.component';
 
 @NgModule({
     imports: [
@@ -22,10 +24,11 @@ import { ValidationModule } from '@app/validation/validation.module';
         SharedModule,
         UtilsModule,
         ValidationModule,
+        SmsTemplateTaskModule,
         NgxMaskModule.forRoot()
     ],
 
-    declarations: [BookingListComponent, IndexComponent, TaskComponent, DetailComponent],
-    entryComponents: [TaskComponent, DetailComponent]
+    declarations: [BookingListComponent, IndexComponent, EditComponent, DetailComponent, ReasonComponent],
+    entryComponents: [EditComponent, DetailComponent, ReasonComponent]
 })
 export class BookingListModule { }

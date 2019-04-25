@@ -22,6 +22,7 @@ namespace SHCServer.ViewModels
         public BookingInformationsViewModel(BookingInformations bookingInformations, string connectionString) : this()
         {
             context = new MySqlContext(new MySqlConnectionFactory(connectionString));
+            BookingId = bookingInformations.BookingId;
             Status = bookingInformations.Status;
             Gender = bookingInformations.Gender;
             ExaminationDate = bookingInformations.ExaminationDate;
@@ -159,37 +160,22 @@ namespace SHCServer.ViewModels
 
     public class BookingInformationsInputViewModel
     {
-        public string address { set; get; }
-        public int? birthDay { set; get; }
-        public int? birthMonth { set; get; }
-        public int birthYear { set; get; }
+        public string address {set; get; }
+        public string doctorName { set; get; }
         public string bookingRepresent { set; get; }
-        public string bookingSecondUser { set; get; }
-        public int bookingType { set; get; }
-        public string bookingUser { set; get; }
-        public string districtCode { set; get; }
-        public string districtCodeExamination { set; get; }
-        public int? doctorId { set; get; }
-        public string email { set; get; }
-        public string emailRepresent { set; get; }
-        public string examinationDate { set; get; }
-        public string examinationTime { set; get; }
-        public int? examinationWorkingTime { set; get; }
         public int gender { set; get; }
-        public int healthfacilitiesId { set; get; }
-        //public string healthfacilitiesSearch { set; get; }
+        public string bookingUser { set; get; }
+        public string email { set; get; }
+        public int bookingId { set; get; }
+        public string reason { set; get; }
+        public string reasonReject { set; get; }
         public string phoneNumber { set; get; }
         public string phoneRepresent { set; get; }
-        public string phoneSecondNumber { set; get; }
-        public string provinceCode { set; get; }
-        public string provinceCodeExamination { set; get; }
-        public string reason { set; get; }
-        public int relationshipId { set; get; }
-        //public int? specialists { set; get; }
-        public string ticketId { set; get; }
-        public int? timeSlotId { set; get; }       
-        public string wardCode { set; get; }
-        public int? userId { set; get; }
+        public string emailRepresent { set; get; }
+        public int status { set; get; }
+        public string age { set; get; }
+        public string examinationDate { set; get; }
+        public int updateUserId { set; get; }
 
         public static explicit operator int(BookingInformationsInputViewModel v)
         {

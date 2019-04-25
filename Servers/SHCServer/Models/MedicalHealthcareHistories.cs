@@ -20,6 +20,7 @@ namespace SHCServer.Models
         public string HealthInsuranceNumber { set; get; }
         public int DoctorId { set; get; }
         public int PatientId { set; get; }
+        public string PhoneNumber { set; get; }
         public DateTime? ReExaminationDate { set; get; }
         public DateTime CreateDate { set; get; }
         public DateTime BirthDay { set; get; }

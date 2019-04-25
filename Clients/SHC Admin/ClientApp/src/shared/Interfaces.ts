@@ -65,6 +65,7 @@ export interface IBookingInformations{
     healthFacilitiesId: number;
     doctorId: number;
     status: number;
+    bookingId: number;
     ticketId: string;
     bookingUser: string;
     phoneNumber: string;
@@ -95,6 +96,7 @@ export interface IBookingInformations{
     timeSlotId: number;
     reason: string;
     bookingTimeSlot: IBookingTimeslots;
+    bookingType: number;
 }
 
 export interface IPackage {

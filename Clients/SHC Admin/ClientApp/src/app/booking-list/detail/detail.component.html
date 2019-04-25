@@ -1,4 +1,4 @@
-<form [formGroup]="_frm" class="container p-relative custom-form " novalidate>
+<form [formGroup]="_frm" class="container p-relative" id="form-dialog" novalidate>
     <div class="p-absolute t-5 r-5">
         <button mat-icon-button mat-dialog-close style="z-index: 9;" [matTooltipPosition]="'left'" matTooltip="Đóng">
             <mat-icon>close</mat-icon>
@@ -7,94 +7,116 @@
     <mat-tab-group scroll-able>
         <mat-tab>
             <ng-template mat-tab-label>
-                {{l("Detail")}} {{l("Package")}}
+                {{_isNew ? l("CreateNew") : l("Detail")}} {{l("lịch đặt khám của bệnh nhân")}}
             </ng-template>
-            <div class="pt-4">
+            <div class="pt-4 disabled">
+                <label class="mat-title">
+                    {{l("Thông tin đặt khám")}}
+                </label>
                 <div class="row">
-                    <div class="disabled col-md-12 pl-md-4">
-                            <label class="fw-500 f14">{{l("PackageName")}}</label>
-                            <div class="wrap-text mb-4 color-primary f14">{{_package.name}}</div>
-                        <!-- <mat-form-field appearance="outline" class="w-100">
-                            <mat-label>{{l("PackageName")}}</mat-label>
-                            <input formControlName="name" matInput title="{{_package.name}}">
-                        </mat-form-field> -->
-                    </div>
-
-                    <div class="col-md-12 disabled pl-md-4">
-                        <label class="fw-500 f14">{{l("PackageDescription")}}</label>
-                        <div class="wrap-text mb-4 color-primary f14">{{_package.description}}</div>
-                        <!-- <mat-form-field appearance="outline" class="w-100">
-                            <mat-label>{{l("PackageDescription")}}</mat-label>
-                            <input formControlName="description" matInput title="{{_package.description}}">
-                        </mat-form-field> -->
-                    </div>
-                    <div class="col-md-6 disabled">
+                    <div class="col-md-5 disabled">
                         <mat-form-field appearance="outline" class="w-100">
-                            <mat-label>{{l('PackageCost')}}</mat-label>
-                            <input type="text" mask="dot_separator" formControlName="cost" matInput>
+                            <mat-label>{{l("Bác sĩ khám")}}</mat-label>
+                            <input formControlName="doctorName" matInput>
                         </mat-form-field>
                     </div>
-                    <div class="col-md-6 disabled">
+                    <div class="col-md-7 disabled">
                         <mat-form-field appearance="outline" class="w-100">
-                            <mat-label>{{l('PackageQuantity')}}</mat-label>
-                            <input type="text" mask="dot_separator" formControlName="quantity" matInput>
+                            <mat-label>{{l('Ngày đặt khám')}}</mat-label>
+                            <input type="text" formControlName="examinationDate" matInput>
                         </mat-form-field>
                     </div>
-                    <div class="col-md-12  m-b-20 pl-md-4">
-                        <mat-checkbox formControlName="isActive" disabled="false">{{l('Using')}}</mat-checkbox>
+                    <div class="col-md-12">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l('Triệu chứng')}}</mat-label>
+                            <input [required]="true" type="text" formControlName="reason" matInput>
+                        </mat-form-field>
                     </div>
-
+                    <div class="col-md-5">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l('Trạng thái')}}</mat-label>
+                            <input [required]="true" type="text" formControlName="status" matInput>
+                        </mat-form-field>
+                    </div>
+                </div>
+            </div>
+            <div class="pt-4 disabled">
+                <label class="mat-title">
+                    {{l("Thông tin bệnh nhân")}}
+                </label>
+                <div class="row">
+                    <div class="col-md-5">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l("Họ và tên")}}</mat-label>
+                            <input type="text" formControlName="bookingUser" matInput>
+                        </mat-form-field>
+                    </div>
                     <div class="col-md-3 disabled">
                         <mat-form-field appearance="outline" class="w-100">
-                            <mat-label>{{l('PackageSmsFrom')}}</mat-label>
-                            <input type="text" mask="dot_separator" formControlName="smsFrom" matInput>
-                        </mat-form-field>
-                    </div>
-                    <div class="col-md-3 disabled">
-                        <mat-form-field appearance="outline" class="w-100">
-                            <mat-label>{{l('PackageSmsTo')}}</mat-label>
-                            <input type="text" mask="dot_separator" formControlName="smsTo" matInput>
+                            <mat-label>{{l("Giới tính")}}</mat-label>
+                            <input type="text" formControlName="gender" matInput>
                         </mat-form-field>
                     </div>
                     <div class="col-md-4 disabled">
                         <mat-form-field appearance="outline" class="w-100">
-                            <mat-label>{{l('PackageCost')}}</mat-label>
-                            <input type="text" mask="dot_separator" formControlName="detailCost" matInput>
+                            <mat-label>{{l("Năm sinh")}}</mat-label>
+                            <input type="text" formControlName="age" matInput>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-5 disabled">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l("Số điện thoại")}}</mat-label>
+                            <input type="text" formControlName="phoneNumber" matInput>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-4 disabled">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l("Email")}}</mat-label>
+                            <input type="text" formControlName="email" matInput>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-12">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l('Address')}}</mat-label>
+                            <input type="text" formControlName="address" matInput>
                         </mat-form-field>
                     </div>
 
-                    <div class="col-md-12 disabled">
-                        <div class="row" *ngFor="let item of _details; index as i">
-                            <div class="col-md-3">
-                                <mat-form-field appearance="outline" class="w-100">
-                                    <mat-label>{{l('PackageSmsFrom')}}</mat-label>
-                                    <input type="text" mask="dot_separator" formControlName="{{_smsFrom + item.index}}" matInput>
-                                </mat-form-field>
-                            </div>
-                            <div class="col-md-3">
-                                <mat-form-field appearance="outline" class="w-100">
-                                    <mat-label>{{l('PackageSmsTo')}}</mat-label>
-                                    <input type="text" mask="dot_separator" formControlName="{{_smsTo + item.index}}" matInput>
-                                </mat-form-field>
-                            </div>
-                            <div class="col-md-4">
-                                <mat-form-field appearance="outline" class="w-100">
-                                    <mat-label>{{l('PackageCost')}}</mat-label>
-                                    <input type="text" mask="dot_separator" formControlName="{{_detailCost + item.index}}" matInput>
-                                </mat-form-field>
-                            </div>
-                            <div class="col-md-2" ></div>
-                        </div>
+                </div>
+            </div>
+            <div class="pt-4 disabled" *ngIf="_booking.bookingType == 2 ? true : false">
+                <label class="mat-title">
+                    {{l("Thông tin người thân")}}
+                </label>
+                <div class="row">
+                    <div class="col-md-6 disabled">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l("Họ và tên")}}</mat-label>
+                            <input type="text" formControlName="bookingRepresent" matInput>
+                        </mat-form-field>
                     </div>
+                    <div class="col-md-6 disabled">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l("Điện thoại liên hệ")}}</mat-label>
+                            <input type="text" formControlName="phoneRepresent" matInput>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-4 disabled">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l("Email")}}</mat-label>
+                            <input type="text" formControlName="emailRepresent" matInput>
+                        </mat-form-field>
+                    </div>
+
                 </div>
             </div>
         </mat-tab>
     </mat-tab-group>
-   <div class="row">
-       <div class="col-md-4">
-       </div>
-       <div class="col-md-8">
-        <div class="text-right mb-3"><button class="mr-3" mat-raised-button color="primary" mat-dialog-close>{{l("Close")}}</button></div>
-       </div>
-   </div>
+    <div class="row">
+        <div class="col-md-4">
+        </div>
+        <div class="col-md-8">
+            <div class="text-right mb-3"><button class="mr-3" mat-raised-button color="primary" mat-dialog-close>{{l("Close")}}</button></div>
+        </div>
+    </div>
 </form>
