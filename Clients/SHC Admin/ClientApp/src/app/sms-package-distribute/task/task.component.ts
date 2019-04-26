@@ -90,12 +90,20 @@ export class packagedistributeTaskComponent extends AppComponentBase implements 
 
     if (this._isNew) {
       this._dataService.create(this.api, standardized(_.omit(Object.assign(this._frmpackagedistribute.value), 'id'), this.rules)).subscribe(() => {
-        swal(this.l('SaveSuccess'), '', 'success');
+        swal({
+          title:this.l('SaveSuccess'), 
+          text:'', 
+          type:'success',
+          timer:3000});
         this.dialogRef.close();
       }, err => console.log(err));
     } else {
       this._dataService.update(this.api, standardized(Object.assign(this._frmpackagedistribute.value, { id: this.obj.id }), this.rules)).subscribe(() =>  {
-        swal(this.l('SaveSuccess'), '', 'success');
+        swal({
+          title:this.l('SaveSuccess'), 
+          text:'', 
+          type:'success',
+          timer:3000});
         this.dialogRef.close();
       }, err => console.log(err));
     }

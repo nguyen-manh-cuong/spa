@@ -166,7 +166,11 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     }
 
     showMess(type: number) {
-        if(type == 1 ) swal('Thông báo', 'Chưa chọn bệnh nhân', 'warning');
+        if(type == 1 ) swal({
+            title:'Thông báo', 
+            text:'Chưa chọn bệnh nhân', 
+            type:'warning',
+            timer:3000});
     }
 
     openCustomDialog(): void {
@@ -202,7 +206,11 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
                 content: ''
             })
             .subscribe(resp => {
-                swal('Thông báo', resp, 'error');
+                swal({
+                    title:'Thông báo', 
+                    text:resp, 
+                    type:'error',
+                    timer:3000});
                 this.selection = new SelectionModel<IMedicalHealthcareHistories>(true, []);
                 abp.ui.clearBusy('#main-container');
             }, err => {});

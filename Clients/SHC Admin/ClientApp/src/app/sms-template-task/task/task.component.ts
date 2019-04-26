@@ -45,7 +45,6 @@ export class TaskComponent extends AppComponentBase implements OnInit {
         if (this.data && this.data.selection && this.data.selection.selected.length) {
             console.log(this.data.selection.selected[0].phoneNumber);
             if (this.data.selection.selected[0].phoneNumber != undefined) {
-                console.log('co vao day k');
                 this._dataService.create('infoSendsms', {
                     lstMedicalHealthcareHistories: this.data.selection.selected,
                     healthFacilitiesId: this.appSession.user.healthFacilitiesId,
@@ -54,7 +53,11 @@ export class TaskComponent extends AppComponentBase implements OnInit {
                     type: this.data.type,
                 }).subscribe(resp => {
                     this.dialogRef.close()
-                    swal('Thông báo', resp, 'error');
+                    swal({
+                      title:'Thông báo',
+                      text: resp, 
+                      type:'error',
+                      timer:3000});
                 }, err => { this.dialogRef.close() });
             } else {
                 this._dataService.create('infosms', {
@@ -69,7 +72,11 @@ export class TaskComponent extends AppComponentBase implements OnInit {
                 }, err => { this.dialogRef.close() });
             }
     } else{
-      swal('Thông báo', 'Chưa chọn bệnh nhân', 'warning');
+      swal({
+        title: 'Thông báo', 
+        text: 'Chưa chọn bệnh nhân', 
+        type:'warning',
+        timer:3000});
     }
   }
 }

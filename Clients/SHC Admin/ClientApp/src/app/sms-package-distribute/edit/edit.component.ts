@@ -99,7 +99,11 @@ export class packagedistributeEditComponent extends AppComponentBase implements 
       console.log(this._frmpackagedistributeedit.value);
     
     this._dataService.update(this.api, standardized(Object.assign(this._frmpackagedistributeedit.value, { id: this.obj.id }), this.rules)).subscribe(() => {
-      swal(this.l('SaveSuccess'), '', 'success');
+      swal({
+        title:this.l('SaveSuccess'), 
+        text:'', 
+        type:'success',
+        timer:3000});
       this.dialogRef.close();
     }, err => console.log(err));
   }

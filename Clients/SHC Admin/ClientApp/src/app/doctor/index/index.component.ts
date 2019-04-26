@@ -67,7 +67,11 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
 
   }
   showErrorDeleteMessage() {
-    swal(this.l('ErrorDelete'), this.l('DoctorErrorDeleted', ''), 'error');
+    swal({
+      title:this.l('ErrorDelete'), 
+      text:this.l('DoctorErrorDeleted', ''), 
+      type:'error',
+      timer:3000});
   }
 
   deleteDialogDoctor(obj: DoctorEntityDto, key: string, doctorId?: number | string) {
@@ -84,7 +88,11 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
     }).then((result) => {
       if (result.value) {
         this.dataService.delete(this.api, obj[doctorId ? doctorId : 'doctorId']).subscribe(() => {
-          swal(this.l('SuccessfullyDeleted'), this.l('DeletedInSystem', obj[key]), 'success');
+          swal({
+            title:this.l('SuccessfullyDeleted'), 
+            text:this.l('DeletedInSystem', obj[key]), 
+            type:'success',
+            timer:3000});
           this.paginator.pageIndex = 0;
           this.paginator._changePageSize(this.paginator.pageSize);
         });
@@ -145,7 +153,11 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
           obj.allowBooking = !obj.allowBooking;
           obj.updateUserId = this.appSession.userId;
           this.dataService.update(this.api + "?allow=1", obj).subscribe(() => {
-            swal(this.l('DoctorUpdateAllowCompleteTitle'), this.l('DoctorTitle') + ' ' + obj.fullName + ' ' + this.ll('DoctorUpdateAllowBookingSuccessfully', obj.fullName), 'success');
+            swal({
+              title:this.l('DoctorUpdateAllowCompleteTitle'), 
+              text:this.l('DoctorTitle') + ' ' + obj.fullName + ' ' + this.ll('DoctorUpdateAllowBookingSuccessfully', obj.fullName),
+              type: 'success',
+              timer:3000});
             this.paginator.pageIndex = 0;
             this.paginator._changePageSize(this.paginator.pageSize);
           });
@@ -170,7 +182,11 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
           obj.allowBooking = !obj.allowBooking;
           obj.updateUserId = this.appSession.userId;
           this.dataService.update(this.api + "?allow=1", obj).subscribe(() => {
-            swal(this.l('DoctorUpdateAllowCompleteTitle'), this.l('DoctorTitle') + ' ' + obj.fullName + ' ' + this.ll('DoctorCancelAllowBookingSuccessfully', obj.fullName), 'success');
+            swal({
+              title:this.l('DoctorUpdateAllowCompleteTitle'), 
+              text:this.l('DoctorTitle') + ' ' + obj.fullName + ' ' + this.ll('DoctorCancelAllowBookingSuccessfully', obj.fullName), 
+              type:'success',
+              timer:3000});
             this.paginator.pageIndex = 0;
             this.paginator._changePageSize(this.paginator.pageSize);
           });
@@ -198,7 +214,11 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
           obj.allowFilter = !obj.allowFilter;
           obj.updateUserId = this.appSession.userId;
           this.dataService.update(this.api + "?allow=1", obj).subscribe(() => {
-            swal(this.l('DoctorUpdateAllowCompleteTitle'), this.l('DoctorTitle') + ' ' + obj.fullName + ' ' + this.ll('DoctorUpdateAllowFilterSuccessfully', obj.fullName), 'success');
+            swal({
+              title:this.l('DoctorUpdateAllowCompleteTitle'), 
+              text:this.l('DoctorTitle') + ' ' + obj.fullName + ' ' + this.ll('DoctorUpdateAllowFilterSuccessfully', obj.fullName),
+              type: 'success',
+              timer:3000});
             this.paginator.pageIndex = 0;
             this.paginator._changePageSize(this.paginator.pageSize);
           });
@@ -223,7 +243,11 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
           obj.allowFilter = !obj.allowFilter;
           obj.updateUserId = this.appSession.userId;
           this.dataService.update(this.api + "?allow=1", obj).subscribe(() => {
-            swal(this.l('DoctorUpdateAllowCompleteTitle'), this.l('DoctorTitle') + ' ' + obj.fullName + ' ' + this.ll('DoctorCancelAllowFilterSuccessfully', obj.fullName), 'success');
+            swal({
+              title:this.l('DoctorUpdateAllowCompleteTitle'), 
+              text:this.l('DoctorTitle') + ' ' + obj.fullName + ' ' + this.ll('DoctorCancelAllowFilterSuccessfully', obj.fullName), 
+              type:'success',
+              timer:3000});
             this.paginator.pageIndex = 0;
             this.paginator._changePageSize(this.paginator.pageSize);
           });
@@ -251,7 +275,11 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
           obj.allowSearch = !obj.allowSearch;
           obj.updateUserId = this.appSession.userId;
           this.dataService.update(this.api + "?allow=1", obj).subscribe(() => {
-            swal(this.l('DoctorUpdateAllowCompleteTitle'), this.l('DoctorTitle') + ' ' + obj.fullName + ' ' + this.l('DoctorUpdateAllowSearchSuccessfully', obj.fullName), 'success');
+            swal({
+              title:this.l('DoctorUpdateAllowCompleteTitle'), 
+              text:this.l('DoctorTitle') + ' ' + obj.fullName + ' ' + this.l('DoctorUpdateAllowSearchSuccessfully', obj.fullName),
+              type: 'success',
+              timer:3000});
             this.paginator.pageIndex = 0;
             this.paginator._changePageSize(this.paginator.pageSize);
           });
@@ -276,7 +304,11 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
           obj.allowSearch = !obj.allowSearch;
           obj.updateUserId = this.appSession.userId;
           this.dataService.update(this.api + "?allow=1", obj).subscribe(() => {
-            swal(this.l('DoctorUpdateAllowCompleteTitle'), this.l('DoctorTitle') + ' ' + obj.fullName + ' ' + this.l('DoctorCancelAllowSearchSuccessfully', obj.fullName), 'success');
+            swal({
+              title:this.l('DoctorUpdateAllowCompleteTitle'), 
+              text:this.l('DoctorTitle') + ' ' + obj.fullName + ' ' + this.l('DoctorCancelAllowSearchSuccessfully', obj.fullName), 
+              type:'success',
+              timer:3000});
             this.paginator.pageIndex = 0;
             this.paginator._changePageSize(this.paginator.pageSize);
           });
@@ -303,7 +335,7 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
 
 
   getSpecialist() {
-    this.dataService.getAll("catcommon?maxResultCount=500").subscribe(resp => this.specialist = resp.items);
+    this.dataService.getAll("catcommon?maxResultCount=1000").subscribe(resp => this.specialist = resp.items);
   }
 
   _filter(name: string): IHealthfacilities[] {
