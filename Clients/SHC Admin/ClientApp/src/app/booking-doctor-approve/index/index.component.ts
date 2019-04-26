@@ -175,7 +175,6 @@ export class IndexComponent extends PagedListingComponentBase<IBookingDoctorsCal
         var lstCalendarId = obj ? [obj.calendarId] : this.getSelected();
         if(!lstCalendarId.length) 
          return 
-        swal(this.l('Notification'), this.l('NoWaitingSchedule'), 'warning');
         swal({
             title: this.l('Notification'),
             text: this.l('NoWaitingSchedule'),
