@@ -120,8 +120,16 @@ namespace SHCServer.Controllers
                         }
                     }
 
-                    if (string.Equals(key, "startTime")) objs = objs.Where(b => b.ExaminationDate>= DateTime.Parse(value));
-                    if (string.Equals(key, "endTime")) objs = objs.Where(b => b.ExaminationDate <= DateTime.Parse(value));
+                    if (string.Equals(key, "startTime")) {
+                        objs = objs.Where(b => b.ExaminationDate >= DateTime.Parse(value));
+                        var start = DateTime.Parse(value);
+                    }
+                    if (string.Equals(key, "endTime"))
+                    {
+                        objs = objs.Where(b => b.ExaminationDate <= DateTime.Parse(value));
+                        var end = DateTime.Parse(value);
+                    }
+                     
 
                 }
 
@@ -141,7 +149,7 @@ namespace SHCServer.Controllers
                 objs = objs.OrderByDesc(b => b.CreateDate);
             }
 
-
+            var a = objs;
             var rs = objs.GroupBy(p => p.DoctorId).Select(p => new BookingInformationsViewModel(p, _connectionString) {
                 Quantity = objs.Where(o=>o.DoctorId==p.DoctorId).Count(),
                 QuantityByStatusPending = objs.Where(o => o.Status == 1).Count(),

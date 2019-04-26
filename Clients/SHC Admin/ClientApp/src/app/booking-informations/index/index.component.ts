@@ -82,7 +82,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
       healthfacilities: [this.appSession.user.healthFacilitiesId],
       doctor: [],
       status: [4],
-      startTime: new Date(),
+      startTime: [moment(new Date().setHours(7, 0, 0, 0)).toDate()],
       endTime: new Date(),
       time: [0],
     });
@@ -209,8 +209,8 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
         ? this.frmSearch.controls['healthfacilities'].setValue(this.healthfacilities.value.healthFacilitiesId)
         : this.frmSearch.controls['healthfacilities'].setValue('');
     }
-    this.startTime.nativeElement.value ? this.frmSearch.controls['startTime'].setValue(moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').toDate()) : '';
-    this.endTime.nativeElement.value ? this.frmSearch.controls['endTime'].setValue(moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').toDate()) : '';
+    this.startTime.nativeElement.value ? this.frmSearch.controls['startTime'].setValue(moment(this.startTime.nativeElement.value + '00:00:00', 'DD/MM/YYYY hh:mm:ss').add(7, 'hours').toDate()) : '';
+    this.endTime.nativeElement.value ? this.frmSearch.controls['endTime'].setValue(moment(this.endTime.nativeElement.value + '23:59:59', 'DD/MM/YYYY hh:mm:ss').add(7, 'hours').toDate()) : '';
     var req = omitBy(this.frmSearch.value, isNil);
     //req.healthfacilities = req && req.healthfacilities ? req.healthfacilities.healthFacilitiesId : "";
 
