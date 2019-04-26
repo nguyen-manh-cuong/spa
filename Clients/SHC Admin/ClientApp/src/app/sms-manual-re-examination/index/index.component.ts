@@ -167,15 +167,27 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
 
     customSearch() {
         if(!this.endTime.nativeElement.value){
-            return swal('Thông báo', 'Đến ngày không được để trống', 'warning');
+            return swal({
+                title:'Thông báo', 
+                text:'Đến ngày không được để trống', 
+                type:'warning',
+                timer:3000});
         }
 
         if( !moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').isValid()){
-            return swal('Thông báo', 'Đến ngày không đúng định dạng', 'warning');
+            return swal({
+                title:'Thông báo', 
+                text:'Đến ngày không đúng định dạng', 
+                type:'warning',
+                timer:3000});
         }
 
         if(this.birthday.nativeElement.value && !moment(this.birthday.nativeElement.value, 'DD/MM/YYYY').isValid()){
-            return swal('Thông báo', 'Ngày sinh không đúng định dạng', 'warning');
+            return swal({
+                title:'Thông báo', 
+                text:'Ngày sinh không đúng định dạng',
+                type: 'warning',
+                timer:3000});
         }
 
         var startTime = moment(this.frmSearch.controls['startTime'].value, 'DD/MM/YYYY').toDate();
@@ -183,17 +195,29 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
 
         if (endTime.getFullYear() - startTime.getFullYear() > 1) {
 
-            return swal('Thông báo', 'Dữ liệu không được lấy quá 1 năm', 'warning');
+            return swal({
+                title:'Thông báo', 
+                text:'Dữ liệu không được lấy quá 1 năm', 
+                type:'warning',
+                timer:3000});
         }
         if (endTime.getFullYear() - startTime.getFullYear() == 1) {
             var monthStartTime = startTime.getMonth() + 1;
             var monthEndTime = endTime.getMonth() + 1;
             if (12 - monthStartTime + monthEndTime > 12) {
-                return swal('Thông báo', 'Dữ liệu không được lấy quá 1 năm', 'warning');
+                return swal({
+                    title:'Thông báo', 
+                    text:'Dữ liệu không được lấy quá 1 năm', 
+                    type:'warning',
+                    timer:3000});
             }
             if (12 - monthStartTime + monthEndTime == 12) {
                 if (endTime.getDate() > startTime.getDate()) {
-                    return swal('Thông báo', 'Dữ liệu không được lấy quá 1 năm', 'warning');
+                    return swal({
+                        title:'Thông báo', 
+                        text:'Dữ liệu không được lấy quá 1 năm',
+                        type: 'warning',
+                        timer:3000});
                 }
             }
         }
@@ -212,7 +236,11 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     }
 
     showMess(type: number) {
-        if(type == 1 ) swal('Thông báo', 'Chưa chọn bệnh nhân', 'warning');
+        if(type == 1 ) swal({
+            title:'Thông báo', 
+            text:'Chưa chọn bệnh nhân', 
+            type:'warning',
+            timer:3000});
     }
 
     openCustomDialog(): void {
@@ -250,7 +278,11 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
                 content: ''                                                                                                                       
             })
             .subscribe(resp => {
-                swal('Thông báo', resp, 'error');
+                swal({
+                    title:'Thông báo', 
+                    text:resp, 
+                    type:'error',
+                    timer:3000});
                 this.selection = new SelectionModel<IMedicalHealthcareHistories>(true, []);
                 abp.ui.clearBusy('#main-container');
             }, err => {});
