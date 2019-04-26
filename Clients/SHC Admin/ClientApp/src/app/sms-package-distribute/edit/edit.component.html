@@ -103,7 +103,7 @@
           </button>
           <button mat-raised-button color="primary"
                     (click)="submit()"
-            [disabled]="((_frmpackagedistributeedit.controls['yearStart'].invalid) || (_frmpackagedistributeedit.controls['yearEnd'].invalid) || (_frmpackagedistributeedit.controls['yearStart'].value > _currentYear) || (_frmpackagedistributeedit.controls['yearEnd'].value) < (_frmpackagedistributeedit.controls['yearStart'].value))">
+            [disabled]="((_frmpackagedistributeedit.controls['yearStart'].invalid) || (_frmpackagedistributeedit.controls['yearEnd'].invalid) || (_frmpackagedistributeedit.controls['yearStart'].value > _currentYear) || (_frmpackagedistributeedit.controls['yearEnd'].value < _frmpackagedistributeedit.controls['yearStart'].value) || (_frmpackagedistributeedit.controls['monthStart'].value > _frmpackagedistributeedit.controls['monthEnd'].value))">
           
             {{l("Save")}}
           </button>

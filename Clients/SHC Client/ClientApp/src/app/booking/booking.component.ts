@@ -210,8 +210,10 @@ export class BookingComponent extends AppComponentBase implements OnInit, AfterV
   }
 
   onSelectHealthFacilities(obj: any){
+    console.log(231, obj.healthFacilitiesId);
+    this.frmBooking.controls['healthFacilitiesId'].setValue(obj.healthFacilitiesId);
     this.onClickHealthFacilities();
-    this._healthfacility = this._healthfacilities.find(o => o.healthFacilitiesId == obj);
+    this._healthfacility = this._healthfacilities.find(o => o.healthFacilitiesId == obj.healthFacilitiesId);
     this._specialistHealthfacilities = this._healthfacility ? this._healthfacility.specialist.map(e => e.specialist).join(", ") : "";
   }
 
@@ -238,7 +240,7 @@ export class BookingComponent extends AppComponentBase implements OnInit, AfterV
         var date = new Date();
         var workingTime = [];
         date.setDate(date.getDate() + i);
-  
+
         this._workingTimes.forEach(el => {
           if(moment(date).format("DD/MM/YYYY") == moment(el.calendarDate).format("DD/MM/YYYY")){
             workingTime.push({
@@ -248,7 +250,6 @@ export class BookingComponent extends AppComponentBase implements OnInit, AfterV
             })
           }
         });
-  
         this._lstWorkingTimes.push({
           dayWeek: this.getDayOfWeek(date.getDay()),
           dayMonth: ' (' + date.getDate() + '/' + (date.getMonth() + 1) + ')',
@@ -256,6 +257,8 @@ export class BookingComponent extends AppComponentBase implements OnInit, AfterV
           workingTime: _.orderBy(workingTime, ['hoursStart'], ['asc']) 
         });
       }
+
+      console.log(261, this._workingTimes);
     });
   }
 

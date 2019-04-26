@@ -47,12 +47,13 @@ namespace SHCServer.Controllers
         [Route("api/bookinginformations")]
         public IActionResult GetAll(int skipCount = 0, int maxResultCount = 10, string sorting = null, string filter = null)
         {
-            var objs = _context.Query<BookingInformations>().Where(b => b.BookingServiceType == 1)
+            var objs = _context.Query<BookingInformations>().Where(b => b.BookingServiceType == 1 && b.IsDelete == false)
                 .LeftJoin<Doctor>((b, s) => b.DoctorId == s.DoctorId)
                 .LeftJoin<BookingTimeslots>((b, s, d) => b.TimeSlotId == d.TimeSlotId)
                 .Select((b, s, d) => new { b.HealthFacilitiesId,
                     b.TimeSlotId, b.DoctorId, b.Status, b.ExaminationDate, b.CreateDate, b.Gender, b.ExaminationWorkingTime, b.ExaminationTime,
-                b.PhoneNumber, b.Reason, b.BookingUser, b.TicketId, b.BirthDate, b.BirthMonth, b.BirthYear,
+                    b.BookingType, b.BookingId, b.Address,
+                b.PhoneNumber, b.Reason, b.BookingUser, b.BookingRepresent, b.PhoneRepresent, b.EmailRepresent, b.TicketId, b.BirthDate, b.BirthMonth, b.BirthYear,
                 b.DistrictCode, b.ProvinceCode,
                     s.FullName, d.HoursStart, d.HoursEnd, d.MinuteEnd, d.MinuteStart});
 
@@ -98,6 +99,77 @@ namespace SHCServer.Controllers
           
             return Json(new ActionResultDto { Result = new { Items = objs.TakePage(skipCount == 0 ? 1 : skipCount + 1, maxResultCount).ToList(), TotalCount = objs.Count() } });
         }
+
+        [HttpPut]
+        [Route("api/bookinginformations")]
+        public IActionResult Update([FromBody] BookingInformationsInputViewModel booking)
+        {
+            try
+            {
+
+                _context.Session.BeginTransaction();
+
+                if (booking.reasonReject != null)
+                {
+                    _context.Update<BookingInformations>(p => p.BookingId == booking.bookingId, a => new BookingInformations
+                    {
+                        ReasonReject = booking.reasonReject
+                    });
+                } else
+                {
+                    _context.Update<BookingInformations>(p => p.BookingId == booking.bookingId, a => new BookingInformations
+                    {
+                        Reason = booking.reason,
+                        Status = booking.status,
+                        BookingUser = booking.bookingUser,
+                        Address = booking.address,
+                        UpdateDate = DateTime.Now,
+                        UpdateUserId = booking.updateUserId
+                    });
+                }
+
+                _context.Session.CommitTransaction();
+
+                return Json(new ActionResultDto());
+            }
+            catch (Exception e)
+            {
+                if (_context.Session.IsInTransaction) _context.Session.RollbackTransaction();
+                return Json(new ActionResultDto { Error = e.Message });
+            }
+        }
+
+        [HttpDelete]
+        [Route("api/bookinginformations")]
+        public IActionResult Delete(int id)
+        {
+            try
+            {
+                if (_context.Query<BookingInformations>().Where(g => g.BookingId == id && g.IsDelete == false && g.Status != 0 && g.Status != 1 ).Count() > 0)
+                {
+                    //return Json(new ActionResultDto { Success = false, Error = new { Code = 401, Message = "Tạo gói không thành công.", Details = "Gói SMS đã tồn tại!" } });
+                    return StatusCode(500, _excep.Throw("Hủy đặt khám không thành công.", "Không thể xóa lịch đặt khám đã diễn ra/đã hủy!"));
+                }
+
+                _context.Session.BeginTransaction();
+
+
+                _context.Update<BookingInformations>(t => t.BookingId == id, a => new BookingInformations
+                {
+                    IsDelete = true
+                });
+
+                _context.Session.CommitTransaction();
+
+                return Json(new ActionResultDto());
+            }
+            catch (Exception e)
+            {
+                if (_context.Session.IsInTransaction) _context.Session.RollbackTransaction();
+                return Json(new ActionResultDto { Error = e.Message });
+            }
+        }
+
 
         [HttpGet]
         [Route("api/bookinginformationsgroupby")]

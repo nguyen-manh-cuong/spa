@@ -19,7 +19,7 @@ export class ValidationComponent implements OnInit {
 
     get message() {
         if (this.control && this.control.errors) {
-            // console.log(22, this.control.errors);
+            //console.log(22, this.control.errors);
             for (let err in this.control.errors) {
                 return this.getErrorMessage(err);
             }

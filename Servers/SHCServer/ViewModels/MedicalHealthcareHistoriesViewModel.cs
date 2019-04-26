@@ -27,6 +27,7 @@ namespace SHCServer.ViewModels
             IsReExamination = obj.IsReExamination;
             IsBirthDay = obj.IsBirthDay;
             Patient = context.Query<Patient>().Where(p => p.PatientId == obj.PatientId).FirstOrDefault();
+
         }
 
         public int PatientHistoriesId { set; get; }

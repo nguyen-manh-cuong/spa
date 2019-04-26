@@ -27,6 +27,6 @@ import { MAT_CHECKBOX_CLICK_ACTION } from '@angular/material';
   ],
   declarations: [CustomCurrencyPipe,DoctorComponent, IndexComponent, TaskComponent],
   entryComponents: [TaskComponent],
-  //providers:[{provide: MAT_CHECKBOX_CLICK_ACTION, useValue: 'noop'}]
+  providers:[{provide: MAT_CHECKBOX_CLICK_ACTION, useValue: 'noop'}]
 })
 export class DoctorModule { }

@@ -162,14 +162,14 @@ export class BookingIPCCComponent extends AppComponentBase implements OnInit {
     
     this._dataService.create('bookinginformations', _.pickBy(fromData, _.identity)).subscribe(
       () => {
-        // this._dataService.create('infosms', {
-        //     lstMedicalHealthcareHistories: [{phoneNumber: this.frmBooking.value.phoneSecondNumber}], 
-        //     healthFacilitiesId: this.frmBooking.value.healthFacilitiesId,           
-        //     smsTemplateId: null,
-        //     type: 4, 
-        //     content: ''                                                                                                                       
-        // })
-        // .subscribe(resp => {}, err => {});
+        this._dataService.create('infosms', {
+            lstMedicalHealthcareHistories: [{phoneNumber: this.frmBooking.value.phoneSecondNumber}], 
+            healthFacilitiesId: this.frmBooking.value.healthFacilitiesId,           
+            smsTemplateId: null,
+            type: 4, 
+            content: ''                                                                                                                       
+        })
+        .subscribe(resp => {}, err => {});
 
         swal({
           title: 'Đặt khám thành công!',

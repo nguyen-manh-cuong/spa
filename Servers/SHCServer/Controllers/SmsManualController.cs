@@ -327,7 +327,10 @@ namespace SHCServer.Controllers
         {
             //danh sach goi sms su dung
             var packages = _context.Query<SmsPackagesDistribute>().Where(pd => pd.HealthFacilitiesId == infoInput.healthFacilitiesId && pd.YearEnd >= DateTime.Now.Year && pd.MonthEnd >= DateTime.Now.Month && pd.IsDelete == false && pd.IsActive == true).Select(u => new PackageDistributeViewModel(u, _connectionString)).ToList();
-            if (packages.Count == 0) return StatusCode(422, _excep.Throw("Không thể gửi tin do số lượng tin nhắn vượt quá gói SMS hiện tại. Mời bạn mua thêm gói SMS"));
+            if (packages.Count == 0) {
+                if (infoInput.type == 4) return Json(new ActionResultDto { Result = "" });
+                else StatusCode(422, _excep.Throw("Không thể gửi tin do số lượng tin nhắn vượt quá gói SMS hiện tại. Mời bạn mua thêm gói SMS"));
+            } 
             
             long totalSms = 0;
             int totalSmsSend = infoInput.lstMedicalHealthcareHistories.Count;
@@ -337,7 +340,10 @@ namespace SHCServer.Controllers
                 totalSms += s.SmsPackageUsed.Quantityused;
             }
 
-            if (totalSms < totalSmsSend) return StatusCode(422, _excep.Throw("Không thể gửi tin do số lượng tin nhắn vượt quá gói SMS hiện tại. Mời bạn mua thêm gói SMS"));
+            if (totalSms < totalSmsSend) {
+                if (infoInput.type == 4) return Json(new ActionResultDto { Result = "" });
+                else StatusCode(422, _excep.Throw("Không thể gửi tin do số lượng tin nhắn vượt quá gói SMS hiện tại. Mời bạn mua thêm gói SMS"));
+            }
 
             //Xu ly tin nhan
             string code = "";
@@ -401,6 +407,114 @@ namespace SHCServer.Controllers
             var infoSms = SMS.SaveInfoSMS(_connectionString, sendSMS, infoInput.type);
 
             return Json(new ActionResultDto { Result = infoSms });
+        }
+
+        [HttpPost]
+        [Route("api/infoSendsms")]
+        public IActionResult InfoSendSms([FromBody] SmsInfoBookingInputViewModel infoInput)
+        {
+            //danh sach goi sms su dung
+            var packages = _context.Query<SmsPackagesDistribute>().Where(pd => pd.HealthFacilitiesId == infoInput.healthFacilitiesId && pd.YearEnd >= DateTime.Now.Year && pd.MonthEnd >= DateTime.Now.Month && pd.IsDelete == false && pd.IsActive == true).Select(u => new PackageDistributeViewModel(u, _connectionString)).ToList();
+            if (packages.Count == 0)
+            {
+                if (infoInput.type == 4) return Json(new ActionResultDto { Result = "" });
+                else StatusCode(422, _excep.Throw("Không thể gửi tin do số lượng tin nhắn vượt quá gói SMS hiện tại. Mời bạn mua thêm gói SMS"));
+            }
+
+            long totalSms = 0;
+            int totalSmsSend = infoInput.lstMedicalHealthcareHistories.Count;
+
+            foreach (var s in packages)
+            {
+                totalSms += s.SmsPackageUsed.Quantityused;
+            }
+
+            if (totalSms < totalSmsSend)
+            {
+                if (infoInput.type == 4) return Json(new ActionResultDto { Result = "" });
+                else StatusCode(422, _excep.Throw("Không thể gửi tin do số lượng tin nhắn vượt quá gói SMS hiện tại. Mời bạn mua thêm gói SMS"));
+            }
+
+            //Xu ly tin nhan
+            string code = "";
+            string content = "";
+            int templateId = 0;
+            int indexM = 0;
+            int indexUsed = 0;
+
+            switch (infoInput.type)
+            {
+                case 1:
+                    code = "A01.SMSTAIKHAM";
+                    break;
+                case 2:
+                    code = "A02.SMSSINHNHAT";
+                    break;
+                case 4:
+                    code = "A06.SMSDATKHAM";
+                    break;
+            }
+
+            if (string.IsNullOrEmpty(infoInput.content))
+            {
+                var config = _context.Query<HealthFacilitiesConfigs>().Where(hp => hp.Code == code).FirstOrDefault();
+                templateId = config != null ? config.Values : 0;
+                var template = _context.Query<SmsTemplate>().Where(t => t.Id == templateId).FirstOrDefault();
+                content = template != null ? template.SmsContent : "";
+            }
+            else
+            {
+                templateId = infoInput.smsTemplateId.Value;
+                content = infoInput.content;
+            }
+            //danh sach sms content
+            List<SmsContent> lstContent = new List<SmsContent>();
+
+            foreach (var m in infoInput.lstMedicalHealthcareHistories)
+            {
+                indexM++;
+                if (indexM > packages[indexUsed].SmsPackageUsed.Quantityused)
+                {
+                    indexM = 0;
+                    indexUsed++;
+                }
+
+                SmsContent scontent = new SmsContent();
+                scontent.SmsBrand = packages[indexUsed].SmsBrand;
+                scontent.Message = ReplaceContentBookingSms(content, m, packages[indexUsed].PackageName);
+                scontent.PhoneNumber = m.PhoneNumber;
+
+                scontent.HealthFacilitiesId = infoInput.healthFacilitiesId.Value;
+                scontent.SmsTemplateId = templateId;
+                scontent.SmsPackagesDistributeId = packages[indexUsed].Id;
+                scontent.SmsPackageUsedId = packages[indexUsed].SmsPackageUsed.SmsPackageUsedId;
+                scontent.PatientHistoriesId = 0;
+
+                lstContent.Add(scontent);
+            }
+
+            var sendSMS = Utils.SendListSMS(lstContent, infoInput.type);
+            var infoSms = SMS.SaveInfoSMS(_connectionString, sendSMS, infoInput.type);
+
+            return Json(new ActionResultDto { Result = infoSms });
+        }
+
+        public static string ReplaceContentBookingSms(string content, BookingInformationsViewModel mhh, string packageName)
+        {
+            string _content = content;
+            if (!string.IsNullOrEmpty(content))
+            {
+                _content = _content
+                    .Replace("<PHONGKHAM>", packageName)
+                    .Replace("<NGAYSINH>", mhh.BirthYear != 0 ? mhh.BirthYear.ToString() : "")
+                    .Replace("<HOTEN>", mhh.BookingUser)
+                    .Replace("<EMAIL>", mhh.Email)
+                    .Replace("<GIOITINH>", mhh.Gender == 1 ? "Nam" : "Nữ")
+                    .Replace("<NGAYHIENTAI>", DateTime.Now.ToString("dd/MM/yyyy"))
+                    .Replace("<NGAYTAIKHAM>", mhh.ExaminationTime != null ? mhh.ExaminationTime : "");
+            }
+
+            return _content;
         }
 
         public static string RepalaceContentSms(string content, MedicalHealthcareHistoriesViewModel mhh, string packageName)

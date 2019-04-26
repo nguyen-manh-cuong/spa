@@ -71,7 +71,7 @@ namespace SHCServer
 
             _context.InsertRange(lstSmsLog);
 
-            return "Tổng số SMS đã gửi\\Số sms gửi lỗi:  " + resps.Count + "\\" + fail + "<br> Thông tin lỗi: " + result;
+            return "Tổng số SMS đã gửi/Số sms gửi lỗi:  " + resps.Count + "/" + fail + "<br> Thông tin lỗi: " + result;
         }
     }
 }

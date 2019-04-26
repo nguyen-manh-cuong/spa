@@ -41,18 +41,33 @@ export class TaskComponent extends AppComponentBase implements OnInit {
     this._frm.controls['smsContent'].setValue(this._template ? this._template.smsContent : "");
   }
  
-  sendSms(){
-    if(this.data && this.data.selection && this.data.selection.selected.length){
-        this._dataService.create('infosms', {
-          lstMedicalHealthcareHistories: this.data.selection.selected, 
-          healthFacilitiesId: this.appSession.user.healthFacilitiesId,  
-          smsTemplateId: this._template.id,
-          content: this._frm.controls['smsContent'].value,
-          type: this.data.type, 
-        }).subscribe(resp => {
-          this.dialogRef.close()  
-          swal('Thông báo', resp, 'error');
-        }, err => {this.dialogRef.close()});
+    sendSms() {
+        if (this.data && this.data.selection && this.data.selection.selected.length) {
+            console.log(this.data.selection.selected[0].phoneNumber);
+            if (this.data.selection.selected[0].phoneNumber != undefined) {
+                console.log('co vao day k');
+                this._dataService.create('infoSendsms', {
+                    lstMedicalHealthcareHistories: this.data.selection.selected,
+                    healthFacilitiesId: this.appSession.user.healthFacilitiesId,
+                    smsTemplateId: this._template.id,
+                    content: this._frm.controls['smsContent'].value,
+                    type: this.data.type,
+                }).subscribe(resp => {
+                    this.dialogRef.close()
+                    swal('Thông báo', resp, 'error');
+                }, err => { this.dialogRef.close() });
+            } else {
+                this._dataService.create('infosms', {
+                    lstMedicalHealthcareHistories: this.data.selection.selected,
+                    healthFacilitiesId: this.appSession.user.healthFacilitiesId,
+                    smsTemplateId: this._template.id,
+                    content: this._frm.controls['smsContent'].value,
+                    type: this.data.type,
+                }).subscribe(resp => {
+                    this.dialogRef.close()
+                    swal('Thông báo', resp, 'error');
+                }, err => { this.dialogRef.close() });
+            }
     } else{
       swal('Thông báo', 'Chưa chọn bệnh nhân', 'warning');
     }

@@ -1,16 +1,19 @@
 import { Component, Injector, OnInit, ViewChild } from '@angular/core';
-import { IBookingInformations } from '@shared/Interfaces';
+import { IBookingInformations, IMedicalHealthcareHistories } from '@shared/Interfaces';
 import { MatDialog } from '@angular/material';
 
 import { DataService } from '@shared/service-proxies/service-data';
 import { FormBuilder } from '@angular/forms';
 import { PagedListingComponentBase } from '@shared/paged-listing-component-base';
-import { TaskComponent } from '../task/task.component';
+import { EditComponent } from '../edit/edit.component';
 import { DetailComponent } from '../detail/detail.component';
+import { TaskComponent } from '@app/sms-template-task/task/task.component';
 import swal from 'sweetalert2';
+import { SelectionModel } from '@angular/cdk/collections';
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import * as moment from 'moment';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+import { ReasonComponent } from '../reason/reason.component';
 
 export const MY_FORMATS = {
     parse: {
@@ -40,9 +43,13 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
     times = [{ id: 10, name: 'Theo khoảng thời gian' }, { id: 9, name: 'Năm trước' }, { id: 8, name: 'Năm nay' }, { id: 7, name: 'Quý trước' }, { id: 6, name: 'Quý này' },
         { id: 5, name: 'Tháng trước' }, { id: 4, name: 'Tháng này' }, { id: 3, name: 'Tuần trước' }, { id: 2, name: 'Tuần nay' }, { id: 1, name: 'Hôm qua' }, { id: 0, name: 'Hôm nay' }];
     dialogDetail: any;
+    dialogReasonReject: any;
     _medicalFacility = [];
     _doctors = [];
+    _isRequest = false;
     _isChosenTime = false;
+    dialogSendComponent: any;
+    selectionData = new SelectionModel<IMedicalHealthcareHistories>(true, []);
 
     @ViewChild("startTime") startTime;
     @ViewChild("endTime") endTime;
@@ -55,8 +62,10 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
         this.api = 'bookinginformations';
         this.frmSearch = this._formBuilder.group({ healthfacilities: [], doctor: [], packagesNameDescription: [], status: [], startTime: [], endTime: [] });
         this.dataService = this._dataService;
-        this.dialogComponent = TaskComponent;
+        this.dialogComponent = EditComponent;
+        this.dialogSendComponent = TaskComponent;
         this.dialogDetail = DetailComponent;
+        this.dialogReasonReject = ReasonComponent;
         this.dataService.getAll('healthfacilities', (this.appSession.user.healthFacilitiesId ? String(this.appSession.user.healthFacilitiesId) : '')).subscribe(resp => { this._medicalFacility = resp.items });
         this.dataService.getAll('doctors').subscribe(resp => { this._doctors = resp.items });
 
@@ -81,6 +90,18 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
         this.frmSearch.controls['startTime'].setValue(moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').add(1, 'day').toDate());
 
         this.frmSearch.controls['endTime'].setValue(moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').add(1, 'day').toDate());
+    }
+
+    openCustomDialog(obj): void {
+        this.selectionData.select(obj);
+        console.log(this.selectionData);
+        const dialogRef = this.dialog.open(this.dialogSendComponent, { minWidth: 'calc(100vw/2)', maxWidth: 'calc(100vw - 300px)', disableClose: true, data: { selection: this.selectionData, type: 1 } });
+
+        dialogRef.afterClosed().subscribe(() => {
+            this.paginator.pageIndex = 0;
+            this.paginator._changePageSize(this.paginator.pageSize);
+            this.selectionData = new SelectionModel<IMedicalHealthcareHistories>(true, []);
+        });
     }
 
     handleTime(element: IBookingInformations) {
@@ -179,5 +200,44 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
 
     showMessage(title: string, content: string, type: string){
         swal(this.l('PackagesMessageTitle.'), this.l('PackagesMessageContent'), 'error');
+    }
+
+    deleteDialogPackage(obj) {
+        swal({
+            title: this.l('AreYouSure'),
+            html: ("Thông tin đặt khám " + obj.ticketId + " sẽ bị hủy"),
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonClass: 'mat-raised-button mat-primary bg-danger',
+            cancelButtonClass: 'mat-button',
+            confirmButtonText: this.l('Có, hủy ngay!'),
+            cancelButtonText: this.l('Cancel'),
+            buttonsStyling: false
+        }).then((result) => {
+            if (result.value) {
+                const dialogRef = this.dialog.open(this.dialogReasonReject, { minWidth: 'calc(100vw/2)', maxWidth: 'calc(100vw - 300px)', data: obj ? obj : null });
+                dialogRef.afterClosed().subscribe(() => this.paginator._changePageSize(this.paginator.pageSize));
+            }
+        });
+    }
+
+    customSearch() {
+        if (!this.endTime.nativeElement.value || !this.startTime.nativeElement.value) {
+            this.endTime.nativeElement.focus();
+            this.startTime.nativeElement.focus();
+            return swal('Thông báo', 'Ngày gửi từ và Đến ngày không được để trống', 'warning');
+        }
+
+        if (!moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').isValid()) {
+            this.startTime.nativeElement.focus();
+            return swal('Thông báo', 'Ngày gửi không đúng định dạng', 'warning');
+        }
+
+        if (!moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').isValid()) {
+            this.endTime.nativeElement.focus();
+            return swal('Thông báo', 'Đến ngày không đúng định dạng', 'warning');
+        }
+
+        this.btnSearchClicks$.next();
     }
 }
