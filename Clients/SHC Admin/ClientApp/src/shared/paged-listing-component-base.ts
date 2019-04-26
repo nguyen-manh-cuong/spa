@@ -158,10 +158,10 @@ export abstract class PagedListingComponentBase<EntityDto> extends AppComponentB
                     setTimeout(() => this.isTableLoading = false, 500);
                     return of([]);
                 })
-        ).subscribe(data => {
-            console.log(data);
-            this.dataSources.data = data;
-        });
+            ).subscribe(data => {
+                console.log(data);
+                this.dataSources.data = data;
+            });
         this.setTableHeight();
     }
 
@@ -173,7 +173,7 @@ export abstract class PagedListingComponentBase<EntityDto> extends AppComponentB
         });
     }
 
-  
+
 
     deleteDialog(obj: EntityDto, key: string, id?: number | string) {
         swal({
@@ -189,7 +189,12 @@ export abstract class PagedListingComponentBase<EntityDto> extends AppComponentB
         }).then((result) => {
             if (result.value) {
                 this.dataService.delete(this.api, obj[id ? id : 'id']).subscribe(() => {
-                    swal(this.l('SuccessfullyDeleted'), this.l('DeletedInSystem', obj[key]), 'success');
+                    swal({
+                        title: this.l('SuccessfullyDeleted'),
+                        text: this.l('DeletedInSystem', obj[key]),
+                        type: 'error',
+                        timer: 3000
+                    })
                     this.paginator.pageIndex = 0;
                     this.paginator._changePageSize(this.paginator.pageSize);
                 });

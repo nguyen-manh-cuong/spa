@@ -287,6 +287,7 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
     }
   }
 
+  //Chua get dc don vi chua co api controller
   getHealthfacilities(provinceCode, districtCode?) {
     if (!this.appSession.user.healthFacilitiesId) {
       if (districtCode == null) {
