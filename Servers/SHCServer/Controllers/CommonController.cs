@@ -133,11 +133,29 @@ namespace SHCServer.Controllers
         [Route("api/healthfacilities")]
         public IActionResult GetHealthfacilities(string filter)
         {
-            var objs = _context.Query<HealthFacilities>();
+            var objs = _context.Query<HealthFacilities>().Where(o => o.IsActive == true && o.IsDelete == false);
+            if (filter != null)
+            {
+                foreach (var (key, value) in JsonConvert.DeserializeObject<Dictionary<string, string>>(filter))
+                {
+                    if (string.IsNullOrEmpty(value))
+                        continue;
+                    if (string.Equals(key, "healthfacilitiesId"))
+                    {
+                        objs = objs.Where(o => o.HealthFacilitiesId.ToString() == value.Trim());
+                    }
+                    if (string.Equals(key, "provinceCode"))
+                    {
+                        objs = objs.Where(o => o.ProvinceCode == value.Trim());
+                    }
+                    if (string.Equals(key, "districtCode"))
+                    {
+                        objs = objs.Where(o => o.DistrictCode == value.Trim());
+                    }
+                }
+            }
 
-            if (!string.IsNullOrEmpty(filter)) objs = objs.Where(o => o.HealthFacilitiesId == int.Parse(filter));
-
-            return Json(new ActionResultDto { Result = new { Items = objs.OrderBy(h => h.Name).Take(500).ToList() } });
+            return Json(new ActionResultDto { Result = new { Items = objs.OrderBy(h => h.Name).Take(1000).ToList() } });
         }
 
         [HttpGet]

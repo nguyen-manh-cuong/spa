@@ -182,22 +182,46 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
   }
   search() {
     if (!this.endTime.nativeElement.value && !this.startTime.nativeElement.value) {
-      return swal('Thông báo', 'Từ ngày và Đến ngày không được để trống', 'warning');
+      return swal({
+        title:'Thông báo', 
+        text:'Từ ngày và Đến ngày không được để trống', 
+        type:'warning',
+        timer:3000});
     }
     if (!moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').isValid()) {
-      return swal('Thông báo', 'Đến ngày không đúng định dạng', 'warning');
+      return swal({
+        title:'Thông báo', 
+        text:'Đến ngày không đúng định dạng',
+        type: 'warning',
+        timer:3000});
     }
     if (!this.startTime.nativeElement.value) {
-      return swal('Thông báo', 'Từ ngày không được để trống', 'warning');
+      return swal({
+        title:'Thông báo', 
+        text:'Từ ngày không được để trống', 
+        type:'warning',
+        timer:3000});
     }
     if (!this.endTime.nativeElement.value) {
-      return swal('Thông báo', 'Từ ngày không được để trống', 'warning');
+      return swal({
+        title:'Thông báo', 
+        text:'Từ ngày không được để trống', 
+        type:'warning',
+        timer:3000});
     }
     if (!moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').isValid()) {
-      return swal('Thông báo', 'Từ ngày không đúng định dạng', 'warning');
+      return swal({
+        title:'Thông báo', 
+        text:'Từ ngày không đúng định dạng', 
+        type:'warning',
+        timer:3000});
     }
     if (((moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').valueOf() - moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').valueOf()) / (1000 * 60 * 60 * 24)) < 0) {
-      return swal('Thông báo', 'Đến ngày phải lớn hơn hoặc bằng Từ ngày', 'warning');
+      return swal({
+        title:'Thông báo', 
+        text:'Đến ngày phải lớn hơn hoặc bằng Từ ngày',
+        type: 'warning',
+        timer:3000});
     }
     if (this.appSession.user.healthFacilitiesId != null) {
       this.healthfacilities.value

@@ -151,7 +151,11 @@ export class EditComponent extends AppComponentBase implements OnInit, AfterView
         }
 
         this._dataService.update(this.api, params).subscribe(() => {
-            swal(this.l('SaveSuccess'), '', 'success');
+            swal({
+                title:this.l('SaveSuccess'), 
+                text:'', 
+                type:'success',
+                timer:3000});
             this.dialogRef.close();
         }, err => console.log(err));
     }
