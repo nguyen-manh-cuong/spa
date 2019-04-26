@@ -142,11 +142,11 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     }
 
     changeStartDate(value: any, type: number) {
-        if(type == 2){    
-            return this.startTime.nativeElement.value = moment(new Date(new Date().setDate(new Date().getDate() + Number(value)))).format("DD/MM/YYYY");
+        if(type == 2){          
+            return this.endTime.nativeElement.value = moment(new Date(new Date().setDate(new Date().getDate() + Number(value)))).format("DD/MM/YYYY");
         }
 
-        var days =moment(this.endTime.nativeElement.value,"DD/MM/YYYY").dayOfYear() - moment(value, 'DD/MM/YYYY').dayOfYear()> 0 ? moment(this.endTime.nativeElement.value,"DD/MM/YYYY").dayOfYear() - moment(value, 'DD/MM/YYYY').dayOfYear() : 0;
+        var days = (moment(this.endTime.nativeElement.value,"DD/MM/YYYY").valueOf() - value.valueOf())/(1000*60*60*24) > 0 ? (moment(this.endTime.nativeElement.value,"DD/MM/YYYY").valueOf() - value.valueOf())/(1000*60*60*24) : 0;
         this.frmSearch.controls['about'].setValue(days);
     }
 
@@ -155,7 +155,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
             return this.endTime.nativeElement.value = moment(new Date(new Date().setDate(new Date().getDate() + Number(value)))).format("DD/MM/YYYY");
         }
 
-        var days = moment(value, 'DD/MM/YYYY').dayOfYear() - moment(this.startTime.nativeElement.value,"DD/MM/YYYY").dayOfYear() > 0 ?moment(value, 'DD/MM/YYYY').dayOfYear() - moment(this.startTime.nativeElement.value,"DD/MM/YYYY").dayOfYear() : 0;
+        var days = ( value.valueOf() - moment(this.startTime.nativeElement.value,"DD/MM/YYYY").valueOf())/(1000*60*60*24) > 0 ? ( value.valueOf() - moment(this.startTime.nativeElement.value,"DD/MM/YYYY").valueOf())/(1000*60*60*24) : 0;
         this.frmSearch.controls['about'].setValue(days);
     }
 
@@ -249,7 +249,6 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
             }
         }
 
-        console.log(moment(this.birthday.nativeElement.value, 'DD/MM/YYYY').toDate());
 
         this.healthfacilities.value ? this.frmSearch.controls['healthfacilities'].setValue(this.healthfacilities.value.healthFacilitiesId) : (this.appSession.user.healthFacilitiesId == null ? this.frmSearch.controls['healthfacilities'].setValue(null) : '');
         this.birthday.nativeElement.value ? this.frmSearch.controls['birthdayDate'].setValue(moment(this.birthday.nativeElement.value, 'DD/MM/YYYY').toDate().getDate()) : '';

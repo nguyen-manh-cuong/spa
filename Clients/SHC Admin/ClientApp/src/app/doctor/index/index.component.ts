@@ -360,6 +360,7 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
   }
 
   displayFn(h?: IHealthfacilities): string | undefined {
+    console.log(h.healthFacilitiesId);
     return h ? h.name : undefined;
   }
 
