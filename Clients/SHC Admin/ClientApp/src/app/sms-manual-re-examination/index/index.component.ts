@@ -14,6 +14,7 @@ import swal from 'sweetalert2';
 import { MatDialog } from '@angular/material';
 import {MomentDateAdapter} from '@angular/material-moment-adapter';
 import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
+import { startTimeRange } from '@angular/core/src/profile/wtf_impl';
 export const MY_FORMATS = {
     parse: {
       dateInput: 'DD/MM/YYYY',
@@ -58,6 +59,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
 
     @ViewChild("birthday") birthday;
     @ViewChild("endTime") endTime;
+    @ViewChild("startTime") startTime;
 
     constructor(injector: Injector, private _dataService: DataService , public dialog: MatDialog, private _formBuilder: FormBuilder) {
         super(injector);
@@ -81,7 +83,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
             birthdayMonth: [],
             birthday: [],
             sex: [],
-            startTime: new Date(),
+            startTime: new Date(new Date().setDate(new Date().getDate())),
             endTime: new Date(new Date().setDate(new Date().getDate() + 3)),
             about: 3
         });
@@ -89,15 +91,21 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
         this.dialogComponent = TaskComponent;
         this.dataService = this._dataService;
         this.frmSearch.controls['endTime'].setValue(new Date(new Date().setDate(new Date().getDate() + this.frmSearch.controls['about'].value)));
+        this.frmSearch.controls['startTime'].setValue(new Date(new Date().setDate(new Date().getDate())));
         this.dataService.getAll('provinces').subscribe(resp => this._provinces = resp.items);
         this.dataService.getAll('healthfacilities', (this.appSession.user.healthFacilitiesId ? String(this.appSession.user.healthFacilitiesId) : '')).subscribe(resp => this._healthfacilities = resp.items);
         if(this.appSession.user.healthFacilitiesId) this.dataService.getAll('doctors', String(this.appSession.user.healthFacilitiesId)).subscribe(resp => this._doctors = resp.items);
 
+
+
         setTimeout(() => {
             this.endTime.nativeElement.value = moment(new Date().setDate(new Date().getDate() + 3)).format("DD/MM/YYYY");
+            this.startTime.nativeElement.value = moment(new Date().setDate(new Date().getDate())).format("DD/MM/YYYY");
+            this.frmSearch.controls['about'].setValue(new Date().getDate()-new Date().getDate() + 3);
             this.endTime.nativeElement.focus();
         });
         this.appSession.user.healthFacilitiesId ? this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId) : this.filterOptions();
+
     }
 
     isAllSelected() {
@@ -133,14 +141,24 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
         if (district) { this.dataService.get('wards', JSON.stringify({ DistrictCode: district.districtCode }), '', 0, 0).subscribe(resp => this._wards = resp.items); }
     }
 
+    changeStartDate(value: any, type: number) {
+        if(type == 2){    
+            return this.startTime.nativeElement.value = moment(new Date(new Date().setDate(new Date().getDate() + Number(value)))).format("DD/MM/YYYY");
+        }
+
+        var days =moment(this.endTime.nativeElement.value,"DD/MM/YYYY").dayOfYear() - moment(value, 'DD/MM/YYYY').dayOfYear()> 0 ? moment(this.endTime.nativeElement.value,"DD/MM/YYYY").dayOfYear() - moment(value, 'DD/MM/YYYY').dayOfYear() : 0;
+        this.frmSearch.controls['about'].setValue(days);
+    }
+
     changeEndDate(value: any, type: number) {
         if(type == 2){          
             return this.endTime.nativeElement.value = moment(new Date(new Date().setDate(new Date().getDate() + Number(value)))).format("DD/MM/YYYY");
         }
 
-        var days = moment(value, 'DD/MM/YYYY').dayOfYear() - moment(new Date()).dayOfYear() > 0 ? moment(value, 'DD/MM/YYYY').dayOfYear() - moment(new Date()).dayOfYear() : 0;
+        var days = moment(value, 'DD/MM/YYYY').dayOfYear() - moment(this.startTime.nativeElement.value,"DD/MM/YYYY").dayOfYear() > 0 ?moment(value, 'DD/MM/YYYY').dayOfYear() - moment(this.startTime.nativeElement.value,"DD/MM/YYYY").dayOfYear() : 0;
         this.frmSearch.controls['about'].setValue(days);
     }
+
 
     displayFn(h?: IHealthfacilities): string | undefined {
         return h ? h.name : undefined;
@@ -172,6 +190,15 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
                 text:'Đến ngày không được để trống', 
                 type:'warning',
                 timer:3000});
+        }
+
+        if(moment(this.endTime.nativeElement.value,"DD/MM/YYYY")<=moment(this.startTime.nativeElement.value,"DD/MM/YYYY")){
+            return swal({
+                title:'Thông báo',
+                text:'Ngày kết thúc không được nhỏ hơn ngày bắt đầu',
+                type:'warning',
+                timer:3000
+            });
         }
 
         if( !moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').isValid()){
