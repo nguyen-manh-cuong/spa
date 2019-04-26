@@ -68,6 +68,10 @@ import { NgModule } from '@angular/core';
                     {
                         path: 'booking-list',
                         loadChildren: 'app/booking-list/booking-list.module#BookingListModule', canActivate: [AppRouteGuard]
+                    },
+                    {
+                        path: 'doctor',
+                        loadChildren: 'app/doctor/doctor.module#DoctorModule', canActivate: [AppRouteGuard]
                     }
                ]
             },
