@@ -473,7 +473,7 @@ namespace SHCServer.Controllers
 
             if (reader.Read() == true)
             {
-                return StatusCode(422, _excep.Throw("Xóa không thành công!", "Không thể xóa bác sĩ đang có lịch khám!"));
+                return StatusCode(400, _excep.Throw("Xóa không thành công!", "Không thể xóa bác sĩ đang có lịch khám!"));
             }
             else
             {

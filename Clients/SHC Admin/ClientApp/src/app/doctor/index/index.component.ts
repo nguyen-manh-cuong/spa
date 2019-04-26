@@ -56,10 +56,10 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
     this.getProvinces();
     this.getSpecialist();
 
-    this.dataService.getAll("healthfacilities",String(this.appSession.user.healthFacilitiesId))
+    this.dataService.getAll("healthfacilities","{healthFacilitiesId:'"+ String(this.appSession.user.healthFacilitiesId)+"'}")
       .subscribe(resp => this._healthfacilities = resp.items);
     if (this.appSession.user.healthFacilitiesId) {
-      this.dataService.getAll("healthfacilities",String(this.appSession.user.healthFacilitiesId))
+      this.dataService.getAll("healthfacilities","{healthFacilitiesId:'"+ String(this.appSession.user.healthFacilitiesId)+"'}")
         .subscribe(resp => this.dataSources = resp.items);
     }
     this.appSession.user.healthFacilitiesId ? this.frmSearch.controls['healthfacilities']
@@ -287,6 +287,7 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
     }
   }
 
+  //Chua get dc don vi chua co api controller
   getHealthfacilities(provinceCode, districtCode?) {
     if (!this.appSession.user.healthFacilitiesId) {
       if (districtCode == null) {
@@ -294,7 +295,6 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
           .subscribe(resp => this._healthfacilities = resp.items);
       }
       else {
-        console.log("aa");
         this.dataService.getAll("healthfacilities","{provinceCode:" + provinceCode + ",districtCode:" + districtCode + "}")
           .subscribe(resp => this._healthfacilities = resp.items)
       }

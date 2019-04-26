@@ -82,7 +82,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
       healthfacilities: [this.appSession.user.healthFacilitiesId],
       doctor: [],
       status: [4],
-      startTime: new Date(),
+      startTime: [moment(new Date().setHours(7, 0, 0, 0)).toDate()],
       endTime: new Date(),
       time: [0],
     });
@@ -182,22 +182,46 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
   }
   search() {
     if (!this.endTime.nativeElement.value && !this.startTime.nativeElement.value) {
-      return swal('Thông báo', 'Từ ngày và Đến ngày không được để trống', 'warning');
+      return swal({
+        title:'Thông báo', 
+        text:'Từ ngày và Đến ngày không được để trống', 
+        type:'warning',
+        timer:3000});
     }
     if (!moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').isValid()) {
-      return swal('Thông báo', 'Đến ngày không đúng định dạng', 'warning');
+      return swal({
+        title:'Thông báo', 
+        text:'Đến ngày không đúng định dạng',
+        type: 'warning',
+        timer:3000});
     }
     if (!this.startTime.nativeElement.value) {
-      return swal('Thông báo', 'Từ ngày không được để trống', 'warning');
+      return swal({
+        title:'Thông báo', 
+        text:'Từ ngày không được để trống', 
+        type:'warning',
+        timer:3000});
     }
     if (!this.endTime.nativeElement.value) {
-      return swal('Thông báo', 'Từ ngày không được để trống', 'warning');
+      return swal({
+        title:'Thông báo', 
+        text:'Từ ngày không được để trống', 
+        type:'warning',
+        timer:3000});
     }
     if (!moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').isValid()) {
-      return swal('Thông báo', 'Từ ngày không đúng định dạng', 'warning');
+      return swal({
+        title:'Thông báo', 
+        text:'Từ ngày không đúng định dạng', 
+        type:'warning',
+        timer:3000});
     }
     if (((moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').valueOf() - moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').valueOf()) / (1000 * 60 * 60 * 24)) < 0) {
-      return swal('Thông báo', 'Đến ngày phải lớn hơn hoặc bằng Từ ngày', 'warning');
+      return swal({
+        title:'Thông báo', 
+        text:'Đến ngày phải lớn hơn hoặc bằng Từ ngày',
+        type: 'warning',
+        timer:3000});
     }
     if (this.appSession.user.healthFacilitiesId != null) {
       this.healthfacilities.value
@@ -209,8 +233,8 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
         ? this.frmSearch.controls['healthfacilities'].setValue(this.healthfacilities.value.healthFacilitiesId)
         : this.frmSearch.controls['healthfacilities'].setValue('');
     }
-    this.startTime.nativeElement.value ? this.frmSearch.controls['startTime'].setValue(moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').toDate()) : '';
-    this.endTime.nativeElement.value ? this.frmSearch.controls['endTime'].setValue(moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').toDate()) : '';
+    this.startTime.nativeElement.value ? this.frmSearch.controls['startTime'].setValue(moment(this.startTime.nativeElement.value + '00:00:00', 'DD/MM/YYYY hh:mm:ss').add(7, 'hours').toDate()) : '';
+    this.endTime.nativeElement.value ? this.frmSearch.controls['endTime'].setValue(moment(this.endTime.nativeElement.value + '23:59:59', 'DD/MM/YYYY hh:mm:ss').add(7, 'hours').toDate()) : '';
     var req = omitBy(this.frmSearch.value, isNil);
     //req.healthfacilities = req && req.healthfacilities ? req.healthfacilities.healthFacilitiesId : "";
 
