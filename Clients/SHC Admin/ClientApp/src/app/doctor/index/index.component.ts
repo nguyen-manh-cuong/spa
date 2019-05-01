@@ -36,7 +36,8 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
   districts = [];
   checkProvince = false;
   _healthfacilities = [];
-  specialist = [];
+    specialist = [];
+    _healthFacilitiesId: number;
 
 
   filteredHealthFacilitiesOptions: Observable<IHealthfacilities[]>;
@@ -62,7 +63,7 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
       this.dataService.getAll("healthfacilities","{healthFacilitiesId:'"+ String(this.appSession.user.healthFacilitiesId)+"'}")
         .subscribe(resp => this.dataSources = resp.items);
     }
-    this.appSession.user.healthFacilitiesId ? this.frmSearch.controls['healthfacilities']
+        this.appSession.user.healthFacilitiesId ? this.frmSearch.controls['healthfacilities']
       .setValue(this.appSession.user.healthFacilitiesId) : this.filterOptions();
 
   }
@@ -350,7 +351,7 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
         map(value => typeof value === 'string' ? value : value.name),
         map(name => name ? this._filter(name) : this._healthfacilities.slice()),
         map(data => data)
-      );
+        );
   }
 
   clickCbo() {
@@ -359,10 +360,28 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
     }
   }
 
-  displayFn(h?: IHealthfacilities): string | undefined {
-    console.log(h.healthFacilitiesId);
+    displayFn(h?: IHealthfacilities): string | undefined {
+          
     return h ? h.name : undefined;
+}
+
+    getPosts(userId: IHealthfacilities){
+        console.log(userId.healthFacilitiesId);
+        this._healthFacilitiesId = userId.healthFacilitiesId;
   }
+
+    customSearch() {
+        console.log(this._healthFacilitiesId);
+        if (this._healthFacilitiesId) {
+            this.frmSearch.controls['healthfacilities'].setValue(this._healthFacilitiesId);
+            console.log(this._healthFacilitiesId);
+
+        }
+
+
+
+        this.btnSearchClicks$.next();
+    }
 
   openDialogDoctor(obj?: EntityDto): void {
     const dialogRef = this.dialog.open(this.dialogComponent, { minWidth: 'calc(100vw/1.5)', maxWidth: 'calc(100vw - 100px)', disableClose: true, data: obj ? obj : null });

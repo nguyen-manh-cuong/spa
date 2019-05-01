@@ -15,7 +15,7 @@ namespace SHCServer.Models
         [Column(IsPrimaryKey = true)]
         [AutoIncrement]
         public int Id { set; get; }
-        public int HealthFacilitiesId { set; get; }
+        public int? HealthFacilitiesId { set; get; }
         public int DoctorId { set; get; }
         public bool IsDelete { get; set; }
     }
