@@ -52,6 +52,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingDoctorsCal
 
     @ViewChild("startTime") startTime;
     @ViewChild("endTime") endTime;
+    @ViewChild('auto') auto;
 
     constructor(injector: Injector, private _dataService: DataService, public dialog: MatDialog, private _formBuilder: FormBuilder) {
         super(injector);
@@ -68,9 +69,20 @@ export class IndexComponent extends PagedListingComponentBase<IBookingDoctorsCal
 
         this.dataService = this._dataService;
         this.dialogDetail = DetailComponent;
-        this.dataService.getAll('healthfacilities', (this.appSession.user.healthFacilitiesId ? String(this.appSession.user.healthFacilitiesId) : '')).subscribe(resp => this._healthfacilities = resp.items);
-        this.appSession.user.healthFacilitiesId ? this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId) : this.filterOptions();
-        if(this.appSession.user.healthFacilitiesId) this.dataService.getAll('doctors', String(this.appSession.user.healthFacilitiesId)).subscribe(resp => this._doctors = resp.items);
+        
+        // this.dataService.getAll('healthfacilities', (this.appSession.user.healthFacilitiesId ? "{healthfacilitiesId:"+String(this.appSession.user.healthFacilitiesId)+"}" : '')).subscribe(resp => this._healthfacilities = resp.items);
+        // this.appSession.user.healthFacilitiesId ? this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId) : this.filterOptions();
+        // if(this.appSession.user.healthFacilitiesId) this.dataService.getAll('doctors', String(this.appSession.user.healthFacilitiesId)).subscribe(resp => this._doctors = resp.items);
+
+        if(this.appSession.user.healthFacilitiesId) {
+            this.dataService.getAll('healthfacilities', "{healthfacilitiesId:"+String(this.appSession.user.healthFacilitiesId)+"}").subscribe(resp => this._healthfacilities = resp.items);
+            this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId);
+            this.dataService.getAll('doctors', String(this.appSession.user.healthFacilitiesId)).subscribe(resp => this._doctors = resp.items);
+        }
+        else{
+            this.dataService.getAll('healthfacilities').subscribe(resp => this._healthfacilities = resp.items);
+            this.filterOptions();
+        }
 
         setTimeout(() => {
             this.startTime.nativeElement.value = moment(new Date()).format("DD/MM/YYYY");

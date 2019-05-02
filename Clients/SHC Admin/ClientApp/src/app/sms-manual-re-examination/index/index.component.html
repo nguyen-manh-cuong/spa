@@ -8,7 +8,8 @@
             </mat-slide-toggle>
         </div>
         <div class="col-9">
-            <mat-paginator #paginator [pageSizeOptions]="pageSizeOptions" [length]="totalItems" [pageSize]="pageSize" showFirstLastButtons></mat-paginator>
+            <mat-paginator #paginator [pageSizeOptions]="pageSizeOptions" [length]="totalItems" [pageSize]="pageSize"
+                showFirstLastButtons></mat-paginator>
         </div>
     </div>
 </div>
@@ -19,7 +20,8 @@
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('Phòng khám')}}</mat-label>
                     <input matInput [formControl]="healthfacilities" (click)="clickCbo()" [matAutocomplete]="auto">
-                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="onSelectHealthFacilities($event.option.value)">
+                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn"
+                        (optionSelected)="onSelectHealthFacilities($event.option.value)">
                         <mat-option *ngFor="let o of filteredOptions | async" [value]="o">
                             {{o.name}}
                         </mat-option>
@@ -30,7 +32,8 @@
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('Phòng khám')}}</mat-label>
                     <mat-select formControlName="healthfacilities">
-                        <mat-option *ngFor="let o of _healthfacilities" [value]="o.healthFacilitiesId">{{ o.name }}</mat-option>
+                        <mat-option *ngFor="let o of _healthfacilities" [value]="o.healthFacilitiesId">{{ o.name }}
+                        </mat-option>
                     </mat-select>
                 </mat-form-field>
             </div>
@@ -39,7 +42,9 @@
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('Bác sĩ')}}</mat-label>
                     <mat-select formControlName="doctor">
-                        <mat-option *ngIf="_doctors.length" class="text-center" [innerHTML]="'<div class=\'text-center border-bottom w-100\'>'+ l('Bỏ chọn') +'</div>'"></mat-option>
+                        <mat-option *ngIf="_doctors.length" class="text-center"
+                            [innerHTML]="'<div class=\'text-center border-bottom w-100\'>'+ l('Bỏ chọn') +'</div>'">
+                        </mat-option>
                         <mat-option *ngFor="let o of _doctors" [value]="o.doctorId">{{ o.fullName }}</mat-option>
                     </mat-select>
                 </mat-form-field>
@@ -87,7 +92,8 @@
             <div class="col-md-3">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('Ngày sinh')}}</mat-label>
-                    <input matInput #birthday mask="00/00/0000" (keyup)="setValueBD()" maxlength="10" [matDatepicker]="picker">
+                    <input matInput #birthday mask="00/00/0000" (keyup)="setValueBD()" maxlength="10"
+                        [matDatepicker]="picker">
                     <mat-datepicker-toggle matSuffix [for]="picker" class="t-2"></mat-datepicker-toggle>
                     <mat-datepicker #picker></mat-datepicker>
                 </mat-form-field>
@@ -105,7 +111,9 @@
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('FilterByProvine')}}</mat-label>
                     <mat-select formControlName="provinceCode" (selectionChange)="onSelectProvince($event.value)">
-                        <mat-option *ngIf="_provinces.length" class="text-center" [innerHTML]="'<div class=\'text-center border-bottom w-100\'>'+ l('Bỏ chọn') +'</div>'"></mat-option>
+                        <mat-option *ngIf="_provinces.length" class="text-center"
+                            [innerHTML]="'<div class=\'text-center border-bottom w-100\'>'+ l('Bỏ chọn') +'</div>'">
+                        </mat-option>
                         <mat-option *ngFor="let o of _provinces" [value]="o.provinceCode">{{ o.name }}</mat-option>
                     </mat-select>
                 </mat-form-field>
@@ -114,7 +122,9 @@
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('FilterByDistrict')}}</mat-label>
                     <mat-select formControlName="districtCode" (selectionChange)="onSelectDistrict($event.value)">
-                        <mat-option *ngIf="_districts.length" class="text-center" [innerHTML]="'<div class=\'text-center border-bottom w-100\'>'+ l('Bỏ chọn') +'</div>'"></mat-option>
+                        <mat-option *ngIf="_districts.length" class="text-center"
+                            [innerHTML]="'<div class=\'text-center border-bottom w-100\'>'+ l('Bỏ chọn') +'</div>'">
+                        </mat-option>
                         <mat-option *ngFor="let o of _districts" [value]="o.districtCode">{{ o.name }}</mat-option>
                     </mat-select>
                 </mat-form-field>
@@ -123,7 +133,9 @@
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('FilterByWard')}}</mat-label>
                     <mat-select formControlName="wardCode">
-                        <mat-option *ngIf="_wards.length" class="text-center" [innerHTML]="'<div class=\'text-center border-bottom w-100\'>'+ l('Bỏ chọn') +'</div>'"></mat-option>
+                        <mat-option *ngIf="_wards.length" class="text-center"
+                            [innerHTML]="'<div class=\'text-center border-bottom w-100\'>'+ l('Bỏ chọn') +'</div>'">
+                        </mat-option>
                         <mat-option *ngFor="let o of _wards" [value]="o.wardCode">{{ o.name }}</mat-option>
                     </mat-select>
                 </mat-form-field>
@@ -132,7 +144,8 @@
             <div class="col-md-4">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('Tái khám từ')}}</mat-label>
-                    <input matInput [matDatepicker]="picker1" #startTime mask="00/00/0000" maxlength="10" (dateChange)="changeStartDate($event.value, 1)" required>
+                    <input matInput [matDatepicker]="picker1" #startTime mask="00/00/0000" maxlength="10"
+                        (dateChange)="changeStartDate($event.value, 1)" required>
                     <mat-datepicker-toggle matSuffix [for]="picker1" class="t-2"></mat-datepicker-toggle>
                     <mat-datepicker #picker1></mat-datepicker>
                 </mat-form-field>
@@ -140,7 +153,8 @@
             <div class="col-md-4">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('Đến ngày')}}</mat-label>
-                    <input matInput [matDatepicker]="picker2" #endTime mask="00/00/0000" maxlength="10" (dateChange)="changeEndDate($event.value, 1)" required>
+                    <input matInput [matDatepicker]="picker2" #endTime mask="00/00/0000" maxlength="10"
+                        (dateChange)="changeEndDate($event.value, 1)" required>
                     <mat-datepicker-toggle matSuffix [for]="picker2" class="t-2"></mat-datepicker-toggle>
                     <mat-datepicker #picker2></mat-datepicker>
                 </mat-form-field>
@@ -148,7 +162,8 @@
             <div class="col-md-4">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l("Trong vòng")}}</mat-label>
-                    <input formControlName="about" matInput autocomplete maxlength="3" mask="0*" (keyup)="changeEndDate($event.target.value, 2)">
+                    <input formControlName="about" matInput autocomplete maxlength="3" mask="0*"
+                        (keyup)="changeEndDate($event.target.value, 2)">
                 </mat-form-field>
             </div>
             <!--  -->
@@ -159,29 +174,31 @@
                 </button>
             </div>
             <div class="col-md-3 text-center d-flex align-self-center">
-                <button mat-stroked-button color="primary" [ngClass]="{'disabled': _isRequest}" (click)="selection.selected.length ? sendSms() : showMess(1)" class="w-100 mb-4">
+                <button mat-stroked-button color="primary" [ngClass]="{'disabled': _isRequest}"
+                    (click)="selection.selected.length ? sendSms() : showMess(1)" class="w-100 mb-4">
                     <mat-icon class="mr-2">sms</mat-icon>{{l("Gửi SMS nhắc lịch tái khám")}}
                 </button>
             </div>
         </div>
     </form>
     <div class="table-content" style="height: calc(100vh - 245px);">
-        <table mat-table [dataSource]="dataSources" matSort #sort="matSort" matSortDisableClear matSortActive="id" matSortDirection="desc" class="w-100 task">
+        <table mat-table [dataSource]="dataSources" matSort #sort="matSort" matSortDisableClear matSortActive="id"
+            matSortDirection="desc" class="w-100 task">
             <ng-container matColumnDef="orderNumber">
                 <th mat-header-cell *matHeaderCellDef class="min-w-50 text-center pl-0"> {{l("OrderNumber")}} </th>
-                <td mat-cell *matCellDef="let element; let i = index;" class="min-w-50 text-center">{{(i + 1) + (paginator.pageIndex * paginator.pageSize)}}</td>
+                <td mat-cell *matCellDef="let element; let i = index;" class="min-w-50 text-center">
+                    {{(i + 1) + (paginator.pageIndex * paginator.pageSize)}}</td>
             </ng-container>
             <ng-container matColumnDef="select">
                 <th mat-header-cell *matHeaderCellDef class="min-w-50 text-center pl-0 p-t-8">
                     <mat-checkbox (change)="$event ? masterToggle() : null"
-                                    [checked]="selection.hasValue() && isAllSelected()"
-                                    [indeterminate]="selection.hasValue() && !isAllSelected()">
+                        [checked]="selection.hasValue() && isAllSelected()"
+                        [indeterminate]="selection.hasValue() && !isAllSelected()">
                     </mat-checkbox>
                 </th>
                 <td mat-cell *matCellDef="let row" class="min-w-50 p-t-8 text-center">
-                    <mat-checkbox (click)="$event.stopPropagation()"
-                                    (change)="$event ? selection.toggle(row) : null"
-                                    [checked]="selection.isSelected(row)">
+                    <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row) : null"
+                        [checked]="selection.isSelected(row)">
                     </mat-checkbox>
                 </td>
             </ng-container>
@@ -195,15 +212,19 @@
             </ng-container>
             <ng-container matColumnDef="birthday">
                 <th mat-header-cell *matHeaderCellDef class="text-center"> {{l('Ngày sinh')}} </th>
-                <td mat-cell *matCellDef="let element" class="text-center"> {{(element.birthDate ? (element.birthDate > 9 ? element.birthDate : '0' + element.birthDate) + '/' : '') + (element.birthMonth ? (element.birthMonth > 9 ? element.birthMonth : '0' + element.birthMonth) + '/' : '') + element.birthYear}} </td>
+                <td mat-cell *matCellDef="let element" class="text-center">
+                    {{(element.birthDate ? (element.birthDate > 9 ? element.birthDate : '0' + element.birthDate) + '/' : '') + (element.birthMonth ? (element.birthMonth > 9 ? element.birthMonth : '0' + element.birthMonth) + '/' : '') + element.birthYear}}
+                </td>
             </ng-container>
             <ng-container matColumnDef="age">
                 <th mat-header-cell *matHeaderCellDef class="min-w-70 text-center"> {{l('Tuổi')}} </th>
-                <td mat-cell *matCellDef="let element" class="min-w-70 text-center"> {{convertAge(element.birthDate, element.birthMonth, element.birthYear)}} </td>
+                <td mat-cell *matCellDef="let element" class="min-w-70 text-center">
+                    {{convertAge(element.birthDate, element.birthMonth, element.birthYear)}} </td>
             </ng-container>
             <ng-container matColumnDef="gender">
                 <th mat-header-cell *matHeaderCellDef class="min-w-50 text-center"> {{l('Giới tính')}} </th>
-                <td mat-cell *matCellDef="let element" class="min-w-50 text-center"> {{element.gender == 2 ? 'Nữ' : (element.gender == 1 ? 'Nam' : 'Không xác định')}} </td>
+                <td mat-cell *matCellDef="let element" class="min-w-50 text-center">
+                    {{element.gender == 2 ? 'Nữ' : (element.gender == 1 ? 'Nam' : 'Không xác định')}} </td>
             </ng-container>
             <ng-container matColumnDef="phoneNumber">
                 <th mat-header-cell *matHeaderCellDef class="text-center"> {{l('Điện thoại')}} </th>
@@ -211,15 +232,18 @@
             </ng-container>
             <ng-container matColumnDef="address">
                 <th mat-header-cell *matHeaderCellDef class="text-center"> {{l('Địa chỉ')}} </th>
-                <td mat-cell *matCellDef="let element" class="wrap-text" title="{{element.address}}"> {{element.address}} </td>
+                <td mat-cell *matCellDef="let element" class="wrap-text" title="{{element.address}}">
+                    {{element.address}} </td>
             </ng-container>
             <ng-container matColumnDef="ReExaminationDate">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-center"> {{l('Ngày tái khám')}} </th>
-                <td mat-cell *matCellDef="let element" class="text-center"> {{element.reExaminationDate | date: 'dd/MM/yyyy'}} </td>
+                <td mat-cell *matCellDef="let element" class="text-center">
+                    {{element.reExaminationDate | date: 'dd/MM/yyyy'}} </td>
             </ng-container>
             <ng-container matColumnDef="status">
-            <th mat-header-cell *matHeaderCellDef class="text-center"> {{l('Trạng thái')}} </th>
-                <td mat-cell *matCellDef="let element" class="td-ellipsis"> {{element.isReExamination == 1 ? 'Đã gửi SMS' : 'Chưa gửi SMS'}} </td>
+                <th mat-header-cell *matHeaderCellDef class="text-center"> {{l('Trạng thái')}} </th>
+                <td mat-cell *matCellDef="let element" class="td-ellipsis">
+                    {{element.isReExamination == 1 ? 'Đã gửi SMS' : 'Chưa gửi SMS'}} </td>
             </ng-container>
             <!-- <ng-container matColumnDef="task">
                 <th mat-header-cell *matHeaderCellDef></th>
