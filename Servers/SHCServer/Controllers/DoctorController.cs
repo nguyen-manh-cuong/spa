@@ -72,7 +72,7 @@ namespace SHCServer.Controllers
                     }
                     if (string.Equals(key, "healthfacilities") && !string.IsNullOrEmpty(value))
                     {
-                        objs = objs.Where(b => b.HealthFacilitiesId.ToString() == value.Trim() || b.HealthFacilitiesId.ToString() == null);
+                        objs = objs.Where(b => b.HealthFacilitiesId.ToString() == value.Trim());
                     }
                     if (string.Equals(key, "specialistCode") && !string.IsNullOrEmpty(value))
                     {
