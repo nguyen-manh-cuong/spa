@@ -3,7 +3,7 @@ import { IBookingInformations, IMedicalHealthcareHistories } from '@shared/Inter
 import { MatDialog } from '@angular/material';
 
 import { DataService } from '@shared/service-proxies/service-data';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormControl } from '@angular/forms';
 import { PagedListingComponentBase } from '@shared/paged-listing-component-base';
 import { EditComponent } from '../edit/edit.component';
 import { DetailComponent } from '../detail/detail.component';
@@ -14,6 +14,9 @@ import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import * as moment from 'moment';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { ReasonComponent } from '../reason/reason.component';
+import { IHealthfacilities } from '../../../../../../SHC Outside/ClientApp/src/shared/Interfaces';
+import { Observable } from 'rxjs';
+import { startWith, map } from 'rxjs/operators';
 
 export const MY_FORMATS = {
     parse: {
@@ -37,7 +40,9 @@ export const MY_FORMATS = {
     ],
 })
 export class IndexComponent extends PagedListingComponentBase<IBookingInformations> implements OnInit {
-
+    _healthfacilities = [];
+    healthfacilities = new FormControl();
+    filteredOptions: Observable<IHealthfacilities[]>;
     displayedColumns = ['orderNumber', 'code', 'patient', 'gender', 'phone', 'year', 'description', 'doctor', 'examinationDate', 'status', 'task'];
     status = [{ id: 4, name: 'Tất cả' }, { id: 3, name: 'Hủy khám' }, { id: 2, name: 'Đã khám' }, { id: 1, name: 'Chưa khám' }, { id: 0, name: 'Mới đăng ký' }];
     times = [{ id: 10, name: 'Theo khoảng thời gian' }, { id: 9, name: 'Năm trước' }, { id: 8, name: 'Năm nay' }, { id: 7, name: 'Quý trước' }, { id: 6, name: 'Quý này' },
@@ -53,6 +58,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
 
     @ViewChild("startTime") startTime;
     @ViewChild("endTime") endTime;
+    @ViewChild("auto") auto;
 
     constructor(injector: Injector, private _dataService: DataService, public dialog: MatDialog, private _formBuilder: FormBuilder) {
         super(injector);
@@ -66,13 +72,73 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
         this.dialogSendComponent = TaskComponent;
         this.dialogDetail = DetailComponent;
         this.dialogReasonReject = ReasonComponent;
-        this.dataService.getAll('healthfacilities', (this.appSession.user.healthFacilitiesId ? String(this.appSession.user.healthFacilitiesId) : '')).subscribe(resp => { this._medicalFacility = resp.items });
-        this.dataService.getAll('doctors').subscribe(resp => { this._doctors = resp.items });
+        
+        // if(this.appSession.user.healthFacilitiesId){
+        //     this.dataService.getAll('healthfacilities', "{healthfacilitiesId:"+String(this.appSession.user.healthFacilitiesId)+"}").subscribe(resp => this._healthfacilities = resp.items);
+        //     this.dataService.getAll('doctors', String(this.appSession.user.healthFacilitiesId)).subscribe(resp => this._doctors = resp.items);
+        //     this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId);
+        // }
+        // else{
+        //     this.filterOptions();
+        // }
+        if(this.appSession.user.healthFacilitiesId) {
+            this.dataService.getAll('healthfacilities', "{healthfacilitiesId:"+String(this.appSession.user.healthFacilitiesId)+"}").subscribe(resp => this._healthfacilities = resp.items);
+            this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId);
+            this.dataService.getAll('doctors', String(this.appSession.user.healthFacilitiesId)).subscribe(resp => this._doctors = resp.items);
+        }
+        else{
+            this.dataService.getAll('healthfacilities').subscribe(resp => this._healthfacilities = resp.items);
+            this.filterOptions();
+        }
 
         setTimeout(() => {
             this.startTime.nativeElement.value = moment(new Date()).format("DD/MM/YYYY");
             this.endTime.nativeElement.value = moment(new Date()).format("DD/MM/YYYY");
         });
+    }
+
+    displayFn(h?: IHealthfacilities): string | undefined {
+        return h ? h.name : undefined;
+    }
+
+    
+    _filter(name: any): IHealthfacilities[] {
+        const filterValue = name.toLowerCase();
+        var healthfacilities = isNaN(filterValue) ?         
+        this._healthfacilities.filter(h => h.name.toLowerCase().indexOf(filterValue) === 0) : 
+        this._healthfacilities.filter(h => h.code.toLowerCase().indexOf(filterValue) === 0);
+        //if(healthfacilities.length == 0 && filterValue.length) this.frmSearch.controls['healthfacilities'].setValue(0);
+        
+        return healthfacilities
+    }
+
+    clickCbo() {
+        !this.healthfacilities.value ? this.filterOptions() : '';
+    }
+
+    filterOptions() {
+        this.filteredOptions = this.healthfacilities.valueChanges
+            .pipe(
+                startWith<string | IHealthfacilities>(''),
+                map(value => typeof value === 'string' ? value : value.name),
+                map(name => name ? this._filter(name) : this._healthfacilities.slice()),
+                map(data => data.slice())
+            );
+    }
+
+    onInputHealthfacilities(obj: any){
+        this.frmSearch.controls['healthfacilities'].setValue('');
+        this._doctors=null;
+    }
+
+    onSelectHealthFacilities(value:any){
+        if(value.healthFacilitiesId){
+            this.dataService.getAll('doctor',"{healthfacilities:"+value.healthFacilitiesId+"}").subscribe(resp => { this._doctors = resp.items });
+        }
+        else{
+            this._doctors=null;
+        }
+        this.frmSearch.controls['healthfacilities'].setValue(value.healthFacilitiesId);
     }
 
     getGender(status: number) {
@@ -85,6 +151,14 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
                 return 'Nữ';
         }
     }
+    // healthfacilitesChange($event){
+    //     if($event.value){
+    //         this.dataService.getAll('doctor',"{healthfacilities:"+$event.value+"}").subscribe(resp => { this._doctors = resp.items });
+    //     }
+    //     else{
+    //         this._doctors=[];
+    //     }
+    // }
 
     updateTimeToSearch() {
         this.frmSearch.controls['startTime'].setValue(moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').add(1, 'day').toDate());

@@ -12,18 +12,18 @@ import * as moment from 'moment';
 import swal from 'sweetalert2';
 
 import { MatDialog } from '@angular/material';
-import {MomentDateAdapter} from '@angular/material-moment-adapter';
-import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
+import { MomentDateAdapter } from '@angular/material-moment-adapter';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { startTimeRange } from '@angular/core/src/profile/wtf_impl';
 export const MY_FORMATS = {
     parse: {
-      dateInput: 'DD/MM/YYYY',
+        dateInput: 'DD/MM/YYYY',
     },
     display: {
-      dateInput: 'DD/MM/YYYY',
-      monthYearLabel: 'MMM YYYY',
-      dateA11yLabel: 'LL',
-      monthYearA11yLabel: 'MMMM YYYY',
+        dateInput: 'DD/MM/YYYY',
+        monthYearLabel: 'MMM YYYY',
+        dateA11yLabel: 'LL',
+        monthYearA11yLabel: 'MMMM YYYY',
     },
 };
 
@@ -33,8 +33,8 @@ export const MY_FORMATS = {
     templateUrl: './index.component.html',
     styleUrls: ['./index.component.scss'],
     providers: [
-        {provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE]},
-        {provide: MAT_DATE_FORMATS, useValue: MY_FORMATS},
+        { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
+        { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
     ],
     encapsulation: ViewEncapsulation.None
 })
@@ -51,7 +51,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     _status = [{ id: 0, name: 'Tất cả' }, { id: 1, name: 'Đã gửi SMS' }, { id: 2, name: 'Chưa gửi SMS' }];
     _sex = [{ id: 0, name: 'Tất cả' }, { id: 1, name: 'Nam' }, { id: 2, name: 'Nữ' }, { id: 3, name: 'Không xác định' }];
     //_currentYear = new Date().getFullYear();
-    
+
     selection = new SelectionModel<IMedicalHealthcareHistories>(true, []);
     filteredOptions: Observable<IHealthfacilities[]>;
     healthfacilities = new FormControl();
@@ -61,7 +61,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     @ViewChild("endTime") endTime;
     @ViewChild("startTime") startTime;
 
-    constructor(injector: Injector, private _dataService: DataService , public dialog: MatDialog, private _formBuilder: FormBuilder) {
+    constructor(injector: Injector, private _dataService: DataService, public dialog: MatDialog, private _formBuilder: FormBuilder) {
         super(injector);
     }
 
@@ -94,14 +94,14 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
         this.frmSearch.controls['startTime'].setValue(new Date(new Date().setDate(new Date().getDate())));
         this.dataService.getAll('provinces').subscribe(resp => this._provinces = resp.items);
         this.dataService.getAll('healthfacilities', (this.appSession.user.healthFacilitiesId ? String(this.appSession.user.healthFacilitiesId) : '')).subscribe(resp => this._healthfacilities = resp.items);
-        if(this.appSession.user.healthFacilitiesId) this.dataService.getAll('doctors', String(this.appSession.user.healthFacilitiesId)).subscribe(resp => this._doctors = resp.items);
+        if (this.appSession.user.healthFacilitiesId) this.dataService.getAll('doctors', String(this.appSession.user.healthFacilitiesId)).subscribe(resp => this._doctors = resp.items);
 
 
 
         setTimeout(() => {
             this.endTime.nativeElement.value = moment(new Date().setDate(new Date().getDate() + 3)).format("DD/MM/YYYY");
             this.startTime.nativeElement.value = moment(new Date().setDate(new Date().getDate())).format("DD/MM/YYYY");
-            this.frmSearch.controls['about'].setValue(new Date().getDate()-new Date().getDate() + 3);
+            this.frmSearch.controls['about'].setValue(new Date().getDate() - new Date().getDate() + 3);
             this.endTime.nativeElement.focus();
         });
         this.appSession.user.healthFacilitiesId ? this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId) : this.filterOptions();
@@ -142,20 +142,20 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     }
 
     changeStartDate(value: any, type: number) {
-        if(type == 2){          
+        if (type == 2) {
             return this.endTime.nativeElement.value = moment(new Date(new Date().setDate(new Date().getDate() + Number(value)))).format("DD/MM/YYYY");
         }
 
-        var days = (moment(this.endTime.nativeElement.value,"DD/MM/YYYY").valueOf() - value.valueOf())/(1000*60*60*24) > 0 ? (moment(this.endTime.nativeElement.value,"DD/MM/YYYY").valueOf() - value.valueOf())/(1000*60*60*24) : 0;
+        var days = (moment(this.endTime.nativeElement.value, "DD/MM/YYYY").valueOf() - value.valueOf()) / (1000 * 60 * 60 * 24) > 0 ? (moment(this.endTime.nativeElement.value, "DD/MM/YYYY").valueOf() - value.valueOf()) / (1000 * 60 * 60 * 24) : 0;
         this.frmSearch.controls['about'].setValue(days);
     }
 
     changeEndDate(value: any, type: number) {
-        if(type == 2){          
+        if (type == 2) {
             return this.endTime.nativeElement.value = moment(new Date(new Date().setDate(new Date().getDate() + Number(value)))).format("DD/MM/YYYY");
         }
 
-        var days = ( value.valueOf() - moment(this.startTime.nativeElement.value,"DD/MM/YYYY").valueOf())/(1000*60*60*24) > 0 ? ( value.valueOf() - moment(this.startTime.nativeElement.value,"DD/MM/YYYY").valueOf())/(1000*60*60*24) : 0;
+        var days = (value.valueOf() - moment(this.startTime.nativeElement.value, "DD/MM/YYYY").valueOf()) / (1000 * 60 * 60 * 24) > 0 ? (value.valueOf() - moment(this.startTime.nativeElement.value, "DD/MM/YYYY").valueOf()) / (1000 * 60 * 60 * 24) : 0;
         this.frmSearch.controls['about'].setValue(days);
     }
 
@@ -184,37 +184,40 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     }
 
     customSearch() {
-        if(!this.endTime.nativeElement.value){
+        if (!this.endTime.nativeElement.value) {
             return swal({
-                title:'Thông báo', 
-                text:'Đến ngày không được để trống', 
-                type:'warning',
-                timer:3000});
-        }
-
-        if(moment(this.endTime.nativeElement.value,"DD/MM/YYYY")<=moment(this.startTime.nativeElement.value,"DD/MM/YYYY")){
-            return swal({
-                title:'Thông báo',
-                text:'Ngày kết thúc không được nhỏ hơn ngày bắt đầu',
-                type:'warning',
-                timer:3000
+                title: 'Thông báo',
+                text: 'Đến ngày không được để trống',
+                type: 'warning',
+                timer: 3000
             });
         }
 
-        if( !moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').isValid()){
+        if (moment(this.endTime.nativeElement.value, "DD/MM/YYYY") <= moment(this.startTime.nativeElement.value, "DD/MM/YYYY")) {
             return swal({
-                title:'Thông báo', 
-                text:'Đến ngày không đúng định dạng', 
-                type:'warning',
-                timer:3000});
+                title: 'Thông báo',
+                text: 'Ngày kết thúc không được nhỏ hơn ngày bắt đầu',
+                type: 'warning',
+                timer: 3000
+            });
         }
 
-        if(this.birthday.nativeElement.value && !moment(this.birthday.nativeElement.value, 'DD/MM/YYYY').isValid()){
+        if (!moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').isValid()) {
             return swal({
-                title:'Thông báo', 
-                text:'Ngày sinh không đúng định dạng',
+                title: 'Thông báo',
+                text: 'Đến ngày không đúng định dạng',
                 type: 'warning',
-                timer:3000});
+                timer: 3000
+            });
+        }
+
+        if (this.birthday.nativeElement.value && !moment(this.birthday.nativeElement.value, 'DD/MM/YYYY').isValid()) {
+            return swal({
+                title: 'Thông báo',
+                text: 'Ngày sinh không đúng định dạng',
+                type: 'warning',
+                timer: 3000
+            });
         }
 
         var startTime = moment(this.frmSearch.controls['startTime'].value, 'DD/MM/YYYY').toDate();
@@ -223,28 +226,31 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
         if (endTime.getFullYear() - startTime.getFullYear() > 1) {
 
             return swal({
-                title:'Thông báo', 
-                text:'Dữ liệu không được lấy quá 1 năm', 
-                type:'warning',
-                timer:3000});
+                title: 'Thông báo',
+                text: 'Dữ liệu không được lấy quá 1 năm',
+                type: 'warning',
+                timer: 3000
+            });
         }
         if (endTime.getFullYear() - startTime.getFullYear() == 1) {
             var monthStartTime = startTime.getMonth() + 1;
             var monthEndTime = endTime.getMonth() + 1;
             if (12 - monthStartTime + monthEndTime > 12) {
                 return swal({
-                    title:'Thông báo', 
-                    text:'Dữ liệu không được lấy quá 1 năm', 
-                    type:'warning',
-                    timer:3000});
+                    title: 'Thông báo',
+                    text: 'Dữ liệu không được lấy quá 1 năm',
+                    type: 'warning',
+                    timer: 3000
+                });
             }
             if (12 - monthStartTime + monthEndTime == 12) {
                 if (endTime.getDate() > startTime.getDate()) {
                     return swal({
-                        title:'Thông báo', 
-                        text:'Dữ liệu không được lấy quá 1 năm',
+                        title: 'Thông báo',
+                        text: 'Dữ liệu không được lấy quá 1 năm',
                         type: 'warning',
-                        timer:3000});
+                        timer: 3000
+                    });
                 }
             }
         }
@@ -257,61 +263,63 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
         this.btnSearchClicks$.next();
     }
 
-    setValueBD(){
+    setValueBD() {
         this.frmSearch.controls['birthday'].setValue(moment(this.birthday.nativeElement.value, 'DD/MM/YYYY').toDate());
     }
 
     showMess(type: number) {
-        if(type == 1 ) swal({
-            title:'Thông báo', 
-            text:'Chưa chọn bệnh nhân', 
-            type:'warning',
-            timer:3000});
+        if (type == 1) swal({
+            title: 'Thông báo',
+            text: 'Chưa chọn bệnh nhân',
+            type: 'warning',
+            timer: 3000
+        });
     }
 
     openCustomDialog(): void {
-        const dialogRef = this.dialog.open(this.dialogComponent, { minWidth: 'calc(100vw/2)', maxWidth: 'calc(100vw - 300px)', disableClose: true, data: {selection: this.selection, type: 1} });
-        
+        const dialogRef = this.dialog.open(this.dialogComponent, { minWidth: 'calc(100vw/2)', maxWidth: 'calc(100vw - 300px)', disableClose: true, data: { selection: this.selection, type: 1 } });
+
         dialogRef.afterClosed().subscribe(() => {
             this.paginator.pageIndex = 0;
             this.paginator._changePageSize(this.paginator.pageSize);
             this.selection = new SelectionModel<IMedicalHealthcareHistories>(true, []);
         });
     }
-    
+
     sendSms() {
         this._isRequest = true;
         setTimeout(() => this._isRequest = false, 3000)
 
-        if(!this.appSession.user.healthFacilitiesId){
+        if (!this.appSession.user.healthFacilitiesId) {
             return this.openCustomDialog();
         }
-        
-        this._dataService.get('healthfacilitiesconfigs', JSON.stringify({ 
+
+        this._dataService.get('healthfacilitiesconfigs', JSON.stringify({
             code: "A01.SMSTAIKHAM",
             healthFacilitiesId: this.appSession.user.healthFacilitiesId
         }), '', 0, 0).subscribe(resp => {
-            if(!resp || !resp.items){
+            if (!resp || !resp.items) {
                 return this.openCustomDialog();
-            } 
+            }
 
             abp.ui.setBusy('#main-container');
             this._dataService.create('infosms', {
-                lstMedicalHealthcareHistories: this.selection.selected, 
-                healthFacilitiesId: this.appSession.user.healthFacilitiesId,           
+                lstMedicalHealthcareHistories: this.selection.selected,
+                healthFacilitiesId: this.appSession.user.healthFacilitiesId,
                 smsTemplateId: resp.items.values,
-                type: 1, 
-                content: ''                                                                                                                       
+                type: 1,
+                content: ''
             })
-            .subscribe(resp => {
-                swal({
-                    title:'Thông báo', 
-                    text:resp, 
-                    type:'error',
-                    timer:3000});
-                this.selection = new SelectionModel<IMedicalHealthcareHistories>(true, []);
-                abp.ui.clearBusy('#main-container');
-            }, err => {});
-        });   
+                .subscribe(resp => {
+                    swal({
+                        title: 'Thông báo',
+                        text: resp,
+                        type: 'error',
+                        timer: 3000
+                    });
+                    this.selection = new SelectionModel<IMedicalHealthcareHistories>(true, []);
+                    abp.ui.clearBusy('#main-container');
+                }, err => { });
+        });
     }
 }

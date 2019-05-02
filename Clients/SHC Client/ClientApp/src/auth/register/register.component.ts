@@ -167,9 +167,11 @@ export class RegisterComponent implements OnInit {
                     type: 'success',
                     confirmButtonClass: 'mat-raised-button mat-primary bg-danger',
                     width: 500,
-                    buttonsStyling: false
+                    buttonsStyling: false,
+                    timer:3000
+                }).then(()=>{
+                    this._location.back();
                 });
-                this._location.back();
             }, err => console.log(err))
     }
 

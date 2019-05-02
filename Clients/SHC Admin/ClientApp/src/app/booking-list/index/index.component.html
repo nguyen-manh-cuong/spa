@@ -16,28 +16,46 @@
 <div class="content fadeIn animated">
     <form [formGroup]="frmSearch" class="form-filter pl-2 pr-2" novalidate>
         <div class="row m-0 pt-4">
-            <div class="col-md-8 fadeIn animated">
+            <div class="col-md-8" [hidden]="this.appSession.user.healthFacilitiesId">
                 <mat-form-field appearance="outline" class="w-100">
-                    <mat-label>{{l("Đơn vị")}}</mat-label>
+                    <mat-label>{{l('Unit')}}</mat-label>
+                    <input matInput [formControl]="healthfacilities" (click)="clickCbo()"
+                        (input)="onInputHealthfacilities($event.target.value)" [matAutocomplete]="auto">
+                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn"
+                        (optionSelected)="onSelectHealthFacilities($event.option.value)">
+                        <mat-option *ngFor="let o of filteredOptions | async" [value]="o">
+                            {{o.code + ' - ' + o.name}}
+                        </mat-option>
+                    </mat-autocomplete>
+                </mat-form-field>
+            </div>
+
+            <div class="col-md-8 disabled" [hidden]="!this.appSession.user.healthFacilitiesId">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>{{l('Unit')}}</mat-label>
                     <mat-select formControlName="healthfacilities">
-                        <mat-option [innerHTML]="'<div class=\'text-center border-bottom w-100\'>'+ l('SelectAll') +'</div>'"></mat-option>
-                        <mat-option *ngFor="let o of _medicalFacility" [value]="o.healthFacilitiesId">{{o.code}} - {{ o.name }}</mat-option>
+                        <mat-option *ngFor="let o of _healthfacilities" [value]="o.healthFacilitiesId">{{ o.name }}
+                        </mat-option>
                     </mat-select>
                 </mat-form-field>
             </div>
+
             <div class="col-md-4">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('Bác sĩ đăng ký')}}</mat-label>
                     <mat-select formControlName="doctor">
-                        <mat-option [innerHTML]="'<div class=\'text-center border-bottom w-100\'>'+ l('SelectAll') +'</div>'"></mat-option>
-                        <mat-option *ngFor="let o of _doctors" [value]="o.doctorId">{{o.degree ? o.degree + " -" : ""}}{{ o.fullName }}</mat-option>
+                        <mat-option
+                            [innerHTML]="'<div class=\'text-center border-bottom w-100\'>'+ l('SelectAll') +'</div>'">
+                        </mat-option>
+                        <mat-option *ngFor="let o of _doctors" [value]="o.doctorId">{{ o.fullName }}</mat-option>
                     </mat-select>
                 </mat-form-field>
             </div>
             <div class="col-md-8 fadeIn animated">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l("Tìm kiếm")}}</mat-label>
-                    <input maxlength="255" placeholder="Họ tên, Số điện thoại, STT đặt khám" formControlName="packagesNameDescription" matInput autocomplete>
+                    <input maxlength="255" placeholder="Họ tên, Số điện thoại, STT đặt khám"
+                        formControlName="packagesNameDescription" matInput autocomplete>
                 </mat-form-field>
             </div>
             <div class="col-md-4">
@@ -75,22 +93,21 @@
             </div>
 
             <div class="col-md-3 text-center d-flex align-self-center fadeIn animated">
-                <button #btnSearch mat-stroked-button color="primary" (click)="customSearch()"
-                        class="w-100 mb-4">
+                <button #btnSearch mat-stroked-button color="primary" (click)="customSearch()" class="w-100 mb-4">
                     <mat-icon class="mr-2">search</mat-icon>{{l("Search")}}
                 </button>
             </div>
             <div class="col-md-3 text-center d-flex align-self-center fadeIn animated">
                 <button #btnSearch mat-stroked-button color="primary" (click)="btnSearchClicks$.next($event)"
-                        class="w-100 mb-4">{{l("Xuất Excel")}}
+                    class="w-100 mb-4">{{l("Xuất Excel")}}
                 </button>
             </div>
         </div>
     </form>
-    
+
     <div class="table-content" style="height: calc(100vh - 245px);">
         <table mat-table [dataSource]="dataSources" matSort #sort="matSort" matSortDisableClear matSortActive="id"
-               matSortDirection="desc" class="w-100 task">
+            matSortDirection="desc" class="w-100 task">
             <ng-container matColumnDef="orderNumber">
                 <th mat-header-cell *matHeaderCellDef class="min-w-50 text-center pl-0"> {{l("OrderNumber")}} </th>
                 <td mat-cell *matCellDef="let element; let i = index;" class="min-w-30 text-center">
@@ -109,7 +126,7 @@
                 <th mat-header-cell *matHeaderCellDef class="text-center min-w-100">
                     {{l('Giới tính')}}
                 </th>
-                <td mat-cell *matCellDef="let element" class="text-right"> {{getGender(element.gender)}}</td>
+                <td mat-cell *matCellDef="let element" class="text-left"> {{getGender(element.gender)}}</td>
             </ng-container>
             <ng-container matColumnDef="phone">
                 <th mat-header-cell *matHeaderCellDef class="text-center"> {{l('Số điện thoại')}}</th>
@@ -121,34 +138,38 @@
             </ng-container>
             <ng-container matColumnDef="description">
                 <th mat-header-cell *matHeaderCellDef class="text-center"> {{l('Mô tả triệu chứng')}}</th>
-                <td mat-cell *matCellDef="let element" class="text-center"> {{element.reason}}</td>
+                <td mat-cell *matCellDef="let element" class="text-left"> {{element.reason}}</td>
             </ng-container>
             <ng-container matColumnDef="doctor">
                 <th mat-header-cell *matHeaderCellDef class="text-center"> {{l('Bác sĩ đăng ký')}}</th>
-                <td mat-cell *matCellDef="let element" class="text-center"> {{element.fullName}}</td>
+                <td mat-cell *matCellDef="let element" class="text-left"> {{element.fullName}}</td>
             </ng-container>
             <ng-container matColumnDef="examinationDate">
                 <th mat-header-cell *matHeaderCellDef class="text-center"> {{l('Thời gian hẹn')}}</th>
-                <td mat-cell *matCellDef="let element" class="text-center"> {{element.examinationDate | date: 'dd/MM/yyyy'}} {{handleTime(element)}}</td>
+                <td mat-cell *matCellDef="let element" class="text-center">
+                    {{element.examinationDate | date: 'dd/MM/yyyy'}} {{handleTime(element)}}</td>
             </ng-container>
             <ng-container matColumnDef="status">
                 <th mat-header-cell *matHeaderCellDef class="min-w-100 text-center"> {{l('Trạng thái')}}</th>
-                <td mat-cell *matCellDef="let element" class="text-center"> {{getStatus(element.status)}}</td>
+                <td mat-cell *matCellDef="let element" class="text-left"> {{getStatus(element.status)}}</td>
             </ng-container>
             <ng-container matColumnDef="task">
                 <th mat-header-cell *matHeaderCellDef class="text-center">{{l('Task')}}</th>
                 <td mat-cell *matCellDef="let element" class="w-px-30 pr-0">
                     <div class="d-flex">
-                        <button mat-icon-button (click)="openCustomDialog(element)">
+                        <button mat-icon-button *ngIf="element.status != 3 ? true : false"
+                            (click)="openCustomDialog(element)">
                             <mat-icon class="text-muted">sms</mat-icon>
                         </button>
                         <button mat-icon-button (click)="detail(element)">
                             <mat-icon class="text-muted">dvr</mat-icon>
                         </button>
-                        <button mat-icon-button (click)="openDialog(element)">
+                        <button mat-icon-button *ngIf="element.status == 0 || element.status == 1 ? true : false"
+                            (click)="openDialog(element)">
                             <mat-icon class="text-muted f-18">edit</mat-icon>
                         </button>
-                        <button mat-icon-button *ngIf="element.status == 0 || element.status == 1 ? true : false" (click)="deleteDialogPackage(element)">
+                        <button mat-icon-button *ngIf="element.status == 0 || element.status == 1 ? true : false"
+                            (click)="deleteDialogPackage(element)">
                             <mat-icon class="text-danger f-18">delete</mat-icon>
                         </button>
                     </div>

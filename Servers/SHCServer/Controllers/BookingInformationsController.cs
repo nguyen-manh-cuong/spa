@@ -61,6 +61,8 @@ namespace SHCServer.Controllers
             {
                 foreach (var (key, value) in JsonConvert.DeserializeObject<Dictionary<string, string>>(filter))
                 {
+                    if (string.IsNullOrEmpty(value))
+                        continue;
                     if (string.Equals(key, "healthfacilities") && !string.IsNullOrWhiteSpace(value))
                         objs = objs.Where(b => b.HealthFacilitiesId.ToString() == value.Trim() || b.HealthFacilitiesId.ToString() == null);
                     if (string.Equals(key, "doctor") && !string.IsNullOrWhiteSpace(value))
