@@ -68,7 +68,11 @@ export class TaskComponent extends AppComponentBase implements OnInit {
                     type: this.data.type,
                 }).subscribe(resp => {
                     this.dialogRef.close()
-                    swal('Thông báo', resp, 'error');
+                     swal({
+                      title:'Thông báo',
+                      text: resp, 
+                      type:'error',
+                      timer:3000});
                 }, err => { this.dialogRef.close() });
             }
     } else{

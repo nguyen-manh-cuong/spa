@@ -329,7 +329,7 @@ namespace SHCServer.Controllers
             var packages = _context.Query<SmsPackagesDistribute>().Where(pd => pd.HealthFacilitiesId == infoInput.healthFacilitiesId && pd.YearEnd >= DateTime.Now.Year && pd.MonthEnd >= DateTime.Now.Month && pd.IsDelete == false && pd.IsActive == true).Select(u => new PackageDistributeViewModel(u, _connectionString)).ToList();
             if (packages.Count == 0) {
                 if (infoInput.type == 4) return Json(new ActionResultDto { Result = "" });
-                else StatusCode(422, _excep.Throw("Không thể gửi tin do số lượng tin nhắn vượt quá gói SMS hiện tại. Mời bạn mua thêm gói SMS"));
+                else return StatusCode(422, _excep.Throw("Không thể gửi tin do số lượng tin nhắn vượt quá gói SMS hiện tại. Mời bạn mua thêm gói SMS"));
             } 
             
             long totalSms = 0;
@@ -342,7 +342,7 @@ namespace SHCServer.Controllers
 
             if (totalSms < totalSmsSend) {
                 if (infoInput.type == 4) return Json(new ActionResultDto { Result = "" });
-                else StatusCode(422, _excep.Throw("Không thể gửi tin do số lượng tin nhắn vượt quá gói SMS hiện tại. Mời bạn mua thêm gói SMS"));
+                else return StatusCode(422, _excep.Throw("Không thể gửi tin do số lượng tin nhắn vượt quá gói SMS hiện tại. Mời bạn mua thêm gói SMS"));
             }
 
             //Xu ly tin nhan
@@ -418,7 +418,7 @@ namespace SHCServer.Controllers
             if (packages.Count == 0)
             {
                 if (infoInput.type == 4) return Json(new ActionResultDto { Result = "" });
-                else StatusCode(422, _excep.Throw("Không thể gửi tin do số lượng tin nhắn vượt quá gói SMS hiện tại. Mời bạn mua thêm gói SMS"));
+                else return StatusCode(422, _excep.Throw("Không thể gửi tin do số lượng tin nhắn vượt quá gói SMS hiện tại. Mời bạn mua thêm gói SMS"));
             }
 
             long totalSms = 0;
@@ -432,7 +432,7 @@ namespace SHCServer.Controllers
             if (totalSms < totalSmsSend)
             {
                 if (infoInput.type == 4) return Json(new ActionResultDto { Result = "" });
-                else StatusCode(422, _excep.Throw("Không thể gửi tin do số lượng tin nhắn vượt quá gói SMS hiện tại. Mời bạn mua thêm gói SMS"));
+                else return StatusCode(422, _excep.Throw("Không thể gửi tin do số lượng tin nhắn vượt quá gói SMS hiện tại. Mời bạn mua thêm gói SMS"));
             }
 
             //Xu ly tin nhan
