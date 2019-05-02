@@ -86,15 +86,25 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
       endTime: new Date(),
       time: [0],
     });
-
-    this.dataService.getAll('healthfacilities', (this.appSession.user.healthFacilitiesId ? String(this.appSession.user.healthFacilitiesId) : '')).subscribe(resp => {
-      this._healthfacilities = resp.items;
-    });
-    if (this.appSession.user.healthFacilitiesId != null) {
-      this.healthFacilitiesId = this.appSession.user.healthFacilitiesId;
-      this.dataService.getAll('doctors', this.healthFacilitiesId).subscribe(resp => {
-        this._doctors = resp.items;
-      });
+    //old
+    // this.dataService.getAll('healthfacilities', (this.appSession.user.healthFacilitiesId ? String(this.appSession.user.healthFacilitiesId) : '')).subscribe(resp => {
+    //   this._healthfacilities = resp.items;
+    // });
+    // if (this.appSession.user.healthFacilitiesId != null) {
+    //   this.healthFacilitiesId = this.appSession.user.healthFacilitiesId;
+    //   this.dataService.getAll('doctors', this.healthFacilitiesId).subscribe(resp => {
+    //     this._doctors = resp.items;
+    //   });
+    // }
+    //new
+    if(this.appSession.user.healthFacilitiesId) {
+      this.dataService.getAll('healthfacilities', "{healthfacilitiesId:"+String(this.appSession.user.healthFacilitiesId)+"}").subscribe(resp => this._healthfacilities = resp.items);
+      this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId);
+      this.dataService.getAll('doctors', String(this.appSession.user.healthFacilitiesId)).subscribe(resp => this._doctors = resp.items);
+    }
+    else{
+        this.dataService.getAll('healthfacilities').subscribe(resp => this._healthfacilities = resp.items);
+        this.filterOptions();
     }
 
     setTimeout(() => {
