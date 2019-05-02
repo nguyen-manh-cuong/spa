@@ -37,7 +37,7 @@
             <div class="col-md-8 fadeIn animated">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l("Tìm kiếm")}}</mat-label>
-                    <input maxlength="255" placeholder="Họ tên, Số điện thoại, STT đặt khám" formControlName="packagesNameDescription" matInput autocomplete>
+                    <input maxlength="255" placeholder="Họ tên, Số điện thoại, Mã đặt khám" formControlName="packagesNameDescription" matInput autocomplete>
                 </mat-form-field>
             </div>
             <div class="col-md-4">
@@ -51,7 +51,7 @@
             <div class="col-md-4">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('Thời gian')}}</mat-label>
-                    <mat-select (selectionChange)="onSelectTime($event.value)">
+                    <mat-select formControlName="time" (selectionChange)="onSelectTime($event.value)">
                         <mat-option *ngFor="let o of times" [value]="o.id">{{ o.name }}</mat-option>
                     </mat-select>
                 </mat-form-field>
