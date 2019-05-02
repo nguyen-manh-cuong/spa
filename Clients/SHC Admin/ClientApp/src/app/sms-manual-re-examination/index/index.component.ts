@@ -166,6 +166,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     }
 
     customSearch() {
+        console.log('vao ham tim kiem')
         if(!this.endTime.nativeElement.value){
             return swal('Thông báo', 'Đến ngày không được để trống', 'warning');
         }
@@ -177,8 +178,9 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
         if(this.birthday.nativeElement.value && !moment(this.birthday.nativeElement.value, 'DD/MM/YYYY').isValid()){
             return swal('Thông báo', 'Ngày sinh không đúng định dạng', 'warning');
         }
-
+        console.log('chua convert', startTime)
         var startTime = moment(this.frmSearch.controls['startTime'].value, 'DD/MM/YYYY').toDate();
+        console.log('da convert', startTime)
         var endTime = moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').toDate();
 
         if (endTime.getFullYear() - startTime.getFullYear() > 1) {

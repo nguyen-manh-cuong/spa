@@ -12,6 +12,8 @@ import { Subject } from 'rxjs';
 import { standardized } from './helpers/utils';
 import swal from 'sweetalert2';
 import { analyzeAndValidateNgModules } from '@angular/compiler';
+import * as moment from 'moment';
+import {MomentDateAdapter} from '@angular/material-moment-adapter';
 
 export class PagedResultDto {
     items: any[];
@@ -81,9 +83,26 @@ export abstract class PagedListingComponentBase<EntityDto> extends AppComponentB
     }
 
     convertAge(date: number, month: number, year: number) {
+        // ngay sinh nhat
+        var strBirthday =  date.toString().concat('-', month.toString(), '-',  year.toString());      
+        const birthday = moment(strBirthday, 'DD-MM-YYYY').toDate();
+
         const yearNow = new Date().getFullYear();
         const monthNow = new Date().getMonth() + 1;
         const dateNow = new Date().getDate();
+        const strNow = dateNow.toString().concat('-', monthNow.toString(), '-',  yearNow.toString());
+        var timeNow = moment(strNow, 'DD-MM-YYYY').toDate();
+        var currentDate =  new Date();        
+        var time = new Date().getTime() - new Date(birthday).getTime();
+        // chuyen time (milliseconds) sang ngay
+        var duration = moment.duration(time, 'milliseconds');
+        var days = Math.floor(duration.asDays());
+        var months = Math.floor(duration.asMonths());
+        var years = Math.floor(duration.asYears());
+        console.log('Tong so ngay:',days);
+        console.log('time:', time);
+
+
         var ageString = "";
         var yearAge = yearNow - year;
 
@@ -111,14 +130,23 @@ export abstract class PagedListingComponentBase<EntityDto> extends AppComponentB
         this._age.days = dateAge;
 
 
-
-        if (this._age.years > 0)
-            ageString = this._age.years + "T";
-        else if ((this._age.years == 0) && (this._age.months == 0) && (this._age.days > 0))
-            ageString = this._age.days + "NG";
-        else if ((this._age.years == 0) && (this._age.months > 0) && (this._age.days >= 0))
-            ageString = this._age.months + "TH";
-
+        // so sanh ngay
+        if(days <= 90){
+           ageString = days + " Ngày tuổi";
+        }
+        else if(days <= 2160){
+            ageString = months + " Tháng tuổi";            
+        }
+        else if(days > 2160){
+            ageString = years + " Tuổi";
+        }
+        // if (this._age.years > 0)
+        //     ageString = this._age.years + "T";
+        // else if ((this._age.years == 0) && (this._age.months == 0) && (this._age.days > 0))
+        //     ageString = this._age.days + "NG";
+        // else if ((this._age.years == 0) && (this._age.months > 0) && (this._age.days >= 0))
+        //     ageString = this._age.months + "TH";
+        
         return ageString;
     }
 
