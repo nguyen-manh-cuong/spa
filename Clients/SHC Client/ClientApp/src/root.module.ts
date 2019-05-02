@@ -112,7 +112,6 @@ export class RootModule {
             swal({ type: 'error', title: title, text: message ,timer:3000});
         }
     }
-
 }
 
 export function getBaseHref(platformLocation: PlatformLocation): string {

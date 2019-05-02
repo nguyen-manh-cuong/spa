@@ -74,7 +74,7 @@ export class RegisterComponent implements OnInit {
             healthFacilitiesName: [this._user.healthFacilitiesName],
             specialist: [this._user.specialist],
             codeCapcha: [''],
-            cmnd:[],
+            cmnd: [],
             gp: []
         };
 
@@ -154,9 +154,9 @@ export class RegisterComponent implements OnInit {
             return;
         }
 
-        if (this.frmUser.controls['codeCapcha'].value != this._capcha.code) { 
+        if (this.frmUser.controls['codeCapcha'].value != this._capcha.code) {
             this.capcha = true;
-            return; 
+            return;
         }
 
         this._dataService.create('Register', this.frmUser.value).subscribe(
@@ -168,8 +168,11 @@ export class RegisterComponent implements OnInit {
                     confirmButtonClass: 'mat-raised-button mat-primary bg-danger',
                     width: 500,
                     buttonsStyling: false,
-                    timer:3000
-                }).then(()=>{
+                    timer: 3000
+                }).then((result) => {
+                    if (result.value) {
+                        this._location.back();
+                    }
                     this._location.back();
                 });
             }, err => console.log(err))

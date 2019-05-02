@@ -56,7 +56,6 @@
                     <mat-label>{{l("Tìm kiếm")}}</mat-label>
                     <input maxlength="255" placeholder="Họ tên, Số điện thoại, STT đặt khám"
                         formControlName="packagesNameDescription" matInput autocomplete>
-                    <input maxlength="255" placeholder="Họ tên, Số điện thoại, Mã đặt khám" formControlName="packagesNameDescription" matInput autocomplete>
                 </mat-form-field>
             </div>
             <div class="col-md-4">
@@ -171,7 +170,7 @@
                         </button>
                         <button mat-icon-button *ngIf="element.status == 0 || element.status == 1 ? true : false"
                             (click)="deleteDialogPackage(element)">
-                            <mat-icon class="text-danger f-18">delete</mat-icon>
+                            <mat-icon class="text-danger f-18">cancel</mat-icon>
                         </button>
                     </div>
                 </td>
