@@ -1,6 +1,7 @@
 import { Component, Injector, OnInit, ViewChild } from '@angular/core';
 import { IBookingInformations, IMedicalHealthcareHistories } from '@shared/Interfaces';
 import { MatDialog } from '@angular/material';
+import { isEmpty, isNil, isNull, omitBy, zipObject } from 'lodash';
 
 import { DataService } from '@shared/service-proxies/service-data';
 import { FormBuilder } from '@angular/forms';
@@ -61,8 +62,8 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
     }
 
     ngOnInit() {
-        this.api = 'bookinginformations';
-        this.frmSearch = this._formBuilder.group({ healthfacilities: [], doctor: [], packagesNameDescription: [], status: [4], startTime: [], endTime: [], time: [0], });
+        this.api = 'bookinginformations';              
+        this.frmSearch = this._formBuilder.group({ healthfacilities: [], doctor: [], packagesNameDescription: [], status: [4], startTime: [moment(new Date().setHours(7, 0, 0, 0)).toDate()], endTime: new Date(), time: [0], });
         this.dataService = this._dataService;
         this.dialogComponent = EditComponent;
         this.dialogSendComponent = TaskComponent;
@@ -191,6 +192,8 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
                 this.endTime.nativeElement.value = moment(new Date()).add(-1, 'year').endOf('year').format("DD/MM/YYYY");
                 break;
             case 10:
+                document.getElementById("cbo-startTime").classList.remove("disabled");
+                document.getElementById("cbo-endTime").classList.remove("disabled");
                 break;
         }
         this.updateTimeToSearch();
@@ -225,22 +228,32 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
     }
 
     customSearch() {
+        if (!this.endTime.nativeElement.value && !this.startTime.nativeElement.value) {
+            return swal('Thông báo', 'Từ ngày và Đến ngày không được để trống', 'warning');
+        }
         if (!this.endTime.nativeElement.value || !this.startTime.nativeElement.value) {
             this.endTime.nativeElement.focus();
             this.startTime.nativeElement.focus();
             return swal('Thông báo', 'Ngày gửi từ và Đến ngày không được để trống', 'warning');
         }
-
+        if (!moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').isValid()) {
+            this.startTime.nativeElement.focus();
+            return swal('Thông báo', 'Đến ngày không đúng định dạng', 'warning');
+          }
         if (!moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').isValid()) {
             this.startTime.nativeElement.focus();
-            return swal('Thông báo', 'Ngày gửi không đúng định dạng', 'warning');
-        }
-
+            return swal('Thông báo', 'Từ ngày không đúng định dạng', 'warning');
+          }
         if (!moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').isValid()) {
             this.endTime.nativeElement.focus();
             return swal('Thông báo', 'Đến ngày không đúng định dạng', 'warning');
         }
-
+        if (((moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').valueOf() - moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').valueOf()) / (1000 * 60 * 60 * 24)) < 0) {
+            return swal('Thông báo', 'Đến ngày phải lớn hơn hoặc bằng Từ ngày', 'warning');
+          }
+        this.startTime.nativeElement.value ? this.frmSearch.controls['startTime'].setValue(moment(this.startTime.nativeElement.value + '00:00:00', 'DD/MM/YYYY hh:mm:ss').add(7, 'hours').toDate()) : '';
+        this.endTime.nativeElement.value ? this.frmSearch.controls['endTime'].setValue(moment(this.endTime.nativeElement.value + '23:59:59', 'DD/MM/YYYY hh:mm:ss').add(7, 'hours').toDate()) : '';
+        var req = omitBy(this.frmSearch.value, isNil);
         this.btnSearchClicks$.next();
     }
 }
