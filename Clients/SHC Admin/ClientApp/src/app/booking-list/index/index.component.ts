@@ -40,8 +40,10 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
 
     displayedColumns = ['orderNumber', 'code', 'patient', 'gender', 'phone', 'year', 'description', 'doctor', 'examinationDate', 'status', 'task'];
     status = [{ id: 4, name: 'Tất cả' }, { id: 3, name: 'Hủy khám' }, { id: 2, name: 'Đã khám' }, { id: 1, name: 'Chưa khám' }, { id: 0, name: 'Mới đăng ký' }];
-    times = [{ id: 10, name: 'Theo khoảng thời gian' }, { id: 9, name: 'Năm trước' }, { id: 8, name: 'Năm nay' }, { id: 7, name: 'Quý trước' }, { id: 6, name: 'Quý này' },
-        { id: 5, name: 'Tháng trước' }, { id: 4, name: 'Tháng này' }, { id: 3, name: 'Tuần trước' }, { id: 2, name: 'Tuần nay' }, { id: 1, name: 'Hôm qua' }, { id: 0, name: 'Hôm nay' }];
+   
+        times = [  
+           { id: 0, name: 'Hôm nay' }, { id: 1, name: 'Hôm qua' }, { id: 2, name: 'Tuần nay' }, { id: 3, name: 'Tuần trước' }, { id: 4, name: 'Tháng này' }, { id: 5, name: 'Tháng trước' },
+            { id: 6, name: 'Quý này' }, { id: 7, name: 'Quý trước' }, { id: 8, name: 'Năm nay' },  { id: 9, name: 'Năm trước' }, { id: 10, name: 'Theo khoảng thời gian' }, ];
     dialogDetail: any;
     dialogReasonReject: any;
     _medicalFacility = [];
@@ -60,10 +62,11 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
 
     ngOnInit() {
         this.api = 'bookinginformations';
-        this.frmSearch = this._formBuilder.group({ healthfacilities: [], doctor: [], packagesNameDescription: [], status: [], startTime: [], endTime: [] });
+        this.frmSearch = this._formBuilder.group({ healthfacilities: [], doctor: [], packagesNameDescription: [], status: [4], startTime: [], endTime: [], time: [0], });
         this.dataService = this._dataService;
         this.dialogComponent = EditComponent;
         this.dialogSendComponent = TaskComponent;
+
         this.dialogDetail = DetailComponent;
         this.dialogReasonReject = ReasonComponent;
         this.dataService.getAll('healthfacilities', (this.appSession.user.healthFacilitiesId ? String(this.appSession.user.healthFacilitiesId) : '')).subscribe(resp => { this._medicalFacility = resp.items });
