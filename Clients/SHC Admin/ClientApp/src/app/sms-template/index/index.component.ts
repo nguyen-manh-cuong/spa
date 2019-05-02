@@ -44,6 +44,10 @@ export class IndexComponent extends PagedListingComponentBase<ISmsTemplate> impl
   showMessage(type: any){
     var message = type == 1 ? "Không có quyền chỉnh sửa mẫu tin nhắn này" : (type == 2 ? "Không có quyền xóa mẫu tin nhắn này" : 'Xóa mẫu tin nhắn không thành công.<br>Mẫu tin nhắn đang được sử dụng!');
 
-    swal('Thông báo', message, 'warning')
+    swal({
+      title:'Thông báo', 
+      text:message, 
+      type:'warning',
+      timer:3000})
   }
 }

@@ -199,7 +199,11 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
     }
 
     showMessage(title: string, content: string, type: string){
-        swal(this.l('PackagesMessageTitle.'), this.l('PackagesMessageContent'), 'error');
+        swal({
+            title:this.l('PackagesMessageTitle.'), 
+            text: this.l('PackagesMessageContent'), 
+            type:'error',
+            timer:3000});
     }
 
     deleteDialogPackage(obj) {
@@ -225,17 +229,29 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
         if (!this.endTime.nativeElement.value || !this.startTime.nativeElement.value) {
             this.endTime.nativeElement.focus();
             this.startTime.nativeElement.focus();
-            return swal('Thông báo', 'Ngày gửi từ và Đến ngày không được để trống', 'warning');
+            return swal({
+                title:'Thông báo', 
+                text:'Ngày gửi từ và Đến ngày không được để trống', 
+                type:'warning',
+                timer:3000});
         }
 
         if (!moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').isValid()) {
             this.startTime.nativeElement.focus();
-            return swal('Thông báo', 'Ngày gửi không đúng định dạng', 'warning');
+            return swal({
+                title:'Thông báo', 
+                text:'Ngày gửi không đúng định dạng', 
+                type:'warning',
+                timer:3000});
         }
 
         if (!moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').isValid()) {
             this.endTime.nativeElement.focus();
-            return swal('Thông báo', 'Đến ngày không đúng định dạng', 'warning');
+            return swal({
+                title:'Thông báo', 
+                text:'Đến ngày không đúng định dạng', 
+                type:'warning',
+                timer:3000});
         }
 
         this.btnSearchClicks$.next();

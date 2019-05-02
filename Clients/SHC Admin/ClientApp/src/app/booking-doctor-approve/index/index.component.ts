@@ -173,7 +173,14 @@ export class IndexComponent extends PagedListingComponentBase<IBookingDoctorsCal
         var content = obj ? (obj.status == 1 ? this.l('ApproveExamScheduleCancel') : this.l('ApproveExamScheduleRestore')) :  this.l('ApproveExamScheduleWillApprove');
         var status = obj ? (obj.status == 1 ? 2 : 0) : 1;
         var lstCalendarId = obj ? [obj.calendarId] : this.getSelected();
-        if(!lstCalendarId.length) return swal(this.l('Notification'), this.l('NoWaitingSchedule'), 'warning');
+        if(!lstCalendarId.length) 
+         return 
+        swal({
+            title: this.l('Notification'),
+            text: this.l('NoWaitingSchedule'),
+            type:'warning',
+            timer:3000
+        })
 
         swal({
             title: this.l('AreYouSure'),
@@ -192,7 +199,12 @@ export class IndexComponent extends PagedListingComponentBase<IBookingDoctorsCal
                     this.paginator.pageIndex = 0;
                     this.selection = new SelectionModel<IBookingDoctorsCalendarsView>(true, []);
                     this.lstCalendarId = [];
-                    swal(this.l('Complete'), '', 'success');
+                    swal({
+                        title: this.l('Complete'),
+                        text:'',
+                        type:'success',
+                        timer:3000
+                    })
                 }, err => {});
             }
         });
@@ -235,23 +247,43 @@ export class IndexComponent extends PagedListingComponentBase<IBookingDoctorsCal
     //handle search
     customSearch() {
         if(!this.startTime.nativeElement.value || !this.endTime.nativeElement.value){
-            return swal(this.l('Notification'), this.l('FromDateToDateCannotBlank'), 'warning');
+            return swal({
+                title:this.l('Notification'), 
+                text:this.l('FromDateToDateCannotBlank'), 
+                type:'warning',
+                timer:3000});
         }
 
         if(!moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').isValid()){
-            return swal(this.l('Notification'), this.l('FromDateIncorrectFormat'), 'warning');
+            return swal({
+                title :this.l('Notification'), 
+                text:this.l('FromDateIncorrectFormat'), 
+                type:'warning',
+                timer:3000});
         }
 
         if(!moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').isValid()){
-            return swal(this.l('Notification'), this.l('ToDateIncorrectFormat'), 'warning');
+            return swal({
+                title:this.l('Notification'), 
+                text:this.l('ToDateIncorrectFormat'), 
+                type:'warning'
+            });
         }
         
         if(((moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').valueOf() - moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').valueOf()) / (1000*60*60*24)) < 0){
-            return swal(this.l('Notification'), this.l('FromDateMustBeGreaterThanOrEqualToDate'), 'warning');
+            return swal({
+                title:this.l('Notification'), 
+                text:this.l('FromDateMustBeGreaterThanOrEqualToDate'), 
+                type:'warning'
+            });
         }
 
         if(((moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').valueOf() - moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').valueOf()) / (1000*60*60*24)) > 6){
-            return swal(this.l('Notification'), this.l('SearchWithin7Day'), 'warning');
+            return swal({
+                title:this.l('Notification'), 
+                text:this.l('SearchWithin7Day'), 
+                type:'warning'
+            });
         }
 
         this.healthfacilities.value ? this.frmSearch.controls['healthfacilities'].setValue(this.healthfacilities.value.healthFacilitiesId) : (this.appSession.user.healthFacilitiesId == null ? this.frmSearch.controls['healthfacilities'].setValue(null) : '');

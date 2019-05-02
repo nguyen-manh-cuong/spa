@@ -103,15 +103,27 @@ export class IndexComponent extends PagedListingComponentBase<ISmsLogs> implemen
 
     customSearch() {
         if(!this.endTime.nativeElement.value || !this.startTime.nativeElement.value){
-            return swal('Thông báo', 'Ngày gửi từ và Đến ngày không được để trống', 'warning');
+            return swal({
+                title:'Thông báo', 
+                text:'Ngày gửi từ và Đến ngày không được để trống', 
+                type:'warning',
+                timer:3000});
         }
         
         if(!moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').isValid()){
-            return swal('Thông báo', 'Ngày gửi không đúng định dạng', 'warning');
+            return swal({
+                title:'Thông báo', 
+                text:'Ngày gửi không đúng định dạng', 
+                type:'warning',
+                timer:3000});
         }
 
         if( !moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').isValid()){
-            return swal('Thông báo', 'Đến ngày không đúng định dạng', 'warning');
+            return swal({
+                title:'Thông báo', 
+                text:'Đến ngày không đúng định dạng', 
+                type:'warning',
+                timer:3000});
         }
 
         var startTime = moment(this.startTime.nativeElement.value, 'DD/MM/YYYY hh:mm:ss').toDate();
@@ -119,17 +131,29 @@ export class IndexComponent extends PagedListingComponentBase<ISmsLogs> implemen
 
         if (endTime.getFullYear() - startTime.getFullYear() > 1) {
 
-            return swal('Thông báo', 'Dữ liệu không được lấy quá 1 năm', 'warning');
+            return swal({
+                title:'Thông báo', 
+                text:'Dữ liệu không được lấy quá 1 năm',
+                type: 'warning',
+                timer:3000});
         }
         if (endTime.getFullYear() - startTime.getFullYear() == 1) {
             var monthStartTime = startTime.getMonth() + 1;
             var monthEndTime = endTime.getMonth() + 1;
             if (12 - monthStartTime + monthEndTime > 12) {
-                return swal('Thông báo', 'Dữ liệu không được lấy quá 1 năm', 'warning');
+                return swal({
+                    title:'Thông báo', 
+                    text:'Dữ liệu không được lấy quá 1 năm', 
+                    type:'warning',
+                    timer:3000});
             }
             if (12 - monthStartTime + monthEndTime == 12) {
                 if (endTime.getDate() > startTime.getDate()) {
-                    return swal('Thông báo', 'Dữ liệu không được lấy quá 1 năm', 'warning');
+                    return swal({
+                        title:'Thông báo', 
+                        text:'Dữ liệu không được lấy quá 1 năm', 
+                        type:'warning',
+                        timer:3000});
                 }
             }
         }
