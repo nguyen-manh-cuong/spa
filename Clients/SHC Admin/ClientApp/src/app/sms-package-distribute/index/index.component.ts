@@ -84,11 +84,19 @@ export class packagedistributeIndexComponent extends PagedListingComponentBase<I
                 this.dataService.delete(this.api, obj[id ? id : 'id']).subscribe(e => {
                     this.paginator._changePageSize(this.paginator.pageSize);
                     this.paginator.pageIndex = 0;
-                    swal(this.l('SuccessfullyDeleted'), this.l('DeletedInSystem', obj[key]), 'success');
+                    swal({
+                      title:this.l('SuccessfullyDeleted'), 
+                      text:this.l('DeletedInSystem', obj[key]),
+                      type: 'success',
+                      timer:3000});
                 });
             }
             else {
-                swal(this.l('ErrorDelete'), this.l('ErrorDeletedInSystem', obj[key]), 'error');
+                swal({
+                  title:this.l('ErrorDelete'), 
+                  text:this.l('ErrorDeletedInSystem', obj[key]),
+                  type: 'error',
+                  timer:3000});
             }
         }
     });

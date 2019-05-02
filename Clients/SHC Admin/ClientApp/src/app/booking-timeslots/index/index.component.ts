@@ -67,7 +67,11 @@ showMess(obj: EntityDto, key: string, id?: number | string){
     buttonsStyling: false
 }).then((result) => {
   if (result.value) {
-      swal(this.l('Xóa không thành công'), 'Không thể xóa khung giờ khám đang hoạt động!', 'error');
+      swal({
+        title:this.l('Xóa không thành công'), 
+        text:'Không thể xóa khung giờ khám đang hoạt động!',
+        type: 'error',
+        timer:3000});
   }
 });  
 }
@@ -101,7 +105,11 @@ customSearch() {
 }
 
 showNotify(obj: EntityDto, key: string, id?: number | string) {
-  swal(this.l('Không thể xóa khung giờ khám đang hoạt động'), '', 'error');
+  swal({
+    title:this.l('Không thể xóa khung giờ khám đang hoạt động'), 
+    text:'', 
+    type:'error',
+    timer:3000});
 }
 
 onChangeHealthfacilities() {

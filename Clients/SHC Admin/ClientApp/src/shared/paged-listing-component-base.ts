@@ -192,7 +192,7 @@ export abstract class PagedListingComponentBase<EntityDto> extends AppComponentB
                     swal({
                         title: this.l('SuccessfullyDeleted'),
                         text: this.l('DeletedInSystem', obj[key]),
-                        type: 'error',
+                        type: 'success',
                         timer: 3000
                     })
                     this.paginator.pageIndex = 0;
