@@ -56,7 +56,7 @@
                     </mat-select>
                 </mat-form-field>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-3 disabled" id="cbo-startTime">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('Từ ngày')}}</mat-label>
                     <input matInput #startTime [matDatepicker]="picker" mask="00/00/0000" required maxlength="10">
@@ -65,7 +65,7 @@
                 </mat-form-field>
             </div>
 
-            <div class="col-md-3">
+            <div class="col-md-3 disabled" id="cbo-endTime">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('Đến ngày')}}</mat-label>
                     <input matInput #endTime [matDatepicker]="picker1" mask="00/00/0000" required maxlength="10">
