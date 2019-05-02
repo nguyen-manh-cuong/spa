@@ -25,6 +25,6 @@ import { SmsTemplateTaskModule } from '@app/sms-template-task/sms-template-task.
         NgxMaskModule.forRoot()
     ],
     declarations: [SmsManualComponent, IndexComponent],
-    entryComponents: [TaskComponent]
+    entryComponents: []
 })
 export class SmsManualModule { }

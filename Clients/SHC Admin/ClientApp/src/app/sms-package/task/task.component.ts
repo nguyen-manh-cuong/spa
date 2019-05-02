@@ -204,7 +204,12 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     }
 
     submit() {
-        if(this._frm.controls['cost'].value && this._frm.controls['cost'].value > 2000000000) return swal('Thông báo', 'Thành tiền không được quá 2.000.000.000', 'warning');
+        if(this._frm.controls['cost'].value && this._frm.controls['cost'].value > 2000000000) 
+            return swal({
+                title:'Thông báo', 
+                text:'Thành tiền không được quá 2.000.000.000', 
+                type:'warning',
+                timer:3000});
   
         var params = _.pick(this._frm.value, ['id', 'name', 'description', 'cost', 'quantity', 'isActive', 'details', 'userId']);
         var detail: Array<IPackageDetail> = [{
@@ -223,11 +228,18 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
 
         this._isNew ?
             this._dataService.create(this.api, params).subscribe(() => {
-                swal(this.l('SaveSuccess'), '', 'success');
+                swal({
+                    title:this.l('SaveSuccess'), 
+                    text:'', 
+                    type:'success'});
                 this.dialogRef.close();
             }, err => {}) :
             this._dataService.update(this.api, params).subscribe(() => {
-                swal(this.l('SaveSuccess'), '', 'success');
+                swal({
+                    title:this.l('SaveSuccess'), 
+                    text:'', 
+                    type:'success',
+                    timer:3000});
                 this.dialogRef.close()
             }, err => {});
     }

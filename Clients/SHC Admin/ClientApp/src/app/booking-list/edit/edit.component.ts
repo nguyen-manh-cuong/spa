@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 
-import { Component, Inject, Injector, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, Injector, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { IProvince, IPackageDetail, IBookingInformations, IDistrict } from '@shared/Interfaces';
 import { MAT_DIALOG_DATA, MatDialogRef, MatInput } from '@angular/material';
@@ -13,51 +13,56 @@ import swal from 'sweetalert2';
 
 
 @Component({
-    selector: 'app-task',
-    templateUrl: './task.component.html',
-    styleUrls: ['./task.component.scss']
+    selector: 'app-edit',
+    templateUrl: './edit.component.html',
+    styleUrls: ['./edit.component.scss']
 })
-export class TaskComponent extends AppComponentBase implements OnInit {
-    api: string = 'smspackages';
+export class EditComponent extends AppComponentBase implements OnInit, AfterViewInit {
+    api: string = 'bookinginformations';
     ValidationRule = new ValidationRule();
 
     _frm: FormGroup;
     _booking: IBookingInformations | any = {
         fullName: '', examinationDate: '', reason: '', status: '', bookingUser: '', phoneNumber: '', gender: '', year: '',
-    address: '', district: '', province: '', email: '', bookingRepresent: '', phoneRepresent: '', emailRepresent: ''  };
+        address: '', district: '', province: '', email: '', bookingRepresent: '', phoneRepresent: '', emailRepresent: ''
+    };
+    selectedStatus = "";
+    _status = [{ id: 3, name: 'Hủy khám' }, { id: 2, name: 'Đã khám' }, { id: 1, name: 'Chưa khám' }, { id: 0, name: 'Mới đăng ký' }];
     _context: any;
+    _isShow: boolean = false;
     _isNew: boolean = true;
+    @ViewChild("reason") reason: MatInput;
     _province: Array<IProvince> = [];
     _district: Array<IDistrict> = [];
 
     constructor(
         injector: Injector, 
         private _dataService: DataService, 
-        private _formBuilder: FormBuilder, 
-        public dialogRef: MatDialogRef<TaskComponent>, 
+        private _formBuilder: FormBuilder,
+        public dialogRef: MatDialogRef<EditComponent>, 
         @Inject(MAT_DIALOG_DATA)
         public bookingData: IBookingInformations) { 
             super(injector); 
         }
 
     ngOnInit() {
-
+        const validationRule = new ValidationRule();
         if (this.bookingData) {
             this._booking = _.clone(this.bookingData);
+            this.selectedStatus = this._status.find(x => x.id == this._booking.status).name;
+            console.log(this.selectedStatus);
         }
 
         this._dataService.getAll('provinces').subscribe(resp => { this._province = resp.items });
         this._dataService.getAll('districts').subscribe(resp => { this._district = resp.items });
 
-        setTimeout(() => { this.getAddress() }, 1000);
-
         this._context = {
             // name: [this._package.name, [Validators.required, validation.compare('name', 'description')]],
             doctorName: [this._booking.fullName],
             examinationDate: [this.handleTime(this._booking)],
-            reason: [this._booking.reason, Validators.required],
-            status: [this.getStatus(this._booking.status)],
-            bookingUser: [this._booking.bookingUser,],
+            reason: [this._booking.reason, [Validators.required, validationRule.hasValue]],
+            status: [this._booking.status,[Validators.required,validationRule.hasValue]],
+            bookingUser: [this._booking.bookingUser,[Validators.required,validationRule.hasValue]],
             bookingRepresent: [this._booking.bookingRepresent,],
             gender: [this.getGender(this._booking.gender)],
             age: [this._booking.birthYear + " (" + this.convertAge(this._booking.birthDate, this._booking.birthMonth, this._booking.birthYear) + ")"],
@@ -65,11 +70,17 @@ export class TaskComponent extends AppComponentBase implements OnInit {
             phoneRepresent: [this._booking.phoneRepresent],
             email: [this._booking.email],
             emailRepresent: [this._booking.emailRepresent],
-            address: [this._booking.address ? this._booking.address : ""],
-
+            address: [this._booking.address],
+            bookingId: [this._booking.bookingId,]
         };
 
         this._frm = this._formBuilder.group(this._context);
+    }
+
+    ngAfterViewInit(): void {
+        setTimeout(() => {
+            this._booking.reason == null ? this.reason.focus() : '';
+        }, 1000);
     }
 
     getAddress() {
@@ -124,25 +135,27 @@ export class TaskComponent extends AppComponentBase implements OnInit {
         return moment(date).format("DD/MM/YYYY") + ", " + time;
     }
 
-    getStatus(status: number) {
-        switch (status) {
-            case 0:
-                return 'Mới đăng ký';
-            case 1:
-                return 'Chưa khám';
-            case 2:
-                return 'Đã khám';
-            case 3:
-                return 'Hủy khám';
-            case 4:
-                return 'Tất cả';
-
-        }
-    }
-
     submit() {
-        this._dataService.update(this.api, Object.assign(this._frm.value, { id: this._booking.id })).subscribe(() => {
-            swal(this.l('SaveSuccess'), '', 'success');
+        console.log(this._booking.bookingId);
+        console.log(this._frm.value);
+
+        var params = _.pick(this._frm.value, ['bookingId', 'reason', 'status', 'bookingUser', 'address', 'updateUserId']);
+
+        if (this._booking) {
+            params.bookingId = this._booking.bookingId;
+            params.reason = this._frm.value.reason;
+            params.status = this._frm.value.status;
+            params.bookingUser = this._frm.value.bookingUser;
+            params.address = this._frm.value.address;
+            params.updateUserId = this.appSession.userId;
+        }
+
+        this._dataService.update(this.api, params).subscribe(() => {
+            swal({
+                title:this.l('SaveSuccess'), 
+                text:'', 
+                type:'success',
+                timer:3000});
             this.dialogRef.close();
         }, err => console.log(err));
     }

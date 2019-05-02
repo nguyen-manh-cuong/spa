@@ -49,7 +49,7 @@
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('HealthFacilities')}}</mat-label>
                     <input matInput [formControl]="healthfacilities" (click)="clickCbo()" [matAutocomplete]="auto"> 
-                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)='getPosts($event.option.value)'>
                         <mat-option *ngFor="let o of filteredHealthFacilitiesOptions | async" [value]="o">
                             {{o.name}}
                         </mat-option>
@@ -74,7 +74,7 @@
                 </mat-form-field>
             </div>
             <div class="col-md-3 text-center d-flex align-self-center fadeIn animated">
-                <button #btnSearch mat-stroked-button color="primary" (click)="btnSearchClicks$.next($event)"
+                <button #btnSearch mat-stroked-button color="primary" (click)="customSearch()"
                     class="w-100 mb-4">
                     <mat-icon class="mr-2">search</mat-icon>{{l("Search")}}
                 </button>

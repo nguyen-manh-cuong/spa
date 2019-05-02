@@ -28,130 +28,234 @@ namespace SHCServer.Controllers
         [Route("api/doctor")]
         public IActionResult GetAll(int skipCount = 0, int maxResultCount = 10, string sorting = null, string filter = null)
         {
-            List<string> clause = new List<string>();
-            List<DbParam> param = new List<DbParam>();
-            List<DoctorViewModel> doctorList = new List<DoctorViewModel>();
+            var objs = _context.Query<Doctor>().Where(b => b.IsDelete == false)
+                .LeftJoin<HealthFacilitiesDoctors>((b, s) => b.DoctorId == s.DoctorId)
+                .LeftJoin<DoctorSpecialists>((b, s, d) => b.DoctorId == d.DoctorId)
+                .Select((b, s, d) => new
+                {
+                    b.DoctorId,
+                    b.FullName,
+                    b.AllowSearch,
+                    b.Address,
+                    b.IsDelete,
+                    b.BirthDate,
+                    b.BirthMonth,
+                    b.BirthYear,
+                    s.HealthFacilitiesId,
+                    b.Avatar,
+                    b.AllowBooking,
+                    b.AllowFilter,
+                    d.SpecialistCode,
+                    b.DistrictCode,
+                    b.ProvinceCode,
+                    b.PhoneNumber,
+                    b.CreateDate
+                });
 
-            int query = 0;
-
+            objs = objs.Where(b => b.IsDelete == false);
+                
             if (filter != null)
             {
                 foreach (var (key, value) in JsonConvert.DeserializeObject<Dictionary<string, string>>(filter))
                 {
-                    if (string.IsNullOrEmpty(value))
+                    if (string.Equals(key, "doctorId") && !string.IsNullOrEmpty(value))
+                    {
+                        objs = objs.Where(b => b.DoctorId.ToString() == value.Trim());
+                    }
+                    if (string.Equals(key, "provinceCode") && !string.IsNullOrEmpty(value))
+                    {
+                        objs = objs.Where(b => b.ProvinceCode.ToString() == value.Trim() || b.ProvinceCode.ToString() == null || b.ProvinceCode.ToString() == "");
+                    }
+                    if (string.Equals(key, "districtCode") && !string.IsNullOrEmpty(value))
+                    {
+                        objs = objs.Where(b => b.DistrictCode.ToString() == value.Trim() || b.DistrictCode.ToString() == null || b.DistrictCode.ToString() == "");
+                    }
+                    if (string.Equals(key, "healthfacilities") && !string.IsNullOrEmpty(value))
+                    {
+                        objs = objs.Where(b => b.HealthFacilitiesId.ToString() == value.Trim());
+                    }
+                    if (string.Equals(key, "specialistCode") && !string.IsNullOrEmpty(value))
+                    {
+                        //clause.Add("AND ds.SpecialistCode=@SpecialistCode");
+                        //param.Add(DbParam.Create("@SpecialistCode", value.Trim()));
+                        objs = objs.Where(b => b.SpecialistCode.ToString() == value.Trim());
+                    }
+                    if (string.Equals(key, "info") && !string.IsNullOrEmpty(value))
+                    {
+                        //clause.Add("AND d.FullName like '%' @FullNameOrPhone '%' OR d.PhoneNumber like '%' @FullNameOrPhone");
+                        //param.Add(DbParam.Create("@fullNameOrPhone", value.Trim()));
+                        objs = objs.Where(b => (b.FullName.ToString() == value.Trim()) || (b.PhoneNumber.ToString() == value.Trim()));
+                    }
+                }
+            }
+
+            //objs = objs.GroupBy(b => b.DoctorId).Select(b => new
+            //{
+            //    b.DoctorId,
+            //    b.FullName,
+            //    b.AllowSearch,
+            //    b.Address,
+            //    b.BirthDate,
+            //    b.BirthMonth,
+            //    b.BirthYear,
+            //    b.HealthFacilitiesId,
+            //    b.Avatar,
+            //    b.AllowBooking,
+            //    b.AllowFilter,
+            //    b.SpecialistCode,
+            //    b.DistrictCode,
+            //    b.ProvinceCode,
+            //    b.PhoneNumber,
+            //    b.CreateDate
+            //});
+
+            if (sorting != null)
+            {
+                foreach (var (key, value) in JsonConvert.DeserializeObject<Dictionary<string, string>>(sorting))
+                {
+                    if (!Utils.PropertyExists<Doctor>(key))
                         continue;
-                    if (string.Equals(key, "doctorId"))
-                    {
-                        clause.Add("AND d.DoctorId=@DoctorId");
-                        param.Add(DbParam.Create("@DoctorId", value.Trim()));
-                        query = 2;
-                    }
-                    if (string.Equals(key, "provinceCode"))
-                    {
-                        clause.Add("AND d.ProvinceCode=@ProvinceCode");
-                        param.Add(DbParam.Create("@ProvinceCode", value.Trim()));
-                    }
-                    if (string.Equals(key, "districtCode"))
-                    {
-                        clause.Add("AND d.DistrictCode=@DistrictCode");
-                        param.Add(DbParam.Create("@DistrictCode", value.Trim()));
-                    }
-                    if (string.Equals(key, "healthFacilitiesId"))
-                    {
-                        clause.Add("AND hd.HealthFacilitiesId=@HealthFacilitiesId");
-                        param.Add(DbParam.Create("@HealthFacilitiesId", value.Trim()));
-                        query = 1;
-                    }
-                    if (string.Equals(key, "specialistCode"))
-                    {
-                        clause.Add("AND ds.SpecialistCode=@SpecialistCode");
-                        param.Add(DbParam.Create("@SpecialistCode", value.Trim()));
-                    }
-                    if (string.Equals(key, "info"))
-                    {
-                        clause.Add("AND d.FullName like '%' @FullNameOrPhone '%' OR d.PhoneNumber like '%' @FullNameOrPhone");
-                        param.Add(DbParam.Create("@fullNameOrPhone", value.Trim()));
-                    }
-                }
-            }
 
-            if (query == 0)
-            {
-                clause.Add(" AND ds.IsDelete=0 GROUP BY d.DoctorId ORDER BY d.FullName,d.CreateDate DESC LIMIT @skipCount, @resultCount");
-            }
-
-            if (query == 1)
-            {
-                clause.Add(" AND ds.IsDelete=0 GROUP BY d.DoctorId ORDER BY d.FullName,d.CreateDate DESC LIMIT @skipCount, @resultCount");
-            }
-
-            param.Add(DbParam.Create("@skipCount", skipCount * maxResultCount));
-            param.Add(DbParam.Create("@resultCount", maxResultCount));
-
-            var str = "";
-
-            if (query == 0)
-            {
-                str = $"{DoctorJoin()} {string.Join(" ", clause)}";
-            }
-
-            if (query == 1)
-            {
-                str = $"{DoctorJoin(true)} {string.Join(" ", clause)}";
-            }
-
-            if (query == 2)
-            {
-                var checkHelthFacilites = _context.Query<HealthFacilitiesDoctors>().Where(hf => hf.DoctorId == (int)param[0].Value).FirstOrDefault();
-
-                if (checkHelthFacilites != null)
-                    str = $"{DoctorJoin(true)} {string.Join(" ", clause)}";
-                else
-                    str = $"{DoctorJoin()} {string.Join(" ", clause)}";
-            }
-
-            var reader = _context.Session.ExecuteReader(str, param);
-
-            if (query == 2)
-            {
-                while (reader.Read())
-                {
-                    var checkHelthFacilites = _context.Query<HealthFacilitiesDoctors>().Where(hf => hf.DoctorId == (int)param[0].Value).FirstOrDefault();
-
-                    if (checkHelthFacilites == null)
-                    {
-                        AddTolist(doctorList, reader);
-                    }
-                    else
-                    {
-                        AddTolistAll(doctorList, reader);
-                    }
-                }
-            }
-            else if (query == 1)
-            {
-                while (reader.Read())
-                {
-                    AddTolistAll(doctorList, reader);
+                    objs = value == "asc" ? objs.OrderBy(u => key) : objs.OrderByDesc(u => key);
                 }
             }
             else
             {
-                while (reader.Read())
-                {
-                    AddTolist(doctorList, reader);
-                }
+                objs = objs.OrderByDesc(b => b.CreateDate).ThenByDesc(b => b.FullName);
             }
 
-            return Json(new ActionResultDto()
-            {
-                Result = new
-                {
-                    Items = doctorList,
-                    TotalCount = doctorList.Count
-                }
-            });
+            return Json(new ActionResultDto { Result = new { Items = objs.TakePage(skipCount == 0 ? 1 : skipCount + 1, maxResultCount).ToList(), TotalCount = objs.Count() } });
+
         }
+
+        //[HttpGet]
+        //[Route("api/doctor")]
+        //public IActionResult GetAll(int skipCount = 0, int maxResultCount = 10, string sorting = null, string filter = null)
+        //{
+        //    List<string> clause = new List<string>();
+        //    List<DbParam> param = new List<DbParam>();
+        //    List<DoctorViewModel> doctorList = new List<DoctorViewModel>();
+
+        //    int query = 0;
+
+        //    if (filter != null)
+        //    {
+        //        foreach (var (key, value) in JsonConvert.DeserializeObject<Dictionary<string, string>>(filter))
+        //        {
+        //            if (string.IsNullOrEmpty(value))
+        //                continue;
+        //            if (string.Equals(key, "doctorId"))
+        //            {
+        //                clause.Add("AND d.DoctorId=@DoctorId");
+        //                param.Add(DbParam.Create("@DoctorId", value.Trim()));
+        //                query = 2;
+        //            }
+        //            if (string.Equals(key, "provinceCode"))
+        //            {
+        //                clause.Add("AND d.ProvinceCode=@ProvinceCode");
+        //                param.Add(DbParam.Create("@ProvinceCode", value.Trim()));
+        //            }
+        //            if (string.Equals(key, "districtCode"))
+        //            {
+        //                clause.Add("AND d.DistrictCode=@DistrictCode");
+        //                param.Add(DbParam.Create("@DistrictCode", value.Trim()));
+        //            }
+        //            if (string.Equals(key, "healthFacilitiesId"))
+        //            {
+        //                clause.Add("AND hd.HealthFacilitiesId=@HealthFacilitiesId");
+        //                param.Add(DbParam.Create("@HealthFacilitiesId", value.Trim()));
+        //                query = 1;
+        //            }
+        //            if (string.Equals(key, "specialistCode"))
+        //            {
+        //                clause.Add("AND ds.SpecialistCode=@SpecialistCode");
+        //                param.Add(DbParam.Create("@SpecialistCode", value.Trim()));
+        //            }
+        //            if (string.Equals(key, "info"))
+        //            {
+        //                clause.Add("AND d.FullName like '%' @FullNameOrPhone '%' OR d.PhoneNumber like '%' @FullNameOrPhone");
+        //                param.Add(DbParam.Create("@fullNameOrPhone", value.Trim()));
+        //            }
+        //        }
+        //    }
+
+        //    if (query == 0)
+        //    {
+        //        clause.Add(" AND ds.IsDelete=0 GROUP BY d.DoctorId ORDER BY d.FullName,d.CreateDate DESC LIMIT @skipCount, @resultCount");
+        //    }
+
+        //    if (query == 1)
+        //    {
+        //        clause.Add(" AND ds.IsDelete=0 GROUP BY d.DoctorId ORDER BY d.FullName,d.CreateDate DESC LIMIT @skipCount, @resultCount");
+        //    }
+
+        //    param.Add(DbParam.Create("@skipCount", skipCount * maxResultCount));
+        //    param.Add(DbParam.Create("@resultCount", maxResultCount));
+
+        //    var str = "";
+
+        //    if (query == 0)
+        //    {
+        //        str = $"{DoctorJoin()} {string.Join(" ", clause)}";
+        //    }
+
+        //    if (query == 1)
+        //    {
+        //        str = $"{DoctorJoin(true)} {string.Join(" ", clause)}";
+        //    }
+
+        //    if (query == 2)
+        //    {
+        //        var checkHelthFacilites = _context.Query<HealthFacilitiesDoctors>().Where(hf => hf.DoctorId == (int)param[0].Value).FirstOrDefault();
+
+        //        if (checkHelthFacilites != null)
+        //            str = $"{DoctorJoin(true)} {string.Join(" ", clause)}";
+        //        else
+        //            str = $"{DoctorJoin()} {string.Join(" ", clause)}";
+        //    }
+
+        //    var reader = _context.Session.ExecuteReader(str, param);
+
+        //    if (query == 2)
+        //    {
+        //        while (reader.Read())
+        //        {
+        //            var checkHelthFacilites = _context.Query<HealthFacilitiesDoctors>().Where(hf => hf.DoctorId == (int)param[0].Value).FirstOrDefault();
+
+        //            if (checkHelthFacilites == null)
+        //            {
+        //                AddTolist(doctorList, reader);
+        //            }
+        //            else
+        //            {
+        //                AddTolistAll(doctorList, reader);
+        //            }
+        //        }
+        //    }
+        //    else if (query == 1)
+        //    {
+        //        while (reader.Read())
+        //        {
+        //            AddTolistAll(doctorList, reader);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        while (reader.Read())
+        //        {
+        //            AddTolist(doctorList, reader);
+        //        }
+        //    }
+
+        //    return Json(new ActionResultDto()
+        //    {
+        //        Result = new
+        //        {
+        //            Items = doctorList,
+        //            TotalCount = doctorList.Count
+        //        }
+        //    });
+        //}
 
         [HttpPost]
         [Route("api/doctor")]
@@ -473,7 +577,7 @@ namespace SHCServer.Controllers
 
             if (reader.Read() == true)
             {
-                return StatusCode(422, _excep.Throw("Xóa không thành công!", "Không thể xóa bác sĩ đang có lịch khám!"));
+                return StatusCode(400, _excep.Throw("Xóa không thành công!", "Không thể xóa bác sĩ đang có lịch khám!"));
             }
             else
             {

@@ -39,6 +39,10 @@ export class IndexComponent extends PagedListingComponentBase<IUser> implements 
     }
 
     showMessage(title: string, content: string, type: string){
-        swal(this.l('PackagesMessageTitle.'), this.l('PackagesMessageContent'), 'error');
+        swal({
+            title:this.l('PackagesMessageTitle.'), 
+            text:this.l('PackagesMessageContent'), 
+            type:'error',
+            timer:3000});
     }
 }

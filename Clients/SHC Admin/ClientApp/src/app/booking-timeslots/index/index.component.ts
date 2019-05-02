@@ -40,11 +40,20 @@ export class IndexComponent extends PagedListingComponentBase<IBookingTimeslots>
        keyFilter: [],     
        healthfacilities: [this.appSession.user.healthFacilitiesId],
       });
-
-    this.dataService.getAll('healthfacilities', (this.appSession.user.healthFacilitiesId ? String(this.appSession.user.healthFacilitiesId) : '')).subscribe(resp => 
-    {
-      this._healthfacilities = resp.items;      
-    });
+      //old
+    // this.dataService.getAll('healthfacilities', (this.appSession.user.healthFacilitiesId ? String(this.appSession.user.healthFacilitiesId) : '')).subscribe(resp => 
+    // {
+    //   this._healthfacilities = resp.items;      
+    // });
+    //new
+    if(this.appSession.user.healthFacilitiesId) {
+      this.dataService.getAll('healthfacilities', "{healthfacilitiesId:"+String(this.appSession.user.healthFacilitiesId)+"}").subscribe(resp => this._healthfacilities = resp.items);
+      this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId);      
+    }
+    else{
+        this.dataService.getAll('healthfacilities').subscribe(resp => this._healthfacilities = resp.items);
+        this.filterOptions();
+    }
   }
   displayFn(h?: IHealthfacilities): string | undefined {
     return h ? h.name : undefined;
@@ -67,7 +76,11 @@ showMess(obj: EntityDto, key: string, id?: number | string){
     buttonsStyling: false
 }).then((result) => {
   if (result.value) {
-      swal(this.l('Xóa không thành công'), 'Không thể xóa khung giờ khám đang hoạt động!', 'error');
+      swal({
+        title:this.l('Xóa không thành công'), 
+        text:'Không thể xóa khung giờ khám đang hoạt động!',
+        type: 'error',
+        timer:3000});
   }
 });  
 }
@@ -101,7 +114,11 @@ customSearch() {
 }
 
 showNotify(obj: EntityDto, key: string, id?: number | string) {
-  swal(this.l('Không thể xóa khung giờ khám đang hoạt động'), '', 'error');
+  swal({
+    title:this.l('Không thể xóa khung giờ khám đang hoạt động'), 
+    text:'', 
+    type:'error',
+    timer:3000});
 }
 
 onChangeHealthfacilities() {

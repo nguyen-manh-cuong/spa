@@ -102,19 +102,31 @@ export class TaskComponent extends AppComponentBase implements OnInit {
     var start = this._frm.controls['hoursStart'].value.concat(this._frm.controls['minuteStart'].value);
     var end = this._frm.controls['hoursEnd'].value.concat(this._frm.controls['minuteEnd'].value);
     if(start >= end){
-        swal(this.l('Thông báo'), 'Thời gian kết thúc phải lớn hơn thời gian bắt đầu!', 'error');
+        swal({
+          title:this.l('Thông báo'), 
+          text:'Thời gian kết thúc phải lớn hơn thời gian bắt đầu!', 
+          type:'error',
+          timer:3000});
     }
     else{
       this._isNew ?
       this._dataService.create(this.api, _.omit(Object.assign(this._frm.value), 'timeSlotId')).subscribe(e =>
       { 
-        swal(this.l('SaveSuccess'), '', 'success');
+        swal({
+          title:this.l('SaveSuccess'), 
+          text:'', 
+          type:'success',
+          timer:3000});
         this.dialogRef.close();
       }, err => {}) :
 
       this._dataService.update(this.api, Object.assign(this._frm.value, this.obj.timeSlotId)).subscribe(() => 
       {
-        swal(this.l('SaveSuccess'), '', 'success');
+        swal({
+          title:this.l('SaveSuccess'), 
+          text:'',
+          type: 'success',
+          timer:3000});
         this.dialogRef.close();
       } , err => {});
     }
