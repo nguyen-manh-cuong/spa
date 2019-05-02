@@ -59,19 +59,21 @@ export class ReasonComponent extends AppComponentBase implements OnInit {
             params.reasonReject = this._frm.value.reasonReject;
         }
 
-        this._dataService.update(this.api, params).subscribe(() => {
-            this._dataService.delete(this.api, this._booking.bookingId).subscribe(e => {
-                swal(this.l('Hủy thành công'), "Thông tin đặt khám " + this._booking.ticketId + "  đã bị hủy", 'success');
-                this.dialogRef.close();
-            });
-        }, err => console.log(err));
-
-        
+        if(params.reasonReject===''){
+            swal({
+                title: this.l('Thông báo'),
+                text: 'Không được bỏ trống',
+                type: 'warning',
+                timer: 3000
+            })
+        }
+        else{
+            this._dataService.update(this.api, params).subscribe(() => {
+                this._dataService.delete(this.api, this._booking.bookingId).subscribe(e => {
+                    swal(this.l('Hủy thành công'), "Thông tin đặt khám " + this._booking.ticketId + "  đã bị hủy", 'success');
+                    this.dialogRef.close();
+                });
+            }, err => console.log(err));    
+        }
     }
-
-    
-
-
-
-
 }
