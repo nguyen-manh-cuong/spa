@@ -89,3 +89,9 @@
 .text-center .mat-sort-header-container{
     justify-content: center;
  }
+
+ @-moz-document url-prefix() {
+    table {
+        border-collapse: unset!important;
+    }
+}

@@ -76,7 +76,7 @@ namespace SHCServer.Controllers
                     }
                     if (string.Equals(key, "packagesNameDescription") && !string.IsNullOrWhiteSpace(value))
                     {
-                        objs = objs.Where(b => b.TicketId.Contains(value) || b.PhoneNumber.Contains(value) || b.BookingUser.Contains(value));
+                        objs = objs.Where(b => b.TicketId == value.Trim() || b.PhoneNumber == value.Trim() || b.BookingUser.Contains(value.Trim()));
                     }
                     if (string.Equals(key, "startTime")) objs = objs.Where(b => b.ExaminationDate>= DateTime.Parse(value));
                     if (string.Equals(key, "endTime")) objs = objs.Where(b => b.ExaminationDate <= DateTime.Parse(value));
