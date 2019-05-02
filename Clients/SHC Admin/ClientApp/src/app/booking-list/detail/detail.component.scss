@@ -4,3 +4,6 @@
   .custom-form .disabled .mat-form-field-outline {
     background-color: transparent;
 }
+.disabled .mat-form-field-outline {
+  background-color: transparent!important;
+}
