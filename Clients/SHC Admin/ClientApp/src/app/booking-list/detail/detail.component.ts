@@ -25,7 +25,7 @@ export class DetailComponent extends AppComponentBase implements OnInit {
     _reasonString = "";
     _addressString = "";
     _booking: IBookingInformations | any = {
-        fullName: '', examinationDate: '', status: '', bookingUser: '', phoneNumber: '', gender: '', year: '',
+        fullName: '', examinationDate: '', bookingUser: '', phoneNumber: '', gender: '', year: '',
         district: '', province: '', email: '', bookingRepresent: '', phoneRepresent: '', emailRepresent: ''
     };
     _context: any;
@@ -61,7 +61,7 @@ export class DetailComponent extends AppComponentBase implements OnInit {
             this._frm.controls['doctorName'].disable();
             this._frm.controls['examinationDate'].disable();
             //this._frm.controls['reason'].disable();
-            this._frm.controls['status'].disable();
+            // this._frm.controls['status'].disable();
             this._frm.controls['bookingUser'].disable();
             this._frm.controls['gender'].disable();
             this._frm.controls['age'].disable();
@@ -79,7 +79,7 @@ export class DetailComponent extends AppComponentBase implements OnInit {
             doctorName: [this._booking.fullName],
             examinationDate: [this.handleTime(this._booking)],
             //reason: [this._booking.reason, Validators.required],
-            status: [this.getStatus(this._booking.status)],
+            // status: [this.getStatus(this._booking.status)],
             bookingUser: [this._booking.bookingUser,],
             bookingRepresent: [this._booking.bookingRepresent,],
             gender: [this.getGender(this._booking.gender)],
@@ -108,7 +108,7 @@ export class DetailComponent extends AppComponentBase implements OnInit {
                 district = data.name
             }
         }
-        address = this._booking.address != undefined ? this._booking.address + ", " : "" + (district != "" ? district : "") + (province != "" ? ", " + province : "");
+        address = this._booking.address != undefined ? this._booking.address : "" +  (this._booking.address != undefined && district != "" ? ", " : "") +  (district != "" ?  district : "") +  ((district != "") || (this._booking.address != undefined) && province != "" ? ", " : "")   + (province != "" ? province : "");
         console.log(address);
         this._addressString = address;
         //this._frm.controls['address'].setValue(address);
@@ -144,7 +144,7 @@ export class DetailComponent extends AppComponentBase implements OnInit {
                 time = element.examinationTime;
             }
         }
-        return moment(date).format("DD/MM/YYYY") + ", " + time;
+        return moment(date).format("DD/MM/YYYY") + (time ? "," + time : "");
     }
 
     getStatus(status: number) {

@@ -7,37 +7,37 @@
     <mat-tab-group scroll-able>
         <mat-tab>
             <ng-template mat-tab-label>
-                {{_isNew ? l("CreateNew") : l("Detail")}} {{l("lịch đặt khám của bệnh nhân")}}
+                {{l("Xem chi tiết lịch đặt khám")}}
             </ng-template>
             <div class="pt-4 disabled">
                 <label class="mat-title">
                     {{l("Thông tin đặt khám")}}
                 </label>
                 <div class="row">
-                    <div class="col-md-5 disabled">
+                    <div class="col-md-4 disabled">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("Bác sĩ khám")}}</mat-label>
                             <input formControlName="doctorName" matInput>
                         </mat-form-field>
                     </div>
-                    <div class="col-md-7 disabled">
+                    <div class="col-md-4 disabled">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l('Ngày đặt khám')}}</mat-label>
                             <input type="text" formControlName="examinationDate" matInput>
                         </mat-form-field>
                     </div>
-                    <div class="col-md-12 ml-2">
+                    <div class="col-md-4 ml-2">
                     <label class="fw-500 f14">{{l('Triệu chứng')}}</label>
                     <div class="wrap-text mb-4 color-primary f16 fw-500">
                         <label >{{_reasonString}}</label>
                     </div>
                     </div>
-                    <div class="col-md-5">
+                    <!-- <div class="col-md-5">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l('Trạng thái')}}</mat-label>
                             <input [required]="true" type="text" formControlName="status" matInput>
                         </mat-form-field>
-                    </div>
+                    </div> -->
                 </div>
             </div>
             <div class="pt-4 disabled">

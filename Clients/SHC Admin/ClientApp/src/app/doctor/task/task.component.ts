@@ -1,7 +1,8 @@
+import { forEach } from '@angular/router/src/utils/collection';
 
-import { IDoctor } from './../../../../../../SHC Client/ClientApp/src/shared/Interfaces';
+import { IDoctor, IHealthfacilities } from './../../../../../../SHC Client/ClientApp/src/shared/Interfaces';
 import * as _ from 'lodash';
-// import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { Component, Inject, Injector, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef, MatInput, MatCheckbox } from '@angular/material';
@@ -10,10 +11,13 @@ import { AppComponentBase } from '@shared/app-component-base';
 import { DataService } from '@shared/service-proxies/service-data';
 import { ValidationRule } from '@shared/common/common';
 import swal from 'sweetalert2';
-import { publishBehavior } from 'rxjs/operators';
+import { publishBehavior, startWith, map } from 'rxjs/operators';
 import { element } from '@angular/core/src/render3/instructions';
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+import { ICategoryCommon } from '@shared/Interfaces';
+import { MatAutocompleteTrigger } from '@angular/material';
+import { Observable } from 'rxjs';
 export const MY_FORMATS = {
   parse: {
     dateInput: 'DD/MM/YYYY',
@@ -37,9 +41,21 @@ export const MY_FORMATS = {
 })
 export class TaskComponent extends AppComponentBase implements OnInit, AfterViewInit {
   _birthDay: Date = new Date(Date.now());
-  _certificationDate:Date=new Date(Date.now());
+  _certificationDate: Date = new Date(Date.now());
   api: string = 'doctor';
   _frm: FormGroup;
+
+  _healthfacilities = [];
+  _specialist = [];
+
+  _healthFacilitiesId: number;
+  _specialistCode: number;
+
+  filteredHealthFacilitiesOptions: Observable<IHealthfacilities[]>;
+  filteredSpecialistOptions: Observable<ICategoryCommon[]>;
+
+  healthfacilitiesControl = new FormControl();
+  specialistCodeControl = new FormControl();
 
   positions = [];
   titles = [];
@@ -47,10 +63,11 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   degrees = [];
   nations = [];
   ethnicities = [];
-  specialist = [];
   provinces = [];
   districts = [];
   checkProvince = false;
+
+  
 
   _obj: IDoctor | any = {
     fullName: '',
@@ -79,7 +96,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     priceFrom: 0,
     priceTo: 0,
     priceDescription: '',
-    sumary: '',
+    summary: '',
     isSync: true,
     allowBooking: true,
     allowFilter: true,
@@ -88,11 +105,12 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     updateUserId: this.appSession.userId,
     healthFacilities: []
   };
+
   startDate = new Date(Date.now());
   _context: any;
   _isNew: boolean = true;
 
-  // public Editor = ClassicEditor;
+  public Editor = ClassicEditor;
 
   constructor(
     injector: Injector,
@@ -136,15 +154,13 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
         this._birthDay = new Date("01/01/" + this._obj.birthYear);
       }
 
-      if(this._obj.certificationDate){
-        this._certificationDate=this._obj.certificationDate;
+      if (this._obj.certificationDate) {
+        this._certificationDate = this._obj.certificationDate;
       }
-      else{
-        this._obj.certificationDate=new Date(Date.now());
+      else {
+        this._obj.certificationDate = new Date(Date.now());
       }
     }
-
-
 
 
     this._context = {
@@ -153,7 +169,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
       birthDay: [this._birthDay],
       gender: this._obj.gender,
       titleCode: this._obj.titleCode,
-      posittionCode: [this._obj.posittionCode],
+      posittionCode: [this._obj.positionCode],
       nationCode: [this._obj.nationCode],
       ethnicityCode: [this._obj.ethnicityCode],
       certificationDate: [this._obj.certificationDate],
@@ -171,66 +187,53 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
       priceFrom: [this._obj.priceFrom],
       priceTo: [this._obj.priceTo],
       priceDescription: this._obj.priceDescription,
-      sumary: [this._obj.sumary],
+      summary: [this._obj.summary],
       allowBooking: [this._obj.allowBooking],
       allowFilter: [this._obj.allowFilter],
       allowSearch: [this._obj.allowSearch],
-      healthFacilities: [this._obj.healthFacilities]
+      healthfacilities: [this._obj.healthFacilities]
     };
 
     this._frm = this._formBuilder.group(this._context);
-    console.log('Gia tri form', this._context);
-    if (this._obj.avatar == "") {
+
+    if (this._obj.avatar === "" || undefined) {
       this._frm.controls['avatar'].setValue("https://cmkt-image-prd.global.ssl.fastly.net/0.1.0/ps/1441527/1160/772/m1/fpnw/wm0/businessman-avatar-icon-01-.jpg?1468234792&s=e3a468692e15e93a2056bd848193e97a");
     }
 
-    // if (this.obj)
-    //   this._frm.controls['allowBooking'].setValue(this._obj.allowBooking);
-    //   this._frm.controls['allowFilter'].setValue(this._obj.allowFilter);
-    //   this._frm.controls['allowSearch'].setValue(this._obj.allowSearch);
-  }
+    if (this.appSession.user.healthFacilitiesId) {
+      this._dataService.getAll('healthfacilities', "{healthfacilitiesId:" + String(this.appSession.user.healthFacilitiesId) + "}").subscribe(resp => this._healthfacilities = resp.items);
+      this._frm.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId);
+    }
+    else {
+      this._dataService.getAll('healthfacilities').subscribe(resp => this._healthfacilities = resp.items);
+      this.filterOptions();
+    }
 
+    //Set healthfacilities
+    // this._obj.healthFacilities.forEach(element => {
+    //   this.healthfacilitiesControl.setValue(element.healthFacilitiesId);
+    // });
+
+    //Set specialist
+    // this._obj.specialist.forEach(element=>{
+    //   this.specialistCodeControl.setValue(element.specialistCode);
+    // })
+
+  }
 
   ngAfterViewInit(): void {
     setTimeout(() => {
       this.birthDayPicker.nativeElement.value = moment(this._birthDay).format("DD/MM/YYYY");
-      this.certificationDatePicker.nativeElement.value=moment(this._certificationDate).format("DD/MM/YYYY");
+      this.certificationDatePicker.nativeElement.value = moment(this._certificationDate).format("DD/MM/YYYY");
     });
   }
 
-  submit() {
-    console.log(201, 'vao ham submit', this._frm.value);
-    var params = _.pick(this._frm.value, ['id', 'fullName', , 'isActive', 'createUserId', 'updateUserId']);
-
-    params.fullName = _.trim(params.fullName);    
-
-    if (!moment(this.birthDayPicker.nativeElement.value, 'DD/MM/YYYY').isValid()) {
-      return swal('Thông báo', 'Ngày sinh không đúng định dạng', 'warning');
-    }
-    else{
-      if (this.obj) {
-        params.id = this.obj.doctorId;
-      }
-  
-      if (this.appSession.userId && this._isNew == true) {
-        params.createUserId = this.appSession.userId;
-        params.updateUserId = this.appSession.userId;
-      }
-  
-      if (this.appSession.userId && this._isNew == false) {
-        params.updateUserId = this.appSession.userId;
-      }
-      console.log('Gia tri params', params);
-      this._isNew ?
-        this._dataService.create(this.api, params).subscribe(() => {
-          swal(this.l('SaveSuccess'), '', 'success');
-          this.dialogRef.close();
-        }, err => { }) :       
-        this._dataService.update(this.api, params).subscribe(() => {
-          swal(this.l('SaveSuccess'), '', 'success');
-          this.dialogRef.close();
-        }, err => { });
-    }
+  //Add custom editor
+  onReady(editor) {
+    editor.ui.getEditableElement().parentElement.insertBefore(
+      editor.ui.view.toolbar.element,
+      editor.ui.getEditableElement()
+    );
   }
 
   // myFilter = (d: Date): boolean => {
@@ -287,7 +290,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   }
 
   getSpecialist() {
-    this._dataService.getAll("categorycommon", "CHUYENKHOA").subscribe(resp => this.specialist = resp.items);
+    this._dataService.getAll("categorycommon", "CHUYENKHOA").subscribe(resp => this._specialist = resp.items);
   }
 
   @ViewChild("continueAdd") continueAdd: MatCheckbox;
@@ -303,4 +306,139 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
 
 
   //End Base//
+
+  //Auto complete health facilities
+
+  displayFn(h?: IHealthfacilities): string | undefined {
+    return h ? h.name : undefined;
+  }
+
+  _filterHealthfacilities(name: any): IHealthfacilities[] {
+    const filterValue = name.toLowerCase();
+    var healthfacilities = isNaN(filterValue) ?
+      this._healthfacilities.filter(h => h.name.toLowerCase().indexOf(filterValue) === 0) :
+      this._healthfacilities.filter(h => h.code.toLowerCase().indexOf(filterValue) === 0);
+    return healthfacilities;
+  }
+
+  clickCbo() {
+    !this.healthfacilitiesControl.value ? this.filterOptions() : '';
+  }
+
+  filterOptions() {
+    this.filteredHealthFacilitiesOptions = this.healthfacilitiesControl.valueChanges
+      .pipe(
+        startWith<string | IHealthfacilities>(''),
+        map(value => typeof value === 'string' ? value : value.name),
+        map(name => name ? this._filterHealthfacilities(name) : this._healthfacilities.slice()),
+        map(data => data.slice())
+      );
+  }
+
+  onInputHealthfacilities(obj: any) {
+    this._frm.controls['healthfacilities'].setValue("");
+    this._healthFacilitiesId = null;
+  }
+
+  onSelectHealthFacilities(value: any) {
+    if (value.healthFacilitiesId) {
+      this._frm.controls['healthfacilities'].setValue(value.healthFacilitiesId);
+      this._healthFacilitiesId = value.healthFacilitiesId;
+    }
+  }
+
+  //End auto complete health facilities
+
+
+
+
+  //Auto complete specialist
+  displaySpecialistFn(h?: ICategoryCommon): string | undefined {
+    return h ? h.name : undefined;
+  }
+
+
+  _filterSpecialist(name: any): ICategoryCommon[] {
+    const filterValue = name.toLowerCase();
+    var specialist = isNaN(filterValue) ?
+      this._specialist.filter(c => c.code.toLowerCase().indexOf(filterValue) === 0) :
+      this._specialist.filter(c => c.name.toLowerCase().indexOf(filterValue) === 0);
+    return specialist;
+  }
+
+  clickSpecialistCbo() {
+    !this.specialistCodeControl.value ? this.filterSpecialistOptions() : '';
+  }
+
+  filterSpecialistOptions() {
+    this.filteredSpecialistOptions = this.specialistCodeControl.valueChanges
+      .pipe(
+        startWith<string | ICategoryCommon>(''),
+        map(value => typeof value === 'string' ? value : value.name),
+        map(name => name ? this._filterSpecialist(name) : this._specialist.slice()),
+        map(data => data.slice())
+      );
+  }
+
+  onInputSpecialist(obj: any) {
+    this._frm.controls['specialist'].setValue("");
+    this._specialistCode = null;
+  }
+
+  onSelectSpecialist(value: any) {
+    if (value.code) {
+      this._frm.controls['specialist'].setValue(value.code);
+      this._specialistCode = value.code;
+    }
+  }
+  //End auto complete specialist
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  //SUBMIT
+  submit() {
+    var params = _.pick(this._frm.value, ['id', 'fullName', , 'isActive', 'createUserId', 'updateUserId']);
+
+    params.fullName = _.trim(params.fullName);
+
+    if (!moment(this.birthDayPicker.nativeElement.value, 'DD/MM/YYYY').isValid()) {
+      return swal('Thông báo', 'Ngày sinh không đúng định dạng', 'warning');
+    }
+    else {
+      if (this.obj) {
+        params.id = this.obj.doctorId;
+      }
+
+      if (this.appSession.userId && this._isNew == true) {
+        params.createUserId = this.appSession.userId;
+        params.updateUserId = this.appSession.userId;
+      }
+
+      if (this.appSession.userId && this._isNew == false) {
+        params.updateUserId = this.appSession.userId;
+      }
+
+      this._isNew ?
+        this._dataService.create(this.api, params).subscribe(() => {
+          swal(this.l('SaveSuccess'), '', 'success');
+          this.dialogRef.close();
+        }, err => { }) :
+        this._dataService.update(this.api, params).subscribe(() => {
+          swal(this.l('SaveSuccess'), '', 'success');
+          this.dialogRef.close();
+        }, err => { });
+    }
+  }
+
 }

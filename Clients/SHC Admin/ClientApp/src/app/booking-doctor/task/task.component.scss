@@ -1,0 +1,20 @@
+.scroll{
+    display: block; 
+    overflow-x: auto; 
+    width: 769px!important; 
+    height: auto; 
+    max-height: 350px; 
+    margin-bottom: 10px;
+}
+
+.sticky{
+    top: 0px;
+    position: sticky;
+    z-index: 100;
+    background: inherit;
+}
+
+.mycheckbox{
+    font-size: 110%;
+    transform: scale(1.5);
+}

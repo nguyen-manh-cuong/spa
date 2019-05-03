@@ -7,7 +7,7 @@
     <mat-tab-group scroll-able>
         <mat-tab>
             <ng-template mat-tab-label>
-                {{_isNew ? l("Edit") : l("Edit")}} {{l("lịch đặt khám của bệnh nhân")}}
+                {{_isNew ? l("Edit") : l("Edit")}} {{l("thông tin đặt khám")}}
             </ng-template>
             <div class="pt-4">
                 <label class="mat-title">
@@ -36,7 +36,7 @@
                     <div class="col-md-5">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l('Trạng thái')}}</mat-label>
-                            <mat-select formControlName="status">
+                            <mat-select formControlName="status" [required]="true">
                                 <!--<input [required]="true" type="text" formControlName="status" matInput>-->
                                 <mat-option *ngIf="_status.length" class="text-center" [innerHTML]="'<div class=\'text-center border-bottom w-100\'>'+ l('Bỏ chọn') +'</div>'"></mat-option>
                                 <mat-option *ngFor="let o of _status" [value]="o.id">{{ o.name }}</mat-option>
@@ -54,7 +54,7 @@
                     <div class="col-md-5">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("Họ và tên")}}</mat-label>
-                            <input maxlength="255" type="text" formControlName="bookingUser" matInput>                            
+                            <input maxlength="255" type="text" formControlName="bookingUser" [required]="true" matInput>                            
                             <validation matSuffix [control]="_frm.controls['bookingUser']"></validation>
                         </mat-form-field>
                     </div>

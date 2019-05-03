@@ -21,5 +21,6 @@ namespace SHCServer.Models
         public int DoctorId { set; get; }
         public string SpecialistCode { set; get; }
         public bool? IsDelete { get; set; }
+        public bool IsActive { get; set; }
     }
 }

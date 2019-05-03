@@ -19,7 +19,7 @@
             <div class="col-md-6" [hidden]="this.appSession.user.healthFacilitiesId">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('Unit')}}</mat-label>
-                    <input matInput [formControl]="healthfacilities" (click)="clickCbo()" (input)="onInputHealthfacilities($event.target.value)" [matAutocomplete]="auto">
+                    <input matInput [formControl]="healthfacilities" (click)="clickCbo()" [matAutocomplete]="auto">
                     <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="onSelectHealthFacilities($event.option.value)">
                         <mat-option *ngFor="let o of filteredOptions | async" [value]="o">
                             {{o.code + ' - ' + o.name}}
@@ -48,7 +48,7 @@
             <div class="col-md-4">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('FromDate')}}</mat-label>
-                    <input matInput [matDatepicker]="picker1" #startTime mask="00/00/0000" maxlength="10" required>
+                    <input matInput [matDatepicker]="picker1" #startTime mask="0*" maxlength="8" required>
                     <mat-datepicker-toggle matSuffix [for]="picker1" class="t-2"></mat-datepicker-toggle>
                     <mat-datepicker #picker1></mat-datepicker>
                 </mat-form-field>
@@ -56,7 +56,7 @@
             <div class="col-md-4">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('ToDate')}}</mat-label>
-                    <input matInput [matDatepicker]="picker2" #endTime mask="00/00/0000" maxlength="10" required>
+                    <input matInput [matDatepicker]="picker2" #endTime mask="0*" maxlength="8" required>
                     <mat-datepicker-toggle matSuffix [for]="picker2" class="t-2"></mat-datepicker-toggle>
                     <mat-datepicker #picker2></mat-datepicker>
                 </mat-form-field>

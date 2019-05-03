@@ -79,7 +79,7 @@
             <div class="col-md-3">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('Ngày sinh')}}</mat-label>
-                    <input matInput #birthday mask="00/00/0000" [matDatepicker]="picker" maxlength="10">
+                    <input matInput #birthday [matDatepicker]="picker" mask="0*" maxlength="8">
                     <mat-datepicker-toggle matSuffix [for]="picker" class="t-2"></mat-datepicker-toggle>
                     <mat-datepicker #picker></mat-datepicker>
                 </mat-form-field>

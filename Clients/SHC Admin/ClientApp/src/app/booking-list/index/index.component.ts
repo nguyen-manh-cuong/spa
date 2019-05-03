@@ -45,10 +45,10 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
     healthfacilities = new FormControl();
     filteredOptions: Observable<IHealthfacilities[]>;
     displayedColumns = ['orderNumber', 'code', 'patient', 'gender', 'phone', 'year', 'description', 'doctor', 'examinationDate', 'status', 'task'];
-    status = [{ id: 4, name: 'Tất cả' }, { id: 3, name: 'Hủy khám' }, { id: 2, name: 'Đã khám' }, { id: 1, name: 'Chưa khám' }, { id: 0, name: 'Mới đăng ký' }];
+    status = [{ id: 4, name: 'Tất cả' }, { id: 3, name: 'Hủy khám' }, { id: 2, name: 'Đã khám' }, { id: 1, name: 'Chờ khám' }, { id: 0, name: 'Mới đăng ký' }];
    
         times = [  
-           { id: 0, name: 'Hôm nay' }, { id: 1, name: 'Hôm qua' }, { id: 2, name: 'Tuần nay' }, { id: 3, name: 'Tuần trước' }, { id: 4, name: 'Tháng này' }, { id: 5, name: 'Tháng trước' },
+           { id: 0, name: 'Hôm nay' }, { id: 1, name: 'Hôm qua' }, { id: 2, name: 'Tuần này' }, { id: 3, name: 'Tuần trước' }, { id: 4, name: 'Tháng này' }, { id: 5, name: 'Tháng trước' },
             { id: 6, name: 'Quý này' }, { id: 7, name: 'Quý trước' }, { id: 8, name: 'Năm nay' },  { id: 9, name: 'Năm trước' }, { id: 10, name: 'Theo khoảng thời gian' }, ];
     dialogDetail: any;
     dialogReasonReject: any;
@@ -88,7 +88,10 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
         if(this.appSession.user.healthFacilitiesId) {
             this.dataService.getAll('healthfacilities', "{healthfacilitiesId:"+String(this.appSession.user.healthFacilitiesId)+"}").subscribe(resp => this._healthfacilities = resp.items);
             this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId);
-            this.dataService.getAll('doctors', String(this.appSession.user.healthFacilitiesId)).subscribe(resp => this._doctors = resp.items);
+            this.dataService.getAll('doctors', String(this.appSession.user.healthFacilitiesId)).subscribe(resp => {
+                console.log(resp.items);
+                this._doctors = resp.items;
+            });
         }
         else{
             this.dataService.getAll('healthfacilities').subscribe(resp => this._healthfacilities = resp.items);
@@ -206,7 +209,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
             case 0:
                 return 'Mới đăng ký';
             case 1:
-                return 'Chưa khám';
+                return 'Chờ khám';
             case 2:
                 return 'Đã khám';
             case 3:
@@ -302,6 +305,10 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
     }
 
     customSearch() {
+        if (this.frmSearch.controls['packagesNameDescription'].value != null) {
+            this.frmSearch.controls['packagesNameDescription'].setValue(this.frmSearch.controls['packagesNameDescription'].value.trim());
+        }
+        
         if (!this.endTime.nativeElement.value && !this.startTime.nativeElement.value) {
             return swal({
                 title:'Thông báo', 
