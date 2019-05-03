@@ -12,18 +12,18 @@ import { TaskComponent } from '@app/sms-template-task/task/task.component';
 import swal from 'sweetalert2';
 import * as moment from 'moment';
 
-import {MomentDateAdapter} from '@angular/material-moment-adapter';
-import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
+import { MomentDateAdapter } from '@angular/material-moment-adapter';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 
 export const MY_FORMATS = {
     parse: {
-      dateInput: 'DD/MM/YYYY',
+        dateInput: 'DD/MM/YYYY',
     },
     display: {
-      dateInput: 'DD/MM/YYYY',
-      monthYearLabel: 'MMM YYYY',
-      dateA11yLabel: 'LL',
-      monthYearA11yLabel: 'MMMM YYYY',
+        dateInput: 'DD/MM/YYYY',
+        monthYearLabel: 'MMM YYYY',
+        dateA11yLabel: 'LL',
+        monthYearA11yLabel: 'MMMM YYYY',
     },
 };
 
@@ -32,8 +32,8 @@ export const MY_FORMATS = {
     templateUrl: './index.component.html',
     styleUrls: ['./index.component.scss'],
     providers: [
-        {provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE]},
-        {provide: MAT_DATE_FORMATS, useValue: MY_FORMATS},
+        { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
+        { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
     ],
     encapsulation: ViewEncapsulation.None
 })
@@ -59,7 +59,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     _months = [{ id: 13, name: 'Tất cả' }, { id: 1, name: 'Tháng 1' }, { id: 2, name: 'Tháng 2' }, { id: 3, name: 'Tháng 3' }, { id: 4, name: 'Tháng 4' }, { id: 5, name: 'Tháng 5' }, { id: 6, name: 'Tháng 6' }, { id: 7, name: 'Tháng 7' }, { id: 8, name: 'Tháng 8' }, { id: 9, name: 'Tháng 9' }, { id: 10, name: 'Tháng 10' }, { id: 11, name: 'Tháng 11' }, { id: 12, name: 'Tháng 12' },];
     _days = [{ id: 32, name: 'Tất cả' }];
 
-    constructor(injector: Injector, private _dataService: DataService , public dialog: MatDialog, private _formBuilder: FormBuilder) {
+    constructor(injector: Injector, private _dataService: DataService, public dialog: MatDialog, private _formBuilder: FormBuilder) {
         super(injector);
     }
 
@@ -68,7 +68,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
         this.frmSearch = this._formBuilder.group({
             healthfacilities: [],
             doctor: [],
-            status: [0],
+            statusBirthday: [0],
             patientCode: [],
             patientName: [],
             insurrance: [],
@@ -99,7 +99,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
         //this.frmSearch.controls['birthdayTo'].setValue(new Date(new Date().setDate(new Date().getDate() + this.frmSearch.controls['about'].value)));
         this.dataService.getAll('provinces').subscribe(resp => this._provinces = resp.items);
         this.dataService.getAll('healthfacilities', (this.appSession.user.healthFacilitiesId ? String(this.appSession.user.healthFacilitiesId) : '')).subscribe(resp => this._healthfacilities = resp.items);
-        if(this.appSession.user.healthFacilitiesId) this.dataService.getAll('doctors', String(this.appSession.user.healthFacilitiesId)).subscribe(resp => this._doctors = resp.items);
+        if (this.appSession.user.healthFacilitiesId) this.dataService.getAll('doctors', String(this.appSession.user.healthFacilitiesId)).subscribe(resp => this._doctors = resp.items);
 
         this.appSession.user.healthFacilitiesId ? this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId) : this.filterOptions();
     }
@@ -163,15 +163,16 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     customSearch() {
         this.healthfacilities.value ? this.frmSearch.controls['healthfacilities'].setValue(this.healthfacilities.value.healthFacilitiesId) : (this.appSession.user.healthFacilitiesId == null ? this.frmSearch.controls['healthfacilities'].setValue(null) : '');
         this.btnSearchClicks$.next();
+        console.log(this.dataSources);
     }
 
     showMess(type: number) {
-        if(type == 1 ) swal('Thông báo', 'Chưa chọn bệnh nhân', 'warning');
+        if (type == 1) swal('Thông báo', 'Chưa chọn bệnh nhân', 'warning');
     }
 
     openCustomDialog(): void {
-        const dialogRef = this.dialog.open(this.dialogComponent, { minWidth: 'calc(100vw/2)', maxWidth: 'calc(100vw - 300px)', disableClose: true, data: {selection: this.selection, type: 2} });
-        
+        const dialogRef = this.dialog.open(this.dialogComponent, { minWidth: 'calc(100vw/2)', maxWidth: 'calc(100vw - 300px)', disableClose: true, data: { selection: this.selection, type: 2 } });
+
         dialogRef.afterClosed().subscribe(() => {
             this.paginator.pageIndex = 0;
             this.paginator._changePageSize(this.paginator.pageSize);
@@ -181,31 +182,31 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
 
     sendSms() {
         this._isRequest = true;
-        setTimeout(() => this._isRequest = false ,3000)
+        setTimeout(() => this._isRequest = false, 3000)
 
-        if(!this.appSession.user.healthFacilitiesId){
+        if (!this.appSession.user.healthFacilitiesId) {
             return this.openCustomDialog();
         }
-        this._dataService.get('healthfacilitiesconfigs', JSON.stringify({ 
+        this._dataService.get('healthfacilitiesconfigs', JSON.stringify({
             code: "A02.SMSSINHNHAT",
             healthFacilitiesId: this.appSession.user.healthFacilitiesId
         }), '', 0, 0).subscribe(resp => {
-            if(!resp || !resp.items){    
+            if (!resp || !resp.items) {
                 return this.openCustomDialog();
-            } 
+            }
 
             this._dataService.create('infosms', {
-                lstMedicalHealthcareHistories: this.selection.selected, 
-                healthFacilitiesId: this.appSession.user.healthFacilitiesId,         
+                lstMedicalHealthcareHistories: this.selection.selected,
+                healthFacilitiesId: this.appSession.user.healthFacilitiesId,
                 smsTemplateId: resp.items.values,
-                type: 2, 
+                type: 2,
                 content: ''
             })
-            .subscribe(resp => {
-                swal('Thông báo', resp, 'error');
-                this.selection = new SelectionModel<IMedicalHealthcareHistories>(true, []);
-                abp.ui.clearBusy('#main-container');
-            }, err => {});
-        });   
+                .subscribe(resp => {
+                    swal('Thông báo', resp, 'error');
+                    this.selection = new SelectionModel<IMedicalHealthcareHistories>(true, []);
+                    abp.ui.clearBusy('#main-container');
+                }, err => { });
+        });
     }
 }

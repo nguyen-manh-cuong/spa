@@ -53,7 +53,8 @@ namespace SHCServer.Controllers
 
             if (filter != null)
             {
-                foreach (var (key, value) in JsonConvert.DeserializeObject<Dictionary<string, string>>(filter))
+                var data = JsonConvert.DeserializeObject<Dictionary<string, string>>(filter);
+                foreach (var (key, value) in data)
                 {
                     if (string.IsNullOrEmpty(value) || value == "false" || value == "0") continue;
                     if (string.Equals(key, "healthfacilities"))
@@ -89,9 +90,21 @@ namespace SHCServer.Controllers
                         {
                             clause.Add("and h.IsReExamination = 1");
                         }
-                        else
+                        else if (value == "2")
                         {
-                            clause.Add("and h.IsReExamination != 1");
+                            clause.Add("and h.IsReExamination = 0");
+                        }
+                    }
+
+                    if (string.Equals(key, "statusBirthday"))
+                    {
+                        if (value == "1")
+                        {
+                            clause.Add("and h.isBirthDay = 1");
+                        }
+                        else if (value == "2")
+                        {
+                            clause.Add("and h.isBirthDay = 0");
                         }
                     }
 
@@ -132,39 +145,62 @@ namespace SHCServer.Controllers
                     }
                     if (string.Equals(key, "birthdayDate") && value != "32")
                     {
-                        clause.Add("and p.BirthDate = @FromDate");
-                        param.Add(DbParam.Create("@FromDate", value));
+                        clause.Add("and p.BirthDate = @FromBirthdayDate");
+                        param.Add(DbParam.Create("@FromBirthdayDate", value));
                     }
                     if (string.Equals(key, "birthdayMonth") && value != "13")
                     {
-                        clause.Add("and p.BirthMonth = @FromMonth");
-                        param.Add(DbParam.Create("@FromMonth", value));
+                        clause.Add("and p.BirthMonth = @FromBirthdayMonth");
+                        param.Add(DbParam.Create("@FromBirthdayMonth", value));
                     }
-                    if (string.Equals(key, "fromDay") && value != "32")
-                    {
-                        clause.Add("and p.BirthDate >= @FromDay");
-                        param.Add(DbParam.Create("@FromDay", value));
-                    }
-                    if (string.Equals(key, "toDay") && value != "32")
-                    {
-                        clause.Add("and p.BirthDate <= @ToDay");
-                        param.Add(DbParam.Create("@ToDay", value));
-                    }
-                    if (string.Equals(key, "fromMonth") && value != "13")
-                    {
-                        clause.Add("and p.BirthMonth >= @FromMonth");
-                        param.Add(DbParam.Create("@FromMonth", value));
-                    }
-                    if (string.Equals(key, "toMonth") && value != "13")
-                    {
-                        clause.Add("and p.BirthMonth <= @ToMonth");
-                        param.Add(DbParam.Create("@ToMonth", value));
-                    }
+
                     if (string.Equals(key, "sex"))
                     {
                         clause.Add("and p.Gender = @Gender");
                         param.Add(DbParam.Create("@Gender", value));
                     }
+
+                }
+
+                if (data.ContainsKey("fromMonth") && data["fromMonth"] != "13")
+                {
+                    param.Add(DbParam.Create("@FromMonth", data["fromMonth"]));
+                }
+                else
+                {
+                    param.Add(DbParam.Create("@FromMonth", "0"));
+                }
+
+                if (data.ContainsKey("toMonth") && data["toMonth"] != "13")
+                {
+                    param.Add(DbParam.Create("@ToMonth", data["toMonth"]));
+                }
+                else
+                {
+                    param.Add(DbParam.Create("@ToMonth", "13"));
+                }
+
+                if (data.ContainsKey("fromDay") && data["fromDay"] != "32")
+                {
+                    param.Add(DbParam.Create("@FromDay", data["fromDay"]));
+                }
+                else
+                {
+                    param.Add(DbParam.Create("@FromDay", "0"));
+                }
+
+                if (data.ContainsKey("toDay") && data["toDay"] != "32")
+                {
+                    param.Add(DbParam.Create("@ToDay", data["toDay"]));
+                }
+                else
+                {
+                    param.Add(DbParam.Create("@ToDay", "32"));
+                }
+
+                if ((data.ContainsKey("fromMonth") && data["fromMonth"] != "13") || (data.ContainsKey("toMonth") && data["toMonth"] != "13") || (data.ContainsKey("fromDay") && data["fromDay"] != "32") || (data.ContainsKey("toDay") && data["toDay"] != "32"))
+                {
+                    clause.Add("WHERE (p.BirthMonth < @toMonth OR (p.BirthMonth = @toMonth AND p.BirthDate <= @ToDay)) AND (p.BirthMonth > @FromMonth OR (p.BirthMonth = @FromMonth AND p.BirthDate >= @FromDay))");
                 }
             }
 
