@@ -36,15 +36,17 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
   districts = [];
   checkProvince = false;
   _healthfacilities = [];
-    specialist = [];
-    _healthFacilitiesId: number;
+  _specialist = [];
+  _healthFacilitiesId: number;
+  _specialistCode: number;
 
 
   filteredHealthFacilitiesOptions: Observable<IHealthfacilities[]>;
-
+  filteredSpecialistOptions: Observable<ICategoryCommon[]>;
   healthfacilities = new FormControl();
+  specialistCode = new FormControl();
 
-  displayedColumns = ['orderNumber', 'fullName', 'specialistName', 'phoneNumber', 'address', 'priceFrom', 'allowBooking', 'allowFilter', 'allowSearch', 'task'];
+  displayedColumns = ['orderNumber', 'fullName', 'specialist', 'phoneNumber', 'address', 'priceFrom', 'allowBooking', 'allowFilter', 'allowSearch', 'task'];
 
   constructor(injector: Injector, private _dataService: DataService, public dialog: MatDialog, private _formBuilder: FormBuilder) { super(injector); }
 
@@ -53,26 +55,27 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
     this.api = 'doctor';
     this.dataService = this._dataService;
     this.dialogComponent = TaskComponent;
-    this.frmSearch = this._formBuilder.group({ provinceCode: [], districtCode: [], info: [], healthfacilities: [], specialistCode: [] });
+    this.frmSearch = this._formBuilder.group({ provinceCode: [], districtCode: [], info: [], healthfacilitiesId: [], specialistCode: [] });
+
     this.getProvinces();
     this.getSpecialist();
 
-    this.dataService.getAll("healthfacilities","{healthFacilitiesId:'"+ String(this.appSession.user.healthFacilitiesId)+"'}")
-      .subscribe(resp => this._healthfacilities = resp.items);
     if (this.appSession.user.healthFacilitiesId) {
-      this.dataService.getAll("healthfacilities","{healthFacilitiesId:'"+ String(this.appSession.user.healthFacilitiesId)+"'}")
-        .subscribe(resp => this.dataSources = resp.items);
+      this.dataService.getAll('healthfacilities', "{healthfacilitiesId:" + String(this.appSession.user.healthFacilitiesId) + "}").subscribe(resp => this._healthfacilities = resp.items);
+      this.frmSearch.controls['healthfacilitiesId'].setValue(this.appSession.user.healthFacilitiesId);
     }
-        this.appSession.user.healthFacilitiesId ? this.frmSearch.controls['healthfacilities']
-      .setValue(this.appSession.user.healthFacilitiesId) : this.filterOptions();
-
+    else {
+      this.dataService.getAll('healthfacilities').subscribe(resp => this._healthfacilities = resp.items);
+      this.filterOptions();
+    }
   }
   showErrorDeleteMessage() {
     swal({
-      title:this.l('ErrorDelete'), 
-      text:this.l('DoctorErrorDeleted', ''), 
-      type:'error',
-      timer:3000});
+      title: this.l('ErrorDelete'),
+      text: this.l('DoctorErrorDeleted', ''),
+      type: 'error',
+      timer: 3000
+    });
   }
 
   deleteDialogDoctor(obj: DoctorEntityDto, key: string, doctorId?: number | string) {
@@ -90,10 +93,11 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
       if (result.value) {
         this.dataService.delete(this.api, obj[doctorId ? doctorId : 'doctorId']).subscribe(() => {
           swal({
-            title:this.l('SuccessfullyDeleted'), 
-            text:this.l('DeletedInSystem', obj[key]), 
-            type:'success',
-            timer:3000});
+            title: this.l('SuccessfullyDeleted'),
+            text: this.l('DeletedInSystem', obj[key]),
+            type: 'success',
+            timer: 3000
+          });
           this.paginator.pageIndex = 0;
           this.paginator._changePageSize(this.paginator.pageSize);
         });
@@ -130,8 +134,8 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
 
   resetSearch() {
     this.provinces = null;
-    this.specialist = null;
-    this.specialist = null;
+    this._specialist = null;
+
     if (!this.appSession.user.healthFacilitiesId) {
       this._healthfacilities = null;
     }
@@ -155,10 +159,11 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
           obj.updateUserId = this.appSession.userId;
           this.dataService.update(this.api + "?allow=1", obj).subscribe(() => {
             swal({
-              title:this.l('DoctorUpdateAllowCompleteTitle'), 
-              text:this.l('DoctorTitle') + ' ' + obj.fullName + ' ' + this.ll('DoctorUpdateAllowBookingSuccessfully', obj.fullName),
+              title: this.l('DoctorUpdateAllowCompleteTitle'),
+              text: this.l('DoctorTitle') + ' ' + obj.fullName + ' ' + this.ll('DoctorUpdateAllowBookingSuccessfully', obj.fullName),
               type: 'success',
-              timer:3000});
+              timer: 3000
+            });
             this.paginator.pageIndex = 0;
             this.paginator._changePageSize(this.paginator.pageSize);
           });
@@ -184,10 +189,11 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
           obj.updateUserId = this.appSession.userId;
           this.dataService.update(this.api + "?allow=1", obj).subscribe(() => {
             swal({
-              title:this.l('DoctorUpdateAllowCompleteTitle'), 
-              text:this.l('DoctorTitle') + ' ' + obj.fullName + ' ' + this.ll('DoctorCancelAllowBookingSuccessfully', obj.fullName), 
-              type:'success',
-              timer:3000});
+              title: this.l('DoctorUpdateAllowCompleteTitle'),
+              text: this.l('DoctorTitle') + ' ' + obj.fullName + ' ' + this.ll('DoctorCancelAllowBookingSuccessfully', obj.fullName),
+              type: 'success',
+              timer: 3000
+            });
             this.paginator.pageIndex = 0;
             this.paginator._changePageSize(this.paginator.pageSize);
           });
@@ -216,10 +222,11 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
           obj.updateUserId = this.appSession.userId;
           this.dataService.update(this.api + "?allow=1", obj).subscribe(() => {
             swal({
-              title:this.l('DoctorUpdateAllowCompleteTitle'), 
-              text:this.l('DoctorTitle') + ' ' + obj.fullName + ' ' + this.ll('DoctorUpdateAllowFilterSuccessfully', obj.fullName),
+              title: this.l('DoctorUpdateAllowCompleteTitle'),
+              text: this.l('DoctorTitle') + ' ' + obj.fullName + ' ' + this.ll('DoctorUpdateAllowFilterSuccessfully', obj.fullName),
               type: 'success',
-              timer:3000});
+              timer: 3000
+            });
             this.paginator.pageIndex = 0;
             this.paginator._changePageSize(this.paginator.pageSize);
           });
@@ -245,10 +252,11 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
           obj.updateUserId = this.appSession.userId;
           this.dataService.update(this.api + "?allow=1", obj).subscribe(() => {
             swal({
-              title:this.l('DoctorUpdateAllowCompleteTitle'), 
-              text:this.l('DoctorTitle') + ' ' + obj.fullName + ' ' + this.ll('DoctorCancelAllowFilterSuccessfully', obj.fullName), 
-              type:'success',
-              timer:3000});
+              title: this.l('DoctorUpdateAllowCompleteTitle'),
+              text: this.l('DoctorTitle') + ' ' + obj.fullName + ' ' + this.ll('DoctorCancelAllowFilterSuccessfully', obj.fullName),
+              type: 'success',
+              timer: 3000
+            });
             this.paginator.pageIndex = 0;
             this.paginator._changePageSize(this.paginator.pageSize);
           });
@@ -277,10 +285,11 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
           obj.updateUserId = this.appSession.userId;
           this.dataService.update(this.api + "?allow=1", obj).subscribe(() => {
             swal({
-              title:this.l('DoctorUpdateAllowCompleteTitle'), 
-              text:this.l('DoctorTitle') + ' ' + obj.fullName + ' ' + this.l('DoctorUpdateAllowSearchSuccessfully', obj.fullName),
+              title: this.l('DoctorUpdateAllowCompleteTitle'),
+              text: this.l('DoctorTitle') + ' ' + obj.fullName + ' ' + this.l('DoctorUpdateAllowSearchSuccessfully', obj.fullName),
               type: 'success',
-              timer:3000});
+              timer: 3000
+            });
             this.paginator.pageIndex = 0;
             this.paginator._changePageSize(this.paginator.pageSize);
           });
@@ -306,10 +315,11 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
           obj.updateUserId = this.appSession.userId;
           this.dataService.update(this.api + "?allow=1", obj).subscribe(() => {
             swal({
-              title:this.l('DoctorUpdateAllowCompleteTitle'), 
-              text:this.l('DoctorTitle') + ' ' + obj.fullName + ' ' + this.l('DoctorCancelAllowSearchSuccessfully', obj.fullName), 
-              type:'success',
-              timer:3000});
+              title: this.l('DoctorUpdateAllowCompleteTitle'),
+              text: this.l('DoctorTitle') + ' ' + obj.fullName + ' ' + this.l('DoctorCancelAllowSearchSuccessfully', obj.fullName),
+              type: 'success',
+              timer: 3000
+            });
             this.paginator.pageIndex = 0;
             this.paginator._changePageSize(this.paginator.pageSize);
           });
@@ -320,28 +330,43 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
     }
   }
 
-  //Chua get dc don vi chua co api controller
+
   getHealthfacilities(provinceCode, districtCode?) {
     if (!this.appSession.user.healthFacilitiesId) {
       if (districtCode == null) {
-        this.dataService.getAll("healthfacilities","{ provinceCode:" + provinceCode + "}")
+        this.dataService.getAll("healthfacilities", "{ provinceCode:" + provinceCode + "}")
           .subscribe(resp => this._healthfacilities = resp.items);
       }
       else {
-        this.dataService.getAll("healthfacilities","{provinceCode:" + provinceCode + ",districtCode:" + districtCode + "}")
+        this.dataService.getAll("healthfacilities", "{provinceCode:" + provinceCode + ",districtCode:" + districtCode + "}")
           .subscribe(resp => this._healthfacilities = resp.items)
       }
     }
+    this.healthfacilities.setValue('');
   }
 
 
   getSpecialist() {
-    this.dataService.getAll("catcommon?maxResultCount=1000").subscribe(resp => this.specialist = resp.items);
+    this.dataService.getAll("catcommon?maxResultCount=1000").subscribe(resp => this._specialist = resp.items);
   }
 
-  _filter(name: string): IHealthfacilities[] {
+
+  //Auto complete health facilities
+
+  displayFn(h?: IHealthfacilities): string | undefined {
+    return h ? h.name : undefined;
+  }
+
+  _filterHealthfacilities(name: any): IHealthfacilities[] {
     const filterValue = name.toLowerCase();
-    return this._healthfacilities.filter(h => h.name.toLowerCase().indexOf(filterValue) === 0);
+    var healthfacilities = isNaN(filterValue) ?
+      this._healthfacilities.filter(h => h.name.toLowerCase().indexOf(filterValue) === 0) :
+      this._healthfacilities.filter(h => h.code.toLowerCase().indexOf(filterValue) === 0);
+    return healthfacilities;
+  }
+
+  clickCbo() {
+    !this.healthfacilities.value ? this.filterOptions() : '';
   }
 
   filterOptions() {
@@ -349,39 +374,71 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
       .pipe(
         startWith<string | IHealthfacilities>(''),
         map(value => typeof value === 'string' ? value : value.name),
-        map(name => name ? this._filter(name) : this._healthfacilities.slice()),
-        map(data => data)
-        );
+        map(name => name ? this._filterHealthfacilities(name) : this._healthfacilities.slice()),
+        map(data => data.slice())
+      );
   }
 
-  clickCbo() {
-    if (!this.healthfacilities.value && this.checkProvince) {
-      this.filterOptions();
+  onInputHealthfacilities(obj: any) {
+    this.frmSearch.controls['healthfacilitiesId'].setValue("");
+    this._healthFacilitiesId = null;
+  }
+
+  onSelectHealthFacilities(value: any) {
+    if (value.healthFacilitiesId) {
+      this.frmSearch.controls['healthfacilitiesId'].setValue(value.healthFacilitiesId);
+      this._healthFacilitiesId = value.healthFacilitiesId;
     }
   }
+  //End auto complete health facilities
 
-    displayFn(h?: IHealthfacilities): string | undefined {
-          
+  ///////////////////////////////////
+
+  //Auto complete specialist
+  displaySpecialistFn(h?: ICategoryCommon): string | undefined {
     return h ? h.name : undefined;
-}
-
-    getPosts(userId: IHealthfacilities){
-        console.log(userId.healthFacilitiesId);
-        this._healthFacilitiesId = userId.healthFacilitiesId;
   }
 
-    customSearch() {
-        console.log(this._healthFacilitiesId);
-        if (this._healthFacilitiesId) {
-            this.frmSearch.controls['healthfacilities'].setValue(this._healthFacilitiesId);
-            console.log(this._healthFacilitiesId);
 
-        }
+  _filterSpecialist(name: any): ICategoryCommon[] {
+    const filterValue = name.toLowerCase();
+    var specialist = isNaN(filterValue) ?
+      this._specialist.filter(c => c.code.toLowerCase().indexOf(filterValue) === 0) :
+      this._specialist.filter(c => c.name.toLowerCase().indexOf(filterValue) === 0);
+    return specialist;
+  }
 
+  clickSpecialistCbo() {
+    !this.specialistCode.value ? this.filterSpecialistOptions() : '';
+  }
 
+  filterSpecialistOptions() {
+    this.filteredSpecialistOptions = this.specialistCode.valueChanges
+      .pipe(
+        startWith<string | ICategoryCommon>(''),
+        map(value => typeof value === 'string' ? value : value.name),
+        map(name => name ? this._filterSpecialist(name) : this._specialist.slice()),
+        map(data => data.slice())
+      );
+  }
 
-        this.btnSearchClicks$.next();
+  onInputSpecialist(obj: any) {
+    this.frmSearch.controls['specialistCode'].setValue("");
+    this._specialistCode = null;
+  }
+
+  onSelectSpecialist(value: any) {
+    if (value.code) {
+      this.frmSearch.controls['specialistCode'].setValue(value.code);
+      this._specialistCode = value.code;
     }
+  }
+  //End auto complete specialist
+  customSearch() {
+    this.frmSearch.controls['healthfacilitiesId'].setValue(this._healthFacilitiesId);
+    this.frmSearch.controls['specialistCode'].setValue(this._specialistCode);
+    this.btnSearchClicks$.next();
+  }
 
   openDialogDoctor(obj?: EntityDto): void {
     const dialogRef = this.dialog.open(this.dialogComponent, { minWidth: 'calc(100vw/1.5)', maxWidth: 'calc(100vw - 100px)', disableClose: true, data: obj ? obj : null });

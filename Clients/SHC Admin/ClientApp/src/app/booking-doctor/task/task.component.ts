@@ -114,7 +114,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
         setTimeout(() => {
             console.log(obj.healthFacilitiesId);
             this.dataService.getAll('doctors', obj.healthFacilitiesId).subscribe(resp => this._doctors = resp.items);
-            this.dataService.getAll('bookingtimeslot', JSON.stringify({healthfacilities : obj.healthFacilitiesId})).subscribe(resp => this._timeSlot = resp.items);
+            this.dataService.getAll('bookingtimeslot', JSON.stringify({healthfacilities : obj.healthFacilitiesId})).subscribe(resp => this._timeSlot = _.orderBy(resp.items, ['hoursStart'], ['asc']));
         }, 500);
     }
 
@@ -136,7 +136,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
     //
     submit(status: any) {
         if(this.checkDate()) return;
-        if(!this._lstTimeSlot.length) return swal(this.l('Notification'), this.l('Lịch khám không được để trống'), 'warning');
+        if(!this._lstTimeSlot.length) return swal(this.l('Notification'), this.l('ExamScheduleNotNull'), 'warning');
         var params = this._frm.value;
         params.lstTimeSlot = this._lstTimeSlot;
         params.status = status;
@@ -179,7 +179,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
         }
 
         if(((moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').valueOf() - moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').valueOf()) / (1000*60*60*24)) > 6){
-            swal(this.l('Notification'), this.l('Không được vượt quá 7 ngày kể từ Từ ngày'), 'warning');
+            swal(this.l('Notification'), this.l('Within7Day'), 'warning');
             return true;
         }
 

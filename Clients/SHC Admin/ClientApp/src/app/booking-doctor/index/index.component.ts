@@ -76,8 +76,7 @@ import { startWith, map } from 'rxjs/operators';
         });
       } else{
         this.appSession.user.healthFacilitiesId == null ? this.frmSearch.controls['healthfacilities'].setValue(null) : '';
-        console.log(79, this.frmSearch.controls['healthfacilities'].value);
-        swal(this.l('Notification'), this.l('Đơn vị và Bác sĩ không được để trống'), 'warning');
+        swal(this.l('Notification'), this.l('HealthfacilitiesAndDoctorNotNull'), 'warning');
       }    
     }
 
