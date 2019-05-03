@@ -220,7 +220,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
             });
         }
 
-        var startTime = moment(this.frmSearch.controls['startTime'].value, 'DD/MM/YYYY').toDate();
+        var startTime = moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').toDate();
         var endTime = moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').toDate();
 
         if (endTime.getFullYear() - startTime.getFullYear() > 1) {
@@ -260,6 +260,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
         this.birthday.nativeElement.value ? this.frmSearch.controls['birthdayDate'].setValue(moment(this.birthday.nativeElement.value, 'DD/MM/YYYY').toDate().getDate()) : '';
         this.birthday.nativeElement.value ? this.frmSearch.controls['birthdayMonth'].setValue(moment(this.birthday.nativeElement.value, 'DD/MM/YYYY').toDate().getMonth() + 1) : '';
         this.endTime.nativeElement.value ? this.frmSearch.controls['endTime'].setValue(endTime) : '';
+        this.startTime.nativeElement.value ? this.frmSearch.controls['startTime'].setValue(startTime) : '';
         this.btnSearchClicks$.next();
     }
 

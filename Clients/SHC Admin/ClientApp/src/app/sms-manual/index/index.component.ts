@@ -82,10 +82,20 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
         this.dialogComponent = TaskComponent;
         this.dataService = this._dataService;
         this.dataService.getAll('provinces').subscribe(resp => this._provinces = resp.items);
-        this.dataService.getAll('healthfacilities', (this.appSession.user.healthFacilitiesId ? String(this.appSession.user.healthFacilitiesId) : '')).subscribe(resp => this._healthfacilities = resp.items);
-        if(this.appSession.user.healthFacilitiesId) this.dataService.getAll('doctors', String(this.appSession.user.healthFacilitiesId)).subscribe(resp => this._doctors = resp.items);
         
-        this.appSession.user.healthFacilitiesId ? this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId) : this.filterOptions();
+        // this.dataService.getAll('healthfacilities', (this.appSession.user.healthFacilitiesId ? String(this.appSession.user.healthFacilitiesId) : '')).subscribe(resp => this._healthfacilities = resp.items);
+        // if(this.appSession.user.healthFacilitiesId) this.dataService.getAll('doctors', String(this.appSession.user.healthFacilitiesId)).subscribe(resp => this._doctors = resp.items);
+        
+        // this.appSession.user.healthFacilitiesId ? this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId) : this.filterOptions();
+
+        if(this.appSession.user.healthFacilitiesId) {
+            this.dataService.getAll('healthfacilities', "{healthfacilitiesId:"+String(this.appSession.user.healthFacilitiesId)+"}").subscribe(resp => this._healthfacilities = resp.items);
+            this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId);      
+          }
+          else{
+              this.dataService.getAll('healthfacilities').subscribe(resp => this._healthfacilities = resp.items);
+              this.filterOptions();
+          }
     }
 
 

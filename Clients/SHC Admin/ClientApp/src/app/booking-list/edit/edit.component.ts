@@ -27,7 +27,7 @@ export class EditComponent extends AppComponentBase implements OnInit, AfterView
         address: '', district: '', province: '', email: '', bookingRepresent: '', phoneRepresent: '', emailRepresent: ''
     };
     selectedStatus = "";
-    _status = [{ id: 3, name: 'Hủy khám' }, { id: 2, name: 'Đã khám' }, { id: 1, name: 'Chưa khám' }, { id: 0, name: 'Mới đăng ký' }];
+    _status = [{ id: 3, name: 'Hủy khám' }, { id: 2, name: 'Đã khám' }, { id: 1, name: 'Chờ khám' }, { id: 0, name: 'Mới đăng ký' }];
     _context: any;
     _isShow: boolean = false;
     _isNew: boolean = true;
