@@ -21,13 +21,13 @@ export class ReasonComponent extends AppComponentBase implements OnInit {
     api: string = 'bookinginformations';
     _context: any;
     _frm: FormGroup;
-    ValidationRule = new ValidationRule();
+    
 
     _booking: IBookingInformations | any = {
         fullName: '', examinationDate: '', reason: '', status: '', bookingUser: '', phoneNumber: '', gender: '', year: '',
         address: '', district: '', province: '', email: '', bookingRepresent: '', phoneRepresent: '', emailRepresent: ''
     };
-
+    @ViewChild("txtReason") txtReason: MatInput;
     constructor(
         injector: Injector,
         private _dataService: DataService,
@@ -39,13 +39,14 @@ export class ReasonComponent extends AppComponentBase implements OnInit {
         }
 
     ngOnInit() {
+        const validationRule = new ValidationRule();
         if (this.bookingData) {
             this._booking = _.clone(this.bookingData);
         }
 
         this._context = {
             bookingId: [this._booking.bookingId],
-            reasonReject: [''],
+            reasonReject: ['', [Validators.required, validationRule.hasValue]],
         };
         this._frm = this._formBuilder.group(this._context);
     }
@@ -60,12 +61,14 @@ export class ReasonComponent extends AppComponentBase implements OnInit {
         }
 
         if(params.reasonReject===''){
+            
             swal({
                 title: this.l('Thông báo'),
                 text: 'Không được bỏ trống',
                 type: 'warning',
                 timer: 3000
             })
+            this.txtReason.focus();
         }
         else{
             this._dataService.update(this.api, params).subscribe(() => {
