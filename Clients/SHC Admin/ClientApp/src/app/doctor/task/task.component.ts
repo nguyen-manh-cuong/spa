@@ -339,7 +339,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   }
 
   onInputHealthfacilities(obj: any) {
-    this._frm.controls['healthfacilities'].setValue("");
+    this._frm.controls['healthfacilities'].setValue(0);
     this._healthFacilitiesId = null;
   }
 
