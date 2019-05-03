@@ -118,7 +118,7 @@ namespace SHCServer.Controllers
         {
             var objs = _context
                 .JoinQuery<Doctor, HealthFacilitiesDoctors>((d, h) => new object[] { JoinType.InnerJoin, d.DoctorId == h.DoctorId })
-                .Where((d, h) => d.IsDelete == false && d.IsActive == true);
+                .Where((d, h) => d.IsDelete == false && d.IsActive == true && h.IsDelete == false);
 
             if (!string.IsNullOrEmpty(filter)) objs = objs.Where((d, h) => h.HealthFacilitiesId == int.Parse(filter));
 

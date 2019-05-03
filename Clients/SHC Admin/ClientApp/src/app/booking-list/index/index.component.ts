@@ -45,7 +45,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
     healthfacilities = new FormControl();
     filteredOptions: Observable<IHealthfacilities[]>;
     displayedColumns = ['orderNumber', 'code', 'patient', 'gender', 'phone', 'year', 'description', 'doctor', 'examinationDate', 'status', 'task'];
-    status = [{ id: 4, name: 'Tất cả' }, { id: 3, name: 'Hủy khám' }, { id: 2, name: 'Đã khám' }, { id: 1, name: 'Chưa khám' }, { id: 0, name: 'Mới đăng ký' }];
+    status = [{ id: 4, name: 'Tất cả' }, { id: 3, name: 'Hủy khám' }, { id: 2, name: 'Đã khám' }, { id: 1, name: 'Chờ khám' }, { id: 0, name: 'Mới đăng ký' }];
    
         times = [  
            { id: 0, name: 'Hôm nay' }, { id: 1, name: 'Hôm qua' }, { id: 2, name: 'Tuần này' }, { id: 3, name: 'Tuần trước' }, { id: 4, name: 'Tháng này' }, { id: 5, name: 'Tháng trước' },
@@ -88,7 +88,10 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
         if(this.appSession.user.healthFacilitiesId) {
             this.dataService.getAll('healthfacilities', "{healthfacilitiesId:"+String(this.appSession.user.healthFacilitiesId)+"}").subscribe(resp => this._healthfacilities = resp.items);
             this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId);
-            this.dataService.getAll('doctors', String(this.appSession.user.healthFacilitiesId)).subscribe(resp => this._doctors = resp.items);
+            this.dataService.getAll('doctors', String(this.appSession.user.healthFacilitiesId)).subscribe(resp => {
+                console.log(resp.items);
+                this._doctors = resp.items;
+            });
         }
         else{
             this.dataService.getAll('healthfacilities').subscribe(resp => this._healthfacilities = resp.items);
@@ -302,6 +305,10 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
     }
 
     customSearch() {
+        if (this.frmSearch.controls['packagesNameDescription'].value != null) {
+            this.frmSearch.controls['packagesNameDescription'].setValue(this.frmSearch.controls['packagesNameDescription'].value.trim());
+        }
+        
         if (!this.endTime.nativeElement.value && !this.startTime.nativeElement.value) {
             return swal({
                 title:'Thông báo', 
