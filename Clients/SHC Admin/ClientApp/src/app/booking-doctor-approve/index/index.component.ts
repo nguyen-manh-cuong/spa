@@ -16,13 +16,13 @@ import * as _ from 'lodash';
 
 export const MY_FORMATS = {
     parse: {
-      dateInput: 'DD/MM/YYYY',
+        dateInput: 'DD/MM/YYYY',
     },
     display: {
-      dateInput: 'DD/MM/YYYY',
-      monthYearLabel: 'MMM YYYY',
-      dateA11yLabel: 'LL',
-      monthYearA11yLabel: 'MMMM YYYY',
+        dateInput: 'DD/MM/YYYY',
+        monthYearLabel: 'MMM YYYY',
+        dateA11yLabel: 'LL',
+        monthYearA11yLabel: 'MMMM YYYY',
     },
 };
 
@@ -32,8 +32,8 @@ export const MY_FORMATS = {
     templateUrl: './index.component.html',
     styleUrls: ['./index.component.scss'],
     providers: [
-        {provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE]},
-        {provide: MAT_DATE_FORMATS, useValue: MY_FORMATS},
+        { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
+        { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
     ],
     encapsulation: ViewEncapsulation.None
 })
@@ -44,7 +44,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingDoctorsCal
 
     displayedColumns = [];
     lstCalendarId: number[] = [];
-    status = [{ id: 3, name: 'Tất cả'}, { id: 0, name: 'Chờ duyêt'}, { id: 1, name: 'Đã duyệt'}, { id: 2, name: 'Đã hủy'}, ];
+    status = [{ id: 3, name: 'Tất cả' }, { id: 0, name: 'Chờ duyêt' }, { id: 1, name: 'Đã duyệt' }, { id: 2, name: 'Đã hủy' },];
     dialogDetail: any;
     healthfacilities = new FormControl();
     filteredOptions: Observable<IHealthfacilities[]>;
@@ -52,6 +52,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingDoctorsCal
 
     @ViewChild("startTime") startTime;
     @ViewChild("endTime") endTime;
+    @ViewChild('auto') auto;
 
     constructor(injector: Injector, private _dataService: DataService, public dialog: MatDialog, private _formBuilder: FormBuilder) {
         super(injector);
@@ -59,18 +60,30 @@ export class IndexComponent extends PagedListingComponentBase<IBookingDoctorsCal
 
     ngOnInit() {
         this.api = 'bookingdoctorapprove';
-        this.frmSearch = this._formBuilder.group({ 
-            healthfacilities: [], 
-            doctor: [], 
+        this.frmSearch = this._formBuilder.group({
+            healthfacilities: [],
+            doctor: [],
             startTime: [moment(new Date().setHours(7, 0, 0, 0)).toDate()],
             endTime: [moment(new Date()).add(6, 'days').toDate],
-            status: [3] });
+            status: [3]
+        });
 
         this.dataService = this._dataService;
         this.dialogDetail = DetailComponent;
-        this.dataService.getAll('healthfacilities', (this.appSession.user.healthFacilitiesId ? String(this.appSession.user.healthFacilitiesId) : '')).subscribe(resp => this._healthfacilities = resp.items);
-        this.appSession.user.healthFacilitiesId ? this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId) : this.filterOptions();
-        if(this.appSession.user.healthFacilitiesId) this.dataService.getAll('doctors', String(this.appSession.user.healthFacilitiesId)).subscribe(resp => this._doctors = resp.items);
+
+        // this.dataService.getAll('healthfacilities', (this.appSession.user.healthFacilitiesId ? "{healthfacilitiesId:"+String(this.appSession.user.healthFacilitiesId)+"}" : '')).subscribe(resp => this._healthfacilities = resp.items);
+        // this.appSession.user.healthFacilitiesId ? this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId) : this.filterOptions();
+        // if(this.appSession.user.healthFacilitiesId) this.dataService.getAll('doctors', String(this.appSession.user.healthFacilitiesId)).subscribe(resp => this._doctors = resp.items);
+
+        if (this.appSession.user.healthFacilitiesId) {
+            this.dataService.getAll('healthfacilities', "{healthfacilitiesId:" + String(this.appSession.user.healthFacilitiesId) + "}").subscribe(resp => this._healthfacilities = resp.items);
+            this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId);
+            this.dataService.getAll('doctors', String(this.appSession.user.healthFacilitiesId)).subscribe(resp => this._doctors = resp.items);
+        }
+        else {
+            this.dataService.getAll('healthfacilities').subscribe(resp => this._healthfacilities = resp.items);
+            this.filterOptions();
+        }
 
         setTimeout(() => {
             this.startTime.nativeElement.value = moment(new Date()).format("DD/MM/YYYY");
@@ -82,7 +95,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingDoctorsCal
     }
 
     //dialog detail
-    detail(obj): void{
+    detail(obj): void {
         const dialogRef = this.dialog.open(this.dialogDetail, { minWidth: 'calc(100vw/2)', maxWidth: 'calc(100vw - 300px)', data: obj ? obj : null });
         dialogRef.afterClosed().subscribe(() => this.paginator._changePageSize(this.paginator.pageSize));
     }
@@ -94,11 +107,11 @@ export class IndexComponent extends PagedListingComponentBase<IBookingDoctorsCal
 
     _filter(name: any): IHealthfacilities[] {
         const filterValue = name.toLowerCase();
-        var healthfacilities = isNaN(filterValue) ?         
-        this._healthfacilities.filter(h => h.name.toLowerCase().indexOf(filterValue) === 0) : 
-        this._healthfacilities.filter(h => h.code.toLowerCase().indexOf(filterValue) === 0);
+        var healthfacilities = isNaN(filterValue) ?
+            this._healthfacilities.filter(h => h.name.toLowerCase().indexOf(filterValue) === 0) :
+            this._healthfacilities.filter(h => h.code.toLowerCase().indexOf(filterValue) === 0);
         //if(healthfacilities.length == 0 && filterValue.length) this.frmSearch.controls['healthfacilities'].setValue(0);
-        
+
         return healthfacilities
     }
 
@@ -116,10 +129,6 @@ export class IndexComponent extends PagedListingComponentBase<IBookingDoctorsCal
             );
     }
 
-    onInputHealthfacilities(obj: any){
-        this.frmSearch.controls['healthfacilities'].setValue(0)
-    }
-
     //selected checkbox table
     isAllSelected() {
         const numSelected = this.selection.selected.length;
@@ -128,13 +137,13 @@ export class IndexComponent extends PagedListingComponentBase<IBookingDoctorsCal
     }
 
     masterToggle() {
-        if(this.isAllSelected()){
-            this.selection.clear() 
+        if (this.isAllSelected()) {
+            this.selection.clear()
 
             this.dataSources.data.forEach((row: IBookingDoctorsCalendarsView) => {
                 this.tdChecked(row, false);
             });
-        } else{
+        } else {
             this.dataSources.data.forEach((row: IBookingDoctorsCalendarsView) => {
                 this.tdChecked(row, true);
                 this.selection.select(row)
@@ -142,21 +151,21 @@ export class IndexComponent extends PagedListingComponentBase<IBookingDoctorsCal
         }
     }
 
-    toggle(row: any, event: any){
+    toggle(row: any, event: any) {
         this.tdChecked(row, event.checked);
         this.selection.toggle(row);
     }
 
     tdChecked(row: any, checked: any) {
-        if(checked){
+        if (checked) {
             row.lstBookingDoctorsCalendars.forEach(el => {
-                if(el.status == 0){
+                if (el.status == 0) {
                     $('#' + el.calendarId).prop('checked', true).prop("disabled", true);
                 }
             });
-        } else{
+        } else {
             row.lstBookingDoctorsCalendars.forEach(el => {
-                if(el.status == 0){
+                if (el.status == 0) {
                     $('#' + el.calendarId).prop('checked', false).prop("disabled", false);;
                 }
             });
@@ -169,11 +178,18 @@ export class IndexComponent extends PagedListingComponentBase<IBookingDoctorsCal
     }
 
     //summit
-    update(obj: any){
-        var content = obj ? (obj.status == 1 ? this.l('ApproveExamScheduleCancel') : this.l('ApproveExamScheduleRestore')) :  this.l('ApproveExamScheduleWillApprove');
+    update(obj: any) {
+        var content = obj ? (obj.status == 1 ? this.l('ApproveExamScheduleCancel') : this.l('ApproveExamScheduleRestore')) : this.l('ApproveExamScheduleWillApprove');
         var status = obj ? (obj.status == 1 ? 2 : 0) : 1;
         var lstCalendarId = obj ? [obj.calendarId] : this.getSelected();
-        if(!lstCalendarId.length) return swal(this.l('Notification'), this.l('NoWaitingSchedule'), 'warning');
+        if (!lstCalendarId.length)
+            return
+        swal({
+            title: this.l('Notification'),
+            text: this.l('NoWaitingSchedule'),
+            type: 'warning',
+            timer: 3000
+        })
 
         swal({
             title: this.l('AreYouSure'),
@@ -185,30 +201,35 @@ export class IndexComponent extends PagedListingComponentBase<IBookingDoctorsCal
             confirmButtonText: this.l('YesUpdate'),
             cancelButtonText: this.l('Cancel'),
             buttonsStyling: false
-          }).then((result) => {
+        }).then((result) => {
             if (result.value) {
-                this._dataService.update(this.api, {lstCalendarId: lstCalendarId, status: status, userId: this.appSession.userId }).subscribe(() => {
+                this._dataService.update(this.api, { lstCalendarId: lstCalendarId, status: status, userId: this.appSession.userId }).subscribe(() => {
                     this.paginator._changePageSize(this.paginator.pageSize);
                     this.paginator.pageIndex = 0;
                     this.selection = new SelectionModel<IBookingDoctorsCalendarsView>(true, []);
                     this.lstCalendarId = [];
-                    swal(this.l('Complete'), '', 'success');
-                }, err => {});
+                    swal({
+                        title: this.l('Complete'),
+                        text: '',
+                        type: 'success',
+                        timer: 3000
+                    })
+                }, err => { });
             }
         });
     }
 
-    getCalendarId(calendarId: any, checked: any){
-        if(checked){
+    getCalendarId(calendarId: any, checked: any) {
+        if (checked) {
             this.lstCalendarId.push(calendarId)
-        } else{
+        } else {
             for (let i = 0; i < this.lstCalendarId.length; i++) {
-                if(this.lstCalendarId[i] == calendarId && this.lstCalendarId[i]) this.lstCalendarId.splice(i, 1);
+                if (this.lstCalendarId[i] == calendarId && this.lstCalendarId[i]) this.lstCalendarId.splice(i, 1);
             }
         }
     }
 
-    getSelected(): number[]{
+    getSelected(): number[] {
         this.selection.selected.forEach(el => {
             el.lstBookingDoctorsCalendars.forEach(elCalendars => {
                 elCalendars.status == 0 ? this.lstCalendarId.push(elCalendars.calendarId) : '';
@@ -234,24 +255,46 @@ export class IndexComponent extends PagedListingComponentBase<IBookingDoctorsCal
 
     //handle search
     customSearch() {
-        if(!this.startTime.nativeElement.value || !this.endTime.nativeElement.value){
-            return swal(this.l('Notification'), this.l('FromDateToDateCannotBlank'), 'warning');
+        if (!this.startTime.nativeElement.value || !this.endTime.nativeElement.value) {
+            return swal({
+                title: this.l('Notification'),
+                text: this.l('FromDateToDateCannotBlank'),
+                type: 'warning',
+                timer: 3000
+            });
         }
 
-        if(!moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').isValid()){
-            return swal(this.l('Notification'), this.l('FromDateIncorrectFormat'), 'warning');
+        if (!moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').isValid()) {
+            return swal({
+                title: this.l('Notification'),
+                text: this.l('FromDateIncorrectFormat'),
+                type: 'warning',
+                timer: 3000
+            });
         }
 
-        if(!moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').isValid()){
-            return swal(this.l('Notification'), this.l('ToDateIncorrectFormat'), 'warning');
-        }
-        
-        if(((moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').valueOf() - moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').valueOf()) / (1000*60*60*24)) < 0){
-            return swal(this.l('Notification'), this.l('FromDateMustBeGreaterThanOrEqualToDate'), 'warning');
+        if (!moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').isValid()) {
+            return swal({
+                title: this.l('Notification'),
+                text: this.l('ToDateIncorrectFormat'),
+                type: 'warning'
+            });
         }
 
-        if(((moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').valueOf() - moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').valueOf()) / (1000*60*60*24)) > 6){
-            return swal(this.l('Notification'), this.l('SearchWithin7Day'), 'warning');
+        if (((moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').valueOf() - moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').valueOf()) / (1000 * 60 * 60 * 24)) < 0) {
+            return swal({
+                title: this.l('Notification'),
+                text: this.l('FromDateMustBeGreaterThanOrEqualToDate'),
+                type: 'warning'
+            });
+        }
+
+        if (((moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').valueOf() - moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').valueOf()) / (1000 * 60 * 60 * 24)) > 6) {
+            return swal({
+                title: this.l('Notification'),
+                text: this.l('SearchWithin7Day'),
+                type: 'warning'
+            });
         }
 
         this.healthfacilities.value ? this.frmSearch.controls['healthfacilities'].setValue(this.healthfacilities.value.healthFacilitiesId) : (this.appSession.user.healthFacilitiesId == null ? this.frmSearch.controls['healthfacilities'].setValue(null) : '');
@@ -263,21 +306,21 @@ export class IndexComponent extends PagedListingComponentBase<IBookingDoctorsCal
     }
 
     //gen date -> column
-    getDate(startTime: string, endTime: string) {   
+    getDate(startTime: string, endTime: string) {
         var start = moment(startTime, "DD/MM/YYYY").toDate();
         var end = moment(endTime, "DD/MM/YYYY").toDate();
 
-        if(!moment(start).isValid || !moment(end).isValid) return console.log('isvalid');
-        
-        this.displayedColumns = ['orderNumber', 'select', 'name']; 
-        this._lstWorkingTimes = [];    
-        var days = (moment(end).valueOf() - moment(start).valueOf()) / (1000*60*60*24);
+        if (!moment(start).isValid || !moment(end).isValid) return console.log('isvalid');
+
+        this.displayedColumns = ['orderNumber', 'select', 'name'];
+        this._lstWorkingTimes = [];
+        var days = (moment(end).valueOf() - moment(start).valueOf()) / (1000 * 60 * 60 * 24);
 
         for (let i = 0; i <= days; i++) {
             var date = new Date(start.getFullYear(), start.getMonth(), start.getDate());
             date.setDate(date.getDate() + i);
 
-            this.displayedColumns.push(i.toString());          
+            this.displayedColumns.push(i.toString());
             this._lstWorkingTimes.push({
                 index: i,
                 dayCol: this.getDayOfWeek(date.getDay()) + moment(date).format("DD/MM/YYYY"),
@@ -286,22 +329,22 @@ export class IndexComponent extends PagedListingComponentBase<IBookingDoctorsCal
         }
     }
 
-    getDayOfWeek(day: number): string{
+    getDayOfWeek(day: number): string {
         switch (day) {
-          case 1: 
-            return "Thứ 2 - ";
-          case 2:
-            return "Thứ 3 - ";
-          case 3:
-            return "Thứ 4 - ";
-          case 4:
-            return "Thứ 5 - ";
-          case 5:
-            return "Thứ 6 - ";
-          case 6:
-            return "Thứ 7 - ";
-          case 0:
-            return "Chủ nhật - ";
+            case 1:
+                return "Thứ 2 - ";
+            case 2:
+                return "Thứ 3 - ";
+            case 3:
+                return "Thứ 4 - ";
+            case 4:
+                return "Thứ 5 - ";
+            case 5:
+                return "Thứ 6 - ";
+            case 6:
+                return "Thứ 7 - ";
+            case 0:
+                return "Chủ nhật - ";
         }
-      }
+    }
 }

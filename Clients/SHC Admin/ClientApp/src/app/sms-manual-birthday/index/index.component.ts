@@ -163,11 +163,14 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     customSearch() {
         this.healthfacilities.value ? this.frmSearch.controls['healthfacilities'].setValue(this.healthfacilities.value.healthFacilitiesId) : (this.appSession.user.healthFacilitiesId == null ? this.frmSearch.controls['healthfacilities'].setValue(null) : '');
         this.btnSearchClicks$.next();
-        console.log(this.dataSources);
     }
 
     showMess(type: number) {
-        if (type == 1) swal('Thông báo', 'Chưa chọn bệnh nhân', 'warning');
+        if(type == 1 ) swal({
+            title:'Thông báo', 
+            text:'Chưa chọn bệnh nhân', 
+            type:'warning',
+            timer:3000});
     }
 
     openCustomDialog(): void {
@@ -202,11 +205,15 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
                 type: 2,
                 content: ''
             })
-                .subscribe(resp => {
-                    swal('Thông báo', resp, 'error');
-                    this.selection = new SelectionModel<IMedicalHealthcareHistories>(true, []);
-                    abp.ui.clearBusy('#main-container');
-                }, err => { });
-        });
+            .subscribe(resp => {
+                swal({
+                    title:'Thông báo', 
+                    text:resp, 
+                    type:'error',
+                    timer:3000});
+                this.selection = new SelectionModel<IMedicalHealthcareHistories>(true, []);
+                abp.ui.clearBusy('#main-container');
+            }, err => {});
+        });   
     }
 }

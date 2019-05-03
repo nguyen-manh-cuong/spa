@@ -61,6 +61,8 @@ namespace SHCServer.Controllers
             {
                 foreach (var (key, value) in JsonConvert.DeserializeObject<Dictionary<string, string>>(filter))
                 {
+                    if (string.IsNullOrEmpty(value))
+                        continue;
                     if (string.Equals(key, "healthfacilities") && !string.IsNullOrWhiteSpace(value))
                         objs = objs.Where(b => b.HealthFacilitiesId.ToString() == value.Trim() || b.HealthFacilitiesId.ToString() == null);
                     if (string.Equals(key, "doctor") && !string.IsNullOrWhiteSpace(value))
@@ -74,7 +76,7 @@ namespace SHCServer.Controllers
                     }
                     if (string.Equals(key, "packagesNameDescription") && !string.IsNullOrWhiteSpace(value))
                     {
-                        objs = objs.Where(b => b.TicketId.Contains(value) || b.PhoneNumber.Contains(value) || b.BookingUser.Contains(value));
+                        objs = objs.Where(b => b.TicketId == value.Trim() || b.PhoneNumber == value.Trim() || b.BookingUser.Contains(value.Trim()));
                     }
                     if (string.Equals(key, "startTime")) objs = objs.Where(b => b.ExaminationDate>= DateTime.Parse(value));
                     if (string.Equals(key, "endTime")) objs = objs.Where(b => b.ExaminationDate <= DateTime.Parse(value));
@@ -192,8 +194,16 @@ namespace SHCServer.Controllers
                         }
                     }
 
-                    if (string.Equals(key, "startTime")) objs = objs.Where(b => b.ExaminationDate>= DateTime.Parse(value));
-                    if (string.Equals(key, "endTime")) objs = objs.Where(b => b.ExaminationDate <= DateTime.Parse(value));
+                    if (string.Equals(key, "startTime")) {
+                        objs = objs.Where(b => b.ExaminationDate >= DateTime.Parse(value));
+                        var start = DateTime.Parse(value);
+                    }
+                    if (string.Equals(key, "endTime"))
+                    {
+                        objs = objs.Where(b => b.ExaminationDate <= DateTime.Parse(value));
+                        var end = DateTime.Parse(value);
+                    }
+                     
 
                 }
 
@@ -213,7 +223,7 @@ namespace SHCServer.Controllers
                 objs = objs.OrderByDesc(b => b.CreateDate);
             }
 
-
+            var a = objs;
             var rs = objs.GroupBy(p => p.DoctorId).Select(p => new BookingInformationsViewModel(p, _connectionString) {
                 Quantity = objs.Where(o=>o.DoctorId==p.DoctorId).Count(),
                 QuantityByStatusPending = objs.Where(o => o.Status == 1).Count(),
