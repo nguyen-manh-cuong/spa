@@ -379,9 +379,9 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
       );
   }
 
-  onInputHealthfacilities(obj: any) {
-    this.frmSearch.controls['healthfacilitiesId'].setValue("");
-    this._healthFacilitiesId = null;
+  onInputHealthfacilities($event) {
+      this.frmSearch.controls['healthfacilitiesId'].setValue("");
+      this._healthFacilitiesId = 0;
   }
 
   onSelectHealthFacilities(value: any) {

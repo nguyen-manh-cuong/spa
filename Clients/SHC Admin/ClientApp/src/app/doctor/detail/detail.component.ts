@@ -32,14 +32,14 @@ export const MY_FORMATS = {
 
 @Component({
   selector: 'app-task',
-  templateUrl: './task.component.html',
-  styleUrls: ['./task.component.scss'],
+  templateUrl: './detail.component.html',
+  styleUrls: ['./detail.component.scss'],
   providers: [
     { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
     { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
   ],
 })
-export class TaskComponent extends AppComponentBase implements OnInit, AfterViewInit {
+export class DetailComponent extends AppComponentBase implements OnInit, AfterViewInit {
   _birthDay: Date = new Date(Date.now());
   _certificationDate: Date = new Date(Date.now());
   api: string = 'doctor';
@@ -116,7 +116,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     injector: Injector,
     private _dataService: DataService,
     private _formBuilder: FormBuilder,
-    public dialogRef: MatDialogRef<TaskComponent>,
+    public dialogRef: MatDialogRef<DetailComponent>,
     @Inject(MAT_DIALOG_DATA)
     public obj: IDoctor) {
     super(injector);
