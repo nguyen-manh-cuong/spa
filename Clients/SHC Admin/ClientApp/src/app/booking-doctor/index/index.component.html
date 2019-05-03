@@ -1,0 +1,100 @@
+<div class="toolbar fadeIn animated">
+    <div class="row w-100 m-0">
+        <div class="col-4 text-left d-flex align-items-center">
+            <button mat-stroked-button color="primary" (click)="openDialog()">
+                <mat-icon class="f-20 m-l--10 mat-icon m-t-2 material-icons">add</mat-icon>{{l("CreateNew")}}
+            </button>
+            <div class="separate"></div>
+            <mat-slide-toggle class="ml-2" [checked]="showFilter" (change)="toggedFilter()">
+                <ng-container *ngIf="showFilter">{{l("ShowFilter")}}</ng-container>
+                <ng-container *ngIf="!showFilter">{{l("HideFilter")}}</ng-container>
+            </mat-slide-toggle>
+        </div>
+    </div>
+</div>
+<div class="content fadeIn animated">
+    <form [formGroup]="frmSearch" class="form-filter pl-2 pr-2" novalidate>
+        <div class="row m-0 pt-4">
+            <div class="col-md-6" [hidden]="this.appSession.user.healthFacilitiesId">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>{{l('Unit')}}</mat-label>
+                    <input matInput [formControl]="healthfacilities" (click)="clickCbo()" [matAutocomplete]="auto">
+                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="onSelectHealthFacilities($event.option.value)">
+                        <mat-option *ngFor="let o of filteredOptions | async" [value]="o">
+                            {{o.code + ' - ' + o.name}}
+                        </mat-option>
+                    </mat-autocomplete>
+                </mat-form-field>
+            </div>              
+            <div class="col-md-6 disabled" [hidden]="!this.appSession.user.healthFacilitiesId">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>{{l('Unit')}}</mat-label>
+                    <mat-select formControlName="healthfacilities">
+                        <mat-option *ngFor="let o of _healthfacilities" [value]="o.healthFacilitiesId">{{ o.name }}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="col-md-6">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>{{l('Doctor')}}</mat-label>
+                    <mat-select formControlName="doctor">
+                        <mat-option *ngIf="_doctors.length" class="text-center" [innerHTML]="'<div class=\'text-center border-bottom w-100\'>'+ l('Bỏ chọn') +'</div>'"></mat-option>
+                        <mat-option *ngFor="let o of _doctors" [value]="o.doctorId">{{ o.fullName }}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="col-md-4">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>{{l('Month')}}</mat-label>
+                    <mat-select formControlName="month">
+                        <mat-option *ngFor="let o of _months" [value]="o">{{ l('Month') + ' ' + o }}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="col-md-4">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>{{l('CStatus')}}</mat-label>
+                    <mat-select formControlName="status">
+                        <mat-option *ngFor="let o of _status" [value]="o.id">{{ o.name }}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="col-md-3 text-center d-flex align-self-center fadeIn animated">
+                <button #btnSearch mat-stroked-button color="primary" (click)="search()"
+                    class="w-100 mb-4">
+                    <mat-icon class="mr-2">search</mat-icon>{{l("Search")}}
+                </button>
+            </div>
+        </div>
+    </form>
+
+    <div class='app-calendar content'>
+        <full-calendar
+        #calendar
+        defaultView="dayGridMonth"
+        [header]="{
+            left: 'prev, next today',
+            center: 'title',
+            right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+        }"
+        [locales]="viLocale"
+        [plugins]="calendarPlugins"
+        [weekends]="calendarWeekends"
+        [events]="calendarEvents"
+        [eventLimit]="4" 
+        (eventRender)="handleEvent($event)"></full-calendar>
+    </div><hr>
+
+    <div>
+        Ghi chú : 
+        <span class="btn wait">
+            08h00 - 12h00
+        </span>{{l('CalendarNew')}}
+        <span class="btn approve">
+            08h00 - 12h00 
+        </span>{{l('CalendarAppove')}}
+        <span class="btn restore">
+            <del style="color: red;">08h00 - 12h00</del> 
+        </span>{{l('CalendarCancel')}}
+    </div>
+</div>

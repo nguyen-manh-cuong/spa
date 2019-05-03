@@ -14,7 +14,7 @@
     </div>
 </div>
 <div class="content fadeIn animated">
-    <form [formGroup]="frmSearch" class="form-filter pl-2 pr-2" novalidate>
+    <form [formGroup]="frmSearch" class="form-filter form-custom pl-2 pr-2" novalidate>
         <div class="row m-0 pt-4">
             <div class="col-md-8" [hidden]="this.appSession.user.healthFacilitiesId">
                 <mat-form-field appearance="outline" class="w-100">
@@ -77,7 +77,7 @@
             <div class="col-md-3 disabled" id="cbo-startTime">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('Từ ngày')}}</mat-label>
-                    <input matInput #startTime [matDatepicker]="picker" mask="00/00/0000" required maxlength="10">
+                    <input matInput #startTime [matDatepicker]="picker" mask="0*" required maxlength="8">
                     <mat-datepicker-toggle matSuffix [for]="picker" class="t-2"></mat-datepicker-toggle>
                     <mat-datepicker #picker></mat-datepicker>
                 </mat-form-field>
@@ -86,7 +86,7 @@
             <div class="col-md-3 disabled" id="cbo-endTime">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('Đến ngày')}}</mat-label>
-                    <input matInput #endTime [matDatepicker]="picker1" mask="00/00/0000" required maxlength="10">
+                    <input matInput #endTime [matDatepicker]="picker1" mask="0*" required maxlength="8">
                     <mat-datepicker-toggle matSuffix [for]="picker1" class="t-2"></mat-datepicker-toggle>
                     <mat-datepicker #picker1></mat-datepicker>
                 </mat-form-field>

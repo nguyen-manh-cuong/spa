@@ -12,6 +12,8 @@ import { Subject } from 'rxjs';
 import { standardized } from './helpers/utils';
 import swal from 'sweetalert2';
 import { analyzeAndValidateNgModules } from '@angular/compiler';
+import * as moment from 'moment';
+import {MomentDateAdapter} from '@angular/material-moment-adapter';
 
 export class PagedResultDto {
     items: any[];
@@ -81,9 +83,23 @@ export abstract class PagedListingComponentBase<EntityDto> extends AppComponentB
     }
 
     convertAge(date: number, month: number, year: number) {
+        // ngày sinh nhật
+        var strBirthday =  date.toString().concat('-', month.toString(), '-',  year.toString()); 
+        const birthday = moment(strBirthday, 'DD-MM-YYYY').toDate();
+        // Ngày hiện tại
         const yearNow = new Date().getFullYear();
         const monthNow = new Date().getMonth() + 1;
         const dateNow = new Date().getDate();
+        const strNow = dateNow.toString().concat('-', monthNow.toString(), '-',  yearNow.toString());       
+        var time = new Date().getTime() - new Date(birthday).getTime();
+        // Convert thời gian (milliseconds) sang ngày
+        var duration = moment.duration(time, 'milliseconds');
+        // Làm tròn
+        var days = Math.floor(duration.asDays());
+        var months = Math.floor(duration.asMonths());
+        var years = Math.floor(duration.asYears());
+        console.log('Ngay tuoi', days)
+
         var ageString = "";
         var yearAge = yearNow - year;
 
@@ -110,15 +126,30 @@ export abstract class PagedListingComponentBase<EntityDto> extends AppComponentB
         this._age.months = monthAge;
         this._age.days = dateAge;
 
-
-
-        if (this._age.years > 0)
-            ageString = this._age.years + "T";
-        else if ((this._age.years == 0) && (this._age.months == 0) && (this._age.days > 0))
-            ageString = this._age.days + "NG";
-        else if ((this._age.years == 0) && (this._age.months > 0) && (this._age.days >= 0))
-            ageString = this._age.months + "TH";
-
+        
+        // so sanh ngay
+        if(days == 0){
+            ageString = "1 Ngày";
+        }
+        else{
+            if(days <= 90){
+                ageString = days + " Ngày tuổi";
+             }       
+             else if(days <= 2160){
+                 ageString = months + " Tháng tuổi";            
+             }
+             else if(days > 2160){
+                 ageString = years + " Tuổi";
+             }
+        }
+        
+        // if (this._age.years > 0)
+        //     ageString = this._age.years + "T";
+        // else if ((this._age.years == 0) && (this._age.months == 0) && (this._age.days > 0))
+        //     ageString = this._age.days + "NG";
+        // else if ((this._age.years == 0) && (this._age.months > 0) && (this._age.days >= 0))
+        //     ageString = this._age.months + "TH";
+        
         return ageString;
     }
 
@@ -158,10 +189,10 @@ export abstract class PagedListingComponentBase<EntityDto> extends AppComponentB
                     setTimeout(() => this.isTableLoading = false, 500);
                     return of([]);
                 })
-            ).subscribe(data => {
-                console.log(data);
-                this.dataSources.data = data;
-            });
+        ).subscribe(data => {
+            console.log(data);
+            this.dataSources.data = data;
+        });
         this.setTableHeight();
     }
 
@@ -173,7 +204,7 @@ export abstract class PagedListingComponentBase<EntityDto> extends AppComponentB
         });
     }
 
-
+  
 
     deleteDialog(obj: EntityDto, key: string, id?: number | string) {
         swal({
@@ -189,12 +220,7 @@ export abstract class PagedListingComponentBase<EntityDto> extends AppComponentB
         }).then((result) => {
             if (result.value) {
                 this.dataService.delete(this.api, obj[id ? id : 'id']).subscribe(() => {
-                    swal({
-                        title: this.l('SuccessfullyDeleted'),
-                        text: this.l('DeletedInSystem', obj[key]),
-                        type: 'success',
-                        timer: 3000
-                    })
+                    swal(this.l('SuccessfullyDeleted'), this.l('DeletedInSystem', obj[key]), 'success');
                     this.paginator.pageIndex = 0;
                     this.paginator._changePageSize(this.paginator.pageSize);
                 });

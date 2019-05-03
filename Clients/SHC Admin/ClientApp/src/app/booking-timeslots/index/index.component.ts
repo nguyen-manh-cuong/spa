@@ -40,11 +40,20 @@ export class IndexComponent extends PagedListingComponentBase<IBookingTimeslots>
        keyFilter: [],     
        healthfacilities: [this.appSession.user.healthFacilitiesId],
       });
-
-    this.dataService.getAll('healthfacilities', (this.appSession.user.healthFacilitiesId ? String(this.appSession.user.healthFacilitiesId) : '')).subscribe(resp => 
-    {
-      this._healthfacilities = resp.items;      
-    });
+      //old
+    // this.dataService.getAll('healthfacilities', (this.appSession.user.healthFacilitiesId ? String(this.appSession.user.healthFacilitiesId) : '')).subscribe(resp => 
+    // {
+    //   this._healthfacilities = resp.items;      
+    // });
+    //new
+    if(this.appSession.user.healthFacilitiesId) {
+      this.dataService.getAll('healthfacilities', "{healthfacilitiesId:"+String(this.appSession.user.healthFacilitiesId)+"}").subscribe(resp => this._healthfacilities = resp.items);
+      this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId);      
+    }
+    else{
+        this.dataService.getAll('healthfacilities').subscribe(resp => this._healthfacilities = resp.items);
+        this.filterOptions();
+    }
   }
   displayFn(h?: IHealthfacilities): string | undefined {
     return h ? h.name : undefined;

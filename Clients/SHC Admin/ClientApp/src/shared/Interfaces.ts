@@ -202,7 +202,7 @@ export interface IDistrict {
  
 export interface IHealthfacilities {
     healthFacilitiesId: number,
-    name: string
+    name?: string
 }
 
 export interface ISmsLogs {
@@ -251,6 +251,12 @@ export interface IBookingDoctorsCalendarsView{
     lstBookingDoctorsCalendars: Array<IBookingDoctorsCalendars>;
 }
 
+export interface IBookingDoctorsApprove{
+    title?: string,
+    start?: Date,
+    color?: string,
+    description?: string 
+}
 
 // tslint:disable-next-line:no-empty-interface
 export interface IAddHeadersToRequest {

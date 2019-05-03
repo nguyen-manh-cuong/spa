@@ -77,14 +77,16 @@ export class ValidationRule {
 
     passwordStrong(control: AbstractControl){
         var pattern = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,255}$/;
-
-        if(control.value && !pattern.test(control.value)){
-            return {passwordStrong: true};
-        }
-
-        if(control.value && control.value.search(/[A-Z]/) < 0){
-            return {passwordStrong: true};
-        }
+        if(control.value.length >= 8)
+        {
+            if(control.value && !pattern.test(control.value)){
+                return {passwordStrong: true};
+                
+            }    
+            if(control.value && control.value.search(/[A-Z]/) < 0){
+                return {passwordStrong: true};            
+            }
+        }       
         return null;
     }
 

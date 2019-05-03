@@ -48,7 +48,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
     status = [{ id: 4, name: 'Tất cả' }, { id: 3, name: 'Hủy khám' }, { id: 2, name: 'Đã khám' }, { id: 1, name: 'Chưa khám' }, { id: 0, name: 'Mới đăng ký' }];
    
         times = [  
-           { id: 0, name: 'Hôm nay' }, { id: 1, name: 'Hôm qua' }, { id: 2, name: 'Tuần nay' }, { id: 3, name: 'Tuần trước' }, { id: 4, name: 'Tháng này' }, { id: 5, name: 'Tháng trước' },
+           { id: 0, name: 'Hôm nay' }, { id: 1, name: 'Hôm qua' }, { id: 2, name: 'Tuần này' }, { id: 3, name: 'Tuần trước' }, { id: 4, name: 'Tháng này' }, { id: 5, name: 'Tháng trước' },
             { id: 6, name: 'Quý này' }, { id: 7, name: 'Quý trước' }, { id: 8, name: 'Năm nay' },  { id: 9, name: 'Năm trước' }, { id: 10, name: 'Theo khoảng thời gian' }, ];
     dialogDetail: any;
     dialogReasonReject: any;
@@ -206,7 +206,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
             case 0:
                 return 'Mới đăng ký';
             case 1:
-                return 'Chưa khám';
+                return 'Chờ khám';
             case 2:
                 return 'Đã khám';
             case 3:

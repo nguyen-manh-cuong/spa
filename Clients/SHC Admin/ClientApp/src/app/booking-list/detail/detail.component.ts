@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 
-import { Component, Inject, Injector, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, Injector, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { IProvince, IPackageDetail, IBookingInformations, IDistrict } from '@shared/Interfaces';
 import { MAT_DIALOG_DATA, MatDialogRef, MatInput } from '@angular/material';
@@ -15,15 +15,18 @@ import swal from 'sweetalert2';
 @Component({
     selector: 'app-detail',
     templateUrl: './detail.component.html',
-    styleUrls: ['./detail.component.scss']
+    styleUrls: ['./detail.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class DetailComponent extends AppComponentBase implements OnInit {
     ValidationRule = new ValidationRule();
 
     _frm: FormGroup;
+    _reasonString = "";
+    _addressString = "";
     _booking: IBookingInformations | any = {
-        fullName: '', examinationDate: '', reason: '', status: '', bookingUser: '', phoneNumber: '', gender: '', year: '',
-        address: '', district: '', province: '', email: '', bookingRepresent: '', phoneRepresent: '', emailRepresent: ''
+        fullName: '', examinationDate: '', status: '', bookingUser: '', phoneNumber: '', gender: '', year: '',
+        district: '', province: '', email: '', bookingRepresent: '', phoneRepresent: '', emailRepresent: ''
     };
     _context: any;
     _isNew: boolean = true;
@@ -45,17 +48,19 @@ export class DetailComponent extends AppComponentBase implements OnInit {
         if (this.bookingData) {
             this._booking = _.clone(this.bookingData);
         }
+        //label
+        this._reasonString = this._booking.reason;
 
         this._dataService.getAll('provinces').subscribe(resp => { this._province = resp.items });
         this._dataService.getAll('districts').subscribe(resp => { this._district = resp.items });
 
         setTimeout(() => { this.getAddress() }, 1000);
-
+       
 
         setTimeout(() => {
             this._frm.controls['doctorName'].disable();
             this._frm.controls['examinationDate'].disable();
-            this._frm.controls['reason'].disable();
+            //this._frm.controls['reason'].disable();
             this._frm.controls['status'].disable();
             this._frm.controls['bookingUser'].disable();
             this._frm.controls['gender'].disable();
@@ -63,7 +68,7 @@ export class DetailComponent extends AppComponentBase implements OnInit {
             this._frm.controls['phoneNumber'].disable();
 
             this._frm.controls['email'].disable();
-            this._frm.controls['address'].disable();
+            //this._frm.controls['address'].disable();
             this._frm.controls['bookingRepresent'].disable();
             this._frm.controls['phoneRepresent'].disable();
             this._frm.controls['emailRepresent'].disable();
@@ -73,7 +78,7 @@ export class DetailComponent extends AppComponentBase implements OnInit {
             // name: [this._package.name, [Validators.required, validation.compare('name', 'description')]],
             doctorName: [this._booking.fullName],
             examinationDate: [this.handleTime(this._booking)],
-            reason: [this._booking.reason, Validators.required],
+            //reason: [this._booking.reason, Validators.required],
             status: [this.getStatus(this._booking.status)],
             bookingUser: [this._booking.bookingUser,],
             bookingRepresent: [this._booking.bookingRepresent,],
@@ -83,10 +88,9 @@ export class DetailComponent extends AppComponentBase implements OnInit {
             phoneRepresent: [this._booking.phoneRepresent],
             email: [this._booking.email],
             emailRepresent: [this._booking.emailRepresent],
-            address: [this._booking.address ? this._booking.address : ""],
+            //address: [this._booking.address ? this._booking.address : ""],
 
         };
-
         this._frm = this._formBuilder.group(this._context);
     }
 
@@ -106,7 +110,8 @@ export class DetailComponent extends AppComponentBase implements OnInit {
         }
         address = this._booking.address != undefined ? this._booking.address + ", " : "" + (district != "" ? district : "") + (province != "" ? ", " + province : "");
         console.log(address);
-        this._frm.controls['address'].setValue(address);
+        this._addressString = address;
+        //this._frm.controls['address'].setValue(address);
     }
 
     getGender(status: number) {

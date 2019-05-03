@@ -23,5 +23,10 @@ namespace SHCServer.Models
         public int? ApproveUserId { set; get; }
         public DateTime? ApproveDate { set; get; }
         public int HealthFacilitiesId { set; get; }
+
+        public DateTime? CreateDate { get; set; }
+        public int? CreateUserId { get; set; }
+        public DateTime? UpdateDate { get; set; }
+        public int? UpdateUserId { get; set; }
     }
 }
