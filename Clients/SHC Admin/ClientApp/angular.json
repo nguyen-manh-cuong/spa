@@ -34,6 +34,10 @@
               "node_modules/animate.css/animate.min.css",
               "node_modules/font-awesome/css/font-awesome.css",
               "node_modules/famfamfam-flags/dist/sprite/famfamfam-flags.css",
+			  "node_modules/@fullcalendar/core/main.css",
+              "node_modules/@fullcalendar/list/main.css",
+              "node_modules/@fullcalendar/daygrid/main.css",
+              "node_modules/@fullcalendar/timegrid/main.css",
               "src/shared/core.scss",
               "src/assets/fonts/fonts-roboto.css"
             ],

@@ -1,0 +1,40 @@
+.fc-content{
+    text-align: center;
+}
+
+.fc-day-grid-event .fc-time{
+    display : none;
+}
+
+.fc-content .fc-time{
+    display : none! important;
+}
+
+.fc-content{
+    top : 15%;
+}
+
+.del{
+    .fc-title{
+        text-decoration: line-through!important;
+    } 
+}
+
+.btn{
+    border-radius: 5px;
+    padding: 2px;
+    margin-right: 2px;
+    margin-left: 10px;
+}
+
+.restore{
+    background-color: deepskyblue;
+}
+
+.wait{
+    background-color: aquamarine;
+}
+
+.approve{
+    background-color: bisque;
+}

@@ -129,10 +129,6 @@ export class IndexComponent extends PagedListingComponentBase<IBookingDoctorsCal
             );
     }
 
-    onInputHealthfacilities(obj: any) {
-        this.frmSearch.controls['healthfacilities'].setValue(0)
-    }
-
     //selected checkbox table
     isAllSelected() {
         const numSelected = this.selection.selected.length;
