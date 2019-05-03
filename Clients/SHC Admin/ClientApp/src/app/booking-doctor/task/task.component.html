@@ -7,7 +7,7 @@
     <mat-tab-group scroll-able>
         <mat-tab>
             <ng-template mat-tab-label>
-                {{l("ApproveExamDetail")}}
+                {{l("ExamScheduleCreate")}}
             </ng-template>
             <div class="pt-4">
                 <div class="row">
@@ -72,7 +72,7 @@
                         <table class="w-100 border mat-table mb-3" style="max-width: 100%;">
                             <thead>
                                 <tr class="mat-header-row pl-0">
-                                    <th class="w-px-200 mat-header-cell sticky text-center"> {{l('WorkingTime ')}} </th>
+                                    <th class="w-px-200 mat-header-cell sticky text-center"> {{l('WorkingTime')}} </th>
                                     <th *ngFor="let el of _lstWorkingTimes" class="mat-header-cell sticky pl-2 text-center"> {{el.dayCol}} </th>
                                 </tr>
                             </thead>
@@ -93,6 +93,6 @@
     <div class="text-right mb-3">
         <button class="mr-3" mat-raised-button color="primary" mat-dialog-close>{{l("Close")}}</button>
         <button class="mr-3" mat-raised-button color="primary" [disabled]="_frm.invalid" (click)="submit(0)">{{l("Save")}}</button>
-        <button mat-raised-button color="primary" [disabled]="_frm.invalid" (click)="submit(1)">{{l("SaveAndApprove: ")}}</button>
+        <button mat-raised-button color="primary" [disabled]="_frm.invalid" (click)="submit(1)">{{l("SaveAndApprove")}}</button>
     </div>
 </form>
