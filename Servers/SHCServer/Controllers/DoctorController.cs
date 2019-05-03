@@ -109,20 +109,7 @@ namespace SHCServer.Controllers
                 }
             }
 
-            if (sorting != null)
-            {
-                foreach (var (key, value) in JsonConvert.DeserializeObject<Dictionary<string, string>>(sorting))
-                {
-                    if (!Utils.PropertyExists<Doctor>(key))
-                        continue;
 
-                    objs = value == "asc" ? objs.OrderBy(u => key) : objs.OrderByDesc(u => key);
-                }
-            }
-            else
-            {
-                objs = objs.OrderByDesc(d => d.CreateDate).ThenByDesc(d=>d.FullName);
-            }
 
             objs = objs.GroupBy(o => o.DoctorId).Select((d) => new
             {
@@ -171,7 +158,22 @@ namespace SHCServer.Controllers
 
                 d.HealthFacilitiesId,
                 d.SpecialistCode,
-            }); 
+            });
+
+            if (sorting != null)
+            {
+                foreach (var (key, value) in JsonConvert.DeserializeObject<Dictionary<string, string>>(sorting))
+                {
+                    if (!Utils.PropertyExists<Doctor>(key))
+                        continue;
+
+                    objs = value == "asc" ? objs.OrderBy(u => u.FullName) : objs.OrderByDesc(u => u.FullName);
+                }
+            }
+            else
+            {
+                objs = objs.OrderByDesc(d => d.CreateDate).ThenByDesc(d => d.FullName);
+            }
 
             List<DoctorViewModel> doctorList = new List<DoctorViewModel>();
 

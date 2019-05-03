@@ -134,13 +134,13 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
     }
 
     onInputHealthfacilities(obj: any){
-        this.frmSearch.controls['healthfacilities'].setValue('');
+        this.frmSearch.controls['healthfacilities'].setValue(0);
         this._doctors=null;
     }
 
     onSelectHealthFacilities(value:any){
         if(value.healthFacilitiesId){
-            this.dataService.getAll('doctor',"{healthfacilities:"+value.healthFacilitiesId+"}").subscribe(resp => { this._doctors = resp.items });
+            this.dataService.getAll('doctor',"{healthfacilities:"+value.healthFacilitiesId+"}", "{FullName: 'asc'}").subscribe(resp => { this._doctors = resp.items });
         }
         else{
             this._doctors=null;
