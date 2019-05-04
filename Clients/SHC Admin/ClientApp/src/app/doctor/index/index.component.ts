@@ -14,6 +14,7 @@ import { PagedListingComponentBase } from '@shared/paged-listing-component-base'
 import { TaskComponent } from '../task/task.component';
 import swal from 'sweetalert2';
 import { start } from 'repl';
+import { DetailComponent } from '../detail/detail.component';
 
 
 
@@ -31,6 +32,7 @@ export class EntityDto {
   styleUrls: ['./index.component.scss']
 })
 export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> implements OnInit {
+  dialogDetail:any;
 
   provinces = [];
   districts = [];
@@ -55,6 +57,8 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
     this.api = 'doctor';
     this.dataService = this._dataService;
     this.dialogComponent = TaskComponent;
+    this.dialogDetail = DetailComponent;
+
     this.frmSearch = this._formBuilder.group({ provinceCode: [], districtCode: [], info: [], healthfacilitiesId: [], specialistCode: [] });
 
     this.getProvinces();
@@ -361,7 +365,7 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
     const filterValue = name.toLowerCase();
     var healthfacilities = isNaN(filterValue) ?
       this._healthfacilities.filter(h => h.name.toLowerCase().indexOf(filterValue) === 0) :
-      this._healthfacilities.filter(h => h.code.toLowerCase().indexOf(filterValue) === 0);
+      this._healthfacilities.filter(h => h.code.toLowerCase().indexOf(filterValue) === 0) ;
     return healthfacilities;
   }
 
@@ -441,6 +445,14 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
   }
 
   openDialogDoctor(obj?: EntityDto): void {
+    const dialogRef = this.dialog.open(this.dialogDetail, { minWidth: 'calc(100vw/1.5)', maxWidth: 'calc(100vw - 100px)', disableClose: true, data: obj ? obj : null });
+    dialogRef.afterClosed().subscribe(() => {
+      this.paginator.pageIndex = 0;
+      this.paginator._changePageSize(this.paginator.pageSize);
+    });
+  }
+
+  detailDialogDoctor(obj?:EntityDto):void{
     const dialogRef = this.dialog.open(this.dialogComponent, { minWidth: 'calc(100vw/1.5)', maxWidth: 'calc(100vw - 100px)', disableClose: true, data: obj ? obj : null });
     dialogRef.afterClosed().subscribe(() => {
       this.paginator.pageIndex = 0;
