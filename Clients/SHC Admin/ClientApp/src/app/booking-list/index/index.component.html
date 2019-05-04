@@ -45,7 +45,7 @@
                     <mat-label>{{l('Bác sĩ đăng ký')}}</mat-label>
                     <mat-select formControlName="doctor">
                         <mat-option
-                            [innerHTML]="'<div class=\'text-center border-bottom w-100\'>'+ l('SelectAll') +'</div>'">
+                            [innerHTML]="'<div class=\'text-center border-bottom w-100\'>'+ l('Bỏ chọn') +'</div>'">
                         </mat-option>
                         <mat-option *ngFor="let o of _doctors" [value]="o.doctorId">{{ o.fullName }}</mat-option>
                     </mat-select>
