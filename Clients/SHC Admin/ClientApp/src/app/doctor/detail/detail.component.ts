@@ -135,8 +135,10 @@ export class DetailComponent extends AppComponentBase implements OnInit, AfterVi
     this.getNations();
     this.getEthnicities();
     this.getSpecialist();
-    this.getDistricts(this.obj.districtCode);
 
+    if(this.obj.provinceCode){
+      this.getDistricts(this.obj.provinceCode);
+    }
 
     const validationRule = new ValidationRule();
     if (this.obj) {
