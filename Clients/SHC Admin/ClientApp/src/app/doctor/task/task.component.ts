@@ -40,6 +40,9 @@ export const MY_FORMATS = {
   ],
 })
 export class TaskComponent extends AppComponentBase implements OnInit, AfterViewInit {
+
+  @ViewChild(MatAutocompleteTrigger) _autoHealthfacilities:MatAutocompleteTrigger;
+
   _birthDay: Date = new Date(Date.now());
   _certificationDate: Date = new Date(Date.now());
   api: string = 'doctor';
@@ -211,6 +214,8 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
       this.filterOptions();
     }
 
+    this.setHealthfacilities();
+
     //Set healthfacilities
     // this._obj.healthFacilities.forEach(element => {
     //   this.healthfacilitiesControl.setValue(element.healthFacilitiesId);
@@ -221,6 +226,13 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     //   this.specialistCodeControl.setValue(element.specialistCode);
     // })
 
+  }
+
+  setHealthfacilities(){
+    let options=this._autoHealthfacilities.autocomplete.options.toArray();
+    this.healthfacilitiesControl.setValue(options[1].value);
+    console.log("Yo");
+    console.log(options);
   }
 
   ngAfterViewInit(): void {
