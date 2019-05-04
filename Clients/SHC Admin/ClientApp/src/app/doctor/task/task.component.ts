@@ -138,11 +138,17 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     this.getNations();
     this.getEthnicities();
     this.getSpecialist();
-    this.getDistricts(this.obj.provinceCode);
+    
 
 
     const validationRule = new ValidationRule();
+
     if (this.obj) {
+
+      if(this.obj.provinceCode){
+        this.getDistricts(this.obj.provinceCode);
+      }
+
       this._obj = _.clone(this.obj);
       this._isNew = false;
     }
@@ -197,8 +203,6 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
       healthfacilities: [this._obj.healthFacilities]
     };
 
-    
-
     this._frm = this._formBuilder.group(this._context);
 
     if (this._obj.avatar === "" || undefined) {
@@ -214,8 +218,6 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
       this.filterOptions();
     }
 
-    this.setHealthfacilities();
-
     //Set healthfacilities
     // this._obj.healthFacilities.forEach(element => {
     //   this.healthfacilitiesControl.setValue(element.healthFacilitiesId);
@@ -228,12 +230,6 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
 
   }
 
-  setHealthfacilities(){
-    let options=this._autoHealthfacilities.autocomplete.options.toArray();
-    this.healthfacilitiesControl.setValue(options[1].value);
-    console.log("Yo");
-    console.log(options);
-  }
 
   ngAfterViewInit(): void {
     setTimeout(() => {
@@ -264,8 +260,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   }
 
   getDistricts(provinceCode) {
-    console.log(provinceCode);
-    this._dataService.getAll("districts", "{ProvinceCode:" + provinceCode + "}").subscribe(resp => {this.districts = resp.items;console.log(resp.items)});
+    this._dataService.getAll("districts", "{ProvinceCode:" + provinceCode + "}").subscribe(resp => this.districts = resp.items);
   }
 
   provinceChange($event) {

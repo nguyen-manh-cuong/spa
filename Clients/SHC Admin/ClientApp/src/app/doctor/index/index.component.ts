@@ -445,7 +445,7 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
   }
 
   openDialogDoctor(obj?: EntityDto): void {
-    const dialogRef = this.dialog.open(this.dialogDetail, { minWidth: 'calc(100vw/1.5)', maxWidth: 'calc(100vw - 100px)', disableClose: true, data: obj ? obj : null });
+    const dialogRef = this.dialog.open(this.dialogComponent, { minWidth: 'calc(100vw/1.5)', maxWidth: 'calc(100vw - 100px)', disableClose: true, data: obj ? obj : null });
     dialogRef.afterClosed().subscribe(() => {
       this.paginator.pageIndex = 0;
       this.paginator._changePageSize(this.paginator.pageSize);
@@ -453,7 +453,7 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
   }
 
   detailDialogDoctor(obj?:EntityDto):void{
-    const dialogRef = this.dialog.open(this.dialogComponent, { minWidth: 'calc(100vw/1.5)', maxWidth: 'calc(100vw - 100px)', disableClose: true, data: obj ? obj : null });
+    const dialogRef = this.dialog.open(this.dialogDetail, { minWidth: 'calc(100vw/1.5)', maxWidth: 'calc(100vw - 100px)', disableClose: true, data: obj ? obj : null });
     dialogRef.afterClosed().subscribe(() => {
       this.paginator.pageIndex = 0;
       this.paginator._changePageSize(this.paginator.pageSize);
