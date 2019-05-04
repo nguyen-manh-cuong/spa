@@ -31,9 +31,9 @@ export const MY_FORMATS = {
 };
 
 @Component({
-  selector: 'app-task',
-  templateUrl: './task.component.html',
-  styleUrls: ['./task.component.scss'],
+  selector: 'app-detail',
+  templateUrl: './detail.component.html',
+  styleUrls: ['./detail.component.scss'],
   providers: [
     { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
     { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
