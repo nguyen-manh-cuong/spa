@@ -61,7 +61,7 @@ export class EditComponent extends AppComponentBase implements OnInit, AfterView
             doctorName: [this._booking.fullName],
             examinationDate: [this.handleTime(this._booking)],
             reason: [this._booking.reason, [Validators.required, validationRule.hasValue]],
-            status: [this._booking.status,[Validators.required,validationRule.hasValue]],
+            status: [this._booking.status],
             bookingUser: [this._booking.bookingUser,[Validators.required,validationRule.hasValue]],
             bookingRepresent: [this._booking.bookingRepresent,],
             gender: [this.getGender(this._booking.gender)],
