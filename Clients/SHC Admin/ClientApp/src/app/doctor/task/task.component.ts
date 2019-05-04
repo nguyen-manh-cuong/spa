@@ -461,7 +461,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
         params.doctorId = this.obj.doctorId;
       }
 
-      params.certificationDate = this._certificationDate.toLocaleDateString();
+      params.certificationDate = this._certificationDate;
 
       //Set birthDate
 
