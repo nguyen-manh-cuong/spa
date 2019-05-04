@@ -19,9 +19,9 @@ export class SideBarNavComponent extends AppComponentBase {
     }
 
     showMenuItem(menuItem): boolean {
-        if (menuItem.permissionName) {
-            return this.permission.isGranted(menuItem.permissionName);
-        }
+        //if (menuItem.permissionName) {
+        //    return this.permission.isGranted(menuItem.permissionName);
+        //}
 
         return true;
     }
