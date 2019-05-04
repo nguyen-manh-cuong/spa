@@ -98,7 +98,7 @@ export abstract class PagedListingComponentBase<EntityDto> extends AppComponentB
         var days = Math.floor(duration.asDays());
         var months = Math.floor(duration.asMonths());
         var years = Math.floor(duration.asYears());
-        console.log('Ngay tuoi', days)
+        //console.log('Ngay tuoi', days)
 
         var ageString = "";
         var yearAge = yearNow - year;

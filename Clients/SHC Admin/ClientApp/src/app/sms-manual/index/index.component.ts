@@ -148,12 +148,13 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     }
 
     customSearch() {
-        if(this.birthday.nativeElement.value && !moment(this.birthday.nativeElement.value, 'DD/MM/YYYY').isValid()){
+        if (this.birthday.nativeElement.value && !moment(this.birthday.nativeElement.value, 'DD/MM/YYYY').isValid()) {
             return swal({
-                title:'Thông báo', 
-                text:'Ngày sinh không đúng định dạng', 
-                type:'warning',
-                timer:3000});
+                title: 'Thông báo',
+                text: 'Ngày sinh không đúng định dạng',
+                type: 'warning',
+                timer: 3000
+            });
         }
 
         this.healthfacilities.value ? this.frmSearch.controls['healthfacilities'].setValue(this.healthfacilities.value.healthFacilitiesId) : (this.appSession.user.healthFacilitiesId == null ? this.frmSearch.controls['healthfacilities'].setValue(null) : '');
@@ -167,10 +168,11 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
 
     showMess() {
         swal({
-            title:'Thông báo', 
-            text:'Chưa chọn bệnh nhân', 
-            type:'warning',
-            timer:3000});
+            title: 'Thông báo',
+            text: 'Chưa chọn bệnh nhân',
+            type: 'warning',
+            timer: 3000
+        });
     }
 
     openCustomDialog(): void {
@@ -179,6 +181,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
         dialogRef.afterClosed().subscribe(() => {
             this.paginator.pageIndex = 0;
             this.paginator._changePageSize(this.paginator.pageSize);
+
             this.selection = new SelectionModel<IMedicalHealthcareHistories>(true, []);
         });
     }
