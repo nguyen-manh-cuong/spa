@@ -136,11 +136,14 @@ export class DetailComponent extends AppComponentBase implements OnInit, AfterVi
     this.getNations();
     this.getEthnicities();
     this.getSpecialist();
-    this.getDistricts(this.obj.districtCode);
-
 
     const validationRule = new ValidationRule();
     if (this.obj) {
+
+      if(this.obj.provinceCode){
+        this.getDistricts(this.obj.provinceCode);
+      }
+
       this._obj = _.clone(this.obj);
       this._isNew = false;
     }
@@ -253,8 +256,7 @@ export class DetailComponent extends AppComponentBase implements OnInit, AfterVi
   }
 
   getDistricts(provinceCode) {
-    console.log(provinceCode);
-    this._dataService.getAll("districts", "{ProvinceCode:" + provinceCode + "}").subscribe(resp => {this.districts = resp.items;console.log(resp.items)});
+    this._dataService.getAll("districts", "{ProvinceCode:" + provinceCode + "}").subscribe(resp => this.districts = resp.items);
   }
 
   provinceChange($event) {
