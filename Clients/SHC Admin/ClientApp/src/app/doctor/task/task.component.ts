@@ -139,13 +139,16 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     this.getEthnicities();
     this.getSpecialist();
     
-    if(this.obj.provinceCode){
-      this.getDistricts(this.obj.provinceCode);
-    }
 
 
     const validationRule = new ValidationRule();
+
     if (this.obj) {
+
+      if(this.obj.provinceCode){
+        this.getDistricts(this.obj.provinceCode);
+      }
+
       this._obj = _.clone(this.obj);
       this._isNew = false;
     }
@@ -199,8 +202,6 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
       allowSearch: [this._obj.allowSearch],
       healthfacilities: [this._obj.healthFacilities]
     };
-
-    
 
     this._frm = this._formBuilder.group(this._context);
 
