@@ -16,7 +16,7 @@
                     <div class="col-md-4">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("DoctorBirthDay")}}</mat-label>
-                            <input (dateChange)="birthDayChange($event.value)" matInput [matDatepicker]="picker" #birthDayPicker mask="00/00/0000" maxlength="10">
+                            <input (dateChange)="birthDayChange($event.value)" matInput [matDatepicker]="picker" #birthDayPicker mask="0*" maxlength="10">
                             <mat-datepicker-toggle matSuffix [for]="picker" class="t-2"></mat-datepicker-toggle>
                             <mat-datepicker #picker [startAt]="_birthDay"></mat-datepicker>
                         </mat-form-field>
@@ -92,7 +92,7 @@
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("DoctorCertificationDate")}}</mat-label>
                             <input #certificationDatePicker (dateChange)="certificationDateChange($event.value)" matInput [matDatepicker]="certificationDatePicker" matInput
-                                mask="00/00/0000" maxlength="10">
+                                mask="0*" maxlength="10">
                             <mat-datepicker-toggle matSuffix [for]="certificationDatePicker" class="t-2">
                             </mat-datepicker-toggle>
                             <mat-datepicker #certificationDatePicker [startAt]="startDate">

@@ -85,6 +85,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
 
 
   _obj: IDoctor | any = {
+    doctorId:0,
     fullName: null,
     hisId: null,
     specialist: [],
