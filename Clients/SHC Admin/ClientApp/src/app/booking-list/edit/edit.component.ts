@@ -27,7 +27,7 @@ export class EditComponent extends AppComponentBase implements OnInit, AfterView
         address: '', district: '', province: '', email: '', bookingRepresent: '', phoneRepresent: '', emailRepresent: ''
     };
     selectedStatus = "";
-    _status = [{ id: 3, name: 'Hủy khám' }, { id: 2, name: 'Đã khám' }, { id: 1, name: 'Chưa khám' }, { id: 0, name: 'Mới đăng ký' }];
+    _status = [{ id: 3, name: 'Hủy khám' }, { id: 2, name: 'Đã khám' }, { id: 1, name: 'Chờ khám' }, { id: 0, name: 'Mới đăng ký' }];
     _context: any;
     _isShow: boolean = false;
     _isNew: boolean = true;
@@ -61,7 +61,7 @@ export class EditComponent extends AppComponentBase implements OnInit, AfterView
             doctorName: [this._booking.fullName],
             examinationDate: [this.handleTime(this._booking)],
             reason: [this._booking.reason, [Validators.required, validationRule.hasValue]],
-            status: [this._booking.status,[Validators.required,validationRule.hasValue]],
+            status: [this._booking.status],
             bookingUser: [this._booking.bookingUser,[Validators.required,validationRule.hasValue]],
             bookingRepresent: [this._booking.bookingRepresent,],
             gender: [this.getGender(this._booking.gender)],

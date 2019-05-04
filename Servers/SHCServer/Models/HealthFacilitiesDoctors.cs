@@ -18,5 +18,7 @@ namespace SHCServer.Models
         public int? HealthFacilitiesId { set; get; }
         public int DoctorId { set; get; }
         public bool IsDelete { get; set; }
+
+        public bool IsActive { get; set; }
     }
 }

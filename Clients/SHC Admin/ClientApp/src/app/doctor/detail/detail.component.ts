@@ -31,18 +31,15 @@ export const MY_FORMATS = {
 };
 
 @Component({
-  selector: 'app-task',
-  templateUrl: './task.component.html',
-  styleUrls: ['./task.component.scss'],
+  selector: 'app-detail',
+  templateUrl: './detail.component.html',
+  styleUrls: ['./detail.component.scss'],
   providers: [
     { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
     { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
   ],
 })
-export class TaskComponent extends AppComponentBase implements OnInit, AfterViewInit {
-
-  @ViewChild(MatAutocompleteTrigger) _autoHealthfacilities:MatAutocompleteTrigger;
-
+export class DetailComponent extends AppComponentBase implements OnInit, AfterViewInit {
   _birthDay: Date = new Date(Date.now());
   _certificationDate: Date = new Date(Date.now());
   api: string = 'doctor';
@@ -119,7 +116,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     injector: Injector,
     private _dataService: DataService,
     private _formBuilder: FormBuilder,
-    public dialogRef: MatDialogRef<TaskComponent>,
+    public dialogRef: MatDialogRef<DetailComponent>,
     @Inject(MAT_DIALOG_DATA)
     public obj: IDoctor) {
     super(injector);
@@ -138,7 +135,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     this.getNations();
     this.getEthnicities();
     this.getSpecialist();
-    this.getDistricts(this.obj.provinceCode);
+    this.getDistricts(this.obj.districtCode);
 
 
     const validationRule = new ValidationRule();
@@ -214,8 +211,6 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
       this.filterOptions();
     }
 
-    this.setHealthfacilities();
-
     //Set healthfacilities
     // this._obj.healthFacilities.forEach(element => {
     //   this.healthfacilitiesControl.setValue(element.healthFacilitiesId);
@@ -226,13 +221,6 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     //   this.specialistCodeControl.setValue(element.specialistCode);
     // })
 
-  }
-
-  setHealthfacilities(){
-    let options=this._autoHealthfacilities.autocomplete.options.toArray();
-    this.healthfacilitiesControl.setValue(options[1].value);
-    console.log("Yo");
-    console.log(options);
   }
 
   ngAfterViewInit(): void {
@@ -351,7 +339,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   }
 
   onInputHealthfacilities(obj: any) {
-    this._frm.controls['healthfacilities'].setValue(0);
+    this._frm.controls['healthfacilities'].setValue("");
     this._healthFacilitiesId = null;
   }
 

@@ -88,21 +88,20 @@ namespace SHCServer.Controllers
         public IActionResult GetBookingTimesSlot(int skipCount = 0, int maxResultCount = 10, string sorting = null, string filter = null)
         {
             var objs = _context
-                //.Query<>()
-
-                .JoinQuery<BookingTimeslots, BookingDoctorsCalendars> ((t, dc) => new object[] { JoinType.InnerJoin, t.TimeSlotId == dc.TimeSlotId })
-                .Where((t, dc) => t.IsDelete == false && t.IsActive == true);
+                //.JoinQuery<BookingTimeslots, BookingDoctorsCalendars> ((t, dc) => new object[] { JoinType.InnerJoin, t.TimeSlotId == dc.TimeSlotId })
+                .Query<BookingTimeslots>()
+                .Where(t => t.IsDelete == false && t.IsActive == true);
 
             if (filter != null)
             {
                 foreach (var (key, value) in JsonConvert.DeserializeObject<Dictionary<string, string>>(filter))
                 {
                     if (string.IsNullOrEmpty(value)) continue;
-                    if (string.Equals(key, "healthfacilities")) objs = objs.Where((t, dc) => t.HealthFacilitiesId == int.Parse(value));
+                    if (string.Equals(key, "healthfacilities")) objs = objs.Where(t => t.HealthFacilitiesId == int.Parse(value));
                 }
             }
 
-            return Json(new ActionResultDto { Result = new { Items = objs.Select((t, dc) => new BookingDoctorsViewModel(dc, t)).ToList() } });
+            return Json(new ActionResultDto { Result = new { Items = objs.Select(t => new BookingDoctorsViewModel(t, _connectionString)).ToList() } });
         }
 
     }

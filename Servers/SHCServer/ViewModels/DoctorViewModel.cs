@@ -1,6 +1,6 @@
-﻿using System;
+﻿using SHCServer.Models;
+using System;
 using System.Collections.Generic;
-using SHCServer.Models;
 using Viettel;
 using Viettel.MySql;
 
@@ -17,43 +17,81 @@ namespace SHCServer.ViewModels
         public DoctorViewModel(Doctor obj, string connectionString) : this()
         {
             context = new MySqlContext(new MySqlConnectionFactory(connectionString));
-
-            DoctorId = obj.DoctorId;
-            FullName = obj.FullName;
-            Avatar = obj.Avatar;
             AcademicId = obj.AcademicId;
+            Address = obj.Address;
+            AllowBooking = obj.AllowBooking;
+            AllowFilter = obj.AllowFilter;
+            AllowSearch = obj.AllowSearch;
+            Avatar = obj.Avatar;
+            BirthDate = obj.BirthDate;
+            BirthMonth = obj.BirthMonth;
+            BirthYear = obj.BirthYear;
+            CertificationCode = obj.CertificationCode;
+            CertificationDate = obj.CertificationDate;
+            CreateUserId = obj.CreateUserId;
             DegreeId = obj.DegreeId;
             Description = obj.Description;
+            DistrictCode = obj.DistrictCode;
+            DoctorId = obj.DoctorId;
+            EducationCountryCode = obj.EducationCountryCode;
+            Email = obj.Email;
+            EthnicityCode = obj.EthnicityCode;
+            FullName = obj.FullName;
+            Gender = obj.Gender;
+            IsActive = obj.IsActive;
+            IsDelete = obj.IsDelete;
+            IsSync = obj.IsSync;
+            NationCode = obj.NationCode;
+            PhoneNumber = obj.PhoneNumber;
+            PositionCode = obj.PositionCode;
+            PriceFrom = obj.PriceFrom;
+            PriceTo = obj.PriceTo;
+            PriceDescription = obj.PriceDescription;
+            ProvinceCode = obj.ProvinceCode;
+            Summary = obj.Summary;
+            TitleCode = obj.TitleCode;
+            CreateDate = obj.CreateDate;
+            UpdateDate = obj.UpdateDate;
+            UpdateUserId = obj.UpdateUserId;
+            Description = obj.Description;
 
-            var academic = context.JoinQuery<Doctor, CategoryCommon>((d, c) => new object[]
-                {
-                    JoinType.InnerJoin, d.AcademicId == c.Id
-                })
-                .Where((d, c) => d.DoctorId == obj.DoctorId)
-                .Select((d, c) => c).FirstOrDefault();
+            //var academic = context.JoinQuery<Doctor, CategoryCommon>((d, c) => new object[]
+            //    {
+            //        JoinType.InnerJoin, d.AcademicId == c.Id
+            //    })
+            //    .Where((d, c) => d.DoctorId == obj.DoctorId)
+            //    .Select((d, c) => c).FirstOrDefault();
 
-            var degree = context.JoinQuery<Doctor, CategoryCommon>((d, c) => new object[]
-                {
-                    JoinType.InnerJoin, d.DegreeId == c.Id
-                })
-                .Where((d, c) => d.DoctorId == obj.DoctorId)
-                .Select((d, c) => c).FirstOrDefault();
+            //var degree = context.JoinQuery<Doctor, CategoryCommon>((d, c) => new object[]
+            //    {
+            //        JoinType.InnerJoin, d.DegreeId == c.Id
+            //    })
+            //    .Where((d, c) => d.DoctorId == obj.DoctorId)
+            //    .Select((d, c) => c).FirstOrDefault();
 
             Specialist = context.JoinQuery<Doctor, DoctorSpecialists>((d, ds) => new object[]
                 {
                     JoinType.InnerJoin, d.DoctorId == ds.DoctorId
-                })
-                .Where((d, ds) => d.DoctorId == obj.DoctorId)
-                .Select((d, ds) => new DoctorSpecialistsViewModel(ds, connectionString)).ToList();
+                }).Where((d,ds)=>ds.IsDelete==false && ds.IsActive==true && ds.DoctorId==obj.DoctorId).Select((d, ds) => new DoctorSpecialists() {
+                    DoctorId = ds.DoctorId,
+                    SpecialistCode = ds.SpecialistCode
+                }).ToList();
 
-            Academic = academic != null ? academic.Name : "";
-            Degree = degree != null ? degree.Name : "";
+            HealthFacilities = context.JoinQuery<Doctor, HealthFacilitiesDoctors>((d, hf) => new object[]
+               {
+                    JoinType.InnerJoin,d.DoctorId==hf.DoctorId
+               }).Where((d,hf)=>hf.IsDelete==false && hf.IsActive==true && hf.DoctorId==obj.DoctorId).Select((d, hf) => new HealthFacilitiesDoctors()
+               {
+                   DoctorId=hf.DoctorId,
+                   HealthFacilitiesId=hf.HealthFacilitiesId
+               }).ToList();
+
+            //Academic = academic != null ? academic.Name : "";
+            //Degree = degree != null ? degree.Name : "";
         }
 
-
-        public string Academic { set; get; }
-        public string Degree { set; get; }
-        public List<DoctorSpecialistsViewModel> Specialist { set; get; }
+        //public string Academic { set; get; }
+        //public string Degree { set; get; }
         public int DoctorId { set; get; }
         public string HisId { get; set; }
         public string FullName { set; get; }
@@ -91,11 +129,7 @@ namespace SHCServer.ViewModels
         public DateTime? CreateDate { get; set; }
         public int? UpdateUserId { get; set; }
         public DateTime? UpdateDate { get; set; }
-        public string SpecialistName { get; set; }
-        public string HealthFacilitiesName { get; set; }
-        public int?[] HealthFacilities { set; get; }
-        public string[] DoctorSpecialists { set; get; }
-        public int HealthFacilitiesId { get; set; }
-        public string SpecialistCode { get; set; }
+        public List<HealthFacilitiesDoctors> HealthFacilities { set; get; }
+        public List<DoctorSpecialists> Specialist { set; get; }
     }
 }

@@ -10,20 +10,22 @@ namespace SHCServer.ViewModels
 {
     public class BookingDoctorsViewModel
     {
-        //protected DbContext context;
+        protected DbContext context;
 
         public BookingDoctorsViewModel()
         {
         }
 
-        public BookingDoctorsViewModel(BookingDoctorsCalendars dc, BookingTimeslots ts) : this()
+        public BookingDoctorsViewModel(BookingTimeslots ts, string connectionString) : this()
         {
+            context = new MySqlContext(new MySqlConnectionFactory(connectionString));
+
             HoursStart = ts.HoursStart;
             MinuteStart = ts.MinuteStart;
             HoursEnd = ts.HoursEnd;
             MinuteEnd = ts.MinuteEnd;
             TimeSlotId = ts.TimeSlotId;
-            Date = dc.CalendarDate.ToString("dd/MM/yyyy");
+            DoctorCalendar = ConvertListString(context.Query<BookingDoctorsCalendars>().Where(dc => dc.TimeSlotId == ts.TimeSlotId).ToList());
         }
 
         public string HoursStart { set; get; }
@@ -32,6 +34,19 @@ namespace SHCServer.ViewModels
         public string MinuteEnd { set; get; }
         public int TimeSlotId { set; get; }
         public string Date { set; get; }
+        public List<string> DoctorCalendar { set; get; }
+
+        public List<string> ConvertListString(List<BookingDoctorsCalendars> doctorCalendar)
+        {
+            List<string> lstDate = new List<string>();
+
+            foreach (var item in doctorCalendar)
+            {
+                lstDate.Add(item.CalendarDate != null ? item.CalendarDate.ToString("dd/MM/yyyy") : "");
+            }
+
+            return lstDate;
+        }
     }
 
     public class BookingDoctorsInputViewModel

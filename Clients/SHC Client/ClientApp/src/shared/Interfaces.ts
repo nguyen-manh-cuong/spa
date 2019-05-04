@@ -53,6 +53,28 @@ export interface ILanguage {
 
 export interface IDoctor {
     doctorId: number;
+    academicId:number;
+    address:string;
+    birthDate:number;
+    birthMonth:number;
+    birthYear:number;
+    certificationCode:string;
+    certificationDate:Date;
+    gender:number;
+    titleCode:string;
+    positionCode:string;
+    nationCode:string;
+    ethnicityCode:string;
+    degreeId:number;
+    email:string;
+    provinceCode:string;
+    districtCode:string;
+    phoneNumber:string;
+    educationCountryCode:string;
+    priceFrom:number;
+    priceTo:number;
+    priceDescription:number;
+    summary:string;
     fullName: string;
     avatar: string;
     academic: string;
@@ -61,9 +83,10 @@ export interface IDoctor {
     allowBooking:boolean;
     allowFilter:boolean;
     allowSearch:boolean;
-    updateUserId:number;
     specialist: IDoctorSpecialists[];
     healthFacilities: IHealthfacilitiesDoctor[];
+    createUserId:number;
+    updateUserId:number;
 }
 
 export interface IDoctorSpecialists {

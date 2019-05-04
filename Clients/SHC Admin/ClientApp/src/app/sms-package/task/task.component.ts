@@ -148,6 +148,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
         setTimeout(() => {
             $("#smsTo" + length).focus();
         }, 500);
+        console.log(151, smsTo)
     }
 
     checkPackageDetail() {
@@ -164,7 +165,8 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
         var value = this.getNumber(values);
 
         if (type == 1) {
-            var valueSmsTo = Number(this.smsTo.nativeElement.value);
+            var valueSmsTo = Number(this.getNumber(this.smsTo.nativeElement.value));
+            
             var length = this._details.length;
             var totalQuantity = !length ? valueSmsTo : (length ? this._frm.controls['quantity'].value : valueSmsTo);
             index > -1 ? this._details[index].smsTo = value : "";
@@ -190,7 +192,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
                 }
             }
         } else {
-            var totalCost: number = type == 1 ? Number(this.detailCost.nativeElement.value) + Number(value) : Number(this.detailCost.nativeElement.value);
+            var totalCost: number = type == 1 ? Number(this.getNumber(this.detailCost.nativeElement.value)) + Number(value) : Number(this.getNumber(this.detailCost.nativeElement.value));            
             index > -1 ? this._details[index].cost = value : "";
 
             this._details.forEach(el => {
