@@ -9,6 +9,7 @@ import { AppComponentBase } from '@shared/app-component-base';
 import { DataService } from '@shared/service-proxies/service-data';
 import { Title, DomSanitizer } from '@angular/platform-browser';
 import { IDoctor, IHealthfacilities } from '@shared/Interfaces';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 
 @Component({
@@ -51,7 +52,9 @@ export class BookingComponent extends AppComponentBase implements OnInit, AfterV
   //4
   success = 0;
   isDoctor = 0;
+  isCurrentTab = -1;
   isClicked = -1;
+  isClickedH = -1;
   isChecked = true;
   type: any;
   dateExamination = '';
@@ -67,7 +70,7 @@ export class BookingComponent extends AppComponentBase implements OnInit, AfterV
     "infinite": false
   };
 
-  constructor(injector: Injector, private _sanitizer: DomSanitizer, private _dataService: DataService, private _formBuilder: FormBuilder, private titleService: Title) {
+  constructor(injector: Injector, private spinner: NgxSpinnerService, private _sanitizer: DomSanitizer, private _dataService: DataService, private _formBuilder: FormBuilder, private titleService: Title) {
     super(injector);
   }
 
@@ -114,6 +117,7 @@ export class BookingComponent extends AppComponentBase implements OnInit, AfterV
     }, 500);
   }
 
+  //next step
   setStep(i: number) {
     if (i >= 2) {
       if(i == 2) this.onSelectType(this.frmBooking.get('bookingType').value);
@@ -162,20 +166,8 @@ export class BookingComponent extends AppComponentBase implements OnInit, AfterV
     this._currentStep = i;
   }
 
-  validateAllFormFields(formGroup: FormGroup, fields: Array<string>) {
-    if (fields.length === 0) { return; }
-    Object.keys(formGroup.controls).forEach(field => {
-      if (fields.indexOf(field) < 0) { return; }
-      const control = formGroup.get(field);
-      if (control instanceof FormControl) {
-        control.markAsTouched();
-        control.markAsDirty();
-      } else if (control instanceof FormGroup) {
-        this.validateAllFormFields(control, fields);
-      }
-    });
-  }
-
+  
+  //event
   onSelectType(num: number) {
     const u = _.trim(this.frmBooking.get('bookingUser').value);
     const p = _.trim(this.frmBooking.get('phoneNumber').value);
@@ -209,20 +201,20 @@ export class BookingComponent extends AppComponentBase implements OnInit, AfterV
     this.frmBooking.patchValue({ districtCodeExamination: null });
   }
 
-  onSelectHealthFacilities(obj: any){
-    console.log(231, obj.healthFacilitiesId);
-    this.frmBooking.controls['healthFacilitiesId'].setValue(obj.healthFacilitiesId);
-    this.onClickHealthFacilities();
-    this._healthfacility = this._healthfacilities.find(o => o.healthFacilitiesId == obj.healthFacilitiesId);
-    this._specialistHealthfacilities = this._healthfacility ? this._healthfacility.specialist.map(e => e.specialist).join(", ") : "";
-  }
-
   onSelectBirthDay(obj: any){
     this.checkBirthDate();
   }
 
   onSelectBirthMonth(obj: any){
     this.checkBirthDate();
+  }
+
+  onSelectHealthFacilities(obj: any, index: any){
+    this.isClickedH = index;
+    this.frmBooking.controls['healthFacilitiesId'].setValue(obj.healthFacilitiesId);
+    this.onClickHealthFacilities();
+    this._healthfacility = this._healthfacilities.find(o => o.healthFacilitiesId == obj.healthFacilitiesId);
+    this._specialistHealthfacilities = this._healthfacility ? this._healthfacility.specialist.map(e => e.specialist).join(", ") : "";
   }
 
   onClickDoctor(doctor: any){
@@ -233,6 +225,7 @@ export class BookingComponent extends AppComponentBase implements OnInit, AfterV
     this.frmBooking.controls['doctorId'].patchValue(this._doctor.doctorId);
     this.frmBooking.controls.examinationDate.setErrors({required: true});
     
+    this.spinner.show();
     this._dataService.get('workingtime', String(this._doctor.doctorId), '', 0, 0).subscribe(resp => {
       this._workingTimes = resp.items;
 
@@ -250,6 +243,7 @@ export class BookingComponent extends AppComponentBase implements OnInit, AfterV
             })
           }
         });
+
         this._lstWorkingTimes.push({
           dayWeek: this.getDayOfWeek(date.getDay()),
           dayMonth: ' (' + date.getDate() + '/' + (date.getMonth() + 1) + ')',
@@ -257,8 +251,7 @@ export class BookingComponent extends AppComponentBase implements OnInit, AfterV
           workingTime: _.orderBy(workingTime, ['hoursStart'], ['asc']) 
         });
       }
-
-      console.log(261, this._workingTimes);
+      this.spinner.hide();
     });
   }
 
@@ -273,10 +266,11 @@ export class BookingComponent extends AppComponentBase implements OnInit, AfterV
     this.frmBooking.controls.examinationDate.setErrors({required: true});
   }
 
-  onClickWorkingTime(time: any, value: any, type: number, index: number){
+  onClickWorkingTime(time: any, value: any, type: number, index: number, indexTab: number){
     this.frmBooking.patchValue({examinationDate: time.date, examinationWorkingTime: null, examinationTime: null, timeSlotId: null, doctorId: null});
     this.type = -1;
     this.isClicked = index;
+    this.isCurrentTab = indexTab;
 
     if(type == 0){
       this.type = value;
@@ -291,17 +285,23 @@ export class BookingComponent extends AppComponentBase implements OnInit, AfterV
   
   getHealthfacilities() {
     this._healthfacilities = [];
+    this.isClickedH = -1;
     if(!this.frmBooking.controls['districtCodeExamination'].value) return;
   
     this.frmBooking.patchValue({ healthFacilitiesId: null });
+    this.spinner.show();
     this._dataService.get('healthfacilitiesbooking', JSON.stringify({ 
       districtCode: this.frmBooking.controls['districtCodeExamination'].value,
       provinceCode: this.frmBooking.controls['provinceCodeExamination'].value,
       name: this.frmBooking.value.healthfacilitiesSearch ? this.frmBooking.controls['healthfacilitiesSearch'].value.trim() : '',
       specialist: this.frmBooking.controls['specialists'].value
-    }), '', 0, 0).subscribe(resp => this._healthfacilities = resp.items);   
+    }), '', 0, 0).subscribe(resp => {
+      this._healthfacilities = resp.items;
+      this.spinner.hide();
+    });   
   }
 
+  //request
   submit() {
     var ticketId = this._healthfacility.code + moment(this.frmBooking.controls['examinationDate'].value).format("DDMMYYYY") + Math.floor((Math.random() * 9000) + 1000); 
     this.frmBooking.controls['ticketId'].setValue(ticketId);
@@ -332,6 +332,7 @@ export class BookingComponent extends AppComponentBase implements OnInit, AfterV
       })
   }
 
+  //handle tab date
   getDate(){
     for (let i = 0; i < 7; i++) {
       var date = new Date();
@@ -369,6 +370,7 @@ export class BookingComponent extends AppComponentBase implements OnInit, AfterV
     this._dataService.getAny('get-captcha-image').subscribe(res => this._capcha = { code: res.code, data: this._sanitizer.bypassSecurityTrustResourceUrl('data:image/jpg;base64,' + res.data) });
   }
 
+  //validate
   checkBirthDate(){
     if(this.frmBooking.controls.birthDay.value && this.frmBooking.controls.birthMonth.value){
       if(!moment(this.frmBooking.controls.birthDay.value + "/" + this.frmBooking.controls.birthMonth.value + "/" + this.frmBooking.controls.birthYear.value, "DD/MM/YYYY").isValid()){
@@ -379,6 +381,20 @@ export class BookingComponent extends AppComponentBase implements OnInit, AfterV
 
     this.frmBooking.controls.birthYear.value ? this.frmBooking.controls.birthYear.setErrors(null) : this.frmBooking.controls.birthYear.setErrors({required : true});
     return false;
+  }
+
+  validateAllFormFields(formGroup: FormGroup, fields: Array<string>) {
+    if (fields.length === 0) { return; }
+    Object.keys(formGroup.controls).forEach(field => {
+      if (fields.indexOf(field) < 0) { return; }
+      const control = formGroup.get(field);
+      if (control instanceof FormControl) {
+        control.markAsTouched();
+        control.markAsDirty();
+      } else if (control instanceof FormGroup) {
+        this.validateAllFormFields(control, fields);
+      }
+    });
   }
 
   rulePhoneNumber(event: any){

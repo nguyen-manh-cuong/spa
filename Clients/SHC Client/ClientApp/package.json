@@ -39,6 +39,7 @@
         "ngx-material-file-input": "^1.1.1",
         "ngx-mydatepicker": "^2.4.9",
         "ngx-slick-carousel": "^0.4.4",
+        "ngx-spinner": "^7.1.4",
         "rxjs": "^6.3.3",
         "slick-carousel": "^1.8.1",
         "sweetalert2": "^7.33.1",
