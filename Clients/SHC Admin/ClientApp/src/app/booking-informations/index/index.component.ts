@@ -9,7 +9,7 @@ import { standardized } from '../../../shared/helpers/Utils';
 import { isEmpty, isNil, isNull, omitBy, zipObject } from 'lodash';
 import { SelectionModel } from '@angular/cdk/collections';
 import { DataService } from '@shared/service-proxies/service-data';
-import { IBookingInformations, IHealthfacilities, IMedicalHealthcareHistories } from '@shared/Interfaces';
+import { IBookingInformations, IHealthfacilities, IMedicalHealthcareHistories } from '@shared/interfaces';
 import { PagedListingComponentBase } from '@shared/paged-listing-component-base';
 import { TaskComponent } from '../task/task.component';
 import { StatusComponent } from '../status-table/status.component';
