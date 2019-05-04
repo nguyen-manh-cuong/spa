@@ -206,6 +206,15 @@ namespace SHCServer.Controllers
 
             clause.Add(" group by p.Code");
 
+            if (filter != null)
+            {
+                var data = JsonConvert.DeserializeObject<Dictionary<string, string>>(filter);
+                if (data.ContainsKey("flagReExamination") && data["flagReExamination"] == "0")
+                {
+                    clause.Remove(" group by p.Code");
+                }
+            }
+
             if (sorting != null)
             {
                 foreach (var (key, value) in JsonConvert.DeserializeObject<Dictionary<string, string>>(sorting))

@@ -85,7 +85,8 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
             sex: [],
             startTime: new Date(new Date().setDate(new Date().getDate())),
             endTime: new Date(new Date().setDate(new Date().getDate() + 3)),
-            about: 3
+            about: 3,
+            flagReExamination: 0
         });
 
         this.dialogComponent = TaskComponent;
@@ -93,10 +94,18 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
         this.frmSearch.controls['endTime'].setValue(new Date(new Date().setDate(new Date().getDate() + this.frmSearch.controls['about'].value)));
         this.frmSearch.controls['startTime'].setValue(new Date(new Date().setDate(new Date().getDate())));
         this.dataService.getAll('provinces').subscribe(resp => this._provinces = resp.items);
-        this.dataService.getAll('healthfacilities', (this.appSession.user.healthFacilitiesId ? String(this.appSession.user.healthFacilitiesId) : '')).subscribe(resp => this._healthfacilities = resp.items);
-        if (this.appSession.user.healthFacilitiesId) this.dataService.getAll('doctors', String(this.appSession.user.healthFacilitiesId)).subscribe(resp => this._doctors = resp.items);
+        //this.dataService.getAll('healthfacilities', (this.appSession.user.healthFacilitiesId ? String(this.appSession.user.healthFacilitiesId) : '')).subscribe(resp => this._healthfacilities = resp.items);
+        //if (this.appSession.user.healthFacilitiesId) this.dataService.getAll('doctors', String(this.appSession.user.healthFacilitiesId)).subscribe(resp => this._doctors = resp.items);
 
-
+        if (this.appSession.user.healthFacilitiesId) {
+            this.dataService.getAll('healthfacilities', "{healthfacilitiesId:" + String(this.appSession.user.healthFacilitiesId) + "}").subscribe(resp => this._healthfacilities = resp.items);
+            this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId);
+            this.dataService.getAll('doctors', String(this.appSession.user.healthFacilitiesId)).subscribe(resp => this._doctors = resp.items);
+        }
+        else {
+            this.dataService.getAll('healthfacilities').subscribe(resp => this._healthfacilities = resp.items);
+            this.filterOptions();
+        }
 
         setTimeout(() => {
             this.endTime.nativeElement.value = moment(new Date().setDate(new Date().getDate() + 3)).format("DD/MM/YYYY");
@@ -220,7 +229,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
             });
         }
 
-        var startTime = moment(this.frmSearch.controls['startTime'].value, 'DD/MM/YYYY').toDate();
+        var startTime = moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').toDate(); //this.frmSearch.controls['startTime'].value, 'DD/MM/YYYY'
         var endTime = moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').toDate();
 
         if (endTime.getFullYear() - startTime.getFullYear() > 1) {
@@ -260,9 +269,10 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
         this.birthday.nativeElement.value ? this.frmSearch.controls['birthdayDate'].setValue(moment(this.birthday.nativeElement.value, 'DD/MM/YYYY').toDate().getDate()) : this.frmSearch.controls['birthdayDate'].setValue('');
 
         this.birthday.nativeElement.value ? this.frmSearch.controls['birthdayMonth'].setValue(moment(this.birthday.nativeElement.value, 'DD/MM/YYYY').toDate().getMonth() + 1) : this.frmSearch.controls['birthdayMonth'].setValue('');
-        
+
+        this.startTime.nativeElement.value ? this.frmSearch.controls['startTime'].setValue(startTime) : '';
         this.endTime.nativeElement.value ? this.frmSearch.controls['endTime'].setValue(endTime) : '';
-        
+
         this.btnSearchClicks$.next();
     }
 
@@ -280,6 +290,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     }
 
     openCustomDialog(): void {
+        console.log(this.selection.selected);
         const dialogRef = this.dialog.open(this.dialogComponent, { minWidth: 'calc(100vw/2)', maxWidth: 'calc(100vw - 300px)', disableClose: true, data: { selection: this.selection, type: 1 } });
 
         dialogRef.afterClosed().subscribe(() => {
@@ -290,10 +301,12 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     }
 
     sendSms() {
+        console.log(this.appSession.user.healthFacilitiesId);
+
         this._isRequest = true;
         setTimeout(() => this._isRequest = false, 3000)
 
-        if (!this.appSession.user.healthFacilitiesId) {
+        if (this.appSession.user.healthFacilitiesId) {
             return this.openCustomDialog();
         }
 
