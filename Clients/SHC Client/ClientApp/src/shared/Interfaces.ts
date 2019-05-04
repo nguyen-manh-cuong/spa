@@ -42,7 +42,15 @@ export interface IService {
 
     users?: IUser[];
 }
-
+export interface IUsersServices {
+    id: number;
+    isUsingdoctor: boolean;
+    isUsingCall: boolean;
+    isUsingUpload: boolean;
+    isUsingRegister: boolean;
+    isUsingVideo: boolean;
+    isUsingExamination: boolean;
+}
 export interface ILanguage {
     id: number;
     key: string;

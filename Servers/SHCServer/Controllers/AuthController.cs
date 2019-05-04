@@ -193,7 +193,7 @@ namespace SHCServer.Controllers
             try
             {
                 _context.Session.BeginTransaction();
-                _context.Insert(() => new User
+                 _context.Insert(() => new User
                 {
                     UserName = obj.UserName,
                     Password = Utils.HashPassword(obj.Password),
@@ -218,6 +218,17 @@ namespace SHCServer.Controllers
                     HealthFacilitiesName = obj.HealthFacilitiesName,
                     Specialist = obj.Specialist
                 });
+
+                _context.Insert(() => new UsersServices
+                {
+                    isUsingCall = obj.isUsingCall,
+                    isUsingdoctor = obj.isUsingdoctor,
+                    isUsingExamination = obj.isUsingExamination,
+                    isUsingRegister = obj.isUsingRegister,
+                    isUsingUpload = obj.isUsingUpload,
+                    isUsingVideo = obj.isUsingVideo,
+                });
+
 
                 //var _files = Request.Form.Files;
                 //var _fileUpload = "";
