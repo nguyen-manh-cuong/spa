@@ -6,7 +6,6 @@ using SHCServer.Models;
 using SHCServer.ViewModels;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using Viettel;
 using Viettel.MySql;
 
@@ -108,8 +107,6 @@ namespace SHCServer.Controllers
                     }
                 }
             }
-
-
 
             objs = objs.GroupBy(o => o.DoctorId).Select((d) => new
             {
@@ -232,9 +229,8 @@ namespace SHCServer.Controllers
             return Json(new ActionResultDto { Result = new { Items = doctorList, TotalCount = doctorList.Count } });
         }
 
-
-
         #region Old_Code
+
         [HttpPost]
         [Route("api/doctor")]
         public IActionResult Create([FromBody] DoctorViewModel doctor)
@@ -257,7 +253,7 @@ namespace SHCServer.Controllers
                     CertificationCode = doctor.CertificationCode,
                     CertificationDate = doctor.CertificationDate,
                     CreateUserId = doctor.CreateUserId,
-                    CreateDate=DateTime.Now,
+                    CreateDate = DateTime.Now,
                     DegreeId = doctor.DegreeId,
                     Description = doctor.Description,
                     DistrictCode = doctor.DistrictCode,
@@ -282,7 +278,7 @@ namespace SHCServer.Controllers
 
                 _context.Session.CommitTransaction();
 
-                var newDoctor = _context.Query<Doctor>().Where(d=>d.IsDelete==false&&d.IsActive==true).OrderByDesc(d=>d.CreateDate).FirstOrDefault();
+                var newDoctor = _context.Query<Doctor>().Where(d => d.IsDelete == false && d.IsActive == true).OrderByDesc(d => d.CreateDate).FirstOrDefault();
 
                 _context.Session.BeginTransaction();
 
@@ -382,7 +378,7 @@ namespace SHCServer.Controllers
                         });
                     }
 
-                    var healthfacilities = _context.Query<HealthFacilitiesDoctors>().Where(hf => hf.IsDelete == false && hf.IsActive == true && hf.DoctorId==doctor.DoctorId);
+                    var healthfacilities = _context.Query<HealthFacilitiesDoctors>().Where(hf => hf.IsDelete == false && hf.IsActive == true && hf.DoctorId == doctor.DoctorId);
                     foreach (var item in healthfacilities.ToList())
                     {
                         _context.Update<HealthFacilitiesDoctors>(hf => hf.DoctorId == item.DoctorId, x => new HealthFacilitiesDoctors()
@@ -393,7 +389,7 @@ namespace SHCServer.Controllers
 
                     if (doctor.Specialist.Count != 0)
                     {
-                        foreach(var item in doctor.Specialist)
+                        foreach (var item in doctor.Specialist)
                         {
                             _context.Insert<DoctorSpecialists>(() => new DoctorSpecialists()
                             {
@@ -457,7 +453,6 @@ namespace SHCServer.Controllers
             }
             else
             {
-                
                 try
                 {
                     _context.Session.CurrentConnection.Close();
@@ -500,6 +495,7 @@ namespace SHCServer.Controllers
                 return Json(new ActionResultDto());
             }
         }
+
         #endregion Old_Code
     }
 }

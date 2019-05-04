@@ -62,8 +62,8 @@ namespace SHCServer.ViewModels
             PackageName = Packages.Name;
             Quantity = Packages.Quantity;
             Cost = Packages.Cost;
-            HealthFacilitiesName = HealthFacilities.Name;
-            HealthFacilitiesCode = HealthFacilities.Code;
+            HealthFacilitiesName = HealthFacilities != null ? HealthFacilities.Name : "";
+            HealthFacilitiesCode = HealthFacilities != null ? HealthFacilities.Code : "";
             SmsBrandsName = SmsBrand.BrandName;
         }
 

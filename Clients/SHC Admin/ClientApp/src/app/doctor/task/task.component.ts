@@ -1,6 +1,6 @@
 import { forEach } from '@angular/router/src/utils/collection';
 
-import { IDoctor, IHealthfacilities } from './../../../../../../SHC Client/ClientApp/src/shared/Interfaces';
+import { IDoctor, IHealthfacilities, IHealthfacilitiesDoctor, IDoctorSpecialists } from './../../../../../../SHC Client/ClientApp/src/shared/Interfaces';
 import * as _ from 'lodash';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { Component, Inject, Injector, OnInit, ViewChild, AfterViewInit } from '@angular/core';
@@ -18,6 +18,7 @@ import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/materia
 import { ICategoryCommon } from '@shared/Interfaces';
 import { MatAutocompleteTrigger } from '@angular/material';
 import { Observable } from 'rxjs';
+
 export const MY_FORMATS = {
   parse: {
     dateInput: 'DD/MM/YYYY',
@@ -30,6 +31,16 @@ export const MY_FORMATS = {
   },
 };
 
+export class DoctorSpecialists {
+  constructor(
+    public specialistCode: string) { }
+}
+
+export class HealthfacilitiesDoctor {
+  constructor(
+    public healthFacilitiesId: string) { }
+}
+
 @Component({
   selector: 'app-task',
   templateUrl: './task.component.html',
@@ -41,7 +52,8 @@ export const MY_FORMATS = {
 })
 export class TaskComponent extends AppComponentBase implements OnInit, AfterViewInit {
 
-  @ViewChild(MatAutocompleteTrigger) _autoHealthfacilities:MatAutocompleteTrigger;
+  _speciaList = [];
+  _healthFacilities = [];
 
   _birthDay: Date = new Date(Date.now());
   _certificationDate: Date = new Date(Date.now());
@@ -70,36 +82,37 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   districts = [];
   checkProvince = false;
 
-  
+
 
   _obj: IDoctor | any = {
-    fullName: '',
-    hisId: '',
+    doctorId:0,
+    fullName: null,
+    hisId: null,
     specialist: [],
-    birthDate: 0,
-    birthMonth: 0,
-    birthYear: 0,
+    birthDate: null,
+    birthMonth: null,
+    birthYear: null,
     gender: 1,
-    titleCode: '',
-    posittionCode: '',
-    nationCode: '',
-    ethnicityCode: '',
-    certificationDate: '',
-    academicId: 0,
-    degreeId: 0,
-    email: '',
-    certificationCode: '',
-    address: '',
-    provinceCode: '',
-    districtCode: '',
-    phoneNumber: '',
-    educationCountryCode: '',
-    avatar: 'https://cmkt-image-prd.global.ssl.fastly.net/0.1.0/ps/1441527/1160/772/m1/fpnw/wm0/businessman-avatar-icon-01-.jpg?1468234792&s=e3a468692e15e93a2056bd848193e97a',
-    description: '',
+    titleCode: null,
+    posittionCode: null,
+    nationCode: null,
+    ethnicityCode: null,
+    certificationDate: null,
+    academicId: null,
+    degreeId: null,
+    email: null,
+    certificationCode: null,
+    address: null,
+    provinceCode: null,
+    districtCode: null,
+    phoneNumber: null,
+    educationCountryCode: null,
+    avatar: null,
+    description: null,
     priceFrom: 0,
     priceTo: 0,
-    priceDescription: '',
-    summary: '',
+    priceDescription: null,
+    summary: null,
     isSync: true,
     allowBooking: true,
     allowFilter: true,
@@ -136,16 +149,16 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     this.getAcademics();
     this.getDegrees();
     this.getNations();
-    this.getEthnicities();
     this.getSpecialist();
-    
+    this.getEthnicities();
+
 
 
     const validationRule = new ValidationRule();
 
     if (this.obj) {
 
-      if(this.obj.provinceCode){
+      if (this.obj.provinceCode) {
         this.getDistricts(this.obj.provinceCode);
       }
 
@@ -173,18 +186,19 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     }
 
     this._context = {
+      doctorId: [this._obj.doctorId],
       fullName: [this._obj.fullName, [Validators.required, validationRule.hasValue]],
       specialist: [this._obj.specialist, [Validators.required, validationRule.hasValue]],
       birthDay: [this._birthDay],
       gender: this._obj.gender,
       titleCode: this._obj.titleCode,
-      posittionCode: [this._obj.positionCode],
+      positionCode: [this._obj.positionCode],
       nationCode: [this._obj.nationCode],
       ethnicityCode: [this._obj.ethnicityCode],
       certificationDate: [this._obj.certificationDate],
       academicId: [this._obj.academicId],
       degreeId: [this._obj.degreeId],
-      email: [this._obj.email],
+      email: [this._obj.email, [Validators.email]],
       certificationCode: [this._obj.certificationCode],
       address: [this._obj.address],
       provinceCode: [this._obj.provinceCode],
@@ -217,17 +231,6 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
       this._dataService.getAll('healthfacilities').subscribe(resp => this._healthfacilities = resp.items);
       this.filterOptions();
     }
-
-    //Set healthfacilities
-    // this._obj.healthFacilities.forEach(element => {
-    //   this.healthfacilitiesControl.setValue(element.healthFacilitiesId);
-    // });
-
-    //Set specialist
-    // this._obj.specialist.forEach(element=>{
-    //   this.specialistCodeControl.setValue(element.specialistCode);
-    // })
-
   }
 
 
@@ -245,12 +248,6 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
       editor.ui.getEditableElement()
     );
   }
-
-  // myFilter = (d: Date): boolean => {
-  //   const date = d;
-  //   var now=new Date(new Date(new Date(Date.now()).setHours(0,0,0)).setDate(new Date(Date.now()).getDate()-1));
-  //   return date >= now;
-  // }
 
 
   //Base//
@@ -401,34 +398,77 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
       this._specialistCode = value.code;
     }
   }
+
+  birthDayChange(value: any) {
+    this._birthDay = this.birthDayPicker.nativeElement.value;
+  }
+
+  certificationDateChange(value: any) {
+    this._certificationDate = this.certificationDatePicker.nativeElement.value;
+  }
+
   //End auto complete specialist
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   //SUBMIT
   submit() {
-    var params = _.pick(this._frm.value, ['id', 'fullName', , 'isActive', 'createUserId', 'updateUserId']);
+    var params = _.pick(this._frm.value, [
+      'doctorId',
+      'fullName',
+      'specialist',
+      'gender',
+      'titleCode',
+      'positionCode',
+      'nationCode',
+      'ethnicityCode',
+      'ethnicityCode',
+      'certificationDate',
+      'academicId',
+      'degreeId',
+      'email',
+      'certificationCode',
+      'address',
+      'provinceCode',
+      'districtCode',
+      'phoneNumber',
+      'educationCountryCode',
+      'avatar',
+      'description',
+      'priceFrom',
+      'priceTo',
+      'priceDescription',
+      'summary',
+      'allowBooking',
+      'allowFilter',
+      'allowSearch',
+      'healthfacilities',
+      'createUserId',
+      'updateUserId',
+      'birthDate',
+      'birthMonth',
+      'birthYear']);
 
     params.fullName = _.trim(params.fullName);
 
     if (!moment(this.birthDayPicker.nativeElement.value, 'DD/MM/YYYY').isValid()) {
-      return swal('Thông báo', 'Ngày sinh không đúng định dạng', 'warning');
+      return swal({
+        title: 'Thông báo',
+        text: 'Ngày sinh không đúng định dạng',
+        type: 'warning',
+        timer: 3000
+      });
     }
     else {
       if (this.obj) {
-        params.id = this.obj.doctorId;
+        params.doctorId = this.obj.doctorId;
       }
+
+      params.certificationDate = this._certificationDate;
+
+      //Set birthDate
+
+      params.birthDate = moment(this._birthDay, 'DD/MM/YYYY').date();
+      params.birthMonth = moment(this._birthDay, 'DD/MM/YYYY').month() + 1;
+      params.birthYear = moment(this._birthDay, 'DD/MM/YYYY').year();
 
       if (this.appSession.userId && this._isNew == true) {
         params.createUserId = this.appSession.userId;
@@ -439,6 +479,26 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
         params.updateUserId = this.appSession.userId;
       }
 
+      if (this.specialistCodeControl.value != null) {
+        var special = new DoctorSpecialists(this.specialistCodeControl.value.code);
+        this._speciaList.push(special);
+        params.specialist = this._speciaList;
+      }
+      else {
+        params.specialist = [];
+      }
+
+      if (this.healthfacilitiesControl.value != null) {
+        var health = new HealthfacilitiesDoctor(this.healthfacilitiesControl.value.healthFacilitiesId);
+        this._healthFacilities.push(health);
+        params.healthfacilities = this._healthFacilities;
+      }
+      else {
+        params.healthfacilities = [];
+      }
+
+
+      console.log(params);
       this._isNew ?
         this._dataService.create(this.api, params).subscribe(() => {
           swal(this.l('SaveSuccess'), '', 'success');
