@@ -781,17 +781,20 @@ header .menu-sticky .button { margin-top: 0px; }
                         Frequently Asked Questions
 -----------------------------------------------------------------------*/
 .iq-asked { position: relative; }
-.iq-accordion { z-index: 9; position: relative; }
-.iq-accordion .ad-title { position: relative; padding: 15px 20px 15px 15px; font-size: 16px; line-height: normal; cursor: pointer;  text-align: left; color: #2c3e50; text-decoration: none; border-radius: 4px; }
-.iq-accordion .ad-title:before {  cursor: pointer; content: "\f3d3"; font-family: "Ionicons"; position: absolute; top: 0; left: 0; display: block; padding: 14px 0px; color: #888; font-size: 16px; line-height: 24px; height: 100%; font-weight: normal; -webkit-transition: all 0.25s ease-in-out 0s; -moz-transition: all 0.25s ease-in-out 0s; transition: all 0.25s ease-in-out 0s;  }
-.iq-accordion .ad-active .ad-title:before { content: "\f3d0"; font-family: "Ionicons"; }
-.iq-accordion .ad-details { display: none; overflow: hidden; text-align: left; padding: 15px 15px; color: #666666; line-height: 24px;  }
-.iq-accordion .iq-ad-block { padding: 7px; border-bottom: 1px solid #e1e3e6;}
-.iq-accordion .iq-ad-block:last-child { margin-bottom: 0; }
+.iq-accordion, .custom-accordion145 { z-index: 9; position: relative; }
+.iq-accordion .ad-title, .custom-accordion145 .ad-title{ position: relative; padding: 15px 20px 15px 15px; font-size: 16px; line-height: normal; cursor: pointer;  text-align: left; color: #2c3e50; text-decoration: none; border-radius: 4px; }
+.iq-accordion .ad-title:before, .custom-accordion145 .ad-title:before{  cursor: pointer; content: "\f3d3"; font-family: "Ionicons"; position: absolute; top: 0; left: 0; display: block; padding: 14px 0px; color: #888; font-size: 16px; line-height: 24px; height: 100%; font-weight: normal; -webkit-transition: all 0.25s ease-in-out 0s; -moz-transition: all 0.25s ease-in-out 0s; transition: all 0.25s ease-in-out 0s;  }
+.iq-accordion .ad-active .ad-title:before, .custom-accordion145 .ad-active .ad-title:before{ content: "\f3d0"; font-family: "Ionicons"; }
+.iq-accordion .ad-details, .custom-accordion145 .ad-details{ overflow: hidden; text-align: left; padding: 15px 15px; color: #666666; line-height: 24px;  }
+/*.iq-accordion .iq-ad-block, .custom-accordion145 .iq-ad-block { padding: 7px; border-bottom: 1px solid #e1e3e6;}
+.iq-accordion .iq-ad-block:last-child, .custom-accordion145 .iq-ad-block:last-child{ margin-bottom: 0; } */
 .iq-objects-asked { position: absolute; left: 0; top: 0; display: inline-block; width: 100%; height: 100%; }
 .iq-objects-asked .iq-objects-01 { position: absolute; bottom: 10%; left: 0; }
 .iq-objects-asked .iq-objects-02 { position: absolute; top: 37%; left: 35%; }
 .iq-objects-asked .iq-objects-03 { position: absolute; top: 28%; left: 13%; border: 25px solid #ffc400; border-radius: 900px; height: 350px; width: 350px; }
+.select-service .iq-ad-block{
+  line-height: 2;
+}
 
 /*---------------------------------------------------------------------
                                 Latest Blog Post

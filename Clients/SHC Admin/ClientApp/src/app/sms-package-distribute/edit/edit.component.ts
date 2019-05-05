@@ -13,98 +13,96 @@ import * as moment from 'moment';
 import swal from 'sweetalert2';
 
 @Component({
-  selector: 'app-packagedistributeedit',
-  templateUrl: './edit.component.html',
-  styleUrls: ['./edit.component.scss']
+    selector: 'app-packagedistributeedit',
+    templateUrl: './edit.component.html',
+    styleUrls: ['./edit.component.scss']
 })
 export class packagedistributeEditComponent extends AppComponentBase implements OnInit {
-  api: string = 'smspackagedistribute';
+    api: string = 'smspackagedistribute';
 
-  _frmpackagedistributeedit: FormGroup;
+    _frmpackagedistributeedit: FormGroup;
     _obj: IPachkageDistribute | any = {
-        id: 0, smsBrandsId: '', healthFacilitiesId: '', monthStart: '', monthEnd: '', yearStart: '', yearEnd: '', smsPackageId: '', isActive: false, quantity: 0, smsPackageUsed: {} };
-  _context: any;
+        id: 0, smsBrandsId: '', healthFacilitiesId: '', monthStart: '', monthEnd: '', yearStart: '', yearEnd: '', smsPackageId: '', isActive: false, quantity: 0, smsPackageUsed: {}
+    };
+    _context: any;
     _isNew: boolean = true;
     _smsLogs = [];
-  _month = [{ id: 1, name: 'Tháng 1' }, { id: 2, name: 'Tháng 2' }, { id: 3, name: 'Tháng 3' }, { id: 4, name: 'Tháng 4' }, { id: 5, name: 'Tháng 5' }, { id: 6, name: 'Tháng 6' },
-            { id: 7, name: 'Tháng 7' }, { id: 8, name: 'Tháng 8' }, { id: 9, name: 'Tháng 9' }, { id: 10, name: 'Tháng 10' }, { id: 11, name: 'Tháng 11' }, { id: 12, name: 'Tháng 12' },];
-  _currentYear = moment().year();
-  _currentMonth = moment().month() + 1;
-  _medicalFacility = [];
-  _brands = [];
-  _package: any = [];
+    _month = [{ id: 1, name: 'Tháng 1' }, { id: 2, name: 'Tháng 2' }, { id: 3, name: 'Tháng 3' }, { id: 4, name: 'Tháng 4' }, { id: 5, name: 'Tháng 5' }, { id: 6, name: 'Tháng 6' },
+    { id: 7, name: 'Tháng 7' }, { id: 8, name: 'Tháng 8' }, { id: 9, name: 'Tháng 9' }, { id: 10, name: 'Tháng 10' }, { id: 11, name: 'Tháng 11' }, { id: 12, name: 'Tháng 12' },];
+    _currentYear = moment().year();
+    _currentMonth = moment().month() + 1;
+    _medicalFacility = [];
+    _brands = [];
+    _package: any = [];
 
-  private rules = { month: 'noSpace,capitalize', year: 'singleSpace' };
+    private rules = { month: 'noSpace,capitalize', year: 'singleSpace' };
 
-  constructor(injector: Injector, private _dataService: DataService, private datePipe: DatePipe, private _formBuilder: FormBuilder, public dialogRef: MatDialogRef<packagedistributeEditComponent>, @Inject(MAT_DIALOG_DATA) public obj: IPachkageDistribute) {
-    super(injector);
-  }
+    constructor(injector: Injector, private _dataService: DataService, private datePipe: DatePipe, private _formBuilder: FormBuilder, public dialogRef: MatDialogRef<packagedistributeEditComponent>, @Inject(MAT_DIALOG_DATA) public obj: IPachkageDistribute) {
+        super(injector);
+    }
 
-  ngOnInit() {
-    if (this.obj) {
-        this._obj = _.clone(this.obj);
-        this._obj.id = this.obj.id;
-      this._obj.monthStart = this.obj.monthStart;
-      this._obj.monthEnd = this.obj.monthEnd;
-        this._obj.yearStart = this.obj.yearStart;
-        this._obj.yearEnd = this.obj.yearEnd;
-        this._obj.quantity = this.obj.quantity;
-        this._obj.smsPackageUsed = this.obj.smsPackageUsed;
-      }
+    ngOnInit() {
+        if (this.obj) {
+            this._obj = _.clone(this.obj);
+            this._obj.id = this.obj.id;
+            this._obj.monthStart = this.obj.monthStart;
+            this._obj.monthEnd = this.obj.monthEnd;
+            this._obj.yearStart = this.obj.yearStart;
+            this._obj.yearEnd = this.obj.yearEnd;
+            this._obj.quantity = this.obj.quantity;
+            this._obj.smsPackageUsed = this.obj.smsPackageUsed;
+        }
 
-    this._dataService.getAll('smsbrands-all').subscribe(resp => this._brands = resp.items);
-    this._dataService.getAll('healthfacilities').subscribe(resp => this._medicalFacility = resp.items);
-      this._dataService.getAll('smspackages-all').subscribe(resp => this._package = resp.items);
-      console.log(this._obj.id);
-      this._dataService.get('smslog', JSON.stringify({ smsPackagesDistributeId: this._obj.id, status: 1 }), '', 0, 20).subscribe(resp => {
-          console.log(resp.items);
-          this._smsLogs = resp.items
-      });
+        this._dataService.getAll('smsbrands-all').subscribe(resp => this._brands = resp.items);
+        this._dataService.getAll('healthfacilities').subscribe(resp => this._medicalFacility = resp.items);
+        this._dataService.getAll('smspackages-all').subscribe(resp => this._package = resp.items);
+        this._dataService.get('smslog', JSON.stringify({ smsPackagesDistributeId: this._obj.id, status: 1 }), '', 0, 20).subscribe(resp => {
+            this._smsLogs = resp.items
+        });
 
-    this._context = {
-      healthFacilitiesId: [this._obj.healthFacilitiesId, Validators.required],
-      smsBrandsId: [this._obj.smsBrandsId, Validators.required],
-      monthStart: [this._obj.monthStart, ],
-      monthEnd: [this._obj.monthEnd, ],
-        yearStart: [this._obj.yearStart, [Validators.maxLength(4), Validators.pattern('[0-9]*')]],
-        yearEnd: [this._obj.yearEnd, [Validators.maxLength(4), Validators.pattern('[0-9]*')]],
-      smsPackageId: [this._obj.smsPackageId, Validators.required],
-      isActive: [this._obj.isActive],
-      userId: [],
-    };
-      this._frmpackagedistributeedit = this._formBuilder.group(this._context);
+        this._context = {
+            healthFacilitiesId: [this._obj.healthFacilitiesId, Validators.required],
+            smsBrandsId: [this._obj.smsBrandsId, Validators.required],
+            monthStart: [this._obj.monthStart,],
+            monthEnd: [this._obj.monthEnd,],
+            yearStart: [this._obj.yearStart, [Validators.maxLength(4), Validators.pattern('[0-9]*')]],
+            yearEnd: [this._obj.yearEnd, [Validators.maxLength(4), Validators.pattern('[0-9]*')]],
+            smsPackageId: [this._obj.smsPackageId, Validators.required],
+            isActive: [this._obj.isActive],
+            userId: [],
+        };
+        this._frmpackagedistributeedit = this._formBuilder.group(this._context);
 
+        setTimeout(() => {
+            if (this._smsLogs.length > 0) {
+                this._frmpackagedistributeedit.controls['healthFacilitiesId'].disable();
+                this._frmpackagedistributeedit.controls['smsPackageId'].disable();
+                this._frmpackagedistributeedit.controls['monthStart'].disable();
+                this._frmpackagedistributeedit.controls['yearStart'].disable();
+                this._frmpackagedistributeedit.controls['monthEnd'].disable();
+                this._frmpackagedistributeedit.controls['yearEnd'].disable();
+                this._frmpackagedistributeedit.controls['smsBrandsId'].disable();
+                this._frmpackagedistributeedit.controls['isActive'].disable();
+            } else {
+                this._frmpackagedistributeedit.controls['smsPackageId'].disable();
+                this._frmpackagedistributeedit.controls['healthFacilitiesId'].disable();
+            }
+        }, 1000);
+    }
 
-      setTimeout(() => {
-          if (this._smsLogs.length > 0) {
-              this._frmpackagedistributeedit.controls['healthFacilitiesId'].disable();
-              this._frmpackagedistributeedit.controls['smsPackageId'].disable();
-              this._frmpackagedistributeedit.controls['monthStart'].disable();
-              this._frmpackagedistributeedit.controls['yearStart'].disable();
-              this._frmpackagedistributeedit.controls['monthEnd'].disable();
-              this._frmpackagedistributeedit.controls['yearEnd'].disable();
-              this._frmpackagedistributeedit.controls['smsBrandsId'].disable();
-              this._frmpackagedistributeedit.controls['isActive'].disable();
-          } else {
-              this._frmpackagedistributeedit.controls['smsPackageId'].disable();
-              this._frmpackagedistributeedit.controls['healthFacilitiesId'].disable();
-          }
-      }, 1000);
-  }
+    submit() {
+        this._frmpackagedistributeedit.value.healthFacilitiesId = this.obj.healthFacilitiesId;
+        this._frmpackagedistributeedit.value.month = this._frmpackagedistributeedit.value.month == null || this._frmpackagedistributeedit.value.month == "" ? 1 : this._frmpackagedistributeedit.value.month;
+        this._frmpackagedistributeedit.value.userId = this.appSession.userId;
 
-  submit() {
-    this._frmpackagedistributeedit.value.month = this._frmpackagedistributeedit.value.month == null || this._frmpackagedistributeedit.value.month == "" ? 1 : this._frmpackagedistributeedit.value.month;
-      this._frmpackagedistributeedit.value.userId = this.appSession.userId;
-
-      console.log(this._frmpackagedistributeedit.value);
-    
-    this._dataService.update(this.api, standardized(Object.assign(this._frmpackagedistributeedit.value, { id: this.obj.id }), this.rules)).subscribe(() => {
-      swal({
-        title:this.l('SaveSuccess'), 
-        text:'', 
-        type:'success',
-        timer:3000});
-      this.dialogRef.close();
-    }, err => console.log(err));
-  }
+        this._dataService.update(this.api, standardized(Object.assign(this._frmpackagedistributeedit.value, { id: this.obj.id }), this.rules)).subscribe(() => {
+            swal({
+                title: this.l('SaveSuccess'),
+                text: '',
+                type: 'success',
+                timer: 3000
+            });
+            this.dialogRef.close();
+        }, err => console.log(err));
+    }
 }

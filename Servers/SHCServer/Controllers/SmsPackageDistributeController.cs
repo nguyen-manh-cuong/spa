@@ -1,14 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using SHCServer.Models;
-using SHCServer.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using Viettel.MySql;
+using SHCServer.Models;
+using SHCServer.ViewModels;
+using System;
+using System.Collections.Generic;
 using Viettel;
+using Viettel.MySql;
 
 namespace SHCServer.Controllers
 {
@@ -30,7 +29,7 @@ namespace SHCServer.Controllers
         [Route("api/smspackagedistribute")]
         public IActionResult GetAllPackageDistribute(int skipCount = 0, int maxResultCount = 10, string sorting = null, string filter = null)
         {
-            var objs = _context.Query<SmsPackagesDistribute>().Where(o => o.IsDelete == false);
+            var objs = _context.Query<SmsPackagesDistribute>().Where(o => o.IsDelete == false && o.HealthFacilitiesId != 0);
             int monthStart = 0;
             int monthEnd = 0;
             string toYear = "";
@@ -76,7 +75,7 @@ namespace SHCServer.Controllers
                 }
             }
 
-            return Json(new ActionResultDto { Result = new { Items = objs.OrderByDesc(p => p.Id).TakePage(skipCount == 0 ? 1 : skipCount + 1, maxResultCount).Select(u => new PackageDistributeViewModel(u, _connectionString)).ToList(), TotalCount = objs.Count() } });
+            return Json(new ActionResultDto { Result = new { Items = objs.OrderByDesc(p => p.Id).TakePage(skipCount == 0 ? 1 : skipCount + 1, maxResultCount).Select(u => (new PackageDistributeViewModel(u, _connectionString))).ToList(), TotalCount = objs.Count() } });
         }
 
         [HttpPost]
@@ -84,9 +83,9 @@ namespace SHCServer.Controllers
         public IActionResult CreatePackageDistribute([FromBody] PackageDistributeInputViewModelArray obj)
         {
             var package = _context.Query<SmsPackage>().Where(g => g.Id == obj.SmsPackageId && g.IsDelete == false).FirstOrDefault();
-            if(package == null) return StatusCode(500, _excep.Throw("Gói SMS đã chọn không tồn tại."));
+            if (package == null) return StatusCode(500, _excep.Throw("Gói SMS đã chọn không tồn tại."));
 
-            List <SmsPackagesDistribute> lstPD = new List<SmsPackagesDistribute>();
+            List<SmsPackagesDistribute> lstPD = new List<SmsPackagesDistribute>();
             List<SmsPackageUsed> lstPU = new List<SmsPackageUsed>();
 
             for (int i = 0; i < obj.HealthFacilitiesId.Count; i++)
@@ -219,6 +218,5 @@ namespace SHCServer.Controllers
 
         [JsonProperty("Status")]
         public int? Status { get; set; }
-
     }
 }

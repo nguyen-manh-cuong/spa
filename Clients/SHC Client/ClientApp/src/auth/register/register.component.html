@@ -154,7 +154,7 @@
                                             </div>
                                             <div class="col-xs-4">
                                                 <select id="birthM" class="form-control" placeholder="Tháng">
-                                                    <option *ngFor="let o of _months" [ngValue]="o">{{o}}</option>
+                                                    <option *ngFor="let o of _months" [ngValue]="o">{{'Tháng' }} {{o}}</option>
                                                 </select>
                                             </div>
                                             <div class="col-xs-4">
@@ -436,94 +436,100 @@
                             <div class="select-service">
                                 <h6 class="text-center text-uppercase text-blue">Lựa chọn các dịch vụ sử dụng</h6>
                                 <div>
-                                    <div class="iq-accordion iq-mt-20">
-                                        <div class="iq-ad-block">
-                                            <input type="checkbox" class="pull-right" name="qna" value="Hỏi bác sĩ">
-                                            <a href="" class="ad-title iq-tw-5 iq-font-grey"><i class="fa fa-user-md"
-                                                    aria-hidden="true"></i> Hỏi Bác sĩ / Cộng đồng </a>
-                                            <div class="ad-details">
-                                                <div class="row">
-                                                    <div class="col-sm-12">
-                                                        Chuyên mục Hỏi Bác sĩ / Cộng đồng là nơi trao đổi thông tin y tế
-                                                        giữa các bác sĩ, chuyên gia và người bệnh với hơn 2 triệu lượt
-                                                        truy cập hàng tháng. Mỗi câu trả lời của bác sĩ hiện trên
-                                                        Mangyteviet.com là một lần danh tiếng bác sĩ đến gần người bệnh
-                                                        hơn, đồng thời cũng giúp hàng triệu người hỏi trong cộng đồng
-                                                        Mangyteviet có thêm kiến thức sức khỏe để bảo vệ bản
-                                                        thân.<br>
-
-
-                                                        Bạn có thể xem thêm thông tin về chương trình hợp tác này <a
-                                                            class="text-blue" href="#">tại đây</a>.<br>
-
+                                    <div class="iq-accordion iq-mt-20">                                      
+                                        <div class="iq-accordion iq-mt-20 accordion custom-accordion" id="accordionExample">
+                                            <!-- Hỏi Bác sĩ / Cộng đồng-->
+                                            <div class="iq-ad-block">
+                                                <input type="checkbox" class="pull-right" formControlName="isUsingdoctor" name="isUsingdoctor" id="isUsingdoctor"  data-toggle="collapse" data-target="#doctor">
+                                                <span href="" class="ad-title iq-tw-5 iq-font-grey" data-toggle="collapse" data-target="#doctor"><i class="fa fa-user-md"
+                                                        aria-hidden="true"></i> Hỏi Bác sĩ / Cộng đồng </span>
+                                                <div class="ad-details collapse" id="doctor">
+                                                    <div class="row">
+                                                        <div class="col-sm-12">
+                                                            <p>Chuyên mục Hỏi Bác sĩ / Cộng đồng là nơi trao đổi thông tin y tế
+                                                            giữa các bác sĩ, chuyên gia và người bệnh với hơn 2 triệu lượt
+                                                            truy cập hàng tháng. Mỗi câu trả lời của bác sĩ hiện trên
+                                                            Mangyteviet.com là một lần danh tiếng bác sĩ đến gần người bệnh
+                                                            hơn, đồng thời cũng giúp hàng triệu người hỏi trong cộng đồng
+                                                            Mangyteviet có thêm kiến thức sức khỏe để bảo vệ bản
+                                                            thân.</p>
+                                                            <p>Tham gia vào chuyên mục này cũng mang lại cho bạn một nguồn thu nhập hàng tháng. Với những câu hỏi mà người hỏi có đặt tiền, khi trả lời thành công bạn sẽ được nhận từ 60% đến 80% số tiền mà người hỏi đã đặt</p>
+                                                            <p>Bạn có thể xem thêm thông tin về chương trình hợp tác này tại đây <a
+                                                                class="text-blue" href="#!">tại đây</a></p>
+                                        
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>                                            
+                                            <!-- Gọi Bác sỹ-->
+                                            <div class="iq-ad-block">
+                                                <input type="checkbox" class="pull-right" formControlName="isUsingCall" name="isUsingCall" id="isUsingCall" data-toggle="collapse" data-target="#call">
+                                                <span href="" class="ad-title iq-tw-5 iq-font-grey" data-toggle="collapse" data-target="#call"><i class="fa fa-phone fa-fw"
+                                                        aria-hidden="true"></i> Gọi Bác sỹ </span>
+                                                <div class="ad-details collapse" id="call">
+                                                    <div class="row">
+                                                        <div class="col-sm-12">
+                                                            <p>Đối thoại trực tiếp cùng bệnh nhân qua điện thoại hoặc app Mangytevn, giúp bệnh nhân hiểu chuyên sâu cũng như có hướng đi đúng đắn nhất trong việc khám chữa bệnh. Mangytevn.com cũng hỗ trợ tư vấn bệnh nhân đăng kí khám hoặc tiếp tục sử dụng dịch vụ cùng Bác sỹ sau tư vấn</p>                                                            
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="iq-ad-block">
-                                            <input type="checkbox" class="pull-right" name="qna" value="Hỏi bác sĩ">
-                                            <a href="javascript:void(0)" class="ad-title iq-tw-5 iq-font-grey"><i
-                                                    class="fa fa-phone fa-fw" aria-hidden="true"></i> Gọi bác sĩ</a>
-                                            <div class="ad-details">
-                                                <div class="row">
-                                                    <div class="col-sm-12"> It has survived not only five centuries, but
-                                                        also the leap into electronic typesetting. Neque porro quisquam
-                                                        est, qui dolorem ipsum quia dolor sit amet, consectetur.</div>
+                                             <!-- Đăng tải thông tin ưu đãi, khuyến mãi, voucher giảm giá-->
+                                             <div class="iq-ad-block">
+                                                <input type="checkbox" class="pull-right" formControlName="isUsingUpload" name="isUsingUpload" id="isUsingUpload" data-toggle="collapse" data-target="#voucher ">
+                                                <span href="" class="ad-title iq-tw-5 iq-font-grey" data-toggle="collapse" data-target="#voucher "><i class="fa fa-gift fa-fw"
+                                                        aria-hidden="true"></i> Đăng tải thông tin ưu đãi, khuyến mãi, voucher giảm giá </span>
+                                                <div class="ad-details collapse" id="voucher" data-parent="#accordionExample">
+                                                    <div class="row">
+                                                        <div class="col-sm-12">
+                                                            <p>Chức năng này giúp bạn đăng tải các thông tin khuyến mãi, các sản phẩm ưu đãi của cơ sở y tế và doanh nghiệp của bạn trên Mangytevn.com</p>                                                                                                                            
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="iq-ad-block">
-                                            <input type="checkbox" class="pull-right" name="qna" value="Hỏi bác sĩ">
-                                            <a href="javascript:void(0)" class="ad-title iq-tw-5 iq-font-grey"><i
-                                                    class="fa fa-gift fa-fw" aria-hidden="true"></i> Đăng tải thông tin
-                                                ưu đãi, khuyến mãi, voucher giảm giá</a>
-                                            <div class="ad-details">
-                                                <div class="row">
-                                                    <div class="col-sm-12"> It has survived not only five centuries, but
-                                                        also the leap into electronic typesetting. Neque porro quisquam
-                                                        est, qui dolorem ipsum quia dolor sit amet, consectetur.</div>
+                                             <!-- Đăng ký khám, quản lý thông tin khung giờ khám bệnh Online-->
+                                             <div class="iq-ad-block">
+                                                <input type="checkbox" class="pull-right" formControlName="isUsingRegister" name="isUsingRegister" id="isUsingRegister" data-toggle="collapse" data-target="#register">
+                                                <span href="" class="ad-title iq-tw-5 iq-font-grey" data-toggle="collapse" data-target="#register"><i class="fa fa-calendar-plus-o fa-fw"
+                                                        aria-hidden="true"></i> Đăng ký khám, quản lý thông tin khung giờ khám bệnh Online </span>
+                                                <div class="ad-details collapse" id="register" data-parent="#accordionExample">
+                                                    <div class="row">
+                                                        <div class="col-sm-12">
+                                                            <p>Quản lý lịch làm việc, tạo kênh bệnh nhân tra cứu đăng ký khung giờ khám Online trên hệ thống, giúp bạn nhận đặt hẹn trực tuyến, quản lý giờ làm việc, quản lý hồ sơ bệnh nhân, với nhiều chức năng tiện dụng như tự động nhắn tin SMS xác nhận, sắp xếp giờ khám..</p>                                                            
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div> 
+                                             <!-- Đăng tin bài, video-->
+                                             <div class="iq-ad-block">
+                                                <input type="checkbox" class="pull-right" formControlName="isUsingVideo" name="isUsingVideo" id ="isUsingVideo" data-toggle="collapse" data-target="#file">
+                                                <span href="" class="ad-title iq-tw-5 iq-font-grey" data-toggle="collapse" data-target="#file"><i class="fa fa-file-text-o fa-fw"
+                                                        aria-hidden="true"></i> Đăng tin bài, video </span>
+                                                <div class="ad-details collapse" id="file" data-parent="#accordionExample">
+                                                    <div class="row">
+                                                        <div class="col-sm-12">
+                                                            <p>Chuyên mục là nơi chia sẻ kinh nghiệm của Bác sỹ, chuyên gia và người bệnh. Mỗi bài đăng là một lần danh tiếng Bác sỹ đến gần người bệnh hơn, đồng thời cũng giúp hàng triệu người hỏi trong cộng đồng Mangytevn.com có thêm kiến thức sức khỏe để bảo vệ bản thân</p>                                                            
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="iq-ad-block">
-                                            <input type="checkbox" class="pull-right" name="qna" value="Hỏi bác sĩ">
-                                            <a href="javascript:void(0)" class="ad-title iq-tw-5 iq-font-grey"><i
-                                                    class="fa fa-calendar-plus-o fa-fw" aria-hidden="true"></i> Đăng ký
-                                                khám, quản lý thông tin lịch khám bệnh Online?</a>
-                                            <div class="ad-details">
-                                                <div class="row">
-                                                    <div class="col-sm-12"> It has survived not only five centuries, but
-                                                        also the leap into electronic typesetting. Neque porro quisquam
-                                                        est, qui dolorem ipsum quia dolor sit amet, consectetur.</div>
+                                             <!-- Đăng kí quản lý khám chữa bệnh-->
+                                             <div class="iq-ad-block">
+                                                <input type="checkbox" class="pull-right" formControlName="isUsingExamination" name="isUsingExamination" id="isUsingExamination" data-toggle="collapse" data-target="#file-2">
+                                                <span href="" class="ad-title iq-tw-5 iq-font-grey" data-toggle="collapse" data-target="#file-2"><i class="fa fa-pencil-square fa-fw"
+                                                        aria-hidden="true"></i> Đăng kí quản lý khám chữa bệnh </span>
+                                                <div class="ad-details collapse" id="file-2" data-parent="#accordionExample">
+                                                    <div class="row">
+                                                        <div class="col-sm-12">
+                                                            <p>Chức năng đăng ký cho phép quản lý khám bệnh trực tuyến từ tiếp đón, khám bệnh, quản lý kho dược, quản lý kết quả  xét nghiệm, báo cáo...</p>
+                                                            <p>(Chức năng này chúng tôi sẽ liên hệ theo số điện thoại đăng ký)</p>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            </div>                                          
                                         </div>
-                                        <div class="iq-ad-block">
-                                            <input type="checkbox" class="pull-right" name="qna" value="Hỏi bác sĩ">
-                                            <a href="javascript:void(0)" class="ad-title iq-tw-5 iq-font-grey"><i
-                                                    class="fa fa-file-text-o fa-fw" aria-hidden="true"></i> Đăng tin
-                                                bài, video</a>
-                                            <div class="ad-details">
-                                                <div class="row">
-                                                    <div class="col-sm-12"> It has survived not only five centuries, but
-                                                        also the leap into electronic typesetting. Neque porro quisquam
-                                                        est, qui dolorem ipsum quia dolor sit amet, consectetur.</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="iq-ad-block">
-                                            <input type="checkbox" class="pull-right" name="qna" value="Hỏi bác sĩ">
-                                            <a href="javascript:void(0)" class="ad-title iq-tw-5 iq-font-grey"><i
-                                                    class="fa fa-pencil-square fa-fw" aria-hidden="true"></i> Đăng kí
-                                                khám chữa bệnh</a>
-                                            <div class="ad-details">
-                                                <div class="row">
-                                                    <div class="col-sm-12"> It has survived not only five centuries, but
-                                                        also the leap into electronic typesetting. Neque porro quisquam
-                                                        est, qui dolorem ipsum quia dolor sit amet, consectetur.</div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                        
+                                       
                                     </div>
 
                                     <div class="row iq-mt-20">
