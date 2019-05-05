@@ -7,6 +7,7 @@ using SHCServer.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using Viettel;
 using Viettel.MySql;
 
@@ -237,10 +238,25 @@ namespace SHCServer.Controllers
         #region Old_Code
         [HttpPost]
         [Route("api/doctor")]
-        public IActionResult Create([FromBody] DoctorViewModel doctor)
+        public IActionResult Create([FromForm] DoctorInputViewModel doctor)
         {
+
             try
             {
+                var _files = Request.Form.Files;
+                var _fileUpload = "";
+                if (_files.Count > 0)
+                {
+                    foreach (var file in _files)
+                    {
+                        var uniqueFileName = GetUniqueFileName(file.FileName);
+                        var uploads = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+                        var filePath = Path.Combine(uploads, uniqueFileName);
+                        _fileUpload = "/uploads/" + uniqueFileName;
+                        file.CopyTo(new FileStream(filePath, FileMode.Create));
+                    }
+                }
+
                 _context.Session.BeginTransaction();
 
                 _context.Insert(() => new Doctor()
@@ -250,7 +266,7 @@ namespace SHCServer.Controllers
                     AllowBooking = doctor.AllowBooking,
                     AllowFilter = doctor.AllowFilter,
                     AllowSearch = doctor.AllowSearch,
-                    Avatar = doctor.Avatar,
+                    Avatar = _fileUpload,
                     BirthDate = doctor.BirthDate,
                     BirthMonth = doctor.BirthMonth,
                     BirthYear = doctor.BirthYear,
@@ -501,5 +517,14 @@ namespace SHCServer.Controllers
             }
         }
         #endregion Old_Code
+
+        private string GetUniqueFileName(string fileName)
+        {
+            fileName = Path.GetFileName(fileName);
+            return Path.GetFileNameWithoutExtension(fileName)
+                      + "_"
+                      + Guid.NewGuid().ToString().Substring(0, 4)
+                      + Path.GetExtension(fileName);
+        }
     }
 }

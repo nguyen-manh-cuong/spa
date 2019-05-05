@@ -79,6 +79,95 @@ export class DataService {
      * @input (optional)
      * @return Success
      */
+
+    createUpload(enpoint: string, input: any | null | undefined): Observable<any> {
+        let url_ = this.baseUrl + `/${enpoint}`;
+        url_ = url_.replace(/[?&]$/, '');
+
+        const formData: FormData = new FormData();
+
+        console.log(input);
+        console.log(input.avatar);
+
+        // tslint:disable-next-line: forin
+        for (const key in input) {
+            if (key === 'avatar') {
+                if (input.avatar) {
+                    formData.append('avatar', input.avatar, input.avatar.name);
+                }
+            } else {
+                formData.append(key, input[key]);
+            }
+        }
+
+        const options_: any = {
+            body: formData,
+            observe: 'response',
+            responseType: 'blob',
+            headers: new HttpHeaders({
+                'Accept': 'application/json'
+            })
+        };
+
+
+
+        return this.http.request('post', url_, options_).pipe(_observableMergeMap((response_: any) => {
+            return this.processDataOk(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDataOk(<any>response_);
+                } catch (e) {
+                    return <Observable<any>><any>_observableThrow(e);
+                }
+            } else {
+                return <Observable<any>><any>_observableThrow(response_);
+            }
+        }));
+    }
+
+    updateUpload(enpoint: string, input: any | null | undefined): Observable<any> {
+        let url_ = this.baseUrl + `/api/${enpoint}`;
+        url_ = url_.replace(/[?&]$/, '');
+
+        const formData: FormData = new FormData();
+
+        // tslint:disable-next-line: forin
+        for (const key in input) {
+            if (key === 'avatars') {
+                if (input.files && input.files.files && input.files.files.length) {
+                    Array.from(input.files.files).forEach((f: any) => formData.append('avatars', f));
+                }
+            } else {
+                Array.isArray(input[key])
+                    ? formData.append(key, JSON.stringify(input[key]))
+                    : formData.append(key, input[key]);
+                // formData.append(key, input[key]);
+            }
+        }
+
+        const options_: any = {
+            body: formData,
+            observe: 'response',
+            responseType: 'blob',
+            headers: new HttpHeaders({ 'Accept': 'application/json' })
+        };
+
+        return this.http.request('put', url_, options_).pipe(_observableMergeMap((response_: any) => {
+            return this.processDataOk(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDataOk(<any>response_);
+                } catch (e) {
+                    return <Observable<any>><any>_observableThrow(e);
+                }
+            } else {
+                return <Observable<any>><any>_observableThrow(response_);
+            }
+        }));
+    }
+
     create(enpoint: string, input: any | null | undefined): Observable<any> {
         let url_ = this.baseUrl + `/${enpoint}`;
         url_ = url_.replace(/[?&]$/, '');

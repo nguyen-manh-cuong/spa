@@ -17,7 +17,9 @@ import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { ICategoryCommon } from '@shared/Interfaces';
 import { MatAutocompleteTrigger } from '@angular/material';
+import { FileValidator } from 'ngx-material-file-input';
 import { Observable } from 'rxjs';
+import { standardized } from '@shared/helpers/utils';
 export const MY_FORMATS = {
   parse: {
     dateInput: 'DD/MM/YYYY',
@@ -52,7 +54,10 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   _specialist = [];
 
   _healthFacilitiesId: number;
-  _specialistCode: number;
+    _specialistCode: number;
+
+    _avatars = new Array<string>();
+    _avatarError = "";
 
   filteredHealthFacilitiesOptions: Observable<IHealthfacilities[]>;
   filteredSpecialistOptions: Observable<ICategoryCommon[]>;
@@ -94,7 +99,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     districtCode: '',
     phoneNumber: '',
     educationCountryCode: '',
-    avatar: 'https://cmkt-image-prd.global.ssl.fastly.net/0.1.0/ps/1441527/1160/772/m1/fpnw/wm0/businessman-avatar-icon-01-.jpg?1468234792&s=e3a468692e15e93a2056bd848193e97a',
+    avatar: null,
     description: '',
     priceFrom: 0,
     priceTo: 0,
@@ -128,7 +133,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   @ViewChild("birthDayPicker") birthDayPicker;
   @ViewChild("certificationDatePicker") certificationDatePicker;
 
-  ngOnInit() {
+    ngOnInit() {
 
     this.getProvinces();
     this.getTitles();
@@ -173,9 +178,9 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     }
 
     this._context = {
-      fullName: [this._obj.fullName, [Validators.required, validationRule.hasValue]],
+        fullName: [this._obj.fullName, [Validators.required, validationRule.hasValue]],
       specialist: [this._obj.specialist, [Validators.required, validationRule.hasValue]],
-      birthDay: [this._birthDay],
+      //birthDay: [this._birthDay],
       gender: this._obj.gender,
       titleCode: this._obj.titleCode,
       posittionCode: [this._obj.positionCode],
@@ -191,7 +196,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
       districtCode: [this._obj.districtCode],
       phoneNumber: [this._obj.phoneNumber],
       educationCountryCode: [this._obj.educationCountryCode],
-      avatar: [this._obj.avatar],
+       avatar: [null, [FileValidator.maxContentSize(20000000)]],
       description: this._obj.description,
       priceFrom: [this._obj.priceFrom],
       priceTo: [this._obj.priceTo],
@@ -204,10 +209,6 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     };
 
     this._frm = this._formBuilder.group(this._context);
-
-    if (this._obj.avatar === "" || undefined) {
-      this._frm.controls['avatar'].setValue("https://cmkt-image-prd.global.ssl.fastly.net/0.1.0/ps/1441527/1160/772/m1/fpnw/wm0/businessman-avatar-icon-01-.jpg?1468234792&s=e3a468692e15e93a2056bd848193e97a");
-    }
 
     if (this.appSession.user.healthFacilitiesId) {
       this._dataService.getAll('healthfacilities', "{healthfacilitiesId:" + String(this.appSession.user.healthFacilitiesId) + "}").subscribe(resp => this._healthfacilities = resp.items);
@@ -388,7 +389,26 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
         map(name => name ? this._filterSpecialist(name) : this._specialist.slice()),
         map(data => data.slice())
       );
-  }
+    }
+
+    detectFiles(event) {
+        this._avatarError = "";
+        let files = event.target.files;
+        if (files) {
+            for (let file of files) {
+                let reader = new FileReader();
+                if (file.type == 'image/jpeg' || file.type == 'image/png') {
+                    reader.onload = (e: any) => {
+                            this._avatars[0] = e.target.result;
+                    }
+                    this._frm.controls['avatar'].setValue(file);
+                    reader.readAsDataURL(file);
+                } else {
+                    this._avatarError = "File tải lên không phải file ảnh";
+                }
+            }
+        }
+    }
 
   onInputSpecialist(obj: any) {
     this._frm.controls['specialist'].setValue("");
@@ -418,37 +438,40 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
 
   //SUBMIT
   submit() {
-    var params = _.pick(this._frm.value, ['id', 'fullName', , 'isActive', 'createUserId', 'updateUserId']);
+    var params = _.pick(this._frm.value, ['id', 'fullName', 'isActive', 'createUserId', 'updateUserId', 'avatar']);
 
-    params.fullName = _.trim(params.fullName);
+      params.fullName = _.trim(params.fullName);
 
-    if (!moment(this.birthDayPicker.nativeElement.value, 'DD/MM/YYYY').isValid()) {
-      return swal('Thông báo', 'Ngày sinh không đúng định dạng', 'warning');
-    }
-    else {
-      if (this.obj) {
-        params.id = this.obj.doctorId;
+      params.avatar = this._frm.controls['avatar'].value;
+      console.log(params.avatar);
+
+      if (!moment(this.birthDayPicker.nativeElement.value, 'DD/MM/YYYY').isValid()) {
+          return swal('Thông báo', 'Ngày sinh không đúng định dạng', 'warning');
       }
+      else {
+          if (this.obj) {
+              params.id = this.obj.doctorId;
+          }
 
-      if (this.appSession.userId && this._isNew == true) {
-        params.createUserId = this.appSession.userId;
-        params.updateUserId = this.appSession.userId;
+          if (this.appSession.userId && this._isNew == true) {
+              params.createUserId = this.appSession.userId;
+              params.updateUserId = this.appSession.userId;
+          }
+
+          if (this.appSession.userId && this._isNew == false) {
+              params.updateUserId = this.appSession.userId;
+          }
+
+          this._isNew ?
+              this._dataService.createUpload(this.api, standardized(Object.assign(params, { }), {})).subscribe(() => {
+                  swal(this.l('SaveSuccess'), '', 'success');
+                  this.dialogRef.close();
+              }, err => { }) :
+              this._dataService.update(this.api, params).subscribe(() => {
+                  swal(this.l('SaveSuccess'), '', 'success');
+                  this.dialogRef.close();
+              }, err => { });
       }
-
-      if (this.appSession.userId && this._isNew == false) {
-        params.updateUserId = this.appSession.userId;
-      }
-
-      this._isNew ?
-        this._dataService.create(this.api, params).subscribe(() => {
-          swal(this.l('SaveSuccess'), '', 'success');
-          this.dialogRef.close();
-        }, err => { }) :
-        this._dataService.update(this.api, params).subscribe(() => {
-          swal(this.l('SaveSuccess'), '', 'success');
-          this.dialogRef.close();
-        }, err => { });
-    }
   }
 
 }
