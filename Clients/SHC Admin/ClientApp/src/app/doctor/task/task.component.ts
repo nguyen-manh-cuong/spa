@@ -111,7 +111,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     districtCode: '',
     phoneNumber: '',
     educationCountryCode: '',
-    avatar: 'https://cmkt-image-prd.global.ssl.fastly.net/0.1.0/ps/1441527/1160/772/m1/fpnw/wm0/businessman-avatar-icon-01-.jpg?1468234792&s=e3a468692e15e93a2056bd848193e97a',
+    avatar: null,
     description: '',
     priceFrom: 0,
     priceTo: 0,
@@ -393,6 +393,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
         if (files) {
             for (let file of files) {
                 let reader = new FileReader();
+                reader.readAsDataURL(file);
                 if (file.type == 'image/jpeg' || file.type == 'image/png') {
                     reader.onload = (e: any) => {
                             this._avatars[0] = e.target.result;
@@ -481,7 +482,8 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
         params.doctorId = this.obj.doctorId;
       }
 
-      params.certificationDate = this._certificationDate;
+        params.certificationDate = this._certificationDate;
+        params.avatar = this._frm.controls['avatar'].value;
 
       //Set birthDate
 
