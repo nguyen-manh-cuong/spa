@@ -68,6 +68,11 @@
     white-space: normal!important;
     overflow: visible!important;
 }
+.wrap-text-word {
+    word-break: word-break!important;
+    white-space: normal!important;
+    overflow: visible!important;
+}
 .fw-500{
     font-weight: 500;
 }
@@ -110,5 +115,5 @@
    visibility: hidden;
 }
 .form.detail mat-label{
-    font-size: 18px!important;
+    color: black;
 }
