@@ -72,18 +72,16 @@ namespace SHCServer.ViewModels
             Specialist = context.JoinQuery<Doctor, DoctorSpecialists>((d, ds) => new object[]
                 {
                     JoinType.InnerJoin, d.DoctorId == ds.DoctorId
-                }).Where((d,ds)=>ds.IsDelete==false && ds.IsActive==true && ds.DoctorId==obj.DoctorId).Select((d, ds) => new DoctorSpecialists() {
-                    DoctorId = ds.DoctorId,
-                    SpecialistCode = ds.SpecialistCode
-                }).ToList();
+                }).Where((d, ds) => ds.IsDelete == false && ds.IsActive == true && ds.DoctorId == obj.DoctorId).Select((d, ds) => 
+                new DoctorSpecialistsViewModel(ds,connectionString)).ToList();
 
             HealthFacilities = context.JoinQuery<Doctor, HealthFacilitiesDoctors>((d, hf) => new object[]
                {
                     JoinType.InnerJoin,d.DoctorId==hf.DoctorId
-               }).Where((d,hf)=>hf.IsDelete==false && hf.IsActive==true && hf.DoctorId==obj.DoctorId).Select((d, hf) => new HealthFacilitiesDoctors()
+               }).Where((d, hf) => hf.IsDelete == false && hf.IsActive == true && hf.DoctorId == obj.DoctorId).Select((d, hf) => new HealthFacilitiesDoctors()
                {
-                   DoctorId=hf.DoctorId,
-                   HealthFacilitiesId=hf.HealthFacilitiesId
+                   DoctorId = hf.DoctorId,
+                   HealthFacilitiesId = hf.HealthFacilitiesId
                }).ToList();
 
             Academic = academic != null ? academic.Name : "";
@@ -130,7 +128,7 @@ namespace SHCServer.ViewModels
         public int? UpdateUserId { get; set; }
         public DateTime? UpdateDate { get; set; }
         public List<HealthFacilitiesDoctors> HealthFacilities { set; get; }
-        public List<DoctorSpecialists> Specialist { set; get; }
+        public List<DoctorSpecialistsViewModel> Specialist { set; get; }
     }
 
     public class DoctorInputViewModel
@@ -138,7 +136,6 @@ namespace SHCServer.ViewModels
         public DoctorInputViewModel()
         {
         }
-
 
         public int DoctorId { set; get; }
         public string HisId { get; set; }
@@ -151,7 +148,7 @@ namespace SHCServer.ViewModels
         public string PositionCode { get; set; }
         public string NationCode { get; set; }
         public string EthnicityCode { get; set; }
-        public DateTime? CertificationDate { set; get; }
+        public string CertificationDate { set; get; }
         public int? AcademicId { get; set; }
         public int? DegreeId { set; get; }
         public string Email { get; set; }
@@ -179,6 +176,7 @@ namespace SHCServer.ViewModels
         public DateTime? UpdateDate { get; set; }
         public List<HealthFacilitiesDoctors> HealthFacilities { set; get; }
         public List<DoctorSpecialists> Specialist { set; get; }
+        public string Healths { get; set; }
+        public string Specials { get; set; }
     }
-
 }

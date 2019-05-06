@@ -68,6 +68,11 @@
     white-space: normal!important;
     overflow: visible!important;
 }
+.wrap-text-word {
+    word-break: word-break!important;
+    white-space: normal!important;
+    overflow: visible!important;
+}
 .fw-500{
     font-weight: 500;
 }
@@ -76,6 +81,9 @@
 }
 .f16{
     font-size: 16px!important;
+}
+.f18{
+    font-size: 18px!important;
 }
 .table-custom  .mat-table.task td.mat-cell:last-of-type{    
     padding-left: 10px !important;
@@ -102,4 +110,10 @@
 .is-loading .mat-option-text {
     display: flex;
     justify-content: center;
+}
+.form-detail .mat-select-arrow{
+   visibility: hidden;
+}
+.form-detail mat-label{
+    color: black;
 }

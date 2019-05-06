@@ -24,12 +24,12 @@
             </div>
 
             <div class="row">
-                <div class="col-xs-12 col-md-6 pull-right text-center"><img style="margin: 0 auto;"
+                <div class="col-xs-12 col-md-5 pull-right text-center"><img style="margin: 0 auto;"
                         class="img-responsive iq-pt-50-on-lg" src="/assets/images/dk.jpg" width="499" height="519"
                         alt="" /></div>
-                <div class="col-xs-12 col-md-6 pull-left">
+                <div class="col-xs-12 col-md-7 pull-left">
                     <div class="signup-form">
-                        <form [formGroup]="frmUser">
+                        <form [formGroup]="frmUser" class="frm-register">
 
                             <div class="form-group">
                                 <div class="row">
@@ -385,10 +385,7 @@
                                             <div class="image-uploader text-muted" data-name="first"
                                                  data-description="Chứng minh thư nhân dân / thẻ căn cước">
                                                 <div class="upload-content">
-                                                    <span class="upload-description">
-                                                        Chứng minh
-                                                        thư nhân dân / thẻ căn cước
-                                                    </span>
+                                                    <span class="upload-description"> Chứng minh thư nhân dân / thẻ căn cước </span>
                                                     <div class="upload-button">
                                                         <input type="file" accept="image/*" formControlName="cmnd" multiple (change)="detectFiles($event, 'idCard')"><span class="btn btn-sm btn-primary-inverted">
                                                             <i class="fa fa-paperclip" aria-hidden="true"></i>Tải
@@ -399,9 +396,9 @@
                                                 <div>
                                                     <img style="padding: 5px" *ngFor="let url of _idCardUrls" [src]="url" class="rounded mb-3" width="180">
                                                 </div>
-                                                <div class="text-danger margin-bottom-thin my-mat-hint">
+                                                <!-- <div class="text-danger margin-bottom-thin my-mat-hint">
                                                     {{_idCardError}}<span>&nbsp;</span>
-                                                </div>
+                                                </div> -->
                                                 <div class="upload-target">
                                                     <div class="row"></div>
                                                 </div>
@@ -423,9 +420,9 @@
                                                 <div>
                                                     <img style="padding: 5px" *ngFor="let url of _certificateUrls" [src]="url" class="rounded mb-3" width="180">
                                                 </div>
-                                                <div class="text-danger margin-bottom-thin my-mat-hint">
+                                                <!-- <div class="text-danger margin-bottom-thin my-mat-hint">
                                                     {{_certificateError}}<span>&nbsp;</span>
-                                                </div>
+                                                </div> -->
                                                 <div class="upload-target">
                                                     <div class="row"></div>
                                                 </div>
@@ -533,22 +530,22 @@
                                     </div>
                                 </div>
                             </div>
-
-                            <hr>
-                            <p class="iq-mt-10 iq-font-14">Vui lòng cung cấp đầy đủ thông tin để chúng tôi có
-                                thể liên hệ và hỗ trợ bạn tốt nhất.</p>
+                            <div><hr></div>                            
+                            <label class="mt-10">Vui lòng cung cấp đầy đủ thông tin để chúng tôi có thể liên hệ và hỗ trợ bạn tốt nhất.</label>
                             <div class="row iq-mt-20">
-                                <div class="">
-                                    <label class="col-sm-3 required">Mã xác nhận</label>
-                                    <div class="col-sm-4">
+                                <div class="">                                   
+                                    <div class="col-md-6 d-flex">
+                                            <label class="required min-width-100 mt-5">Mã xác nhận</label>
                                         <input type="text" name="prof_place" formControlName="codeCapcha" class="form-control validate">
                                         <small *ngIf="this.capcha" class="help-block" style="color: red;">Mã xác nhận không khớp</small>
                                     </div>
-                                    <div class="col-sm-2" style="margin-left: -20px; margin-top: -3px;"><img [src]="_capcha.data" width="162" height="39" alt="" /></div>
-                                    <span type="button" style="position: relative;margin-left: 84px;top: 5px;" (click)="getCapcha()"><i class="fa fa-refresh" aria-hidden="true"></i></span>
+                                    <div class="col-md-4" style="margin-left: -20px; margin-top: -3px;"><img [src]="_capcha.data" width="162" height="39" alt="" /></div>
+                                    <div class="mt-10">
+                                            <span type="button"  class="btn-refresh" (click)="getCapcha()"><i class="fa fa-refresh" aria-hidden="true"></i></span>
+                                    </div>
                                 </div>
                             </div>
-                            <label style="margin-top:10px;"><input type="checkbox" formControlName="rules">Tôi đã đồng ý với
+                            <label style="margin-top:10px;"><input type="checkbox" formControlName="rules" class="mr-5">Tôi đã đồng ý với
                                 <a> điều khoản sử dụng </a> của Mangyte.vn 
                             </label>
                             <div class="col-sm-12 text-center iq-mall-20">

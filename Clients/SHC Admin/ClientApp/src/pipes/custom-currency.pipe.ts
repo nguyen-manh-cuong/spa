@@ -8,6 +8,6 @@ export class CustomCurrencyPipe implements PipeTransform {
 
    transform(value: number, args?: any): any {
       if (value != null)
-         return value.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g,"$1,");
+         return value.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g,"$1.");
    }
 }

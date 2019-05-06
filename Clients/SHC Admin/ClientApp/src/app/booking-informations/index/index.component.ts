@@ -62,9 +62,10 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
   filteredOptions: Observable<IHealthfacilities[]>;
   healthfacilities = new FormControl();
   bookingServiceType = new FormControl();
+  flagDisabled = true;
+  arrayStatus = [{ position: 1, status: 'Đã khám', quantitystatus: 0 }, { position: 2, status: 'Chờ khám', quantitystatus: 0 }, { position: 3, status: 'Hủy khám', quantitystatus: 0 }, { position: 4, status: 'Mới đăng ký', quantitystatus: 0 }];
   isLoading = false;
 
-  arrayStatus = [{ position: 1, status: 'Đã khám', quantitystatus: 0 }, { position: 2, status: 'Chờ khám', quantitystatus: 0 }, { position: 3, status: 'Hủy khám', quantitystatus: 0 }, { position: 4, status: 'Mới đăng ký', quantitystatus: 0 }];
   displayedColumns = ['orderNumber', 'healthFacilitiesName', 'doctorName', 'quantity'];
   _bookingServiceTypes = [{ id: 0, name: 'Mới đăng ký' }, { id: 1, name: 'Chờ khám' }, { id: 2, name: 'Đã khám' }, { id: 3, name: 'Hủy khám' }, { id: 4, name: 'Tất cả' }];
   _bookingInformationsTime = [{ id: 0, name: 'Hôm nay' }, { id: 1, name: 'Hôm qua' }, { id: 2, name: 'Tuần này' }, { id: 3, name: 'Tuần trước' }, { id: 4, name: 'Tháng này' }, { id: 5, name: 'Tháng trước' }, { id: 6, name: 'Quý này' }, { id: 7, name: 'Quý trước' }, { id: 8, name: 'Năm nay' }, { id: 9, name: 'Năm trước' }, { id: 10, name: 'Theo khoảng thời gian' }];
@@ -138,8 +139,8 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
   }
 
   onselectBookingInformationsTime(obj: any) {
-    if (obj == 0) {
-      ;
+    this.flagDisabled = true;
+    if (obj == 0) {    
       this.startTime.nativeElement.value = moment(new Date().setDate(new Date().getDate())).format("DD/MM/YYYY");
       this.endTime.nativeElement.value = moment(new Date().setDate(new Date().getDate())).format("DD/MM/YYYY");
     }
@@ -190,8 +191,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
       this.endTime.nativeElement.value = moment(moment().subtract(1, 'year').endOf('year')).format("DD/MM/YYYY");
     }
     if (obj == 10) {
-      document.getElementById("cbo-startTime").classList.remove("disabled");
-      document.getElementById("cbo-endTime").classList.remove("disabled");
+      this.flagDisabled = false;
     }
   }
   search() {
