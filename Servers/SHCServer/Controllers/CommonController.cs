@@ -152,10 +152,18 @@ namespace SHCServer.Controllers
                     {
                         objs = objs.Where(o => o.DistrictCode == value.Trim());
                     }
+                    if (string.Equals(key, "name"))
+                    {
+                        objs = objs.Where(o => o.Name.Contains(value.Trim()));
+                    }
+                    if (string.Equals(key, "code"))
+                    {
+                        objs = objs.Where(o => o.Code.Contains(value.Trim()));
+                    }
                 }
             }
 
-            return Json(new ActionResultDto { Result = new { Items = objs.OrderBy(h => h.Name).Take(1000).ToList() } });
+            return Json(new ActionResultDto { Result = new { Items = objs.OrderBy(h => h.Name).Take(30).ToList() } });
         }
 
         [HttpGet]

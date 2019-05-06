@@ -38,7 +38,7 @@ namespace SHCServer.Controllers
                 foreach (var (key, value) in JsonConvert.DeserializeObject<Dictionary<string, string>>(filter))
                 {
                     if (string.IsNullOrEmpty(value)) continue;
-                    if (string.Equals(key, "healthfacilities")) objs = objs.Where((dc, t) => t.HealthFacilitiesId == int.Parse(value));
+                    if (string.Equals(key, "healthfacilities")) objs = objs.Where((dc, t) => dc.HealthFacilitiesId == int.Parse(value));
                     if (string.Equals(key, "doctor")) objs = objs.Where((dc, t) => dc.DoctorId == int.Parse(value));
                     if (string.Equals(key, "month")) objs = objs.Where((dc, t) => dc.CalendarDate.Month == int.Parse(value));
                     if (string.Equals(key, "status") && value != "3") objs = objs.Where((dc, t) => dc.Status == int.Parse(value));
@@ -60,6 +60,7 @@ namespace SHCServer.Controllers
                 doctorCalendar.Address = bookingdoctor.Address;
                 doctorCalendar.HealthFacilitiesId = bookingdoctor.Healthfacilities;
                 doctorCalendar.Status = bookingdoctor.Status;
+                doctorCalendar.IsActive = true;
                 doctorCalendar.DoctorId = bookingdoctor.Doctor;
                 doctorCalendar.TimeSlotId = el.TimeSlotId;
                 doctorCalendar.CalendarDate = DateTime.Parse(el.DateTime);

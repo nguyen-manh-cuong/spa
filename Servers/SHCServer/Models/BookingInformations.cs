@@ -27,6 +27,39 @@ namespace SHCServer.Models
             BookingServiceType = 1;
             ReasonReject = obj.reasonReject;
         }
+        public BookingInformations(BookingInformationsInputCreateViewModel obj)
+        {
+            TicketId = obj.ticketId;
+            //BookingType = obj.bookingType;
+            //BookingSource = obj.bookingSource;
+            BookingRepresent = obj.bookingRepresent;
+            PhoneRepresent = obj.phoneRepresent;
+            EmailRepresent = obj.emailRepresent;
+            RelationshipId = obj.relationshipId;
+            BookingUser = obj.bookingUser;
+            PhoneNumber = obj.phoneNumber;
+            Email = obj.email;
+            Gender = obj.gender;
+            BirthDate = obj.birthDay;
+            BirthMonth = obj.birthMonth;
+            BirthYear = obj.birthYear;
+            Address = obj.address;
+            ProvinceCode = obj.provinceCode;
+            DistrictCode = obj.districtCode;
+            Reason = obj.reason;
+            ProvinceCodeExamination = obj.provinceCodeExamination;
+            DistrictCodeExamination = obj.districtCodeExamination;
+
+            HealthFacilitiesId = obj.healthfacilitiesId;
+            DoctorId = obj.doctorId;
+            ExaminationDate = DateTime.Parse(obj.examinationDate);
+            ExaminationTime = obj.examinationTime;
+            ExaminationWorkingTime = obj.examinationWorkingTime;
+            TimeSlotId = obj.timeSlotId;
+            Status = 0;
+            CreateDate = DateTime.Now;
+            BookingServiceType = 1;
+        }
 
         [Column(IsPrimaryKey = true)]
         [AutoIncrement]

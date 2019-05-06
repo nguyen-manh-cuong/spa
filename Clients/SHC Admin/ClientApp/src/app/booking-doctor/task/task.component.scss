@@ -1,7 +1,7 @@
 .scroll{
     display: block; 
     overflow-x: auto; 
-    width: 769px!important; 
+    width: 783px!important; 
     height: auto; 
     max-height: 350px; 
     margin-bottom: 10px;
@@ -17,4 +17,9 @@
 .mycheckbox{
     font-size: 110%;
     transform: scale(1.5);
+}
+
+.is-loading ::ng-deep .mat-option-text {
+    display: flex;
+    justify-content: center;
 }

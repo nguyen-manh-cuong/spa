@@ -31,7 +31,9 @@ import {
     MatTableModule,
     MatTabsModule,
     MatToolbarModule,
-    MatTooltipModule
+    MatTooltipModule,
+
+    MatProgressSpinnerModule
 } from '@angular/material';
 //
 import { ModuleWithProviders, NgModule } from '@angular/core';
@@ -72,7 +74,9 @@ import { getDutchPaginatorIntl } from './paginator.intl';
         MatNativeDateModule, 
         // MatProgressBarModule,
         CdkTableModule, MatTableModule,
-        PerfectScrollbarModule
+        PerfectScrollbarModule,
+        
+        MatProgressSpinnerModule
     ],
     declarations: [AccountTypePipe],
     providers: [{ provide: MatPaginatorIntl, useValue: getDutchPaginatorIntl() }],
@@ -108,7 +112,9 @@ import { getDutchPaginatorIntl } from './paginator.intl';
         MatTooltipModule,
         // MatProgressBarModule,
         PerfectScrollbarModule,
-        AccountTypePipe
+        AccountTypePipe,
+
+        MatProgressSpinnerModule
     ]
 })
 export class SharedModule {

@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders, HttpResponse, HttpResponseBase } from '@angular/common/http';
-import { Inject, Injectable, InjectionToken, Optional } from '@angular/core';
+import { Inject, Injectable, InjectionToken, Optional, Injector } from '@angular/core';
 import { Observable, from as _observableFrom, of as _observableOf, throwError as _observableThrow } from 'rxjs';
 import { catchError as _observableCatch, mergeMap as _observableMergeMap } from 'rxjs/operators';
 
