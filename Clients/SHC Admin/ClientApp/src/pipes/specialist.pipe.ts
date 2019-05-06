@@ -1,0 +1,17 @@
+import { DataService } from './../../../../SHC Outside/ClientApp/src/shared/service-proxies/service-data';
+import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({ name: 'SpecialistPipe' })
+
+export class SpecialistPipe implements PipeTransform {
+
+    specialist='';
+    constructor(
+        private _dataService:DataService
+    ) { }
+    transform(value: string, args?: any): any {
+        if (value != null)
+            this._dataService.getAll('catcommon',"{code:"+value+"}").subscribe(resp=>this.specialist=resp.items);
+            return this.specialist;
+    }
+}

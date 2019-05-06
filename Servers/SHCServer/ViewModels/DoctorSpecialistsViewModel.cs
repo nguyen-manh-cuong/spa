@@ -26,7 +26,7 @@ namespace SHCServer.Models
                 {
                     JoinType.InnerJoin, d.SpecialistCode == c.Code
                 })
-                .Where((d, c) => d.DoctorId == obj.DoctorId && d.SpecialistCode == obj.SpecialistCode)
+                .Where((d, c) => d.DoctorId == obj.DoctorId && d.SpecialistCode == obj.SpecialistCode && c.IsDelete==false && c.IsActive==true)
                 .Select((d, c) => c).FirstOrDefault();
 
             Specialist = specialist != null ? specialist.Name : "";
