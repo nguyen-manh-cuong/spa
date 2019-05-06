@@ -18,7 +18,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGrigPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import { Observable } from 'rxjs';
-import { startWith, map } from 'rxjs/operators';
+import { startWith, map, debounceTime, tap, switchMap, finalize } from 'rxjs/operators';
 
 
 
@@ -39,6 +39,7 @@ import { startWith, map } from 'rxjs/operators';
     dataService: DataService;
     frmSearch: FormGroup;
 
+    isLoading = false;
     showFilter: boolean = true;
     dialogTask: any;
     calendarWeekends = true;
@@ -102,28 +103,34 @@ import { startWith, map } from 'rxjs/operators';
       return h ? h.name : undefined;
     }
 
-    _filter(name: any): IHealthfacilities[] {
-      const filterValue = name.toLowerCase();
-      var healthfacilities = isNaN(filterValue) ?         
-      this._healthfacilities.filter(h => h.name.toLowerCase().indexOf(filterValue) === 0) : 
-      this._healthfacilities.filter(h => h.code.toLowerCase().indexOf(filterValue) === 0);
-      //if(healthfacilities.length == 0 && filterValue.length) this.frmSearch.controls['healthfacilities'].setValue(0);
-      
-      return healthfacilities
-    }
-
-    clickCbo() {
-      !this.healthfacilities.value ? this.filterOptions() : '';
-    }
-
     filterOptions() {
-      this.filteredOptions = this.healthfacilities.valueChanges
-        .pipe(
-          startWith<string | IHealthfacilities>(''),
-          map(value => typeof value === 'string' ? value : value.name),
-          map(name => name ? this._filter(name) : this._healthfacilities.slice()),
-          map(data => data.slice(0, 30))
-        );
+      this.healthfacilities.valueChanges
+          .pipe(
+            debounceTime(500),
+            tap(() => this.isLoading = true),
+            switchMap(value => this.filter(value))
+          )
+          .subscribe(data => {
+              this._healthfacilities = data.items;
+          });
+    }
+
+    filter(value: any){
+      var fValue = typeof value === 'string'  ? value : (value ? value.name : '')
+      this._healthfacilities = [];
+
+      return this.dataService
+          .get("healthfacilities", JSON.stringify({
+              name : isNaN(fValue) ? fValue : "",
+              code : !isNaN(fValue) ? fValue : ""
+          }), '', null, null)
+          .pipe(
+              finalize(() => this.isLoading = false)
+          )
+    }
+
+    closed(): void {
+      if(this.healthfacilities.value && typeof this.healthfacilities.value == 'string' && !this.healthfacilities.value.trim()) this.healthfacilities.setErrors({required: true})
     }
 
     onSelectHealthFacilities(obj: any) {

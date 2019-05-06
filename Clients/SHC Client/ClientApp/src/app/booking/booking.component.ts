@@ -156,11 +156,11 @@ export class BookingComponent extends AppComponentBase implements OnInit, AfterV
 
       if(i === 4){
         if(!this._doctor){
-          this.spinner.show();
+          //this.spinner.show();
           this._dataService.get('doctors', this._healthfacility.healthFacilitiesId.toString(), '', 0, 0)
           .subscribe(resp => {
             this._doctors = resp.items
-            this.spinner.hide();
+            //this.spinner.hide();
           });
         }
       }
@@ -232,7 +232,7 @@ export class BookingComponent extends AppComponentBase implements OnInit, AfterV
     this.frmBooking.controls['doctorId'].patchValue(this._doctor.doctorId);
     this.frmBooking.controls.examinationDate.setErrors({required: true});
     
-    this.spinner.show();
+    //this.spinner.show();
     this._dataService.get('workingtime', String(this._doctor.doctorId), '', 0, 0).subscribe(resp => {
       this._workingTimes = resp.items;
 
@@ -258,7 +258,7 @@ export class BookingComponent extends AppComponentBase implements OnInit, AfterV
           workingTime: _.orderBy(workingTime, ['hoursStart'], ['asc']) 
         });
       }
-      this.spinner.hide();
+      //this.spinner.hide();
     });
   }
 

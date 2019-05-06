@@ -41,6 +41,7 @@ export const MY_FORMATS = {
     ],
 })
 export class IndexComponent extends PagedListingComponentBase<IBookingInformations> implements OnInit {
+    flagDisabled = true;
     _healthfacilities = [];
     healthfacilities = new FormControl();
     filteredOptions: Observable<IHealthfacilities[]>;
@@ -58,7 +59,8 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
     _isChosenTime = false;
     dialogSendComponent: any;
     selectionData = new SelectionModel<IMedicalHealthcareHistories>(true, []);
-
+    
+    _checkStatus = true;
     @ViewChild("startTime") startTime;
     @ViewChild("endTime") endTime;
     @ViewChild("auto") auto;
@@ -86,6 +88,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
         //     this.filterOptions();
         // }
         if(this.appSession.user.healthFacilitiesId) {
+            console.log('Don vi', this.appSession.user.healthFacilitiesId)
             this.dataService.getAll('healthfacilities', "{healthfacilitiesId:"+String(this.appSession.user.healthFacilitiesId)+"}").subscribe(resp => this._healthfacilities = resp.items);
             this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId);
             this.dataService.getAll('doctors', String(this.appSession.user.healthFacilitiesId)).subscribe(resp => {
@@ -102,6 +105,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
             this.startTime.nativeElement.value = moment(new Date()).format("DD/MM/YYYY");
             this.endTime.nativeElement.value = moment(new Date()).format("DD/MM/YYYY");
         });
+        
     }
 
     displayFn(h?: IHealthfacilities): string | undefined {
@@ -146,7 +150,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
 
     onSelectHealthFacilities(value:any){
         if(value.healthFacilitiesId){
-            this.dataService.getAll('doctor',"{healthfacilities:"+value.healthFacilitiesId+"}", "{FullName: 'asc'}").subscribe(resp => { this._doctors = resp.items });
+            this.dataService.getAll('doctor',"{healthFacilitiesId:"+value.healthFacilitiesId+"}", "{FullName: 'asc'}").subscribe(resp => { this._doctors = resp.items });
         }
         else{
             this._doctors=null;
@@ -227,8 +231,9 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
     }
 
     onSelectTime(type: number) {
-        switch (type) {
-            case 0:
+        this.flagDisabled = true;
+        switch (type) {            
+            case 0:            
                 this.startTime.nativeElement.value = moment(new Date()).format("DD/MM/YYYY");
                 this.endTime.nativeElement.value = moment(new Date()).format("DD/MM/YYYY");
                 break;
@@ -275,8 +280,9 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
                 this.endTime.nativeElement.value = moment(new Date()).add(-1, 'year').endOf('year').format("DD/MM/YYYY");
                 break;
             case 10:
-                document.getElementById("cbo-startTime").classList.remove("disabled");
-                document.getElementById("cbo-endTime").classList.remove("disabled");
+                this.flagDisabled = false;
+                // document.getElementById("cbo-startTime").classList.remove("disabled");
+                // document.getElementById("cbo-endTime").classList.remove("disabled");
                 break;
         }
         this.updateTimeToSearch();

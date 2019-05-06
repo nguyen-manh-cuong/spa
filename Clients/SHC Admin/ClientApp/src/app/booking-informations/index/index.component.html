@@ -59,7 +59,7 @@
                     </mat-select>
                 </mat-form-field>
             </div>
-            <div class="col-md-3 disabled" id="cbo-startTime">
+            <div class="col-md-3" id="cbo-startTime" [ngClass]="{'disabled': flagDisabled}">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('Từ ngày')}}</mat-label>
                     <input matInput [matDatepicker]="picker1" mask="00/00/0000" required #startTime maxlength="10">
@@ -67,7 +67,7 @@
                     <mat-datepicker #picker1></mat-datepicker>
                 </mat-form-field>
             </div>
-            <div class="col-md-3 disabled" id="cbo-endTime">
+            <div class="col-md-3" id="cbo-endTime" [ngClass]="{'disabled': flagDisabled}">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('Đến ngày')}}</mat-label>
                     <input matInput [matDatepicker]="picker2" #endTime mask="00/00/0000"  maxlength="10" required>

@@ -55,19 +55,19 @@ namespace SHCServer.ViewModels
             UpdateUserId = obj.UpdateUserId;
             Description = obj.Description;
 
-            //var academic = context.JoinQuery<Doctor, CategoryCommon>((d, c) => new object[]
-            //    {
-            //        JoinType.InnerJoin, d.AcademicId == c.Id
-            //    })
-            //    .Where((d, c) => d.DoctorId == obj.DoctorId)
-            //    .Select((d, c) => c).FirstOrDefault();
+            var academic = context.JoinQuery<Doctor, CategoryCommon>((d, c) => new object[]
+                {
+                    JoinType.InnerJoin, d.AcademicId == c.Id
+                })
+                .Where((d, c) => d.DoctorId == obj.DoctorId)
+                .Select((d, c) => c).FirstOrDefault();
 
-            //var degree = context.JoinQuery<Doctor, CategoryCommon>((d, c) => new object[]
-            //    {
-            //        JoinType.InnerJoin, d.DegreeId == c.Id
-            //    })
-            //    .Where((d, c) => d.DoctorId == obj.DoctorId)
-            //    .Select((d, c) => c).FirstOrDefault();
+            var degree = context.JoinQuery<Doctor, CategoryCommon>((d, c) => new object[]
+                {
+                    JoinType.InnerJoin, d.DegreeId == c.Id
+                })
+                .Where((d, c) => d.DoctorId == obj.DoctorId)
+                .Select((d, c) => c).FirstOrDefault();
 
             Specialist = context.JoinQuery<Doctor, DoctorSpecialists>((d, ds) => new object[]
                 {
@@ -86,12 +86,12 @@ namespace SHCServer.ViewModels
                    HealthFacilitiesId=hf.HealthFacilitiesId
                }).ToList();
 
-            //Academic = academic != null ? academic.Name : "";
-            //Degree = degree != null ? degree.Name : "";
+            Academic = academic != null ? academic.Name : "";
+            Degree = degree != null ? degree.Name : "";
         }
 
-        //public string Academic { set; get; }
-        //public string Degree { set; get; }
+        public string Academic { set; get; }
+        public string Degree { set; get; }
         public int DoctorId { set; get; }
         public string HisId { get; set; }
         public string FullName { set; get; }

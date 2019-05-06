@@ -216,6 +216,7 @@ namespace SHCServer.ViewModels
         public string age { set; get; }
         public string examinationDate { set; get; }
         public int updateUserId { set; get; }
+        public bool IsDelete { get; set; }
 
         public static explicit operator int(BookingInformationsInputViewModel v)
         {
