@@ -978,3 +978,14 @@ header .menu-sticky .button { margin-top: 0px; }
 #countdown li.seperator { font-size: 50px; line-height: 40px; vertical-align: top; margin-top: 15px; }
 #countdown li p { color: #a7abb1; font-size: 20px; }
 
+.frm-register .form-control{border-radius: 0!important;}
+.mr-0{margin-right:0px!important;}
+.mr-5{margin-right: 5px!important;}
+.pr-0{padding-right: 0px!important;}
+.mt-5{margin-top: 5px!important;}
+.mt-10{margin-top: 10px!important;}
+.mb-10{margin-top: 10px!important;}
+.d-flex{display:flex;}
+.btn-refresh .fa-refresh{margin-top: 5px;font-size: 24px;}
+.round-0{border-radius: 0px!important;}
+@media (min-width: 1024px){.min-width-100{min-width: 100px;}}
