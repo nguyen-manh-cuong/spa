@@ -77,6 +77,9 @@
 .f16{
     font-size: 16px!important;
 }
+.f18{
+    font-size: 18px!important;
+}
 .table-custom  .mat-table.task td.mat-cell:last-of-type{    
     padding-left: 10px !important;
     padding-right: 10px!important;
@@ -102,4 +105,10 @@
 .is-loading .mat-option-text {
     display: flex;
     justify-content: center;
+}
+.form-detail .mat-select-arrow{
+   visibility: hidden;
+}
+.form.detail mat-label{
+    font-size: 18px!important;
 }

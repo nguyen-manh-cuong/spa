@@ -45,6 +45,7 @@ export class DetailComponent extends AppComponentBase implements OnInit, AfterVi
   _certificationDate: Date = new Date(Date.now());
   api: string = 'doctor';
   _frm: FormGroup;
+  _summary: string = '';
 
   _healthfacilities = [];
   _specialist = [];
@@ -97,7 +98,7 @@ export class DetailComponent extends AppComponentBase implements OnInit, AfterVi
     priceFrom: 0,
     priceTo: 0,
     priceDescription: '',
-    summary: '',
+    //summary: '',
     isSync: true,
     allowBooking: true,
     allowFilter: true,
@@ -198,7 +199,10 @@ export class DetailComponent extends AppComponentBase implements OnInit, AfterVi
       healthfacilities: [this._obj.healthFacilities]
     };
 
-    
+    if(this.obj){
+      this._summary = this._obj.summary;
+      console.log('Mo ta bac si:', this._summary);
+    }
 
     this._frm = this._formBuilder.group(this._context);
 
