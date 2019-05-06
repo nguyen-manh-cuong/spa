@@ -107,10 +107,6 @@ export class RegisterComponent implements OnInit {
         this.checkBirthDate();
     }
 
-    onSelectBirthYear(obj: any){
-        this.checkBirthDate();
-    }
-
     onChangeAccountType(value: number) {
         switch (value) {
             case 1:
@@ -179,6 +175,8 @@ export class RegisterComponent implements OnInit {
 
             return;
         }
+
+        if(this._invaliBirthday) return;
 
         if (this.frmUser.controls['codeCapcha'].value != this._capcha.code) {
             this.capcha = true;

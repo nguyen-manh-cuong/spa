@@ -150,8 +150,8 @@ export class IndexComponent extends PagedListingComponentBase<ISmsLogs> implemen
             return true;
         }
 
-        var startTime = moment(this.startTime.nativeElement.value, 'DD/MM/YYYY hh:mm:ss').toDate();
-        var endTime = moment(this.endTime.nativeElement.value + '23:59:59:', 'DD/MM/YYYY hh:mm:ss').toDate();
+        var startTime = moment(this.startTime.nativeElement.value + '00:00:00', 'DD/MM/YYYY hh:mm:ss').add(7, 'hours').toDate();
+        var endTime = moment(this.endTime.nativeElement.value + '23:59:59:', 'DD/MM/YYYY hh:mm:ss').add(7, 'hours').toDate();
 
         if (endTime.getFullYear() - startTime.getFullYear() > 1) {
 

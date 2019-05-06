@@ -300,7 +300,7 @@ export class BookingComponent extends AppComponentBase implements OnInit, AfterV
     if(!this.frmBooking.controls['districtCodeExamination'].value) return;
   
     this.frmBooking.patchValue({ healthFacilitiesId: null });
-    this.spinner.show();
+    //this.spinner.show();
     this._dataService.get('healthfacilitiesbooking', JSON.stringify({ 
       districtCode: this.frmBooking.controls['districtCodeExamination'].value,
       provinceCode: this.frmBooking.controls['provinceCodeExamination'].value,
@@ -308,7 +308,7 @@ export class BookingComponent extends AppComponentBase implements OnInit, AfterV
       specialist: this.frmBooking.controls['specialists'].value
     }), '', 0, 0).subscribe(resp => {
       this._healthfacilities = resp.items;
-      this.spinner.hide();
+      //this.spinner.hide();
     });   
   }
 
