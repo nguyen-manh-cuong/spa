@@ -5047,6 +5047,13 @@ ngx-mask@^7.8.5:
   dependencies:
     tslib "^1.9.0"
 
+ngx-material-file-input@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/ngx-material-file-input/-/ngx-material-file-input-1.1.1.tgz#836201cbb8a312d749776c65327b3f4652bc0d61"
+  integrity sha512-rYhBPAr7EZca6RoFWKcceV4Y4V2xH8SPAgrA/bCXgKbS/tJ+h/e9UW3jIPMWVOR/u/rbNhzuXVTuTMfSgS3klw==
+  dependencies:
+    tslib "^1.9.0"
+
 ngx-perfect-scrollbar@^6.3.1:
   version "6.3.1"
   resolved "https://registry.yarnpkg.com/ngx-perfect-scrollbar/-/ngx-perfect-scrollbar-6.3.1.tgz#38e5e3259a61e911d82ba24f06fc01ab92eaf919"
