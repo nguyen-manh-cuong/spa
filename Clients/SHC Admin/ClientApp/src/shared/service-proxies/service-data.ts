@@ -86,7 +86,6 @@ export class DataService {
         var specialist = "";
         var healhFacilities="";
         const formData: FormData = new FormData();
-
         // tslint:disable-next-line: forin
         for (const key in input) {
             if (key === 'avatar') {
@@ -104,6 +103,8 @@ export class DataService {
                 formData.append(key, input[key]);
             }
         }
+
+
         formData.append('specials',specialist);
         formData.append('healths',healhFacilities);
         const options_: any = {
@@ -169,6 +170,7 @@ export class DataService {
                 formData.append(key, input[key]);
             }
         }
+
         formData.append('specials',specialist);
         formData.append('healths',healhFacilities);
         const options_: any = {

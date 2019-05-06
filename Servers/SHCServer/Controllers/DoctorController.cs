@@ -229,7 +229,7 @@ namespace SHCServer.Controllers
             }
 
             //return Json(new ActionResultDto { Result = new { Items = objs.TakePage(skipCount == 0 ? 1 : skipCount + 1, maxResultCount).ToList(), TotalCount = objs.Count() } });
-            return Json(new ActionResultDto { Result = new { Items = doctorList, TotalCount =total } });
+            return Json(new ActionResultDto { Result = new { Items = doctorList, TotalCount = total } });
         }
 
         #region Old_Code
@@ -238,6 +238,16 @@ namespace SHCServer.Controllers
         [Route("api/doctor")]
         public IActionResult Create([FromForm] DoctorInputViewModel doctor)
         {
+            bool checkCertificationDate = true;
+            try
+            {
+                Convert.ToDateTime(doctor.CertificationDate);
+            }
+            catch
+            {
+                checkCertificationDate = false;
+            }
+
             try
             {
                 var _files = Request.Form.Files;
@@ -345,6 +355,14 @@ namespace SHCServer.Controllers
                     }
                 }
 
+                if (checkCertificationDate == true)
+                {
+                    _context.Update<Doctor>(d => d.DoctorId == newDoctor.DoctorId, x => new Doctor()
+                    {
+                        CertificationDate = Convert.ToDateTime(doctor.CertificationDate).AddMonths(1)
+                    });
+                }
+
                 //if (doctor.HealthFacilities.Count != 0)
                 //{
                 //    foreach (var item in doctor.HealthFacilities)
@@ -373,6 +391,15 @@ namespace SHCServer.Controllers
         [Route("api/doctor")]
         public IActionResult Update([FromForm] DoctorInputViewModel doctor, int? allow)
         {
+            bool checkCertificationDate = true;
+            try
+            {
+                Convert.ToDateTime(doctor.CertificationDate);
+            }
+            catch
+            {
+                checkCertificationDate = false;
+            }
             if (!string.IsNullOrEmpty(doctor.EthnicityCode))
                 if (doctor.EthnicityCode.Equals("null"))
                 {
@@ -460,7 +487,6 @@ namespace SHCServer.Controllers
                     BirthMonth = doctor.BirthMonth,
                     BirthYear = doctor.BirthYear,
                     CertificationCode = doctor.CertificationCode,
-                    CertificationDate = Convert.ToDateTime(doctor.CertificationDate).AddMonths(1),
                     DegreeId = doctor.DegreeId,
                     Description = doctor.Description,
                     DistrictCode = doctor.DistrictCode,
@@ -482,6 +508,14 @@ namespace SHCServer.Controllers
                     UpdateUserId = doctor.UpdateUserId,
                     TitleCode = doctor.TitleCode,
                 });
+
+                if (checkCertificationDate == true)
+                {
+                    _context.Update<Doctor>(d => d.DoctorId == doctor.DoctorId, x => new Doctor()
+                    {
+                        CertificationDate = Convert.ToDateTime(doctor.CertificationDate).AddMonths(1)
+                    });
+                }
 
                 if (allow == null)
                 {

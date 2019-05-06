@@ -16,7 +16,8 @@
                     <div class="col-md-4">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("DoctorBirthDay")}}</mat-label>
-                            <input (dateChange)="birthDayChange($event.value)" matInput [matDatepicker]="picker" #birthDayPicker mask="0*" maxlength="10">
+                            <input (dateChange)="birthDayChange($event.value)" matInput [matDatepicker]="picker"
+                                #birthDayPicker mask="0*" maxlength="10">
                             <mat-datepicker-toggle matSuffix [for]="picker" class="t-2"></mat-datepicker-toggle>
                             <mat-datepicker #picker [startAt]="_birthDay"></mat-datepicker>
                         </mat-form-field>
@@ -68,7 +69,8 @@
                     <div class="col-md-6">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("PhoneNumber")}}</mat-label>
-                            <input formControlName="phoneNumber" matInput minlength="10" maxlength="12" mask="9*">
+                            <input formControlName="phoneNumber" (input)="rulePhoneNumber()" matInput minlength="10"
+                                maxlength="12">
                             <validation matSuffix [control]="_frm.controls['phoneNumber']"></validation>
                         </mat-form-field>
                     </div>
@@ -85,15 +87,18 @@
                     <div class="col-md-6">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("DoctorCertificationCode")}}</mat-label>
-                            <input formControlName="certificationCode" matInput  maxlength="45" (input)="certificationCodeChange($event)">
+                            <input formControlName="certificationCode" matInput maxlength="45"
+                                (input)="certificationCodeChange($event)">
                         </mat-form-field>
                     </div>
                     <div class="col-md-4">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("DoctorCertificationDate")}}</mat-label>
-                            <input [disabled]="_certificationInputCheck" #certificationDatePicker (dateChange)="certificationDateChange($event.value)" matInput [matDatepicker]="certificationDatePicker" matInput
-                                mask="0*" maxlength="10">
-                            <mat-datepicker-toggle [disabled]="_certificationInputCheck" matSuffix [for]="certificationDatePicker" class="t-2">
+                            <input [disabled]="_certificationInputCheck" #certificationDatePicker
+                                (dateChange)="certificationDateChange($event.value)" matInput
+                                [matDatepicker]="certificationDatePicker" matInput mask="0*" maxlength="10">
+                            <mat-datepicker-toggle [disabled]="_certificationInputCheck" matSuffix
+                                [for]="certificationDatePicker" class="t-2">
                             </mat-datepicker-toggle>
                             <mat-datepicker #certificationDatePicker [startAt]="startDate">
                             </mat-datepicker>
@@ -172,8 +177,9 @@
                     <div class="col-md-12">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l('DoctorSpecialist')}}</mat-label>
-                            <input [required]="true" matInput [formControl]="specialistCodeControl" (click)="clickSpecialistCbo()"
-                                (input)="onInputSpecialist()" [matAutocomplete]="autoSpecialist">
+                            <input [required]="true" matInput [formControl]="specialistCodeControl"
+                                (click)="clickSpecialistCbo()"
+                                [matAutocomplete]="autoSpecialist">
                             <mat-autocomplete #autoSpecialist="matAutocomplete" [displayWith]="displaySpecialistFn"
                                 (optionSelected)='onSelectSpecialist($event.option.value)'>
                                 <mat-option *ngFor="let o of filteredSpecialistOptions | async" [value]="o">
@@ -200,20 +206,23 @@
 
                 <div class="row pb-3">
                     <div class="col-md-3 ml-3">
-                        <img style="padding: 5px" [src]="_avatars[0] || 'https://cmkt-image-prd.global.ssl.fastly.net/0.1.0/ps/1441527/1160/772/m1/fpnw/wm0/businessman-avatar-icon-01-.jpg?1468234792&s=e3a468692e15e93a2056bd848193e97a'" height="175px" width="200px">
+                        <img style="padding: 5px"
+                            [src]="_avatars[0] || 'https://cmkt-image-prd.global.ssl.fastly.net/0.1.0/ps/1441527/1160/772/m1/fpnw/wm0/businessman-avatar-icon-01-.jpg?1468234792&s=e3a468692e15e93a2056bd848193e97a'"
+                            height="175px" width="200px">
                     </div>
                     <div class="col-md-4">
                         <div class="col-md-3 btn btn-primary">
                             <br>
                             <div class="upload-button">
-                                <input type="file" accept="image/*" multiple (change)="detectFiles($event)"><span class="btn btn-sm btn-primary-inverted">
+                                <input type="file" accept="image/*" multiple (change)="detectFiles($event)"><span
+                                    class="btn btn-sm btn-primary-inverted">
                                     <i class="fa fa-paperclip" aria-hidden="true"></i>Tải
                                     lên
                                 </span>
                             </div>
                         </div>
                         <div class="pl-3">
-                             {{_avatarError}}<span>&nbsp;</span>
+                            {{_avatarError}}<span>&nbsp;</span>
                             <!--<br>
                             <mat-label>Ảnh định dạng png, jpg, jpeg</mat-label>
                             <br>
@@ -259,8 +268,7 @@
                     <div class="col-md-12">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("DoctorDescription")}}</mat-label>
-                            <input formControlName="description" matInput maxlength="255"
-                                ngDefaultControl>
+                            <input formControlName="description" matInput maxlength="255" ngDefaultControl>
                         </mat-form-field>
 
                     </div>
@@ -268,13 +276,36 @@
 
                 <div class="row">
                     <div class="col-md-12" [hidden]="this.appSession.user.healthFacilitiesId">
-                        <mat-form-field appearance="outline" class="w-100">
+                        <!-- <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l('HealthFacilities')}}</mat-label>
                             <input matInput [formControl]="healthfacilitiesControl" (click)="clickCbo()"
                                 (input)="onInputHealthfacilities()" [matAutocomplete]="auto">
                             <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn"
                                 (optionSelected)='onSelectHealthFacilities($event.option.value)'>
                                 <mat-option *ngFor="let o of filteredHealthFacilitiesOptions | async" [value]="o">
+                                    {{o.code + ' - ' + o.name}}
+                                </mat-option>
+                            </mat-autocomplete>
+                        </mat-form-field> -->
+
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l('HealthFacilities')}}</mat-label>
+                            <mat-chip-list #chipList>
+                                <mat-chip *ngFor="let o of _healthfacilitiesChip" [selectable]="selectable"
+                                    [removable]="removable" (removed)="remove(o.code)">
+                                    {{o.name}}
+                                    <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+                                </mat-chip>
+                                <input matInput #healthfacilitiesInput [formControl]="healthfacilitiesControl"
+                                    [matAutocomplete]="auto" [matChipInputFor]="chipList"
+                                    [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                                    [matChipInputAddOnBlur]="addOnBlur" (matChipInputTokenEnd)="add($event)">
+                            </mat-chip-list>
+                            <mat-autocomplete matInput #auto="matAutocomplete" (optionSelected)="selected($event)">
+                                <mat-option *ngIf="isLoading" class="is-loading">
+                                    <mat-spinner diameter="50"></mat-spinner>
+                                </mat-option>
+                                <mat-option *ngFor="let o of _healthfacilities" [value]="o">
                                     {{o.code + ' - ' + o.name}}
                                 </mat-option>
                             </mat-autocomplete>
@@ -321,7 +352,7 @@
                         </mat-checkbox>
                     </div>
                     <button class="mr-3" mat-button mat-dialog-close>{{l("Close")}}</button>
-                    <button [disabled]="_frm.invalid" mat-raised-button color="primary" 
+                    <button [disabled]="_frm.invalid" mat-raised-button color="primary"
                         (click)="submit()">{{l("Save")}}</button>
                 </div>
             </div>
