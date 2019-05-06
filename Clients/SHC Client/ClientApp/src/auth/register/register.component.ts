@@ -41,6 +41,7 @@ export class RegisterComponent implements OnInit {
     _idCardUrls = new Array<string>();
     _certificateUrls = new Array<string>();
     _user: CreateUserDto;
+    _invaliBirthday = false;
 
     _capcha: { code: string, data: any } = { code: '', data: '' };
     _sex: Array<{ id: number, name: string }> = [{ id: 1, name: 'Nam' }, { id: 2, name: 'Nữ' }, { id: 3, name: 'Không xác định' }];
@@ -98,6 +99,14 @@ export class RegisterComponent implements OnInit {
         this.getCapcha();
     }
 
+    onSelectBirthDay(obj: any){
+        this.checkBirthDate();
+    }
+
+    onSelectBirthMonth(obj: any){
+        this.checkBirthDate();
+    }
+
     onChangeAccountType(value: number) {
         switch (value) {
             case 1:
@@ -146,7 +155,6 @@ export class RegisterComponent implements OnInit {
     }
 
     submit() {
-        console.log('Vao ham submit', this.frmUser)
        // this.frmUser.controls['isActive'].setValue(this._obj.isActive);
         this.frmUser.value.birthDay = new Date($('#birthY').val() + '-' + $('#birthM').val() + '-' + $('#birthD').val());
 
@@ -187,9 +195,18 @@ export class RegisterComponent implements OnInit {
                     //if (result.value) {
                         //this._location.back();
                     //}
-                    //this._location.back();
+                    this._location.back();
                 });
             }, err => console.log(err))
+    }
+
+    //validate  
+    checkBirthDate(){
+        if(!moment($('#birthD').val() + '/' + $('#birthM').val() + '/' +  $('#birthY').val(), "DD/MM/YYYY").isValid()){
+            this._invaliBirthday = true;
+        } else{
+            this._invaliBirthday = false;
+        }
     }
 
     ruleRequire(value: any) {
