@@ -98,6 +98,14 @@ export class RegisterComponent implements OnInit {
         this.getCapcha();
     }
 
+    onSelectBirthDay(obj: any){
+        this.checkBirthDate();
+    }
+
+    onSelectBirthMonth(obj: any){
+        this.checkBirthDate();
+    }
+
     onChangeAccountType(value: number) {
         switch (value) {
             case 1:
@@ -146,7 +154,6 @@ export class RegisterComponent implements OnInit {
     }
 
     submit() {
-        console.log('Vao ham submit', this.frmUser)
        // this.frmUser.controls['isActive'].setValue(this._obj.isActive);
         this.frmUser.value.birthDay = new Date($('#birthY').val() + '-' + $('#birthM').val() + '-' + $('#birthD').val());
 
@@ -187,9 +194,17 @@ export class RegisterComponent implements OnInit {
                     //if (result.value) {
                         //this._location.back();
                     //}
-                    //this._location.back();
+                    this._location.back();
                 });
             }, err => console.log(err))
+    }
+
+    //validate  
+    checkBirthDate(){
+        if(!moment($('#birthD').val() + '/' + $('#birthM').val() + '/' +  $('#birthY').val(), "DD/MM/YYYY").isValid()){
+            this.frmUser.controls.birthDay.setErrors({birthDate : true});
+            console.log(206, this.frmUser.controls.birthDay);
+        }
     }
 
     ruleRequire(value: any) {

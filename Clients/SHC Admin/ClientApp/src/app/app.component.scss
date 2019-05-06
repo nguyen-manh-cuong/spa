@@ -95,3 +95,8 @@
         border-collapse: unset!important;
     }
 }
+
+.is-loading .mat-option-text {
+    display: flex;
+    justify-content: center;
+}

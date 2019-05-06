@@ -163,6 +163,7 @@
                                                 </select>
                                             </div>
                                         </div>
+                                        <validation [control]="frmUser.controls['birthDay']"></validation>
                                     </div>
                                 </div>
                             </div>
@@ -551,7 +552,7 @@
                                 <a> điều khoản sử dụng </a> của Mangyte.vn 
                             </label>
                             <div class="col-sm-12 text-center iq-mall-20">
-                                <button type="submit" class="btn btn-lg btn-aqua btn-curvy btn-longer-width" [disabled]="!frmBooking.value['rules']" (click)="submit()"><i
+                                <button type="submit" class="btn btn-lg btn-aqua btn-curvy btn-longer-width" [disabled]="!frmUser.value['rules']" (click)="submit()"><i
                                     class="fa fa-check-square-o" aria-hidden="true"></i> Đăng ký</button>
                             </div>
                         </form>
