@@ -18,7 +18,7 @@
             <div class="col-md-6" [hidden]="this.appSession.user.healthFacilitiesId">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('Unit')}}</mat-label>
-                    <input matInput [formControl]="healthfacilities" (click)="clickCbo()" [matAutocomplete]="auto">
+                    <input matInput [formControl]="healthfacilities" (click)="clickCbo()" [matAutocomplete]="auto" required>
                     <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="onSelectHealthFacilities($event.option.value)">
                         <mat-option *ngFor="let o of filteredOptions | async" [value]="o">
                             {{o.code + ' - ' + o.name}}
@@ -29,7 +29,7 @@
             <div class="col-md-6 disabled" [hidden]="!this.appSession.user.healthFacilitiesId">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('Unit')}}</mat-label>
-                    <mat-select formControlName="healthfacilities">
+                    <mat-select formControlName="healthfacilities" required>
                         <mat-option *ngFor="let o of _healthfacilities" [value]="o.healthFacilitiesId">{{ o.name }}</mat-option>
                     </mat-select>
                 </mat-form-field>
@@ -37,7 +37,7 @@
             <div class="col-md-6">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('Doctor')}}</mat-label>
-                    <mat-select formControlName="doctor">
+                    <mat-select formControlName="doctor" required>
                         <mat-option *ngIf="_doctors.length" class="text-center" [innerHTML]="'<div class=\'text-center border-bottom w-100\'>'+ l('Bỏ chọn') +'</div>'"></mat-option>
                         <mat-option *ngFor="let o of _doctors" [value]="o.doctorId">{{ o.fullName }}</mat-option>
                     </mat-select>

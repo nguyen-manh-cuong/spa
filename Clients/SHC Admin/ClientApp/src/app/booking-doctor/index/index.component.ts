@@ -39,6 +39,7 @@ import { startWith, map } from 'rxjs/operators';
     dataService: DataService;
     frmSearch: FormGroup;
 
+    showFilter: boolean = true;
     dialogTask: any;
     calendarWeekends = true;
     calendarPlugins = [listPlugin, dayGridPlugin, timeGrigPlugin, interactionPlugin];
@@ -60,15 +61,25 @@ import { startWith, map } from 'rxjs/operators';
       this.dataService = this._dataService;
       this.dialogTask = TaskComponent;
 
-      this.dataService.getAll('healthfacilities', (this.appSession.user.healthFacilitiesId ? String(this.appSession.user.healthFacilitiesId) : '')).subscribe(resp => this._healthfacilities = resp.items);
-      this.appSession.user.healthFacilitiesId ? this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId) : this.filterOptions();
-      if(this.appSession.user.healthFacilitiesId) this.dataService.getAll('doctors', String(this.appSession.user.healthFacilitiesId)).subscribe(resp => this._doctors = resp.items);
       this.calendarComponent.locale = viLocale;
+
+      if(this.appSession.user.healthFacilitiesId){
+          this.dataService.get("healthfacilities", JSON.stringify({healthfacilitiesId : this.appSession.user.healthFacilitiesId}), '', null, null).subscribe(resp => {this._healthfacilities = resp.items;});
+          this.dataService.getAll('doctors', String(this.appSession.user.healthFacilitiesId)).subscribe(resp => this._doctors = resp.items);
+
+          setTimeout(() => {
+              this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId);
+          }, 500);
+      } else{
+          this.filterOptions();
+          this.healthfacilities.setValue(null);
+      }
     }
 
     search(){
-      if(this.healthfacilities.value && this.frmSearch.controls['doctor'].value){
-        this.frmSearch.controls['healthfacilities'].setValue(this.healthfacilities.value.healthFacilitiesId);
+      if(((!this.appSession.user.healthFacilitiesId && this.healthfacilities.value) || (this.appSession.user.healthFacilitiesId))  && this.frmSearch.controls['doctor'].value){
+        !this.appSession.user.healthFacilitiesId ? this.frmSearch.controls['healthfacilities'].setValue(this.healthfacilities.value.healthFacilitiesId) : "";
+        
         this.dataService
         .get("bookingdoctor", JSON.stringify(_.omitBy(this.frmSearch.value, _.isNil)), '', null, null)
         .subscribe(resp => {
@@ -127,4 +138,15 @@ import { startWith, map } from 'rxjs/operators';
         obj.el.innerHTML = obj.el.innerHTML.split("<a>")[0] + des + "</a></td>";
       }
     }
+
+    //filter
+    toggedFilter() {
+      const _filter = $('form.form-filter');
+      if (_filter.length <= 0) { return; }
+      this.showFilter = !this.showFilter;
+      _filter.css({ 'height': this.showFilter ? 'auto' : 0, 'overflow': this.showFilter ? 'auto' : 'hidden' });
+      //this.setTableHeight();
+
+
+  }
 }

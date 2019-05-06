@@ -155,7 +155,14 @@ export class BookingComponent extends AppComponentBase implements OnInit, AfterV
       if (this.frmBooking.controls.provinceCodeExamination.invalid || this.frmBooking.controls.districtCodeExamination.invalid || this.frmBooking.controls.healthFacilitiesId.invalid) { return; }
 
       if(i === 4){
-        !this._doctor ? this._dataService.get('doctors', this._healthfacility.healthFacilitiesId.toString(), '', 0, 0).subscribe(resp => this._doctors = resp.items) : '';
+        if(!this._doctor){
+          this.spinner.show();
+          this._dataService.get('doctors', this._healthfacility.healthFacilitiesId.toString(), '', 0, 0)
+          .subscribe(resp => {
+            this._doctors = resp.items
+            this.spinner.hide();
+          });
+        }
       }
     }
 

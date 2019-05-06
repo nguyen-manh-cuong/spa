@@ -1,4 +1,4 @@
-<form [formGroup]="_frm" class="container p-relative" novalidate>
+<form [formGroup]="_frm" class="container p-relative" id="form-dialog" novalidate>
     <div class="p-absolute t-5 r-5">
         <button mat-icon-button mat-dialog-close style="z-index: 9;" [matTooltipPosition]="'left'" matTooltip="Đóng">
             <mat-icon>close</mat-icon>
@@ -32,14 +32,43 @@
                     <div class="col-md-12" [hidden]="this.appSession.user.healthFacilitiesId">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l('Unit')}}</mat-label>
-                            <input matInput [formControl]="healthfacilities" (click)="clickCbo()" [matAutocomplete]="auto" required>
-                            <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="onSelectHealthFacilities($event.option.value)">
-                                <mat-option *ngFor="let o of filteredOptions | async" [value]="o">
+                            <input matInput [formControl]="healthfacilities" [matAutocomplete]="auto" required>
+                            <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="onSelectHealthFacilities($event.option.value)" (closed)="closed($event)">
+                                <mat-option *ngIf="isLoading" class="is-loading"><mat-spinner diameter="50"></mat-spinner></mat-option>
+                                <mat-option *ngFor="let o of _healthfacilities" [value]="o">
                                     {{o.code + ' - ' + o.name}}
                                 </mat-option>
                             </mat-autocomplete>
                             <validation matSuffix [control]="healthfacilities"></validation>
                         </mat-form-field>
+
+                        <!-- <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l('Unit')}}</mat-label>
+                            <mat-chip-list #chipList>
+                                <mat-chip
+                                  *ngFor="let o of _healthfacilitiesChip"
+                                  [selectable]="selectable"
+                                  [removable]="removable"
+                                  (removed)="remove(o.code)">
+                                  {{o.name}}
+                                  <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+                                </mat-chip>
+                                <input matInput
+                                  #healthfacilitiesInput
+                                  [formControl]="healthfacilities"
+                                  [matAutocomplete]="auto"
+                                  [matChipInputFor]="chipList"
+                                  [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                                  [matChipInputAddOnBlur]="addOnBlur"
+                                  (matChipInputTokenEnd)="add($event)">
+                            </mat-chip-list>
+                            <mat-autocomplete matInput #auto="matAutocomplete" (optionSelected)="selected($event)">
+                                <mat-option *ngIf="isLoading" class="is-loading"><mat-spinner diameter="50"></mat-spinner></mat-option>
+                                <mat-option *ngFor="let o of _healthfacilities" [value]="o">
+                                    {{o.code + ' - ' + o.name}}
+                                </mat-option>
+                            </mat-autocomplete>
+                        </mat-form-field> -->               
                     </div> 
                     <div class="col-md-12 disabled" [hidden]="!this.appSession.user.healthFacilitiesId">
                         <mat-form-field appearance="outline" class="w-100">
@@ -63,7 +92,7 @@
                     <div class="col-md-12">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l('Place')}}</mat-label>
-                            <input type="text" formControlName="address" matInput [required]="true">
+                            <input type="text" formControlName="address" matInput [required]="true" maxlength="255">
                             <validation matSuffix [control]="_frm.controls['address']"></validation>
                         </mat-form-field>
                     </div>

@@ -104,7 +104,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
             this.frmSearch.controls['about'].setValue(new Date().getDate() - new Date().getDate() + 3);
             this.endTime.nativeElement.focus();
         });
-        this.appSession.user.healthFacilitiesId ? this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId) : this.filterOptions();
+        
 
     }
 

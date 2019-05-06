@@ -27,7 +27,7 @@ namespace SHCServer.Controllers
 
         [HttpPost]
         [Route("api/bookinginformations")]
-        public IActionResult Create([FromBody] BookingInformationsInputViewModel obj)
+        public IActionResult Create([FromBody] BookingInformationsInputCreateViewModel obj)
         {
             var result = _context.Insert(new BookingInformations(obj));
 
