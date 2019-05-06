@@ -41,6 +41,7 @@ export class RegisterComponent implements OnInit {
     _idCardUrls = new Array<string>();
     _certificateUrls = new Array<string>();
     _user: CreateUserDto;
+    _invaliBirthday = false;
 
     _capcha: { code: string, data: any } = { code: '', data: '' };
     _sex: Array<{ id: number, name: string }> = [{ id: 1, name: 'Nam' }, { id: 2, name: 'Nữ' }, { id: 3, name: 'Không xác định' }];
@@ -202,8 +203,9 @@ export class RegisterComponent implements OnInit {
     //validate  
     checkBirthDate(){
         if(!moment($('#birthD').val() + '/' + $('#birthM').val() + '/' +  $('#birthY').val(), "DD/MM/YYYY").isValid()){
-            this.frmUser.controls.birthDay.setErrors({birthDate : true});
-            console.log(206, this.frmUser.controls.birthDay);
+            this._invaliBirthday = true;
+        } else{
+            this._invaliBirthday = false;
         }
     }
 

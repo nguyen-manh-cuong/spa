@@ -148,12 +148,12 @@
                                     <div class="col-xs-12 col-md-8">
                                         <div class="row">
                                             <div class="col-xs-4">
-                                                <select id="birthD" class="form-control" placeholder="Ngày">
+                                                <select id="birthD" class="form-control" placeholder="Ngày" (change)="onSelectBirthDay($event)">
                                                     <option *ngFor="let o of _dates" [ngValue]="o">{{o}}</option>
                                                 </select>
                                             </div>
                                             <div class="col-xs-4">
-                                                <select id="birthM" class="form-control" placeholder="Tháng">
+                                                <select id="birthM" class="form-control" placeholder="Tháng" (change)="onSelectBirthMonth($event)">
                                                     <option *ngFor="let o of _months" [ngValue]="o">{{'Tháng' }} {{o}}</option>
                                                 </select>
                                             </div>
@@ -163,7 +163,7 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <validation [control]="frmUser.controls['birthDay']"></validation>
+                                        <small *ngIf="_invaliBirthday" class="help-block" style="color: red;">Ngày sinh không đúng định dạng</small>
                                     </div>
                                 </div>
                             </div>
@@ -535,8 +535,7 @@
                             </div>
 
                             <hr>
-                            <p class="iq-mt-10 iq-font-14">Vui lòng cung cấp đầy đủ thông tin để chúng tôi có
-                                thể liên hệ và hỗ trợ bạn tốt nhất.</p>
+                            <label>Vui lòng cung cấp đầy đủ thông tin để chúng tôi có thể liên hệ và hỗ trợ bạn tốt nhất.</label>
                             <div class="row iq-mt-20">
                                 <div class="">
                                     <label class="col-sm-3 required">Mã xác nhận</label>
