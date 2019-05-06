@@ -191,21 +191,17 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
     }
   }
   search() {
-    if (!this.endTime.nativeElement.value && !this.startTime.nativeElement.value) {
-      return swal({
-        title:'Thông báo', 
-        text:'Từ ngày và Đến ngày không được để trống', 
-        type:'warning',
-        timer:3000});
-    }
-    if (!moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').isValid()) {
-      return swal({
-        title:'Thông báo', 
-        text:'Đến ngày không đúng định dạng',
-        type: 'warning',
-        timer:3000});
-    }
+    // if (!this.endTime.nativeElement.value && !this.startTime.nativeElement.value) {
+    //   this.startTime.nativeElement.focus();
+    //   this.endTime.nativeElement.focus();
+    //   return swal({
+    //     title:'Thông báo', 
+    //     text:'Từ ngày và Đến ngày không được để trống', 
+    //     type:'warning',
+    //     timer:3000});       
+    // }   
     if (!this.startTime.nativeElement.value) {
+      this.startTime.nativeElement.focus();
       return swal({
         title:'Thông báo', 
         text:'Từ ngày không được để trống', 
@@ -213,20 +209,31 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
         timer:3000});
     }
     if (!this.endTime.nativeElement.value) {
+      this.endTime.nativeElement.focus();
       return swal({
         title:'Thông báo', 
-        text:'Từ ngày không được để trống', 
+        text:'Đến ngày không được để trống', 
         type:'warning',
-        timer:3000});
+        timer:3000});       
     }
     if (!moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').isValid()) {
+      this.startTime.nativeElement.focus();
       return swal({
         title:'Thông báo', 
         text:'Từ ngày không đúng định dạng', 
         type:'warning',
         timer:3000});
     }
+    if (!moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').isValid()) {
+      this.endTime.nativeElement.focus();
+      return swal({
+        title:'Thông báo', 
+        text:'Đến ngày không đúng định dạng',
+        type: 'warning',
+        timer:3000});        
+    }
     if (((moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').valueOf() - moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').valueOf()) / (1000 * 60 * 60 * 24)) < 0) {
+      this.endTime.nativeElement.focus();
       return swal({
         title:'Thông báo', 
         text:'Đến ngày phải lớn hơn hoặc bằng Từ ngày',
