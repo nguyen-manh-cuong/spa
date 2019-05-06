@@ -86,10 +86,13 @@
     font-weight: 500;
     color: black;
 }
+
 .text-center .mat-sort-header-container{
     justify-content: center;
  }
-
+ .form-detail .mat-datepicker-toggle-default-icon{
+    display: none!important;
+}
  @-moz-document url-prefix() {
     table {
         border-collapse: unset!important;

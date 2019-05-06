@@ -115,7 +115,9 @@ namespace SHCServer.Controllers
                 {
                     _context.Update<BookingInformations>(p => p.BookingId == booking.bookingId, a => new BookingInformations
                     {
-                        ReasonReject = booking.reasonReject
+                        ReasonReject = booking.reasonReject,
+                        Status = 3,
+
                     });
                 } else
                 {
