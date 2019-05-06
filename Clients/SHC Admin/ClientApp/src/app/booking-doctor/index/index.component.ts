@@ -61,19 +61,18 @@ import { startWith, map, debounceTime, tap, switchMap, finalize } from 'rxjs/ope
 
       this.dataService = this._dataService;
       this.dialogTask = TaskComponent;
-
       this.calendarComponent.locale = viLocale;
 
       if(this.appSession.user.healthFacilitiesId){
-          this.dataService.get("healthfacilities", JSON.stringify({healthfacilitiesId : this.appSession.user.healthFacilitiesId}), '', null, null).subscribe(resp => {this._healthfacilities = resp.items;});
-          this.dataService.getAll('doctors', String(this.appSession.user.healthFacilitiesId)).subscribe(resp => this._doctors = resp.items);
+        this.dataService.get("healthfacilities", JSON.stringify({healthfacilitiesId : this.appSession.user.healthFacilitiesId}), '', null, null).subscribe(resp => {this._healthfacilities = resp.items;});
+        this.dataService.getAll('doctors', String(this.appSession.user.healthFacilitiesId)).subscribe(resp => this._doctors = resp.items);
 
-          setTimeout(() => {
-              this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId);
-          }, 500);
+        setTimeout(() => {
+          this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId);
+        }, 500);
       } else{
-          this.filterOptions();
-          this.healthfacilities.setValue(null);
+        this.filterOptions();
+        this.healthfacilities.setValue(null);
       }
     }
 
@@ -127,10 +126,6 @@ import { startWith, map, debounceTime, tap, switchMap, finalize } from 'rxjs/ope
           .pipe(
               finalize(() => this.isLoading = false)
           )
-    }
-
-    closed(): void {
-      if(this.healthfacilities.value && typeof this.healthfacilities.value == 'string' && !this.healthfacilities.value.trim()) this.healthfacilities.setErrors({required: true})
     }
 
     onSelectHealthFacilities(obj: any) {

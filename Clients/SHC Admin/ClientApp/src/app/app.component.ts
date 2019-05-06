@@ -31,7 +31,44 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
     constructor(injector: Injector, private breakpointObserver: BreakpointObserver, private _authService: AppAuthService, private router: Router, private titleService: Title) {
         super(injector);
         this.shownLoginName = this.appSession.getShownLoginName();
-        // console.log(ap);
+        this.router.events.subscribe((event: any) => {
+            if (event instanceof NavigationStart) {
+                // Show loading indicator
+                this.isTableLoading = true;
+            }
+ 
+            if (event instanceof NavigationEnd) {
+                // Hide loading indicator
+                //const menu = abp.nav.menus['mainMenu'].items.find((e: any) => e.route === event.url);
+ 
+                var menu;
+                abp.nav.menus['mainMenu'].items.forEach(el => {
+                    if(el.route === this.router.url && el.items.length == 0){
+                        menu = el;
+                    } else{
+                        if (el.items.length > 0) {
+                            el.items.forEach(eli => {
+                                if(eli.route + '/index' === this.router.url) menu = eli;
+                                if(eli.route + '/packageindex' === this.router.url) menu = eli;
+                            });
+                        }
+                    }
+                });
+ 
+                if (menu) {
+                    this.titleService.setTitle(`${this.title} | ${this.l(menu.name)}`);
+                    this.pateTitle = this.l(menu.name);
+                }
+ 
+                this.isTableLoading = false;
+            }
+ 
+            if (event instanceof NavigationError) {
+                // Hide loading indicator
+ 
+                // Present error to user
+            }
+        });
     }
 
     ngOnInit(): void {
@@ -53,42 +90,6 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
             //         this.close();
             //     }
             // });
-        });
-
-        this.router.events.subscribe((event: any) => {
-            if (event instanceof NavigationStart) {
-                // Show loading indicator
-                this.isTableLoading = true;
-            }
-
-            if (event instanceof NavigationEnd) {
-                // Hide loading indicator
-                //const menu = abp.nav.menus['mainMenu'].items.find((e: any) => e.route === event.url);
-                var menu;
-                abp.nav.menus['mainMenu'].items.forEach(el => {
-                    if(el.route === event.url && el.items.length == 0){
-                        menu = el;
-                    } else{
-                        el.items.forEach(eli => {
-                            if(eli.route === event.url) menu = eli;
-                        });
-                    }
-                });
-
-                if (menu) {
-                    this.titleService.setTitle(`${this.title} | ${this.l(menu.name)}`);
-                    this.pateTitle = this.l(menu.name);
-                }
-
-                this.isTableLoading = false;
-            }
-
-            if (event instanceof NavigationError) {
-                // Hide loading indicator
-
-                // Present error to user
-                console.log(event.error);
-            }
         });
     }
 

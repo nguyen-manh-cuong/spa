@@ -216,6 +216,10 @@ export class BookingComponent extends AppComponentBase implements OnInit, AfterV
     this.checkBirthDate();
   }
 
+  onSelectBirthYear(obj: any){
+    this.checkBirthDate();
+  }
+
   onSelectHealthFacilities(obj: any, index: any){
     this.isClickedH = index;
     this.frmBooking.controls['healthFacilitiesId'].setValue(obj.healthFacilitiesId);

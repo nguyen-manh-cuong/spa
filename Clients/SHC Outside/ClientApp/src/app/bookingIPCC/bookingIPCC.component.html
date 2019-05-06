@@ -91,7 +91,7 @@
                       </ng-select>
                     </div>
                     <div class="col-xs-4">
-                      <ng-select formControlName="birthYear" id="birthY" [items]="_years" placeholder="Năm"></ng-select>
+                      <ng-select formControlName="birthYear" id="birthY" [items]="_years" (ngModelChange)="onSelectBirthYear($event)" placeholder="Năm"></ng-select>
                     </div>
                   </div>
                   <validation [control]="frmBooking.controls['birthYear']"></validation>

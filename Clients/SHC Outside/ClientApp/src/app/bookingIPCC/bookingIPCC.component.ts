@@ -225,6 +225,10 @@ export class BookingIPCCComponent extends AppComponentBase implements OnInit {
     this.checkBirthDate();
   }
 
+  onSelectBirthYear(obj: any){
+    this.checkBirthDate();
+  }
+
   checkBirthDate(){
     if(this.frmBooking.controls.birthDay.value && this.frmBooking.controls.birthMonth.value){
       if(!moment(this.frmBooking.controls.birthDay.value + "/" + this.frmBooking.controls.birthMonth.value + "/" + this.frmBooking.controls.birthYear.value, "DD/MM/YYYY").isValid()){

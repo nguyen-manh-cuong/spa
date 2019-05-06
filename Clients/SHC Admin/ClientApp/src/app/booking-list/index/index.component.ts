@@ -17,7 +17,7 @@ import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/materia
 import { ReasonComponent } from '../reason/reason.component';
 import { IHealthfacilities } from '../../../../../../SHC Outside/ClientApp/src/shared/Interfaces';
 import { Observable } from 'rxjs';
-import { startWith, map } from 'rxjs/operators';
+import { startWith, map, debounceTime, tap, switchMap, finalize } from 'rxjs/operators';
 
 export const MY_FORMATS = {
     parse: {
@@ -48,15 +48,17 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
     displayedColumns = ['orderNumber', 'code', 'patient', 'gender', 'phone', 'year', 'description', 'doctor', 'examinationDate', 'status', 'task'];
     status = [{ id: 4, name: 'Tất cả' }, { id: 3, name: 'Hủy khám' }, { id: 2, name: 'Đã khám' }, { id: 1, name: 'Chờ khám' }, { id: 0, name: 'Mới đăng ký' }];
    
-        times = [  
-           { id: 0, name: 'Hôm nay' }, { id: 1, name: 'Hôm qua' }, { id: 2, name: 'Tuần này' }, { id: 3, name: 'Tuần trước' }, { id: 4, name: 'Tháng này' }, { id: 5, name: 'Tháng trước' },
-            { id: 6, name: 'Quý này' }, { id: 7, name: 'Quý trước' }, { id: 8, name: 'Năm nay' },  { id: 9, name: 'Năm trước' }, { id: 10, name: 'Theo khoảng thời gian' }, ];
+    times = [  
+        { id: 0, name: 'Hôm nay' }, { id: 1, name: 'Hôm qua' }, { id: 2, name: 'Tuần này' }, { id: 3, name: 'Tuần trước' }, { id: 4, name: 'Tháng này' }, { id: 5, name: 'Tháng trước' },
+        { id: 6, name: 'Quý này' }, { id: 7, name: 'Quý trước' }, { id: 8, name: 'Năm nay' },  { id: 9, name: 'Năm trước' }, { id: 10, name: 'Theo khoảng thời gian' }, ];
     dialogDetail: any;
     dialogReasonReject: any;
     _medicalFacility = [];
     _doctors = [];
     _isRequest = false;
     _isChosenTime = false;
+    isLoading = false;
+
     dialogSendComponent: any;
     selectionData = new SelectionModel<IMedicalHealthcareHistories>(true, []);
     
@@ -79,26 +81,17 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
         this.dialogDetail = DetailComponent;
         this.dialogReasonReject = ReasonComponent;
         
-        // if(this.appSession.user.healthFacilitiesId){
-        //     this.dataService.getAll('healthfacilities', "{healthfacilitiesId:"+String(this.appSession.user.healthFacilitiesId)+"}").subscribe(resp => this._healthfacilities = resp.items);
-        //     this.dataService.getAll('doctors', String(this.appSession.user.healthFacilitiesId)).subscribe(resp => this._doctors = resp.items);
-        //     this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId);
-        // }
-        // else{
-        //     this.filterOptions();
-        // }
         if(this.appSession.user.healthFacilitiesId) {
-            console.log('Don vi', this.appSession.user.healthFacilitiesId)
-            this.dataService.getAll('healthfacilities', "{healthfacilitiesId:"+String(this.appSession.user.healthFacilitiesId)+"}").subscribe(resp => this._healthfacilities = resp.items);
-            this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId);
-            this.dataService.getAll('doctors', String(this.appSession.user.healthFacilitiesId)).subscribe(resp => {
-                console.log(resp.items);
-                this._doctors = resp.items;
-            });
+            this.dataService.get("healthfacilities", JSON.stringify({healthfacilitiesId : this.appSession.user.healthFacilitiesId}), '', null, null).subscribe(resp => {this._healthfacilities = resp.items;});
+            this.dataService.getAll('doctors', String(this.appSession.user.healthFacilitiesId)).subscribe(resp => {this._doctors = resp.items;});
+
+            setTimeout(() => {
+                this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId);
+            }, 500);        
         }
         else{
-            this.dataService.getAll('healthfacilities').subscribe(resp => this._healthfacilities = resp.items);
             this.filterOptions();
+            this.healthfacilities.setValue(null);
         }
 
         setTimeout(() => {
@@ -112,29 +105,30 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
         return h ? h.name : undefined;
     }
 
-    
-    _filter(name: any): IHealthfacilities[] {
-        const filterValue = name.toLowerCase();
-        var healthfacilities = isNaN(filterValue) ?         
-        this._healthfacilities.filter(h => h.name.toLowerCase().indexOf(filterValue) === 0) : 
-        this._healthfacilities.filter(h => h.code.toLowerCase().indexOf(filterValue) === 0);
-        //if(healthfacilities.length == 0 && filterValue.length) this.frmSearch.controls['healthfacilities'].setValue(0);
-        
-        return healthfacilities
-    }
-
-    clickCbo() {
-        !this.healthfacilities.value ? this.filterOptions() : '';
-    }
-
     filterOptions() {
-        this.filteredOptions = this.healthfacilities.valueChanges
+        this.healthfacilities.valueChanges
             .pipe(
-                startWith<string | IHealthfacilities>(''),
-                map(value => typeof value === 'string' ? value : value.name),
-                map(name => name ? this._filter(name) : this._healthfacilities.slice()),
-                map(data => data.slice())
-            );
+                debounceTime(500),
+                tap(() => this.isLoading = true),
+                switchMap(value => this.filter(value))
+            )
+            .subscribe(data => {
+                this._healthfacilities = data.items;
+            });
+    }
+
+    filter(value: any){
+        var fValue = typeof value === 'string'  ? value : (value ? value.name : '')
+        this._healthfacilities = [];
+
+        return this.dataService
+            .get("healthfacilities", JSON.stringify({
+                name : isNaN(fValue) ? fValue : "",
+                code : !isNaN(fValue) ? fValue : ""
+            }), '', null, null)
+            .pipe(
+                finalize(() => this.isLoading = false)
+            )
     }
 
     onInputHealthfacilities(obj: any){

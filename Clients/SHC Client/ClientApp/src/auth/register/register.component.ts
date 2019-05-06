@@ -107,6 +107,10 @@ export class RegisterComponent implements OnInit {
         this.checkBirthDate();
     }
 
+    onSelectBirthYear(obj: any){
+        this.checkBirthDate();
+    }
+
     onChangeAccountType(value: number) {
         switch (value) {
             case 1:

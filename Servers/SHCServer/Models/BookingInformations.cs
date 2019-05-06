@@ -92,9 +92,9 @@ namespace SHCServer.Models
         public int? TimeSlotId { set; get; }
         public int Status { set; get; }
         public bool IsDelete { set; get; }
-        public DateTime CreateDate { set; get; }
-        public DateTime UpdateDate { set; get; }
-        public int UpdateUserId { set; get; }
+        public DateTime? CreateDate { set; get; }
+        public DateTime? UpdateDate { set; get; }
+        public int? UpdateUserId { set; get; }
         public int? BookingServiceType { get; set; }
         public string ReasonReject { get; set; }
 

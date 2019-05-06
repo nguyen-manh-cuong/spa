@@ -4,7 +4,7 @@ import { IHealthfacilities, IMedicalHealthcareHistories } from '@shared/Interfac
 import { DataService } from '@shared/service-proxies/service-data';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { PagedListingComponentBase } from '@shared/paged-listing-component-base';
-import { startWith, map } from 'rxjs/operators';
+import { startWith, map, finalize, debounceTime, tap, switchMap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { MatDialog } from '@angular/material';
 import { TaskComponent } from '@app/sms-template-task/task/task.component';
@@ -52,6 +52,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     _currentYear = new Date().getFullYear();
     selection = new SelectionModel<IMedicalHealthcareHistories>(true, []);
 
+    isLoading = false;
     filteredOptions: Observable<IHealthfacilities[]>;
     healthfacilities = new FormControl();
     cDate = new Date();
@@ -96,12 +97,19 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
 
         this.dataService = this._dataService;
         this.dialogComponent = TaskComponent;
-        //this.frmSearch.controls['birthdayTo'].setValue(new Date(new Date().setDate(new Date().getDate() + this.frmSearch.controls['about'].value)));
         this.dataService.getAll('provinces').subscribe(resp => this._provinces = resp.items);
-        this.dataService.getAll('healthfacilities', (this.appSession.user.healthFacilitiesId ? String(this.appSession.user.healthFacilitiesId) : '')).subscribe(resp => this._healthfacilities = resp.items);
-        if (this.appSession.user.healthFacilitiesId) this.dataService.getAll('doctors', String(this.appSession.user.healthFacilitiesId)).subscribe(resp => this._doctors = resp.items);
 
-        this.appSession.user.healthFacilitiesId ? this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId) : this.filterOptions();
+        if(this.appSession.user.healthFacilitiesId){
+            this.dataService.get("healthfacilities", JSON.stringify({healthfacilitiesId : this.appSession.user.healthFacilitiesId}), '', null, null).subscribe(resp => {this._healthfacilities = resp.items;});
+            this.dataService.getAll('doctors', String(this.appSession.user.healthFacilitiesId)).subscribe(resp => this._doctors = resp.items);
+    
+            setTimeout(() => {
+              this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId);
+            }, 500);
+          } else{
+            this.filterOptions();
+            this.healthfacilities.setValue(null);
+          }
     }
 
     isAllSelected() {
@@ -141,24 +149,31 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
         return h ? h.name : undefined;
     }
 
-    _filter(name: string): IHealthfacilities[] {
-        const filterValue = name.toLowerCase();
-        return this._healthfacilities.filter(h => h.name.toLowerCase().indexOf(filterValue) === 0);
-    }
-
-    clickCbo() {
-        !this.healthfacilities.value ? this.filterOptions() : '';
-    }
-
     filterOptions() {
-        this.filteredOptions = this.healthfacilities.valueChanges
+        this.healthfacilities.valueChanges
             .pipe(
-                startWith<string | IHealthfacilities>(''),
-                map(value => typeof value === 'string' ? value : value.name),
-                map(name => name ? this._filter(name) : this._healthfacilities.slice()),
-                map(data => data.slice(0, 30))
-            );
-    }
+              debounceTime(500),
+              tap(() => this.isLoading = true),
+              switchMap(value => this.filter(value))
+            )
+            .subscribe(data => {
+                this._healthfacilities = data.items;
+            });
+      }
+  
+      filter(value: any){
+        var fValue = typeof value === 'string'  ? value : (value ? value.name : '')
+        this._healthfacilities = [];
+  
+        return this.dataService
+            .get("healthfacilities", JSON.stringify({
+                name : isNaN(fValue) ? fValue : "",
+                code : !isNaN(fValue) ? fValue : ""
+            }), '', null, null)
+            .pipe(
+                finalize(() => this.isLoading = false)
+            )
+    }  
 
     customSearch() {
         this.healthfacilities.value ? this.frmSearch.controls['healthfacilities'].setValue(this.healthfacilities.value.healthFacilitiesId) : (this.appSession.user.healthFacilitiesId == null ? this.frmSearch.controls['healthfacilities'].setValue(null) : '');
