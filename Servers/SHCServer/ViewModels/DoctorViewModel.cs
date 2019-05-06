@@ -151,7 +151,7 @@ namespace SHCServer.ViewModels
         public string PositionCode { get; set; }
         public string NationCode { get; set; }
         public string EthnicityCode { get; set; }
-        public DateTime? CertificationDate { set; get; }
+        public string CertificationDate { set; get; }
         public int? AcademicId { get; set; }
         public int? DegreeId { set; get; }
         public string Email { get; set; }
@@ -179,6 +179,8 @@ namespace SHCServer.ViewModels
         public DateTime? UpdateDate { get; set; }
         public List<HealthFacilitiesDoctors> HealthFacilities { set; get; }
         public List<DoctorSpecialists> Specialist { set; get; }
+        public string Healths { get; set; }
+        public string Specials { get; set; }
     }
 
 }
