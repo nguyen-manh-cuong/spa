@@ -11,14 +11,14 @@
             </ng-template>
             <div class="pt-4">
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-6 disabled">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("DoctorName")}}</mat-label>
                             <input formControlName="fullName" matInput [required]="true" maxlength="255">
                             <validation matSuffix [control]="_frm.controls['fullName']"></validation>
                         </mat-form-field>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-4 disabled">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("DoctorBirthDay")}}</mat-label>
 
@@ -31,7 +31,7 @@
                 </div>
 
                 <div class="row pb-2">
-                    <div class="col-md-6">
+                    <div class="col-md-6 disabled">
                         <mat-radio-group formControlName="gender" appearance="outline" class="w-100">
                             <mat-radio-button [checked]="_obj.gender==1" value="1" color="primary" class="ml-3">
                                 {{l('Male')}}</mat-radio-button>
@@ -42,7 +42,7 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-6 disabled">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("Province")}}</mat-label>
                             <mat-select formControlName="provinceCode"
@@ -52,7 +52,7 @@
                             </mat-select>
                         </mat-form-field>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-6 disabled">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("District")}}</mat-label>
                             <mat-select formControlName="districtCode">
@@ -64,7 +64,7 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-12 disabled">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("Address")}}</mat-label>
                             <input formControlName="address" matInput [required]="true" maxlength="255">
@@ -73,13 +73,13 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-6 disabled">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("PhoneNumber")}}</mat-label>
                             <input formControlName="phoneNumber" matInput [required]="true" maxlength="255">
                         </mat-form-field>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-6 disabled">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("Email")}}</mat-label>
                             <input formControlName="email" matInput [required]="true" maxlength="255">
@@ -88,13 +88,13 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-6 disabled">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("DoctorCertificationCode")}}</mat-label>
                             <input formControlName="certificationCode" matInput [required]="true" maxlength="255">
                         </mat-form-field>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-4 disabled">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("DoctorCertificationDate")}}</mat-label>
                             <input #certificationDatePicker matInput [matDatepicker]="certificationDatePicker" matInput
@@ -109,7 +109,7 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-6 disabled">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("DoctorTitleCode")}}</mat-label>
                             <mat-select formControlName="titleCode">
@@ -119,7 +119,7 @@
                         </mat-form-field>
 
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-6 disabled">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("DoctorPosition")}}</mat-label>
                             <mat-select formControlName="posittionCode">
@@ -131,7 +131,7 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-6 disabled">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("DoctorAcademic")}}</mat-label>
                             <mat-select formControlName="academicId">
@@ -140,7 +140,7 @@
                             </mat-select>
                         </mat-form-field>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-6 disabled">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("DoctorDegree")}}</mat-label>
                             <mat-select formControlName="degreeId">
@@ -152,7 +152,7 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-6 disabled">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("DoctorNation")}}</mat-label>
                             <mat-select formControlName="nationCode">
@@ -162,7 +162,7 @@
                             </mat-select>
                         </mat-form-field>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-6 disabled">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("DoctorEthnicity")}}</mat-label>
                             <mat-select formControlName="ethnicityCode">
@@ -236,14 +236,14 @@
                 </div>
 
                 <div class="row pt-4">
-                    <div class="col-md-6">
+                    <div class="col-md-6 disabled">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("DoctorPriceFrom")}}</mat-label>
                             <input mask="comma_separator" maxlength="14" formControlName="priceFrom" matInput
                                 [required]="true">
                         </mat-form-field>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-6 disabled">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("DoctorPriceTo")}}</mat-label>
                             <input mask="comma_separator" maxlength="14" formControlName="priceTo" matInput
@@ -253,7 +253,7 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-12 disabled">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("DoctorPriceDescription")}}</mat-label>
                             <input formControlName="priceDescription" matInput [required]="true" maxlength="255">
@@ -262,7 +262,7 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-12 disabled">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("DoctorDescription")}}</mat-label>
                             <input formControlName="description" matInput [required]="true" maxlength="255"
@@ -273,7 +273,7 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-md-12" [hidden]="this.appSession.user.healthFacilitiesId">
+                    <div class="col-md-12 disabled" [hidden]="this.appSession.user.healthFacilitiesId">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l('HealthFacilities')}}</mat-label>
                             <input matInput [formControl]="healthfacilitiesControl" (click)="clickCbo()"
@@ -298,7 +298,7 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-12 disabled">
                         <mat-checkbox formControlName="allowBooking" (click)="checkBoxChange('allowBooking')"
                             class="pl-3" color="primary">
                             {{l('DoctorAllowBooking')}}</mat-checkbox>
@@ -306,7 +306,7 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-12 disabled">
                         <mat-checkbox formControlName="allowFilter" (click)="checkBoxChange('allowFilter')" class="pl-3"
                             color="primary">
                             {{l('DoctorAllowFilter')}}</mat-checkbox>
@@ -314,7 +314,7 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-12 disabled">
                         <mat-checkbox formControlName="allowSearch" (click)="checkBoxChange('allowSearch')" class="pl-3"
                             color="primary">
                             {{l('DoctorAllowSearch')}}</mat-checkbox>
