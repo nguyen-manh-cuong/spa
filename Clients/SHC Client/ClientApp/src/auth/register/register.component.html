@@ -433,8 +433,9 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="select-service">
-                                <h6 class="text-center text-uppercase text-blue">Lựa chọn các dịch vụ sử dụng</h6>
+                            <hr>
+                            <div class="select-service" *ngIf="frmUser.controls['accountType'].value != 1">
+                                <h6 class="text-center text-uppercase text-blue" style="margin-top: 10px;">Lựa chọn các dịch vụ sử dụng</h6>
                                 <div>
                                     <div class="iq-accordion iq-mt-20">                                      
                                         <div class="iq-accordion iq-mt-20 accordion custom-accordion" id="accordionExample">
@@ -527,30 +528,31 @@
                                                     </div>
                                                 </div>
                                             </div>                                          
-                                        </div>
-                                        
-                                       
+                                        </div>    
                                     </div>
-
-                                    <div class="row iq-mt-20">
-                                        <div class="">
-                                            <label class="col-sm-3 required">Mã xác nhận</label>
-                                            <div class="col-sm-4">
-                                                <input type="text" name="prof_place" formControlName="codeCapcha" class="form-control validate">
-                                                <small *ngIf="this.capcha" class="help-block" style="color: red;">Mã xác nhận không khớp</small>
-                                            </div>
-                                            <div class="col-sm-2" style="margin-left: -20px; margin-top: -3px;"><img [src]="_capcha.data" width="162" height="39" alt="" /></div>
-                                            <span type="button" style="position: relative;margin-left: 84px;top: 5px;" (click)="getCapcha()"><i class="fa fa-refresh" aria-hidden="true"></i></span>
-                                        </div>
-                                    </div>
-                                    <p class="iq-mt-10 iq-font-14">Vui lòng cung cấp đầy đủ thông tin để chúng tôi có
-                                        thể liên hệ và hỗ trợ bạn tốt nhất.</p>
-                                    <div class="col-sm-12 text-center iq-mall-20">
-                                        <button type="submit" class="btn btn-lg btn-aqua btn-curvy btn-longer-width" (click)="submit()"><i
-                                                class="fa fa-check-square-o" aria-hidden="true"></i> Đăng ký</button>
-                                    </div>
-
                                 </div>
+                            </div>
+
+                            <hr>
+                            <p class="iq-mt-10 iq-font-14">Vui lòng cung cấp đầy đủ thông tin để chúng tôi có
+                                thể liên hệ và hỗ trợ bạn tốt nhất.</p>
+                            <div class="row iq-mt-20">
+                                <div class="">
+                                    <label class="col-sm-3 required">Mã xác nhận</label>
+                                    <div class="col-sm-4">
+                                        <input type="text" name="prof_place" formControlName="codeCapcha" class="form-control validate">
+                                        <small *ngIf="this.capcha" class="help-block" style="color: red;">Mã xác nhận không khớp</small>
+                                    </div>
+                                    <div class="col-sm-2" style="margin-left: -20px; margin-top: -3px;"><img [src]="_capcha.data" width="162" height="39" alt="" /></div>
+                                    <span type="button" style="position: relative;margin-left: 84px;top: 5px;" (click)="getCapcha()"><i class="fa fa-refresh" aria-hidden="true"></i></span>
+                                </div>
+                            </div>
+                            <label style="margin-top:10px;"><input type="checkbox" formControlName="rules">Tôi đã đồng ý với
+                                <a> điều khoản sử dụng </a> của Mangyte.vn 
+                            </label>
+                            <div class="col-sm-12 text-center iq-mall-20">
+                                <button type="submit" class="btn btn-lg btn-aqua btn-curvy btn-longer-width" [disabled]="!frmBooking.value['rules']" (click)="submit()"><i
+                                    class="fa fa-check-square-o" aria-hidden="true"></i> Đăng ký</button>
                             </div>
                         </form>
                     </div>

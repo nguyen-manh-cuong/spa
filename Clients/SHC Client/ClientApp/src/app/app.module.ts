@@ -13,7 +13,7 @@ import { SlickCarouselModule } from 'ngx-slick-carousel';
 import { ValidationModule } from '@app/validation/validation.module';
 import { NgxMaskModule } from 'ngx-mask';
 import { NgxMyDatePickerModule } from 'ngx-mydatepicker';
-
+import { NgxSpinnerModule } from 'ngx-spinner';
 
 
 @NgModule({
@@ -29,7 +29,8 @@ import { NgxMyDatePickerModule } from 'ngx-mydatepicker';
         SlickCarouselModule,
         ValidationModule,
         NgxMaskModule.forRoot(),
-        NgxMyDatePickerModule.forRoot() 
+        NgxMyDatePickerModule.forRoot(),
+        NgxSpinnerModule
     ],
     providers: [{ provide: LOCALE_ID, useValue: 'vi' }],
     declarations: [AppComponent, BookingComponent ]

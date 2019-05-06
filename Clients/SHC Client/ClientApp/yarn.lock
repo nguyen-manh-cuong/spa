@@ -4138,6 +4138,11 @@ jasminewd2@^2.1.0:
   resolved "https://registry.yarnpkg.com/jasminewd2/-/jasminewd2-2.2.0.tgz#e37cf0b17f199cce23bea71b2039395246b4ec4e"
   integrity sha1-43zwsX8ZnM4jvqcbIDk5Uka07E4=
 
+jquery@^3.3.1:
+  version "3.4.1"
+  resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.4.1.tgz#714f1f8d9dde4bdfa55764ba37ef214630d80ef2"
+  integrity sha512-36+AdBzCL+y6qjw5Tx7HgzeGCzC81MDDgaUP8ld2zhx58HdqXGoBd+tHdrBMiyjGQs0Hxs/MLZTu/eHNJJuWPw==
+
 js-base64@^2.1.8:
   version "2.5.1"
   resolved "https://registry.yarnpkg.com/js-base64/-/js-base64-2.5.1.tgz#1efa39ef2c5f7980bb1784ade4a8af2de3291121"
@@ -4949,6 +4954,11 @@ multicast-dns@^6.0.1:
     dns-packet "^1.3.1"
     thunky "^1.0.2"
 
+mydatepicker@^2.6.6:
+  version "2.6.6"
+  resolved "https://registry.yarnpkg.com/mydatepicker/-/mydatepicker-2.6.6.tgz#6014b9baf9cceb3185b357c84b2223df77088ed1"
+  integrity sha512-+rxmKtIDU18zgqksroeIkp6FXFHiHPx+rz0PBqoIZqyYDDK9xrCW9hnQi7yErtcukPRrWl4NCLF5LDp60YTCPA==
+
 nan@^2.10.0, nan@^2.9.2:
   version "2.12.1"
   resolved "https://registry.yarnpkg.com/nan/-/nan-2.12.1.tgz#7b1aa193e9aa86057e3c7bbd0ac448e770925552"
@@ -5020,6 +5030,39 @@ ng-packagr@^3.0.0-rc.2:
     stylus "^0.54.5"
     uglify-js "^3.0.7"
     update-notifier "^2.3.0"
+
+ngx-mask@^7.7.0:
+  version "7.9.5"
+  resolved "https://registry.yarnpkg.com/ngx-mask/-/ngx-mask-7.9.5.tgz#54af99eb4e2615a7d8b70981d0f6dc296136a128"
+  integrity sha512-x45yTIWW0eKve4N8bwlvH+cnVsqGws09rgAndmweiD2iTo6bEl6wl+vB/YpYo8TajgQ2dGwNIbjMJddwkKpnHQ==
+  dependencies:
+    tslib "^1.9.0"
+
+ngx-material-file-input@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/ngx-material-file-input/-/ngx-material-file-input-1.1.1.tgz#836201cbb8a312d749776c65327b3f4652bc0d61"
+  integrity sha512-rYhBPAr7EZca6RoFWKcceV4Y4V2xH8SPAgrA/bCXgKbS/tJ+h/e9UW3jIPMWVOR/u/rbNhzuXVTuTMfSgS3klw==
+  dependencies:
+    tslib "^1.9.0"
+
+ngx-mydatepicker@^2.4.9:
+  version "2.4.9"
+  resolved "https://registry.yarnpkg.com/ngx-mydatepicker/-/ngx-mydatepicker-2.4.9.tgz#11aecf05fb13f47bd6f3a9df4342d7e68cd47978"
+  integrity sha512-DEywuNdm/dBlQM6ublZFh8iFpMpu3nPZxWpeKVHz4ukppeo+OeJdxoq2ZacvLOEGCerY7u06i4KIEFy1LnXkbA==
+
+ngx-slick-carousel@^0.4.4:
+  version "0.4.4"
+  resolved "https://registry.yarnpkg.com/ngx-slick-carousel/-/ngx-slick-carousel-0.4.4.tgz#9608c995ec40ff6cc89b1755aa08ab08cc5486ea"
+  integrity sha512-z/cu8CL7LlUaqtImxC595V644efgjHTdQ9+u3AqL/igQYSELRryENGVH0jyPZuJSpSNvi52I2HGeifPsEd7bkg==
+  dependencies:
+    tslib "^1.9.0"
+
+ngx-spinner@^7.1.4:
+  version "7.1.4"
+  resolved "https://registry.yarnpkg.com/ngx-spinner/-/ngx-spinner-7.1.4.tgz#d271b91b60426d156c45e939e105b5da82c87aa5"
+  integrity sha512-J8+ObulyapAjJfW2bEfFnlmSnp1NA80vtuplZjTa/wQa1Z6tBptmV2g0OLVCJhu/5wjmxV+gbMfN/t2FDup0Bw==
+  dependencies:
+    tslib "^1.9.0"
 
 nice-try@^1.0.4:
   version "1.0.5"
@@ -6734,6 +6777,11 @@ slash@^1.0.0:
   resolved "https://registry.yarnpkg.com/slash/-/slash-1.0.0.tgz#c41f2f6c39fc16d1cd17ad4b5d896114ae470d55"
   integrity sha1-xB8vbDn8FtHNF61LXYlhFK5HDVU=
 
+slick-carousel@^1.8.1:
+  version "1.8.1"
+  resolved "https://registry.yarnpkg.com/slick-carousel/-/slick-carousel-1.8.1.tgz#a4bfb29014887bb66ce528b90bd0cda262cc8f8d"
+  integrity sha512-XB9Ftrf2EEKfzoQXt3Nitrt/IPbT+f1fgqBdoxO3W/+JYvtEOW6EgxnWfr9GH6nmULv7Y2tPmEX3koxThVmebA==
+
 slide@^1.1.3:
   version "1.1.6"
   resolved "https://registry.yarnpkg.com/slide/-/slide-1.1.6.tgz#56eb027d65b4d2dce6cb2e2d32c4d4afc9e1d707"
@@ -7239,6 +7287,11 @@ supports-color@^6.1.0:
   integrity sha512-qe1jfm1Mg7Nq/NSh6XE24gPXROEVsWHxC1LIx//XNlD9iw7YZQGjZNjYN7xGaEG6iKdA8EtNFW6R0gjnVXp+wQ==
   dependencies:
     has-flag "^3.0.0"
+
+sweetalert2@^7.33.1:
+  version "7.33.1"
+  resolved "https://registry.yarnpkg.com/sweetalert2/-/sweetalert2-7.33.1.tgz#7e3534d2c2962f875f419cfea5d75ee526d65cd4"
+  integrity sha512-69KYtyhtxejFG0HDb8aVhAwbpAWPSTZwaL5vxDHgojErD2KeFxTmRgmkbiLtMC8UdTFXRmvTPtZTF4459MUb7w==
 
 symbol-observable@1.2.0:
   version "1.2.0"

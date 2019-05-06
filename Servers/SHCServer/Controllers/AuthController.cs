@@ -219,16 +219,21 @@ namespace SHCServer.Controllers
                     Specialist = obj.Specialist
                 });
 
-                _context.Insert(() => new UsersServices
-                {
-                    isUsingCall = obj.isUsingCall,
-                    isUsingdoctor = obj.isUsingdoctor,
-                    isUsingExamination = obj.isUsingExamination,
-                    isUsingRegister = obj.isUsingRegister,
-                    isUsingUpload = obj.isUsingUpload,
-                    isUsingVideo = obj.isUsingVideo,
-                });
+                User user = _context.Query<User>().Where(u => u.UserName == obj.UserName).FirstOrDefault();
 
+                if(user != null && obj.AccountType != 1)
+                {
+                    _context.Insert(() => new UsersServices
+                    {
+                        UserId = user.Id,
+                        isUsingCall = obj.isUsingCall,
+                        isUsingdoctor = obj.isUsingdoctor,
+                        isUsingExamination = obj.isUsingExamination,
+                        isUsingRegister = obj.isUsingRegister,
+                        isUsingUpload = obj.isUsingUpload,
+                        isUsingVideo = obj.isUsingVideo,
+                    });
+                }             
 
                 //var _files = Request.Form.Files;
                 //var _fileUpload = "";

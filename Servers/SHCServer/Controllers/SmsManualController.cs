@@ -237,16 +237,21 @@ namespace SHCServer.Controllers
                 }
             }
 
+            var readerAll = _context.Session.ExecuteReader($"{query} {string.Join(" ", clause)}", param);
+            var total = 0;
 
+            while (readerAll.Read())
+            {
+                total++;
+            }
+
+            readerAll.Close();
             clause.Add("limit @skipCount, @resultCount");
             param.Add(DbParam.Create("@skipCount", skipCount * maxResultCount));
             param.Add(DbParam.Create("@resultCount", maxResultCount));
 
-
             var str = $"{query} {string.Join(" ", clause)}";
             var reader = _context.Session.ExecuteReader($"{query} {string.Join(" ", clause)}", param);
-
-
 
             while (reader.Read())
             {
@@ -274,7 +279,7 @@ namespace SHCServer.Controllers
                 });
             }
 
-            return Json(new ActionResultDto { Result = new { Items = lst, TotalCount = lst.Count } });
+            return Json(new ActionResultDto { Result = new { Items = lst, TotalCount = total } });
             #region old
             //var objs = _context.JoinQuery<MedicalHealthcareHistories, Patient>((mhh, p) => new object[] { JoinType.InnerJoin, mhh.PatientId == p.PatientId });
 

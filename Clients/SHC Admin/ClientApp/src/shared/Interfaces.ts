@@ -202,7 +202,8 @@ export interface IDistrict {
  
 export interface IHealthfacilities {
     healthFacilitiesId: number,
-    name?: string
+    name?: string,
+    address?: string
 }
 
 export interface ISmsLogs {

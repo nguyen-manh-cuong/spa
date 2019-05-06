@@ -87,6 +87,7 @@ export class RegisterComponent implements OnInit {
             isUsingRegister: [this._obj.isUsingRegister],
             isUsingVideo: [this._obj.isUsingVideo],
             isUsingExamination: [this._obj.isUsingExamination],
+            rules: [false]
         };
 
         this.frmUser = this._formBuilder.group(this._context);
