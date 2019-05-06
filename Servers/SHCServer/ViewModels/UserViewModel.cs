@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using SHCServer.Models;
 using Viettel;
 using Viettel.MySql;
@@ -80,5 +81,21 @@ namespace SHCServer.ViewModels
         }
 
         public GroupInputViewModel[] Groups { get; set; }
+
+        public int Id { set; get; }
+        public bool? isUsingdoctor { get; set; }
+        public bool? isUsingCall { get; set; }
+        public bool? isUsingUpload { get; set; }
+        public bool? isUsingRegister { get; set; }
+        public bool? isUsingVideo { get; set; }
+        public bool? isUsingExamination { get; set; }
+
+        /// <summary>
+        /// pro common
+        /// </summary>
+        public int? CreateUserId { get; set; }
+        public DateTime? CreateDate { get; set; }
+        public int? UpdateUserId { get; set; }
+        public DateTime? UpdateDate { get; set; }
     }
 }

@@ -327,7 +327,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
             this.startTime.nativeElement.focus();
             return swal({
                 title:'Thông báo', 
-                text:'Ngày gửi từ và Đến ngày không được để trống', 
+                text:'Từ ngày và Đến ngày không được để trống', 
                 type:'warning',
                 timer:3000});
         }

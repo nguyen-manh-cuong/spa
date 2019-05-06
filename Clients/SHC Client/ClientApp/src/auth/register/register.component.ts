@@ -1,10 +1,11 @@
+import { IUsersServices } from '@shared/Interfaces';
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { DataService } from '@shared/service-proxies/service-data';
 import { CreateUserDto } from '@shared/service-proxies/service-proxies';
 import { ValidationRule } from '@shared/common/common';
 import { Validators, FormGroup, FormBuilder } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
-import { Location } from '@angular/common'
+import { Location } from '@angular/common';
 import * as _ from 'lodash';
 import * as moment from 'moment';
 import swal from 'sweetalert2';
@@ -43,16 +44,20 @@ export class RegisterComponent implements OnInit {
 
     _capcha: { code: string, data: any } = { code: '', data: '' };
     _sex: Array<{ id: number, name: string }> = [{ id: 1, name: 'Nam' }, { id: 2, name: 'Nữ' }, { id: 3, name: 'Không xác định' }];
+    _obj: IUsersServices | any = { isUsingdoctor: '', isUsingCall: '', isUsingUpload: '', isUsingRegister: '', isUsingVideo: '', isUsingExamination:''};
     capcha = false;
 
     @ViewChild("fullName") fullName: ElementRef;
 
-    constructor(private _sanitizer: DomSanitizer, private _dataService: DataService, private _formBuilder: FormBuilder, private _location: Location) { }
+    constructor(private _sanitizer: DomSanitizer, private _dataService: DataService, private _formBuilder: FormBuilder, private _location: Location, ) { }
 
     ngOnInit() {
-        this._user = new CreateUserDto();
+        this._user = new CreateUserDto();        
         this._idCardUrls = [];
         this._certificateUrls = [];
+        // if (this.obj) {
+        //     this._obj = _.clone(this.obj);
+        //   }
         this._context = {
             userName: [this._user.userName, [Validators.required, this.validateRule.hasValue]],
             password: ['', [Validators.required, this.validateRule.passwordStrong]],
@@ -75,7 +80,13 @@ export class RegisterComponent implements OnInit {
             specialist: [this._user.specialist],
             codeCapcha: [''],
             cmnd: [],
-            gp: []
+            gp: [],
+            isUsingdoctor: [this._obj.isUsingdoctor],
+            isUsingCall: [this._obj.isUsingCall],
+            isUsingUpload: [this._obj.isUsingUpload],
+            isUsingRegister: [this._obj.isUsingRegister],
+            isUsingVideo: [this._obj.isUsingVideo],
+            isUsingExamination: [this._obj.isUsingExamination],
         };
 
         this.frmUser = this._formBuilder.group(this._context);
@@ -134,6 +145,8 @@ export class RegisterComponent implements OnInit {
     }
 
     submit() {
+        console.log('Vao ham submit', this.frmUser)
+       // this.frmUser.controls['isActive'].setValue(this._obj.isActive);
         this.frmUser.value.birthDay = new Date($('#birthY').val() + '-' + $('#birthM').val() + '-' + $('#birthD').val());
 
         if (this.frmUser.controls['password'].value != this.frmUser.controls['confirmPassword'].value) {
@@ -170,10 +183,10 @@ export class RegisterComponent implements OnInit {
                     buttonsStyling: false,
                     timer: 3000
                 }).then((result) => {
-                    if (result.value) {
-                        this._location.back();
-                    }
-                    this._location.back();
+                    //if (result.value) {
+                        //this._location.back();
+                    //}
+                    //this._location.back();
                 });
             }, err => console.log(err))
     }

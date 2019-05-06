@@ -32,7 +32,7 @@ export class EntityDto {
   styleUrls: ['./index.component.scss']
 })
 export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> implements OnInit {
-  dialogDetail:any;
+  dialogDetail: any;
 
   provinces = [];
   districts = [];
@@ -365,7 +365,7 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
     const filterValue = name.toLowerCase();
     var healthfacilities = isNaN(filterValue) ?
       this._healthfacilities.filter(h => h.name.toLowerCase().indexOf(filterValue) === 0) :
-      this._healthfacilities.filter(h => h.code.toLowerCase().indexOf(filterValue) === 0) ;
+      this._healthfacilities.filter(h => h.code.toLowerCase().indexOf(filterValue) === 0);
     return healthfacilities;
   }
 
@@ -383,9 +383,12 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
       );
   }
 
-  onInputHealthfacilities($event) {
-      this.frmSearch.controls['healthfacilitiesId'].setValue("");
-      this._healthFacilitiesId = 0;
+  onInputHealthfacilities(obj: any) {
+    if (obj != "") {
+      this.frmSearch.controls['healthfacilitiesId'].setValue(0);
+    } else {
+      this.frmSearch.controls['healthfacilitiesId'].setValue('');
+    }
   }
 
   onSelectHealthFacilities(value: any) {
@@ -427,8 +430,11 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
   }
 
   onInputSpecialist(obj: any) {
-    this.frmSearch.controls['specialistCode'].setValue("");
-    this._specialistCode = null;
+    if (obj != "") {
+      this.frmSearch.controls['specialistCode'].setValue(0);
+    } else {
+      this.frmSearch.controls['specialistCode'].setValue('');
+    }
   }
 
   onSelectSpecialist(value: any) {
@@ -439,21 +445,19 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
   }
   //End auto complete specialist
   customSearch() {
-    this.frmSearch.controls['healthfacilitiesId'].setValue(this._healthFacilitiesId);
-    this.frmSearch.controls['specialistCode'].setValue(this._specialistCode);
     this.btnSearchClicks$.next();
   }
 
   openDialogDoctor(obj?: EntityDto): void {
-    const dialogRef = this.dialog.open(this.dialogDetail, { minWidth: 'calc(100vw/1.5)', maxWidth: 'calc(100vw - 100px)', disableClose: true, data: obj ? obj : null });
+    const dialogRef = this.dialog.open(this.dialogComponent, { minWidth: 'calc(100vw/1.5)', maxWidth: 'calc(100vw - 100px)', disableClose: true, data: obj ? obj : null });
     dialogRef.afterClosed().subscribe(() => {
       this.paginator.pageIndex = 0;
       this.paginator._changePageSize(this.paginator.pageSize);
     });
   }
 
-  detailDialogDoctor(obj?:EntityDto):void{
-    const dialogRef = this.dialog.open(this.dialogComponent, { minWidth: 'calc(100vw/1.5)', maxWidth: 'calc(100vw - 100px)', disableClose: true, data: obj ? obj : null });
+  detailDialogDoctor(obj?: EntityDto): void {
+    const dialogRef = this.dialog.open(this.dialogDetail, { minWidth: 'calc(100vw/1.5)', maxWidth: 'calc(100vw - 100px)', disableClose: true, data: obj ? obj : null });
     dialogRef.afterClosed().subscribe(() => {
       this.paginator.pageIndex = 0;
       this.paginator._changePageSize(this.paginator.pageSize);

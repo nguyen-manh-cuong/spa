@@ -3,7 +3,7 @@ import { forEach } from '@angular/router/src/utils/collection';
 import { IDoctor, IHealthfacilities } from './../../../../../../SHC Client/ClientApp/src/shared/Interfaces';
 import * as _ from 'lodash';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import { Component, Inject, Injector, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, Inject, Injector, OnInit, ViewChild, AfterViewInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef, MatInput, MatCheckbox } from '@angular/material';
 import * as moment from 'moment';
@@ -38,6 +38,7 @@ export const MY_FORMATS = {
     { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
     { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
   ],
+  encapsulation: ViewEncapsulation.None
 })
 export class DetailComponent extends AppComponentBase implements OnInit, AfterViewInit {
   _birthDay: Date = new Date(Date.now());
@@ -135,11 +136,14 @@ export class DetailComponent extends AppComponentBase implements OnInit, AfterVi
     this.getNations();
     this.getEthnicities();
     this.getSpecialist();
-    this.getDistricts(this.obj.districtCode);
-
 
     const validationRule = new ValidationRule();
     if (this.obj) {
+
+      if(this.obj.provinceCode){
+        this.getDistricts(this.obj.provinceCode);
+      }
+
       this._obj = _.clone(this.obj);
       this._isNew = false;
     }
@@ -252,8 +256,7 @@ export class DetailComponent extends AppComponentBase implements OnInit, AfterVi
   }
 
   getDistricts(provinceCode) {
-    console.log(provinceCode);
-    this._dataService.getAll("districts", "{ProvinceCode:" + provinceCode + "}").subscribe(resp => {this.districts = resp.items;console.log(resp.items)});
+    this._dataService.getAll("districts", "{ProvinceCode:" + provinceCode + "}").subscribe(resp => this.districts = resp.items);
   }
 
   provinceChange($event) {

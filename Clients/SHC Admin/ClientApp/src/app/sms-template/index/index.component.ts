@@ -9,45 +9,46 @@ import { TaskComponent } from '../task/task.component';
 import swal from 'sweetalert2';
 
 @Component({
-  selector: 'app-index',
-  templateUrl: './index.component.html',
-  styleUrls: ['./index.component.scss'],
-  encapsulation: ViewEncapsulation.None
+    selector: 'app-index',
+    templateUrl: './index.component.html',
+    styleUrls: ['./index.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class IndexComponent extends PagedListingComponentBase<ISmsTemplate> implements OnInit, AfterViewInit {
 
-  displayedColumns = ['orderNumber','smsTemplateName', 'messageType', 'smsContent', 'isActive','organizationName','task'];
+    displayedColumns = ['orderNumber', 'smsTemplateName', 'messageType', 'smsContent', 'isActive', 'organizationName', 'task'];
 
-  _status = [{ id: 2, name: "Tất cả"},{ id: 1, name: "Hiệu lực"}, {id: 0, name: "Không hiệu lực"}]
+    _status = [{ id: 2, name: "Tất cả" }, { id: 1, name: "Hiệu lực" }, { id: 0, name: "Không hiệu lực" }]
 
 
-  constructor(injector: Injector, private _dataService: DataService, public dialog: MatDialog, private _formBuilder: FormBuilder) {
-    super(injector);
-  }
-
-  ngOnInit() {
-    this.api = 'sms-templates';
-    this.frmSearch = this._formBuilder.group({ smsTemplateName: [], status: [2,], healthFacilitiesId: this.appSession.user.healthFacilitiesId });
-    this.dataService = this._dataService;
-    this.dialogComponent = TaskComponent;
-    this._status
-  }
-
-  maxLengthTxt(text){
-    if(text.toString().length > 30){
-      return text.toString().substring(0, 30) + "...";
+    constructor(injector: Injector, private _dataService: DataService, public dialog: MatDialog, private _formBuilder: FormBuilder) {
+        super(injector);
     }
 
-    return text.toString();
-  }
+    ngOnInit() {
+        this.api = 'sms-templates';
+        this.frmSearch = this._formBuilder.group({ smsTemplateName: [], status: [2,], healthFacilitiesId: this.appSession.user.healthFacilitiesId });
+        this.dataService = this._dataService;
+        this.dialogComponent = TaskComponent;
+        this._status
+    }
 
-  showMessage(type: any){
-    var message = type == 1 ? "Không có quyền chỉnh sửa mẫu tin nhắn này" : (type == 2 ? "Không có quyền xóa mẫu tin nhắn này" : 'Xóa mẫu tin nhắn không thành công.<br>Mẫu tin nhắn đang được sử dụng!');
+    maxLengthTxt(text) {
+        if (text.toString().length > 30) {
+            return text.toString().substring(0, 30) + "...";
+        }
 
-    swal({
-      title:'Thông báo', 
-      text:message, 
-      type:'warning',
-      timer:3000})
-  }
+        return text.toString();
+    }
+
+    showMessage(type: any) {
+        var message = type == 1 ? "Không có quyền chỉnh sửa mẫu tin nhắn này" : (type == 2 ? "Không có quyền xóa mẫu tin nhắn này" : 'Xóa mẫu tin nhắn không thành công.<br>Mẫu tin nhắn đang được sử dụng!');
+
+        swal({
+            title: 'Thông báo',
+            text: message,
+            type: 'warning',
+            timer: 3000
+        })
+    }
 }

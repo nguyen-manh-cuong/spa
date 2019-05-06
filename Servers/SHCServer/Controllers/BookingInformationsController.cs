@@ -124,10 +124,10 @@ namespace SHCServer.Controllers
                         Reason = booking.reason,
                         Status = booking.status,
                         BookingUser = booking.bookingUser,
-                        Address = booking.address,
+                        Address = booking.address.Trim(),
                         UpdateDate = DateTime.Now,
                         UpdateUserId = booking.updateUserId
-                    });
+                });
                 }
 
                 _context.Session.CommitTransaction();
