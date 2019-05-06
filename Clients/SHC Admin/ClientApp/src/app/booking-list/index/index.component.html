@@ -74,16 +74,16 @@
                     </mat-select>
                 </mat-form-field>
             </div>
-            <div class="col-md-4 disabled" id="cbo-startTime">
+            <div class="col-md-4"  [ngClass]="{'disabled': flagDisabled}">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('Từ ngày')}}</mat-label>
-                    <input matInput #startTime [matDatepicker]="picker" mask="0*" required maxlength="10">
+                    <input matInput #startTime [matDatepicker]="picker" mask="0*" required maxlength="10" [disabled]="type == 10">
                     <mat-datepicker-toggle matSuffix [for]="picker" class="t-2"></mat-datepicker-toggle>
                     <mat-datepicker #picker></mat-datepicker>
                 </mat-form-field>
             </div>
 
-            <div class="col-md-4 disabled" id="cbo-endTime">
+            <div class="col-md-4" id="cbo-endTime"  [ngClass]="{'disabled': flagDisabled}">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('Đến ngày')}}</mat-label>
                     <input matInput #endTime [matDatepicker]="picker1" mask="0*" required maxlength="10">
