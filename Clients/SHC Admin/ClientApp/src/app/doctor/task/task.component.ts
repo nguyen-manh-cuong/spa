@@ -53,11 +53,13 @@ export class HealthfacilitiesDoctor {
 })
 export class TaskComponent extends AppComponentBase implements OnInit, AfterViewInit {
 
+  _certificationInputCheck:Boolean;
+
   _speciaList = [];
   _healthFacilities = [];
 
-  _birthDay: Date = new Date(Date.now());
-  _certificationDate: Date = new Date(Date.now());
+  _birthDay: Date;
+  _certificationDate: Date;
   api: string = 'doctor';
   _frm: FormGroup;
 
@@ -65,10 +67,10 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   _specialist = [];
 
   _healthFacilitiesId: number;
-    _specialistCode: number;
+  _specialistCode: number;
 
-    _avatars = new Array<string>();
-    _avatarError = "";
+  _avatars = new Array<string>();
+  _avatarError = "";
 
   filteredHealthFacilitiesOptions: Observable<IHealthfacilities[]>;
   filteredSpecialistOptions: Observable<ICategoryCommon[]>;
@@ -89,16 +91,16 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
 
 
   _obj: IDoctor | any = {
-    doctorId:0,
-    fullName: null,
-    hisId: null,
+    doctorId: 0,
+    fullName: '',
+    hisId: '',
     specialist: [],
     birthDate: null,
     birthMonth: null,
     birthYear: null,
     gender: 1,
     titleCode: '',
-    posittionCode: '',
+    positionCode: '',
     nationCode: '',
     ethnicityCode: '',
     certificationDate: '',
@@ -111,12 +113,12 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     districtCode: '',
     phoneNumber: '',
     educationCountryCode: '',
-    avatar: null,
+    avatar: '',
     description: '',
     priceFrom: 0,
     priceTo: 0,
-    priceDescription: null,
-    summary: null,
+    priceDescription: '',
+    summary: '',
     isSync: true,
     allowBooking: true,
     allowFilter: true,
@@ -145,7 +147,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   @ViewChild("birthDayPicker") birthDayPicker;
   @ViewChild("certificationDatePicker") certificationDatePicker;
 
-    ngOnInit() {
+  ngOnInit() {
 
     this.getProvinces();
     this.getTitles();
@@ -170,24 +172,25 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
       this._isNew = false;
     }
 
-    if (this.obj) {
-      if (this._obj.birthDate) {
+    if (this.obj.birthYear) {
+    //   if (this._obj.birthDate) {
         this._birthDay = new Date(this._obj.birthMonth + "/" + this._obj.birthDate + "/" + this._obj.birthYear);
-      }
-      else if (this._obj.birthMonth) {
-        this._birthDay = new Date(this._obj.birthMonth + "/01/" + this._obj.birthYear);
-      }
-      else {
-        this._birthDay = new Date("01/01/" + this._obj.birthYear);
-      }
+     }
 
-      if (this._obj.certificationDate) {
-        this._certificationDate = this._obj.certificationDate;
+      // else if (this._obj.birthMonth) {
+      //   this._birthDay = new Date(this._obj.birthMonth + "/01/" + this._obj.birthYear);
+      // }
+      // else {
+      //   this._birthDay = new Date("01/01/" + this._obj.birthYear);
+      // }
+      if (this.obj.certificationDate) {
+        this._certificationDate = this.obj.certificationDate;
       }
-      else {
-        this._obj.certificationDate = new Date(Date.now());
-      }
-    }
+    //   else {
+    //     this._obj.certificationDate = new Date(Date.now());
+    //   }
+    // }
+
 
     this._context = {
       doctorId: [this._obj.doctorId],
@@ -209,7 +212,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
       districtCode: [this._obj.districtCode],
       phoneNumber: [this._obj.phoneNumber],
       educationCountryCode: [this._obj.educationCountryCode],
-       avatar: [null, [FileValidator.maxContentSize(20000000)]],
+      avatar: [null, [FileValidator.maxContentSize(20000000)]],
       description: this._obj.description,
       priceFrom: [this._obj.priceFrom],
       priceTo: [this._obj.priceTo],
@@ -220,6 +223,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
       allowSearch: [this._obj.allowSearch],
       healthfacilities: [this._obj.healthFacilities]
     };
+
 
     this._frm = this._formBuilder.group(this._context);
 
@@ -236,8 +240,12 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
 
   ngAfterViewInit(): void {
     setTimeout(() => {
-      this.birthDayPicker.nativeElement.value = moment(this._birthDay).format("DD/MM/YYYY");
-      this.certificationDatePicker.nativeElement.value = moment(this._certificationDate).format("DD/MM/YYYY");
+      if(this.obj.birthYear){
+        this.birthDayPicker.nativeElement.value = moment(this._birthDay).format("DD/MM/YYYY");
+      }
+      if(this.obj.certificationDate){
+        this.certificationDatePicker.nativeElement.value = moment(this._certificationDate).format("DD/MM/YYYY");
+      }
     });
   }
 
@@ -251,6 +259,10 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
 
 
   //Base//
+
+  certificationCodeChange($event){
+    console.log($event);
+  }
 
   getProvinces() {
     this._dataService.getAll("provinces").subscribe(resp => this.provinces = resp.items);
@@ -385,27 +397,27 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
         map(name => name ? this._filterSpecialist(name) : this._specialist.slice()),
         map(data => data.slice())
       );
-    }
+  }
 
-    detectFiles(event) {
-        this._avatarError = "";
-        let files = event.target.files;
-        if (files) {
-            for (let file of files) {
-                let reader = new FileReader();
-                reader.readAsDataURL(file);
-                if (file.type == 'image/jpeg' || file.type == 'image/png') {
-                    reader.onload = (e: any) => {
-                            this._avatars[0] = e.target.result;
-                    }
-                    this._frm.controls['avatar'].setValue(file);
-                    reader.readAsDataURL(file);
-                } else {
-                    this._avatarError = "File tải lên không phải file ảnh";
-                }
-            }
+  detectFiles(event) {
+    this._avatarError = "";
+    let files = event.target.files;
+    if (files) {
+      for (let file of files) {
+        let reader = new FileReader();
+        reader.readAsDataURL(file);
+        if (file.type == 'image/jpeg' || file.type == 'image/png') {
+          reader.onload = (e: any) => {
+            this._avatars[0] = e.target.result;
+          }
+          this._frm.controls['avatar'].setValue(file);
+          reader.readAsDataURL(file);
+        } else {
+          this._avatarError = "File tải lên không phải file ảnh";
         }
+      }
     }
+  }
 
   onInputSpecialist(obj: any) {
     this._frm.controls['specialist'].setValue("");
@@ -424,7 +436,11 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   }
 
   certificationDateChange(value: any) {
-    this._certificationDate = this.certificationDatePicker.nativeElement.value;
+    // var date = moment(this.certificationDatePicker.nativeElement.value, 'DD/MM/YYYY').date() + 1;
+    // var month = moment(this.certificationDatePicker.nativeElement.value, 'DD/MM/YYYY').month() + 1;
+    // var year = moment(this.certificationDatePicker.nativeElement.value, 'DD/MM/YYYY').year();
+    // this._certificationDate = moment(date + "/" + month + "/" + year, 'DD/MM/YYYY').toDate();
+    this._certificationDate = value;
   }
 
   //End auto complete specialist
@@ -467,7 +483,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
       'birthMonth',
       'birthYear']);
 
-      params.fullName = _.trim(params.fullName);
+    params.fullName = _.trim(params.fullName);
 
     if (!moment(this.birthDayPicker.nativeElement.value, 'DD/MM/YYYY').isValid()) {
       return swal({
@@ -477,19 +493,33 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
         timer: 3000
       });
     }
+    else if (this.certificationDatePicker.nativeElement.value!="" && !moment(this.certificationDatePicker.nativeElement.value, 'DD/MM/YYYY').isValid()) {
+      return swal({
+        title: 'Thông báo',
+        text: 'Ngày cấp chứng chỉ hành ngành không đúng định dạng',
+        type: 'warning',
+        timer: 3000
+      });
+    }
     else {
       if (this.obj) {
         params.doctorId = this.obj.doctorId;
       }
 
-        params.certificationDate = this._certificationDate;
-        params.avatar = this._frm.controls['avatar'].value;
+      if(this._certificationDate){
+        var cerdate=moment(this._certificationDate,'DD/MM/YYYY').date()+"/"+moment(this._certificationDate,'DD/MM/YYYY').month()+"/"+moment(this._certificationDate,'DD/MM/YYYY').year();
+        params.certificationDate =cerdate;
+      }
+
+
+      params.avatar = this._frm.controls['avatar'].value;
 
       //Set birthDate
-
-      params.birthDate = moment(this._birthDay, 'DD/MM/YYYY').date();
-      params.birthMonth = moment(this._birthDay, 'DD/MM/YYYY').month() + 1;
-      params.birthYear = moment(this._birthDay, 'DD/MM/YYYY').year();
+      if(this._birthDay){
+        params.birthDate = moment(this._birthDay, 'DD/MM/YYYY').date();
+        params.birthMonth = moment(this._birthDay, 'DD/MM/YYYY').month() + 1;
+        params.birthYear = moment(this._birthDay, 'DD/MM/YYYY').year();
+      }
 
       if (this.appSession.userId && this._isNew == true) {
         params.createUserId = this.appSession.userId;
@@ -518,16 +548,24 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
         params.healthfacilities = [];
       }
 
-          this._isNew ?
-              this._dataService.createUpload(this.api, standardized(Object.assign(params, { }), {})).subscribe(() => {
-                  swal(this.l('SaveSuccess'), '', 'success');
-                  this.dialogRef.close();
-              }, err => { }) :
-              this._dataService.update(this.api, params).subscribe(() => {
-                  swal(this.l('SaveSuccess'), '', 'success');
-                  this.dialogRef.close();
-              }, err => { });
-      }
+      this._isNew ?
+        this._dataService.createUpload(this.api, standardized(Object.assign(params, {}), {})).subscribe(() => {
+          swal({
+            title: this.l('SaveSuccess'),
+            text: '',
+            type: 'success'
+          });
+          this.dialogRef.close();
+        }, err => { }) :
+        this._dataService.updateUpload(this.api, standardized(Object.assign(params, {}), {})).subscribe(() => {
+          swal({
+            title: this.l('SaveSuccess'),
+            text: '',
+            type: 'success'
+          });
+          this.dialogRef.close();
+        }, err => { });
+    }
   }
 
 }

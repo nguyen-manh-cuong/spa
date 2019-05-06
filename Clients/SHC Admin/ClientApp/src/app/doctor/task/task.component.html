@@ -85,15 +85,15 @@
                     <div class="col-md-6">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("DoctorCertificationCode")}}</mat-label>
-                            <input formControlName="certificationCode" matInput  maxlength="255">
+                            <input formControlName="certificationCode" matInput  maxlength="45" (input)="certificationCodeChange($event)">
                         </mat-form-field>
                     </div>
                     <div class="col-md-4">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("DoctorCertificationDate")}}</mat-label>
-                            <input #certificationDatePicker (dateChange)="certificationDateChange($event.value)" matInput [matDatepicker]="certificationDatePicker" matInput
+                            <input [disabled]="_certificationInputCheck" #certificationDatePicker (dateChange)="certificationDateChange($event.value)" matInput [matDatepicker]="certificationDatePicker" matInput
                                 mask="0*" maxlength="10">
-                            <mat-datepicker-toggle matSuffix [for]="certificationDatePicker" class="t-2">
+                            <mat-datepicker-toggle [disabled]="_certificationInputCheck" matSuffix [for]="certificationDatePicker" class="t-2">
                             </mat-datepicker-toggle>
                             <mat-datepicker #certificationDatePicker [startAt]="startDate">
                             </mat-datepicker>
@@ -321,7 +321,7 @@
                         </mat-checkbox>
                     </div>
                     <button class="mr-3" mat-button mat-dialog-close>{{l("Close")}}</button>
-                    <button mat-raised-button color="primary" 
+                    <button [disabled]="_frm.invalid" mat-raised-button color="primary" 
                         (click)="submit()">{{l("Save")}}</button>
                 </div>
             </div>

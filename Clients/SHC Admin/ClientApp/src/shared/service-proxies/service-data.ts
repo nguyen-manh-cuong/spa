@@ -83,11 +83,9 @@ export class DataService {
     createUpload(enpoint: string, input: any | null | undefined): Observable<any> {
         let url_ = this.baseUrl + `/${enpoint}`;
         url_ = url_.replace(/[?&]$/, '');
-
+        var specialist = "";
+        var healhFacilities="";
         const formData: FormData = new FormData();
-
-        console.log(input);
-        console.log(input.avatar);
 
         // tslint:disable-next-line: forin
         for (const key in input) {
@@ -95,11 +93,19 @@ export class DataService {
                 if (input.avatar) {
                     formData.append('avatar', input.avatar, input.avatar.name);
                 }
-            } else {
+            }
+            if(key==='specialist'){
+                Array.from(input.specialist).forEach((e:any)=>specialist += e.specialistCode+",");
+            }
+            if(key==='healthfacilities'){
+                Array.from(input.healthfacilities).forEach((h:any)=>healhFacilities+=h.healthFacilitiesId+",");
+            }
+            else {
                 formData.append(key, input[key]);
             }
         }
-
+        formData.append('specials',specialist);
+        formData.append('healths',healhFacilities);
         const options_: any = {
             body: formData,
             observe: 'response',
@@ -127,25 +133,44 @@ export class DataService {
     }
 
     updateUpload(enpoint: string, input: any | null | undefined): Observable<any> {
-        let url_ = this.baseUrl + `/api/${enpoint}`;
+        let url_ = this.baseUrl + `/${enpoint}`;
         url_ = url_.replace(/[?&]$/, '');
-
+        var specialist = "";
+        var healhFacilities="";
         const formData: FormData = new FormData();
 
         // tslint:disable-next-line: forin
+        // for (const key in input) {
+        //     if (key === 'avatars') {
+        //         if (input.files && input.files.files && input.files.files.length) {
+        //             Array.from(input.files.files).forEach((f: any) => formData.append('avatars', f));
+        //         }
+        //     } else {
+        //         Array.isArray(input[key])
+        //             ? formData.append(key, JSON.stringify(input[key]))
+        //             : formData.append(key, input[key]);
+        //         // formData.append(key, input[key]);
+        //     }
+        // }
+
         for (const key in input) {
-            if (key === 'avatars') {
-                if (input.files && input.files.files && input.files.files.length) {
-                    Array.from(input.files.files).forEach((f: any) => formData.append('avatars', f));
+            if (key === 'avatar') {
+                if (input.avatar) {
+                    formData.append('avatar', input.avatar, input.avatar.name);
                 }
-            } else {
-                Array.isArray(input[key])
-                    ? formData.append(key, JSON.stringify(input[key]))
-                    : formData.append(key, input[key]);
-                // formData.append(key, input[key]);
+            }
+            if(key==='specialist'){
+                Array.from(input.specialist).forEach((e:any)=>specialist += e.specialistCode+",");
+            }
+            if(key==='healthfacilities'){
+                Array.from(input.healthfacilities).forEach((h:any)=>healhFacilities+=h.healthFacilitiesId+",");
+            }
+            else {
+                formData.append(key, input[key]);
             }
         }
-
+        formData.append('specials',specialist);
+        formData.append('healths',healhFacilities);
         const options_: any = {
             body: formData,
             observe: 'response',
@@ -261,7 +286,7 @@ export class DataService {
 
         abp.ui.setBusy('#form-dialog');
         return this.http.request('delete', url_, options_).pipe(_observableMergeMap((response_: any) => this.processDataOk(response_))).pipe(_observableCatch((response_: any) => {
-            
+
             abp.ui.clearBusy('#form-dialog');
             if (response_ instanceof HttpResponseBase) {
                 try {
@@ -275,7 +300,7 @@ export class DataService {
         }));
     }
 
-    protected processDataOk(response: HttpResponseBase): Observable<any> { 
+    protected processDataOk(response: HttpResponseBase): Observable<any> {
         abp.ui.clearBusy('#main-container');
         const status = response.status;
         const responseBlob = response instanceof HttpResponse ? response.body : (<any>response).error instanceof Blob ? (<any>response).error : undefined;
