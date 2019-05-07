@@ -84,7 +84,7 @@ export class packagedistributeIndexComponent extends PagedListingComponentBase<I
                         this.paginator.pageIndex = 0;
                         swal({
                             title: this.l('SuccessfullyDeleted'),
-                            text: this.l('DeletedInSystem', obj[key]),
+                            html: this.l('DeletedInSystem', obj[key]),
                             type: 'success',
                             timer: 3000
                         });

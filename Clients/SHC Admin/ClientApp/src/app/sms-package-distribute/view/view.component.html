@@ -1,4 +1,4 @@
-<form [formGroup]="_frmpackagedistributeview" class="container p-relative custom-form" novalidate>
+<form [formGroup]="_frmpackagedistributeview" class="container p-relative custom-form form-detail" novalidate>
   <div class="p-absolute t-5 r-5">
     <button mat-icon-button mat-dialog-close style="z-index: 9;" [matTooltipPosition]="'left'" matTooltip="Đóng">
       <mat-icon>close</mat-icon>
@@ -35,11 +35,11 @@
                       </mat-select>
                   </mat-form-field>
               </div>
-              <div class="col-md-6 disabled">
+              <div class="col-md-6">
                   <mat-form-field appearance="outline" class="w-100">
                       <mat-label>{{l("Từ năm")}}</mat-label>
                       <input min="0" max="9999" maxlength="4" formControlName="fromYear" mask="0*"
-                             matInput autocomplete [required]="true">
+                             matInput autocomplete [required]="true" class="disabled">
                   </mat-form-field>
               </div>
               <div class="col-md-6 disabled">

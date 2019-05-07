@@ -11,7 +11,7 @@ import * as _ from 'lodash';
 import { DataService } from '@shared/service-proxies/service-data';
 import { ILanguage, IBookingTimeslots } from '@shared/Interfaces';
 import { PagedListingComponentBase } from '@shared/paged-listing-component-base';
-import { TaskComponent } from '../task/task.component';
+import { TaskComponent, Specialist } from '../task/task.component';
 import swal from 'sweetalert2';
 import { start } from 'repl';
 import { DetailComponent } from '../detail/detail.component';
@@ -67,10 +67,6 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
     if (this.appSession.user.healthFacilitiesId) {
       this.dataService.getAll('healthfacilities', "{healthfacilitiesId:" + String(this.appSession.user.healthFacilitiesId) + "}").subscribe(resp => this._healthfacilities = resp.items);
       this.frmSearch.controls['healthfacilitiesId'].setValue(this.appSession.user.healthFacilitiesId);
-    }
-    else {
-      this.dataService.getAll('healthfacilities').subscribe(resp => this._healthfacilities = resp.items);
-      this.filterOptions();
     }
   }
   showErrorDeleteMessage() {
@@ -417,6 +413,10 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
 
   clickSpecialistCbo() {
     !this.specialistCode.value ? this.filterSpecialistOptions() : '';
+  }
+
+  getSpecialJoin(element: [Specialist]) {
+    return element.map((e) => e.name).join(", ");
   }
 
   filterSpecialistOptions() {

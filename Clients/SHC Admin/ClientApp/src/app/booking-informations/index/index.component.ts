@@ -63,6 +63,8 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
   healthfacilities = new FormControl();
   bookingServiceType = new FormControl();
   flagDisabled = true;
+  isFirstTime = true;
+  _isDateTimeEnable = true;
   arrayStatus = [{ position: 1, status: 'Đã khám', quantitystatus: 0 }, { position: 2, status: 'Chờ khám', quantitystatus: 0 }, { position: 3, status: 'Hủy khám', quantitystatus: 0 }, { position: 4, status: 'Mới đăng ký', quantitystatus: 0 }];
   isLoading = false;
 
@@ -106,7 +108,10 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
     setTimeout(() => {
       this.startTime.nativeElement.value = moment(new Date().setDate(new Date().getDate())).format("DD/MM/YYYY");
       this.endTime.nativeElement.value = moment(new Date().setDate(new Date().getDate())).format("DD/MM/YYYY");
+    this.search();
     });
+
+    
   }
   displayFn(h?: IHealthfacilities): string | undefined {
     return h ? h.name : undefined;
@@ -140,71 +145,72 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
 
   onselectBookingInformationsTime(obj: any) {
     this.flagDisabled = true;
-    if (obj == 0) {    
+    if (obj == 0) {
+      this._isDateTimeEnable = true; 
       this.startTime.nativeElement.value = moment(new Date().setDate(new Date().getDate())).format("DD/MM/YYYY");
       this.endTime.nativeElement.value = moment(new Date().setDate(new Date().getDate())).format("DD/MM/YYYY");
     }
     // Hôm qua
     if (obj == 1) {
+      this._isDateTimeEnable = true; 
       this.startTime.nativeElement.value = moment(new Date().setDate(new Date().getDate() - 1)).format("DD/MM/YYYY");
       this.endTime.nativeElement.value = moment(new Date().setDate(new Date().getDate())).format("DD/MM/YYYY");
     }
     // Tuần này
     if (obj == 2) {
+      this._isDateTimeEnable = true; 
       this.startTime.nativeElement.value = moment(moment().startOf("isoWeek").toDate()).format("DD/MM/YYYY");
       this.endTime.nativeElement.value = moment(moment().endOf("isoWeek").toDate()).format("DD/MM/YYYY");
     }
     // Tuần trước
     if (obj == 3) {
+      this._isDateTimeEnable = true; 
       this.startTime.nativeElement.value = moment(moment().subtract(1, 'weeks').startOf('isoWeek')).format("DD/MM/YYYY");
       this.endTime.nativeElement.value = moment(moment().subtract(1, 'weeks').endOf('isoWeek')).format("DD/MM/YYYY");
     }
     // Tháng này
     if (obj == 4) {
+      this._isDateTimeEnable = true; 
       this.startTime.nativeElement.value = moment(moment().startOf("month").toDate()).format("DD/MM/YYYY");
       this.endTime.nativeElement.value = moment(moment().endOf("month").toDate()).format("DD/MM/YYYY");
     }
     // Tháng trước
     if (obj == 5) {
+      this._isDateTimeEnable = true; 
       this.startTime.nativeElement.value = moment(moment().subtract(1, 'months').startOf('month')).format("DD/MM/YYYY");
       this.endTime.nativeElement.value = moment(moment().subtract(1, 'months').endOf('month')).format("DD/MM/YYYY");
     }
     // Qúy này
     if (obj == 6) {
+      this._isDateTimeEnable = true; 
       this.startTime.nativeElement.value = moment(moment().quarter(moment().quarter()).startOf('quarter')).format("DD/MM/YYYY");
       this.endTime.nativeElement.value = moment(moment().quarter(moment().quarter()).endOf('quarter')).format("DD/MM/YYYY");
     }
     // Quý trước
     if (obj == 7) {
+      this._isDateTimeEnable = true; 
       this.startTime.nativeElement.value = moment(moment().subtract(1, 'quarter').startOf('quarter')).format("DD/MM/YYYY");
       this.endTime.nativeElement.value = moment(moment().subtract(1, 'quarter').endOf('quarter')).format("DD/MM/YYYY");
     }
     // Năm nay
     if (obj == 8) {
+      this._isDateTimeEnable = true; 
       this.startTime.nativeElement.value = moment(moment().startOf('year')).format("DD/MM/YYYY");
       this.endTime.nativeElement.value = moment(moment().endOf('year')).format("DD/MM/YYYY");
     }
 
     // Năm trước
     if (obj == 9) {
+      this._isDateTimeEnable = true; 
       this.startTime.nativeElement.value = moment(moment().subtract(1, 'year').startOf('year')).format("DD/MM/YYYY");
       this.endTime.nativeElement.value = moment(moment().subtract(1, 'year').endOf('year')).format("DD/MM/YYYY");
     }
     if (obj == 10) {
-      this.flagDisabled = false;
+      this._isDateTimeEnable = false;       
     }
   }
-  search() {
-    // if (!this.endTime.nativeElement.value && !this.startTime.nativeElement.value) {
-    //   this.startTime.nativeElement.focus();
-    //   this.endTime.nativeElement.focus();
-    //   return swal({
-    //     title:'Thông báo', 
-    //     text:'Từ ngày và Đến ngày không được để trống', 
-    //     type:'warning',
-    //     timer:3000});       
-    // }   
-    if (!this.startTime.nativeElement.value) {
+  search() { 
+    if (!this.startTime.nativeElement.value && !this.isFirstTime) {
       this.startTime.nativeElement.focus();
       return swal({
         title:'Thông báo', 
@@ -212,7 +218,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
         type:'warning',
         timer:3000});
     }
-    if (!this.endTime.nativeElement.value) {
+    if (!this.endTime.nativeElement.value && !this.isFirstTime) {
       this.endTime.nativeElement.focus();
       return swal({
         title:'Thông báo', 
@@ -220,7 +226,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
         type:'warning',
         timer:3000});       
     }
-    if (!moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').isValid()) {
+    if (!moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').isValid() && !this.isFirstTime) {
       this.startTime.nativeElement.focus();
       return swal({
         title:'Thông báo', 
@@ -228,7 +234,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
         type:'warning',
         timer:3000});
     }
-    if (!moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').isValid()) {
+    if (!moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').isValid() && !this.isFirstTime) {
       this.endTime.nativeElement.focus();
       return swal({
         title:'Thông báo', 
@@ -236,7 +242,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
         type: 'warning',
         timer:3000});        
     }
-    if (((moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').valueOf() - moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').valueOf()) / (1000 * 60 * 60 * 24)) < 0) {
+    if (((moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').valueOf() - moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').valueOf()) / (1000 * 60 * 60 * 24)) < 0 && !this.isFirstTime) {
       this.endTime.nativeElement.focus();
       return swal({
         title:'Thông báo', 
@@ -244,16 +250,28 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
         type: 'warning',
         timer:3000});
     }
-    if (this.appSession.user.healthFacilitiesId != null) {
-      this.healthfacilities.value
-        ? this.frmSearch.controls['healthfacilities'].setValue(this.healthfacilities.value.healthFacilitiesId)
-        : '';
+    if(((!this.appSession.user.healthFacilitiesId && this.healthfacilities.value) || (this.appSession.user.healthFacilitiesId)) && !this.isFirstTime){
+      if (this.appSession.user.healthFacilitiesId != null) {
+        this.healthfacilities.value
+          ? this.frmSearch.controls['healthfacilities'].setValue(this.healthfacilities.value.healthFacilitiesId)
+          : '';
+      }
+      else {
+        this.healthfacilities.value
+          ? this.frmSearch.controls['healthfacilities'].setValue(this.healthfacilities.value.healthFacilitiesId)
+          : this.frmSearch.controls['healthfacilities'].setValue('');
+      }
     }
-    else {
-      this.healthfacilities.value
-        ? this.frmSearch.controls['healthfacilities'].setValue(this.healthfacilities.value.healthFacilitiesId)
-        : this.frmSearch.controls['healthfacilities'].setValue('');
-    }
+    else if (!this.isFirstTime){
+      this.appSession.user.healthFacilitiesId == null ? this.frmSearch.controls['healthfacilities'].setValue(null) : '';
+      swal({
+        title: this.l('Notification'),
+        text: this.l('HealthfacilitiesAndDoctorNotNull'),
+        type: 'warning',
+        timer: 3000
+      });
+    }    
+    
     this.startTime.nativeElement.value ? this.frmSearch.controls['startTime'].setValue(moment(this.startTime.nativeElement.value + '00:00:00', 'DD/MM/YYYY hh:mm:ss').add(7, 'hours').toDate()) : '';
     this.endTime.nativeElement.value ? this.frmSearch.controls['endTime'].setValue(moment(this.endTime.nativeElement.value + '23:59:59', 'DD/MM/YYYY hh:mm:ss').add(7, 'hours').toDate()) : '';
     var req = omitBy(this.frmSearch.value, isNil);
@@ -264,12 +282,14 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
       .get(this.api, JSON.stringify(req), '', this.paginator.pageIndex, this.paginator.pageSize)
       .subscribe(resp => {
         setTimeout(() => this.isTableLoading = true, 0);
+        this.isFirstTime = false;
         this.totalItems = resp.totalCount;
         this.totalPatientCount = resp.totalPatientCount;
         this.dataSources.data = resp.items;
         setTimeout(() => {
           this.listBooking = this.dataSources.data;
           if (this.listBooking.length == 0) {
+            console.log('vao ham if')
             this._quantityCancel = 0;
             this._quantityDone = 0;
             this._quantityPending = 0;
@@ -278,7 +298,8 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
             this._quantityFemale = 0;
           }
           else {
-            for (var item of this.listBooking) {
+            console.log('vao ham else')
+            for (var item of this.listBooking) {              
               this._quantityCancel = item.quantityByStatusCancel;
               this._quantityDone = item.quantityByStatusDone;
               this._quantityPending = item.quantityByStatusPending;

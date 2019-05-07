@@ -32,7 +32,7 @@ import { startWith, map, debounceTime, tap, switchMap, finalize } from 'rxjs/ope
     _healthfacilities = [];
     _doctors = [];
     _months = _.range(1, 13);
-    _status = [{ id: 3, name: 'Tất cả'}, { id: 0, name: 'Chờ duyêt'}, { id: 1, name: 'Đã duyệt'}, { id: 2, name: 'Đã hủy'}];
+    _status = [{ id: 3, name: 'Tất cả'}, { id: 0, name: 'Chờ duyệt'}, { id: 1, name: 'Đã duyệt'}, { id: 2, name: 'Đã hủy'}];
 
     healthfacilities = new FormControl();
     filteredOptions: Observable<IHealthfacilities[]>;

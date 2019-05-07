@@ -75,6 +75,16 @@ export class EditComponent extends AppComponentBase implements OnInit, AfterView
             bookingId: [this._booking.bookingId,]
         };
 
+        setTimeout(() => {
+            this._frm.controls['doctorName'].disable();
+            this._frm.controls['examinationDate'].disable();
+            this._frm.controls['gender'].disable();
+            this._frm.controls['age'].disable();
+            this._frm.controls['phoneNumber'].disable();
+            this._frm.controls['email'].disable(); 
+        }, 100);
+
+
         this._frm = this._formBuilder.group(this._context);
     }
 

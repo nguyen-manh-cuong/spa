@@ -1,9 +1,9 @@
 <form [formGroup]="_frm" class="container p-relative custom-form form-detail" novalidate>
-        <div class="p-absolute t-5 r-5">
-                <button mat-icon-button mat-dialog-close style="z-index: 9;" [matTooltipPosition]="'left'" matTooltip="Đóng">
-                    <mat-icon>close</mat-icon>
-                </button>
-            </div>
+    <div class="p-absolute t-5 r-5">
+        <button mat-icon-button mat-dialog-close style="z-index: 9;" [matTooltipPosition]="'left'" matTooltip="Đóng">
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
     <mat-tab-group>
         <mat-tab>
             <ng-template mat-tab-label>
@@ -13,14 +13,14 @@
                 <div class="row">
                     <div class="col-md-6 disabled">
                         <mat-form-field appearance="outline" class="w-100">
-                            <mat-label >{{l("DoctorName")}}</mat-label>
-                            <input formControlName="fullName" matInput>                            
+                            <mat-label>{{l("DoctorName")}}</mat-label>
+                            <input formControlName="fullName" matInput>
                         </mat-form-field>
                     </div>
                     <div class="col-md-4 disabled">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label class="f16">{{l("DoctorBirthDay")}}</mat-label>
-                            <input matInput [matDatepicker]="picker" #birthDayPicker>
+                            <input matInput [matDatepicker]="picker" #birthDayPicker formControlName="birthday">
                             <mat-datepicker-toggle matSuffix [for]="picker" class="t-2"></mat-datepicker-toggle>
                             <mat-datepicker #picker [startAt]="_birthDay"></mat-datepicker>
                         </mat-form-field>
@@ -41,9 +41,8 @@
                 <div class="row">
                     <div class="col-md-6 disabled">
                         <mat-form-field appearance="outline" class="w-100">
-                            <mat-label >{{l("Province")}}</mat-label>
-                            <mat-select formControlName="provinceCode"
-                                (selectionChange)="provinceChange($event)">
+                            <mat-label>{{l("Province")}}</mat-label>
+                            <mat-select formControlName="provinceCode" (selectionChange)="provinceChange($event)">
                                 <mat-option class="text-center">{{l('CancelSelect')}}</mat-option>
                                 <mat-option *ngFor="let p of provinces" [value]="p.provinceCode">{{p.name}}</mat-option>
                             </mat-select>
@@ -51,7 +50,7 @@
                     </div>
                     <div class="col-md-6 disabled">
                         <mat-form-field appearance="outline" class="w-100">
-                            <mat-label >{{l("District")}}</mat-label>
+                            <mat-label>{{l("District")}}</mat-label>
                             <mat-select formControlName="districtCode">
                                 <mat-option *ngIf="checkProvince" class="text-center">{{l('CancelSelect')}}</mat-option>
                                 <mat-option *ngFor="let d of districts" [value]="d.districtCode">{{d.name}}</mat-option>
@@ -63,7 +62,7 @@
                 <div class="row">
                     <div class="col-md-12 disabled">
                         <mat-form-field appearance="outline" class="w-100">
-                            <mat-label >{{l("Address")}}</mat-label>
+                            <mat-label>{{l("Address")}}</mat-label>
                             <input formControlName="address" matInput>
                         </mat-form-field>
                     </div>
@@ -72,13 +71,13 @@
                 <div class="row">
                     <div class="col-md-6 disabled">
                         <mat-form-field appearance="outline" class="w-100">
-                            <mat-label >{{l("PhoneNumber")}}</mat-label>
+                            <mat-label>{{l("PhoneNumber")}}</mat-label>
                             <input formControlName="phoneNumber" matInput>
                         </mat-form-field>
                     </div>
                     <div class="col-md-6 disabled">
                         <mat-form-field appearance="outline" class="w-100">
-                            <mat-label >{{l("Email")}}</mat-label>
+                            <mat-label>{{l("Email")}}</mat-label>
                             <input formControlName="email" matInput>
                         </mat-form-field>
                     </div>
@@ -87,8 +86,8 @@
                 <div class="row">
                     <div class="col-md-6 disabled">
                         <mat-form-field appearance="outline" class="w-100">
-                            <mat-label >{{l("DoctorCertificationCode")}}</mat-label>
-                            <input formControlName="certificationCode" matInput >
+                            <mat-label>{{l("DoctorCertificationCode")}}</mat-label>
+                            <input formControlName="certificationCode" matInput>
                         </mat-form-field>
                     </div>
                     <div class="col-md-4 disabled">
@@ -108,7 +107,7 @@
                 <div class="row">
                     <div class="col-md-6 disabled">
                         <mat-form-field appearance="outline" class="w-100">
-                            <mat-label >{{l("DoctorTitleCode")}}</mat-label>
+                            <mat-label>{{l("DoctorTitleCode")}}</mat-label>
                             <mat-select formControlName="titleCode">
                                 <mat-option class="text-center">{{l('CancelSelect')}}</mat-option>
                                 <mat-option *ngFor="let t of titles" [value]="t.code">{{t.name}}</mat-option>
@@ -118,7 +117,7 @@
                     </div>
                     <div class="col-md-6 disabled">
                         <mat-form-field appearance="outline" class="w-100">
-                            <mat-label >{{l("DoctorPosition")}}</mat-label>
+                            <mat-label>{{l("DoctorPosition")}}</mat-label>
                             <mat-select formControlName="posittionCode">
                                 <mat-option class="text-center">{{l('CancelSelect')}}</mat-option>
                                 <mat-option *ngFor="let p of positions" [value]="p.code">{{p.name}}</mat-option>
@@ -130,7 +129,7 @@
                 <div class="row">
                     <div class="col-md-6 disabled">
                         <mat-form-field appearance="outline" class="w-100">
-                            <mat-label >{{l("DoctorAcademic")}}</mat-label>
+                            <mat-label>{{l("DoctorAcademic")}}</mat-label>
                             <mat-select formControlName="academicId">
                                 <mat-option class="text-center">{{l('CancelSelect')}}</mat-option>
                                 <mat-option *ngFor="let a of academics" [value]="a.code">{{a.name}}</mat-option>
@@ -139,7 +138,7 @@
                     </div>
                     <div class="col-md-6 disabled">
                         <mat-form-field appearance="outline" class="w-100">
-                            <mat-label >{{l("DoctorDegree")}}</mat-label>
+                            <mat-label>{{l("DoctorDegree")}}</mat-label>
                             <mat-select formControlName="degreeId">
                                 <mat-option class="text-center">{{l('CancelSelect')}}</mat-option>
                                 <mat-option *ngFor="let d of degrees" [value]="d.code">{{d.name}}</mat-option>
@@ -151,7 +150,7 @@
                 <div class="row">
                     <div class="col-md-6 disabled">
                         <mat-form-field appearance="outline" class="w-100">
-                            <mat-label >{{l("DoctorNation")}}</mat-label>
+                            <mat-label>{{l("DoctorNation")}}</mat-label>
                             <mat-select formControlName="nationCode">
                                 <mat-option class="text-center">{{l('CancelSelect')}}</mat-option>
                                 <mat-option *ngFor="let n of nations" [value]="n.nationCode">{{n.nationName}}
@@ -161,7 +160,7 @@
                     </div>
                     <div class="col-md-6 disabled">
                         <mat-form-field appearance="outline" class="w-100">
-                            <mat-label >{{l("DoctorEthnicity")}}</mat-label>
+                            <mat-label>{{l("DoctorEthnicity")}}</mat-label>
                             <mat-select formControlName="ethnicityCode">
                                 <mat-option class="text-center">{{l('CancelSelect')}}</mat-option>
                                 <mat-option *ngFor="let e of ethnicities" [value]="e.ethnicityCode">{{e.name}}
@@ -174,7 +173,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <mat-form-field appearance="outline" class="w-100">
-                            <mat-label >{{l('DoctorSpecialist')}}</mat-label>
+                            <mat-label>{{l('DoctorSpecialist')}}</mat-label>
                             <input matInput [formControl]="specialistCodeControl" (click)="clickSpecialistCbo()"
                                 (input)="onInputSpecialist()" [matAutocomplete]="autoSpecialist">
                             <mat-autocomplete #autoSpecialist="matAutocomplete" [displayWith]="displaySpecialistFn"
@@ -191,7 +190,7 @@
                 <div class="row">
                     <div class="col-md-6">
                         <mat-form-field appearance="outline" class="w-100">
-                            <mat-label >{{l("EducationCountryCode")}}</mat-label>
+                            <mat-label>{{l("EducationCountryCode")}}</mat-label>
                             <mat-select formControlName="educationCountryCode">
                                 <mat-option class="text-center">{{l('CancelSelect')}}</mat-option>
                                 <mat-option *ngFor="let n of nations" [value]="n.nationCode">{{n.nationName}}
@@ -236,14 +235,14 @@
                 <div class="row pt-4">
                     <div class="col-md-6 disabled">
                         <mat-form-field appearance="outline" class="w-100">
-                            <mat-label >{{l("DoctorPriceFrom")}}</mat-label>
-                            <input mask="comma_separator"  formControlName="priceFrom" matInput >
+                            <mat-label>{{l("DoctorPriceFrom")}}</mat-label>
+                            <input mask="comma_separator" formControlName="priceFrom" matInput>
                         </mat-form-field>
                     </div>
                     <div class="col-md-6 disabled">
                         <mat-form-field appearance="outline" class="w-100">
-                            <mat-label >{{l("DoctorPriceTo")}}</mat-label>
-                            <input mask="comma_separator" formControlName="priceTo" matInput>                                
+                            <mat-label>{{l("DoctorPriceTo")}}</mat-label>
+                            <input mask="comma_separator" formControlName="priceTo" matInput>
                         </mat-form-field>
                     </div>
                 </div>
@@ -251,7 +250,7 @@
                 <div class="row">
                     <div class="col-md-12 disabled">
                         <mat-form-field appearance="outline" class="w-100">
-                            <mat-label >{{l("DoctorPriceDescription")}}</mat-label>
+                            <mat-label>{{l("DoctorPriceDescription")}}</mat-label>
                             <input formControlName="priceDescription" matInput>
                         </mat-form-field>
                     </div>
@@ -261,7 +260,7 @@
                     <div class="col-md-12 disabled">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("DoctorDescription")}}</mat-label>
-                            <input formControlName="description" matInput  ngDefaultControl>                               
+                            <input formControlName="description" matInput ngDefaultControl>
                         </mat-form-field>
 
                     </div>

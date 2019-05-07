@@ -199,6 +199,34 @@ export class DetailComponent extends AppComponentBase implements OnInit, AfterVi
       healthfacilities: [this._obj.healthFacilities]
     };
 
+    setTimeout(() => {
+      this._frm.controls['fullName'].disable();
+      this._frm.controls['gender'].disable();
+      this._frm.controls['provinceCode'].disable();
+      this._frm.controls['districtCode'].disable();
+      this._frm.controls['address'].disable();
+      this._frm.controls['phoneNumber'].disable();
+      this._frm.controls['email'].disable();
+      this._frm.controls['certificationCode'].disable();                
+      this._frm.controls['titleCode'].disable();
+      this._frm.controls['posittionCode'].disable();
+      this._frm.controls['academicId'].disable();
+      this._frm.controls['degreeId'].disable();
+      this._frm.controls['nationCode'].disable();
+      this._frm.controls['ethnicityCode'].disable();
+      this._frm.controls['educationCountryCode'].disable();
+      this._frm.controls['avatar'].disable();
+      this._frm.controls['priceFrom'].disable();
+      this._frm.controls['priceTo'].disable();
+      this._frm.controls['priceDescription'].disable();
+      this._frm.controls['description'].disable();
+      this._frm.controls['healthfacilities'].disable();
+      this._frm.controls['allowBooking'].disable();
+      this._frm.controls['allowFilter'].disable();
+      this._frm.controls['allowSearch'].disable();
+      this._frm.controls['birthday'].disable();
+}, 100);
+
     if(this.obj){
       this._summary = this._obj.summary;
       console.log('Mo ta bac si:', this._summary);
