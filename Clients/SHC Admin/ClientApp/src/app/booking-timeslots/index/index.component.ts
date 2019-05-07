@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatButton, MatDialog, MatDialogRef } from '@angular/material';
 import { Subject, merge, of } from 'rxjs';
 import { Observable } from 'rxjs';
-import { catchError, map, startWith, switchMap } from 'rxjs/operators';
+import { catchError, map, startWith, switchMap, debounceTime, tap, finalize } from 'rxjs/operators';
 import { compact, isEmpty, omitBy, zipObject } from 'lodash';
 import { SelectionModel } from '@angular/cdk/collections';
 import { DataService } from '@shared/service-proxies/service-data';
@@ -14,7 +14,7 @@ import swal from 'sweetalert2';
 
 export class EntityDto {
   id: number;
-  isActive:boolean;
+  isActive: boolean;
 }
 
 @Component({
@@ -27,114 +27,110 @@ export class IndexComponent extends PagedListingComponentBase<IBookingTimeslots>
 
   filteredOptions: Observable<IHealthfacilities[]>;
   healthfacilities = new FormControl();
-
-  displayedColumns = [ 'orderNumber', 'healthFacilitiesName', 'code', 'name', 'time', 'status', 'task'];
+  isLoading = false;
+  displayedColumns = ['orderNumber', 'healthFacilitiesName', 'code', 'name', 'time', 'status', 'task'];
 
   constructor(injector: Injector, private _dataService: DataService, public dialog: MatDialog, private _formBuilder: FormBuilder) { super(injector); }
 
-  ngOnInit() {   
+  ngOnInit() {
     this.api = 'bookingtimeslots';
     this.dataService = this._dataService;
-    this.dialogComponent = TaskComponent;  
+    this.dialogComponent = TaskComponent;
     this.frmSearch = this._formBuilder.group({
-       keyFilter: [],     
-       healthfacilities: [this.appSession.user.healthFacilitiesId],
-      });
-      //old
+      keyFilter: [],
+      healthfacilities: [this.appSession.user.healthFacilitiesId],
+    });
+    //old
     // this.dataService.getAll('healthfacilities', (this.appSession.user.healthFacilitiesId ? String(this.appSession.user.healthFacilitiesId) : '')).subscribe(resp => 
     // {
     //   this._healthfacilities = resp.items;      
     // });
     //new
-    if(this.appSession.user.healthFacilitiesId) {
-      this.dataService.getAll('healthfacilities', "{healthfacilitiesId:"+String(this.appSession.user.healthFacilitiesId)+"}").subscribe(resp => this._healthfacilities = resp.items);
-      this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId);      
+    if (this.appSession.user.healthFacilitiesId) {
+      this.dataService.get("healthfacilities", JSON.stringify({healthfacilitiesId : this.appSession.user.healthFacilitiesId}), '', null, null).subscribe(resp => {this._healthfacilities = resp.items;});
+
+      setTimeout(() => {
+        this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId);
+      }, 500);
     }
-    else{
-        this.dataService.getAll('healthfacilities').subscribe(resp => this._healthfacilities = resp.items);
-        this.filterOptions();
+    else {
+      this.filterOptions();
+      this.healthfacilities.setValue(null);
     }
   }
+
   displayFn(h?: IHealthfacilities): string | undefined {
     return h ? h.name : undefined;
-}
-
-  _filter(name: string): IHealthfacilities[] {
-    const filterValue = name.toLowerCase();
-    return this._healthfacilities.filter(h => h.name.toLowerCase().indexOf(filterValue) === 0);
-}
-
-showMess(obj: EntityDto, key: string, id?: number | string){
-  swal({    
-    title: this.l('AreYouSure'),
-    type: 'warning',
-    showCancelButton: true,
-    confirmButtonClass: 'mat-raised-button mat-primary bg-danger',
-    cancelButtonClass: 'mat-button',
-    confirmButtonText: this.l('YesDelete'),
-    cancelButtonText: this.l('Cancel'),
-    buttonsStyling: false
-}).then((result) => {
-  if (result.value) {
-      swal({
-        title:this.l('Xóa không thành công'), 
-        text:'Không thể xóa khung giờ khám đang hoạt động!',
-        type: 'error',
-        timer:3000});
   }
-});  
-}
 
-  clickCbo() {    
-    !this.healthfacilities.value ? this.filterOptions() : '';
-}
- 
-filterOptions() {
-      this.filteredOptions = this.healthfacilities.valueChanges
-      .pipe(
-          startWith<string | IHealthfacilities>(''),
-          map(value => typeof value === 'string' ? value : value.name),
-          map(name => name ? this._filter(name) : this._healthfacilities.slice()),
-          map(data => data.slice(0, 30))
-      );  
-}
-
-customSearch() {  
-  if(this.appSession.user.healthFacilitiesId != null){
-    this.healthfacilities.value 
-      ? this.frmSearch.controls['healthfacilities'].setValue(this.healthfacilities.value.healthFacilitiesId) 
-      : '';  
+  filterOptions() {
+    this.healthfacilities.valueChanges
+        .pipe(
+          debounceTime(500),
+          tap(() => this.isLoading = true),
+          switchMap(value => this.filter(value))
+        )
+        .subscribe(data => {
+            this._healthfacilities = data.items;
+        });
   }
-  else{
-    this.healthfacilities.value 
-      ? this.frmSearch.controls['healthfacilities'].setValue(this.healthfacilities.value.healthFacilitiesId) 
-      : this.frmSearch.controls['healthfacilities'].setValue('');  
+
+  filter(value: any){
+    var fValue = typeof value === 'string'  ? value : (value ? value.name : '')
+    this._healthfacilities = [];
+
+    return this.dataService
+        .get("healthfacilities", JSON.stringify({
+            name : isNaN(fValue) ? fValue : "",
+            code : !isNaN(fValue) ? fValue : ""
+        }), '', null, null)
+        .pipe(
+            finalize(() => this.isLoading = false)
+        )
   }
-  this.btnSearchClicks$.next();
-}
 
-showNotify(obj: EntityDto, key: string, id?: number | string) {
-  swal({
-    title:this.l('Không thể xóa khung giờ khám đang hoạt động'), 
-    text:'', 
-    type:'error',
-    timer:3000});
-}
-
-onChangeHealthfacilities() {
-  var val = this.healthfacilities.value;
-  
-  if (val && val.trim()) {
-    var rs = this._filter(val.trim());
-    //TODO:lọc lấy Id
-    if (rs.length > 0) {
-      this.healthfacilities.setValue(rs[0]);
-    } else {
-      this.healthfacilities.setValue('');
-    } 
-  } else {
-    this.healthfacilities.setValue('');
+  showMess(obj: EntityDto, key: string, id?: number | string) {
+    swal({
+      title: this.l('AreYouSure'),
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonClass: 'mat-raised-button mat-primary bg-danger',
+      cancelButtonClass: 'mat-button',
+      confirmButtonText: this.l('YesDelete'),
+      cancelButtonText: this.l('Cancel'),
+      buttonsStyling: false
+    }).then((result) => {
+      if (result.value) {
+        swal({
+          title: this.l('Xóa không thành công'),
+          text: 'Không thể xóa khung giờ khám đang hoạt động!',
+          type: 'error',
+          timer: 3000
+        });
+      }
+    });
   }
-}
 
+  customSearch() {
+    if (this.appSession.user.healthFacilitiesId != null) {
+      this.healthfacilities.value
+        ? this.frmSearch.controls['healthfacilities'].setValue(this.healthfacilities.value.healthFacilitiesId)
+        : '';
+    }
+    else {
+      this.healthfacilities.value
+        ? this.frmSearch.controls['healthfacilities'].setValue(this.healthfacilities.value.healthFacilitiesId)
+        : this.frmSearch.controls['healthfacilities'].setValue('');
+    }
+    this.btnSearchClicks$.next();
+  }
+
+  showNotify(obj: EntityDto, key: string, id?: number | string) {
+    swal({
+      title: this.l('Không thể xóa khung giờ khám đang hoạt động'),
+      text: '',
+      type: 'error',
+      timer: 3000
+    });
+  }
 }

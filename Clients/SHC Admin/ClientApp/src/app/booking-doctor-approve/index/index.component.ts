@@ -5,7 +5,7 @@ import { DataService } from '@shared/service-proxies/service-data';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { PagedListingComponentBase } from '@shared/paged-listing-component-base';
 import { DetailComponent } from '../detail/detail.component';
-import { startWith, map } from 'rxjs/operators';
+import { startWith, map, finalize, switchMap, tap, debounceTime } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import { SelectionModel } from '@angular/cdk/collections';
@@ -49,6 +49,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingDoctorsCal
     healthfacilities = new FormControl();
     filteredOptions: Observable<IHealthfacilities[]>;
     selection = new SelectionModel<IBookingDoctorsCalendarsView>(true, []);
+    isLoading = false;
 
     @ViewChild("startTime") startTime;
     @ViewChild("endTime") endTime;
@@ -71,18 +72,17 @@ export class IndexComponent extends PagedListingComponentBase<IBookingDoctorsCal
         this.dataService = this._dataService;
         this.dialogDetail = DetailComponent;
 
-        // this.dataService.getAll('healthfacilities', (this.appSession.user.healthFacilitiesId ? "{healthfacilitiesId:"+String(this.appSession.user.healthFacilitiesId)+"}" : '')).subscribe(resp => this._healthfacilities = resp.items);
-        // this.appSession.user.healthFacilitiesId ? this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId) : this.filterOptions();
-        // if(this.appSession.user.healthFacilitiesId) this.dataService.getAll('doctors', String(this.appSession.user.healthFacilitiesId)).subscribe(resp => this._doctors = resp.items);
-
         if (this.appSession.user.healthFacilitiesId) {
-            this.dataService.getAll('healthfacilities', "{healthfacilitiesId:" + String(this.appSession.user.healthFacilitiesId) + "}").subscribe(resp => this._healthfacilities = resp.items);
-            this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId);
+            this.dataService.get("healthfacilities", JSON.stringify({healthfacilitiesId : this.appSession.user.healthFacilitiesId}), '', null, null).subscribe(resp => {this._healthfacilities = resp.items;});
             this.dataService.getAll('doctors', String(this.appSession.user.healthFacilitiesId)).subscribe(resp => this._doctors = resp.items);
+
+            setTimeout(() => {
+            this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId);
+            }, 500);
         }
         else {
-            this.dataService.getAll('healthfacilities').subscribe(resp => this._healthfacilities = resp.items);
             this.filterOptions();
+            this.healthfacilities.setValue(null);
         }
 
         setTimeout(() => {
@@ -105,29 +105,31 @@ export class IndexComponent extends PagedListingComponentBase<IBookingDoctorsCal
         return h ? h.name : undefined;
     }
 
-    _filter(name: any): IHealthfacilities[] {
-        const filterValue = name.toLowerCase();
-        var healthfacilities = isNaN(filterValue) ?
-            this._healthfacilities.filter(h => h.name.toLowerCase().indexOf(filterValue) === 0) :
-            this._healthfacilities.filter(h => h.code.toLowerCase().indexOf(filterValue) === 0);
-        //if(healthfacilities.length == 0 && filterValue.length) this.frmSearch.controls['healthfacilities'].setValue(0);
-
-        return healthfacilities
-    }
-
-    clickCbo() {
-        !this.healthfacilities.value ? this.filterOptions() : '';
-    }
-
     filterOptions() {
-        this.filteredOptions = this.healthfacilities.valueChanges
+        this.healthfacilities.valueChanges
             .pipe(
-                startWith<string | IHealthfacilities>(''),
-                map(value => typeof value === 'string' ? value : value.name),
-                map(name => name ? this._filter(name) : this._healthfacilities.slice()),
-                map(data => data.slice(0, 30))
-            );
-    }
+              debounceTime(500),
+              tap(() => this.isLoading = true),
+              switchMap(value => this.filter(value))
+            )
+            .subscribe(data => {
+                this._healthfacilities = data.items;
+            });
+      }
+  
+      filter(value: any){
+        var fValue = typeof value === 'string'  ? value : (value ? value.name : '')
+        this._healthfacilities = [];
+  
+        return this.dataService
+            .get("healthfacilities", JSON.stringify({
+                name : isNaN(fValue) ? fValue : "",
+                code : !isNaN(fValue) ? fValue : ""
+            }), '', null, null)
+            .pipe(
+                finalize(() => this.isLoading = false)
+            )
+      }
 
     //selected checkbox table
     isAllSelected() {
@@ -277,7 +279,8 @@ export class IndexComponent extends PagedListingComponentBase<IBookingDoctorsCal
             return swal({
                 title: this.l('Notification'),
                 text: this.l('ToDateIncorrectFormat'),
-                type: 'warning'
+                type: 'warning',
+                timer: 3000
             });
         }
 
@@ -285,7 +288,8 @@ export class IndexComponent extends PagedListingComponentBase<IBookingDoctorsCal
             return swal({
                 title: this.l('Notification'),
                 text: this.l('FromDateMustBeGreaterThanOrEqualToDate'),
-                type: 'warning'
+                type: 'warning',
+                timer: 3000
             });
         }
 
@@ -293,7 +297,8 @@ export class IndexComponent extends PagedListingComponentBase<IBookingDoctorsCal
             return swal({
                 title: this.l('Notification'),
                 text: this.l('SearchWithin7Day'),
-                type: 'warning'
+                type: 'warning',
+                timer: 3000
             });
         }
 

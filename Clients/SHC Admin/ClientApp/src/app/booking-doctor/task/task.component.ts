@@ -196,14 +196,15 @@ export class TaskComponent extends AppComponentBase implements OnInit {
     //
     submit(status: any) {
         if(this.checkDate()) return;
-        if(!this._lstTimeSlot.length) return swal(this.l('Notification'), this.l('ExamScheduleNotNull'), 'warning');
+        if(!this._lstTimeSlot.length) return swal({title: this.l('Notification'), text: this.l('ExamScheduleNotNull'), type: 'warning', timer: 3000});
+        
         var params = this._frm.value;
         params.lstTimeSlot = this._lstTimeSlot;
         params.status = status;
         params.userId = this.appSession.userId;
 
         this._dataService.create("bookingdoctor", params).subscribe(() => {
-            swal(this.l('SaveSuccess'), '', 'success');
+            swal({title: this.l('SaveSuccess'), text: '', type: 'success', timer: 3000});
             this.dialogRef.close();
         }, err => {})
     }
@@ -221,32 +222,32 @@ export class TaskComponent extends AppComponentBase implements OnInit {
         var toDay = new Date();
 
         if(!this.startTime.nativeElement.value || !this.endTime.nativeElement.value){
-            swal(this.l('Notification'), this.l('FromDateToDateCannotBlank'), 'warning');
+            swal({title: this.l('Notification'), text: this.l('FromDateToDateCannotBlank'), type: 'warning', timer: 3000});
             return true;
         }
 
         if(!moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').isValid()){
-            swal(this.l('Notification'), this.l('FromDateIncorrectFormat'), 'warning');
+            swal({title: this.l('Notification'), text: this.l('FromDateIncorrectFormat'), type: 'warning', timer: 3000});
             return true;
         }
 
         if(!moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').isValid()){
-            swal(this.l('Notification'), this.l('ToDateIncorrectFormat'), 'warning');
+            swal({title: this.l('Notification'), text: this.l('ToDateIncorrectFormat'), type: 'warning', timer: 3000});
             return true;
         }
         
         if(moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').toDate() < new Date(toDay.getFullYear(), toDay.getMonth(), toDay.getDate())){
-            swal(this.l('Notification'), this.l('GreaterThanCurrentDate'), 'warning');
+            swal({title: this.l('Notification'), text: this.l('GreaterThanCurrentDate'), type: 'warning', timer: 3000});
             return true;
         }
 
         if(((moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').valueOf() - moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').valueOf()) / (1000*60*60*24)) < 0){
-            swal(this.l('Notification'), this.l('FromDateMustBeGreaterThanOrEqualToDate'), 'warning');
+            swal({title: this.l('Notification'), text: this.l('FromDateMustBeGreaterThanOrEqualToDate'), type: 'warning', timer: 3000});
             return true;
         }
 
         if(((moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').valueOf() - moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').valueOf()) / (1000*60*60*24)) > 6){
-            swal(this.l('Notification'), this.l('Within7Day'), 'warning');
+            swal({title: this.l('Notification'), text: this.l('Within7Day'), type: 'warning', timer: 3000});
             return true;
         }
 

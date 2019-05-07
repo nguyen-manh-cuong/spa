@@ -37,6 +37,8 @@ namespace SHCServer.Controllers
                         objs = objs.Where(o => o.Name.Contains(value.Trim()));
                     if (string.Equals(key, "id"))
                         objs = objs.Where(o => o.Id.ToString().Contains(value.Trim()));
+                    if (string.Equals(key, "code"))
+                        objs = objs.Where(o => o.Code.Equals(value));
                 }
             }
 

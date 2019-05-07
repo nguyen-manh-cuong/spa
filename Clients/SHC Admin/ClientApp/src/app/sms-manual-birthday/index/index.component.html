@@ -17,11 +17,12 @@
         <div class="row m-0 pt-4">
             <div class="col-md-6" [hidden]="this.appSession.user.healthFacilitiesId">
                 <mat-form-field appearance="outline" class="w-100">
-                    <mat-label>{{l('Phòng khám')}}</mat-label>
-                    <input matInput [formControl]="healthfacilities" (click)="clickCbo()" [matAutocomplete]="auto">
+                    <mat-label>{{l('Unit')}}</mat-label>
+                    <input matInput [formControl]="healthfacilities" [matAutocomplete]="auto" required>
                     <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="onSelectHealthFacilities($event.option.value)">
-                        <mat-option *ngFor="let o of filteredOptions | async" [value]="o">
-                            {{o.name}}
+                        <mat-option *ngIf="isLoading" class="is-loading"><mat-spinner diameter="50"></mat-spinner></mat-option>
+                        <mat-option *ngFor="let o of _healthfacilities" [value]="o">
+                            {{o.code + ' - ' + o.name}}
                         </mat-option>
                     </mat-autocomplete>
                 </mat-form-field>

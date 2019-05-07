@@ -18,12 +18,12 @@
         <div class="row m-0 pt-4">
             <div class="col-md-6" [hidden]="this.appSession.user.healthFacilitiesId">
                 <mat-form-field appearance="outline" class="w-100">
-                    <mat-label>{{l('Phòng khám')}}</mat-label>
-                    <input matInput [formControl]="healthfacilities" (click)="clickCbo()" [matAutocomplete]="auto">
-                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn"
-                        (optionSelected)="onSelectHealthFacilities($event.option.value)">
-                        <mat-option *ngFor="let o of filteredOptions | async" [value]="o">
-                            {{o.name}}
+                    <mat-label>{{l('Unit')}}</mat-label>
+                    <input matInput [formControl]="healthfacilities" [matAutocomplete]="auto" required>
+                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="onSelectHealthFacilities($event.option.value)">
+                        <mat-option *ngIf="isLoading" class="is-loading"><mat-spinner diameter="50"></mat-spinner></mat-option>
+                        <mat-option *ngFor="let o of _healthfacilities" [value]="o">
+                            {{o.code + ' - ' + o.name}}
                         </mat-option>
                     </mat-autocomplete>
                 </mat-form-field>
@@ -144,7 +144,7 @@
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('Tái khám từ')}}</mat-label>
                     <input matInput [matDatepicker]="picker1" #startTime mask="0*" maxlength="8"
-                        (dateChange)="changeStartDate($event.value, 1)" required>
+                        (dateChange)="changeDate($event.value, 1)" required>
                     <mat-datepicker-toggle matSuffix [for]="picker1" class="t-2"></mat-datepicker-toggle>
                     <mat-datepicker #picker1></mat-datepicker>
                 </mat-form-field>
@@ -152,7 +152,7 @@
             <div class="col-md-4">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('Đến ngày')}}</mat-label>
-                    <input matInput [min]="cDate" [matDatepicker]="picker2" #endTime mask="0*" maxlength="10" (dateChange)="changeEndDate($event.value, 1)" required>
+                    <input matInput [min]="cDate" [matDatepicker]="picker2" #endTime mask="0*" maxlength="10" (dateChange)="changeDate($event.value, 1)" required>
                     <mat-datepicker-toggle matSuffix [for]="picker2" class="t-2"></mat-datepicker-toggle>
                     <mat-datepicker #picker2></mat-datepicker>
                 </mat-form-field>
@@ -161,7 +161,7 @@
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l("Trong vòng")}}</mat-label>
                     <input formControlName="about" matInput autocomplete maxlength="3" mask="0*"
-                        (keyup)="changeEndDate($event.target.value, 2)">
+                        (keyup)="changeDate($event.target.value, 2)">
                 </mat-form-field>
             </div>
             <!--  -->
