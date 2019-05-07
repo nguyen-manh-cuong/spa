@@ -20,8 +20,11 @@
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('Unit')}}</mat-label>
                     <input matInput [formControl]="healthfacilities" [matAutocomplete]="auto">
-                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="onSelectHealthFacilities($event.option.value)">
-                        <mat-option *ngIf="isLoading" class="is-loading"><mat-spinner diameter="50"></mat-spinner></mat-option>
+                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn"
+                        (optionSelected)="onSelectHealthFacilities($event.option.value)">
+                        <mat-option *ngIf="isLoading" class="is-loading">
+                            <mat-spinner diameter="50"></mat-spinner>
+                        </mat-option>
                         <mat-option *ngFor="let o of _healthfacilities" [value]="o">
                             {{o.code + ' - ' + o.name}}
                         </mat-option>
@@ -72,34 +75,50 @@
                     </mat-select>
                 </mat-form-field>
             </div>
-            <div class="col-md-4"  >
-                <mat-form-field appearance="outline" class="w-100">
+            <div class="col-md-4">
+                <mat-form-field appearance="outline" class="d-flex w"
+                    [ngClass]="{'mat-form-field-invalid': (frmSearch.get('time').value==10 && !startTime.value) || (frmSearch.get('time').value==10 && (startTime.value > endTime.value))}">
                     <mat-label>{{l('Từ ngày')}}</mat-label>
-                    <input [disabled]="_isDateTimeEnable" matInput #startTime [matDatepicker]="picker" mask="0*" required maxlength="10" [disabled]="type == 10">
+                    <input [disabled]="_isDateTimeEnable" matInput #startTime [matDatepicker]="picker" mask="0*"
+                        required maxlength="10" [disabled]="type == 10"
+                        [required]="frmSearch.get('time').value==10 && !startTime.value">
                     <mat-datepicker-toggle matSuffix [for]="picker" class="t-2"></mat-datepicker-toggle>
                     <mat-datepicker #picker></mat-datepicker>
+                    <mat-icon class="icon-alert" matSuffix
+                        *ngIf="frmSearch.get('time').value==10 && !startTime.value" class="text-danger"
+                        matTooltip="{{l('Không được để trống')}}">info</mat-icon>
+                    <mat-icon  matSuffix
+                        *ngIf="frmSearch.get('time').value==10 && (startTime.value > endTime.value)"
+                        class="text-danger" matTooltip="{{l('Từ ngày không được lớn hơn Đến ngày')}}">info</mat-icon>
                 </mat-form-field>
             </div>
 
-            <div class="col-md-4" id="cbo-endTime" >
-                <mat-form-field appearance="outline" class="w-100">
+            <div class="col-md-4" id="cbo-endTime"
+                [ngClass]="{'mat-form-field-invalid':(frmSearch.get('time').value==10 && !startTime.value) || (frmSearch.get('time').value==10 && (startTime.value > endTime.value))}">
+                <mat-form-field appearance="outline" class="icon-alert w-100">
                     <mat-label>{{l('Đến ngày')}}</mat-label>
-                    <input [disabled]="_isDateTimeEnable" matInput #endTime [matDatepicker]="picker1" mask="0*" required maxlength="10">
+                    <input [disabled]="_isDateTimeEnable" matInput #endTime [matDatepicker]="picker1" mask="0*"
+                        [required]="frmSearch.get('time').value==10 && !endTime.value" maxlength="10">
                     <mat-datepicker-toggle matSuffix [for]="picker1" class="t-2"></mat-datepicker-toggle>
                     <mat-datepicker #picker1></mat-datepicker>
+                    <mat-icon matSuffix *ngIf="frmSearch.get('time').value==10 && !endTime.value" class="text-danger"
+                        matTooltip="{{l('Không được để trống')}}">info</mat-icon>
+                    <mat-icon class="icon-alert" matSuffix
+                        *ngIf="frmSearch.get('time').value==10 && (startTime.value > endTime.value)"
+                        class="text-danger" matTooltip="{{l('Đến ngày không được nhỏ hơn Từ ngày')}}">info</mat-icon>
                 </mat-form-field>
             </div>
-                    <div class="col-md-3 text-center d-flex align-self-center fadeIn animated ml-auto">
-                        <button #btnSearch mat-stroked-button color="primary" (click)="customSearch()"
-                            class="w-100 mb-4">
-                            <mat-icon class="mr-2">search</mat-icon>{{l("Search")}}
-                        </button>
-                    </div>
-                    <div class="col-md-3 text-center d-flex align-self-center fadeIn animated mr-auto">
-                        <button #btnSearch mat-stroked-button color="primary" (click)="btnSearchClicks$.next($event)"
-                            class="w-100 mb-4">{{l("Xuất Excel")}}
-                        </button>
-                    </div>
+            <div class="col-md-3 text-center d-flex align-self-center fadeIn animated ml-auto">
+                <button #btnSearch mat-stroked-button color="primary" (click)="customSearch()" class="w-100 mb-4">
+                    <mat-icon class="mr-2">search</mat-icon>{{l("Search")}}
+                </button>
+            </div>
+            <div class="col-md-3 text-center d-flex align-self-center fadeIn animated mr-auto"> 
+                <button mat-stroked-button color="primary"
+                    [disabled]="frmSearch.get('time').value==10 && !startTime.value || frmSearch.get('time').value==10 && !endTime.value || startTime.value > endTime.value"
+                    (click)="btnSearchClicks$.next($event)" class="w-100 mb-4">{{l("Xuất Excel")}}
+                </button>
+            </div>
         </div>
     </form>
 

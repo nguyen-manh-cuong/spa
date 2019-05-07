@@ -53,10 +53,8 @@
                       <mat-label>{{l("Từ năm")}}</mat-label>
                       <input min="0" max="9999" maxlength="4" formControlName="yearStart" mask="0*"
                              matInput autocomplete [required]="true" #yearStart>
-                      <mat-icon matSuffix
-                                *ngIf="_frmpackagedistributeedit.controls['yearStart'].invalid && (_frmpackagedistributeedit.controls['yearStart'].dirty || _frmpackagedistributeedit.controls['yearStart'].touched)"
-                                [matTooltipPosition]="'before'" matTooltipClass="bg-danger text-light mr-1"
-                                matTooltip="{{l('NotBeEmpty')}}" color="warn">info</mat-icon>
+                             <mat-icon  class="alert-empty" matSuffix *ngIf="_frmpackagedistributeedit.controls['yearStart'].invalid && (_frmpackagedistributeedit.controls['yearStart'].dirty || _frmpackagedistributeedit.controls['yearStart'].touched)" [matTooltipPosition]="'before'" matTooltipClass="bg-danger text-light mr-1" matTooltip="{{l('NotBeEmpty')}}" color="warn">info</mat-icon>
+                             <mat-icon class="alert-compare" matSuffix *ngIf="!_frmpackagedistributeedit.controls['yearStart'].invalid && (_frmpackagedistributeedit.controls['yearStart'].value < _currentYear) && (_frmpackagedistributeedit.controls['yearStart'].dirty || _frmpackagedistributeedit.controls['yearStart'].touched)" [matTooltipPosition]="'before'" matTooltipClass="bg-danger text-light mr-1" matTooltip="{{l('PackageDistributeCompareYears')}}" color="warn">info</mat-icon>      
                   </mat-form-field>
               </div>
               <div class="col-md-6">
@@ -70,7 +68,7 @@
                 [disabled]="_frmpackagedistributeedit.controls['year'].value < _currentYear || (_frmpackagedistributeedit.controls['year'].value <= _currentYear &&  o.id < _currentMonth)">
                   {{ o.name }}</mat-option>-->
                       </mat-select>
-                      <mat-icon matSuffix *ngIf="_frmpackagedistributeedit.controls['monthStart'].value > _frmpackagedistributeedit.controls['monthEnd'].value" [matTooltipPosition]="'before'" matTooltipClass="bg-danger text-light mr-1" matTooltip="{{l('Đến tháng phải lớn hơn hoặc bằng Từ tháng')}}" color="warn">info</mat-icon>
+                                      
                   </mat-form-field>
               </div>
               <div class="col-md-6">
@@ -78,10 +76,9 @@
                       <mat-label>{{l("Đến năm")}}</mat-label>
                       <input min="0" max="9999" maxlength="4" formControlName="yearEnd" mask="0*"
                              matInput autocomplete [required]="true" #yearEnd>
-                      <mat-icon matSuffix
-                                *ngIf="_frmpackagedistributeedit.controls['yearEnd'].invalid && (_frmpackagedistributeedit.controls['yearEnd'].dirty || _frmpackagedistributeedit.controls['yearEnd'].touched)"
-                                [matTooltipPosition]="'before'" matTooltipClass="bg-danger text-light mr-1"
-                                matTooltip="{{l('NotBeEmpty')}}" color="warn">info</mat-icon>
+                             <mat-icon matSuffix *ngIf="_frmpackagedistributeedit.controls['yearEnd'].invalid && (_frmpackagedistributeedit.controls['yearEnd'].dirty || _frmpackagedistributeedit.controls['yearEnd'].touched)" [matTooltipPosition]="'before'" matTooltipClass="bg-danger text-light mr-1" matTooltip="{{l('NotBeEmpty')}}" color="warn">info</mat-icon>
+                             <mat-icon matSuffix *ngIf="!_frmpackagedistributeedit.controls['yearEnd'].invalid && (_frmpackagedistributeedit.controls['yearEnd'].value < _currentYear) && (_frmpackagedistributeedit.controls['yearEnd'].value < _frmpackagedistributeedit.controls['yearStart'].value) && (_frmpackagedistributeedit.controls['yearEnd'].dirty || _frmpackagedistributeedit.controls['yearEnd'].touched)" [matTooltipPosition]="'before'" matTooltipClass="bg-danger text-light mr-1" matTooltip="{{l('PackageDistributeCompareYears')}}" color="warn">info</mat-icon>
+                             <mat-icon matSuffix *ngIf="_frmpackagedistributeedit.controls['yearEnd'].value < _frmpackagedistributeedit.controls['yearStart'].value" [matTooltipPosition]="'before'" matTooltipClass="bg-danger text-light mr-1" matTooltip="{{l('Đến năm không được nhỏ hơn Từ năm')}}" color="warn">info</mat-icon>
                   </mat-form-field>
               </div>
               <div class="col-md-6">
