@@ -73,7 +73,7 @@
                                 <mat-form-field appearance="outline" class="w-100">
                                     <mat-label>{{l('PackageSmsFrom')}}</mat-label>
                                     <input type="text" mask="dot_separator" formControlName="{{_smsFrom + item.index}}"
-                                        matInput [required]="true">
+                                        matInput [required]="true" [readonly]="true">
                                 </mat-form-field>
                             </div>
                             <div class="col-md-3">
