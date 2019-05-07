@@ -16,7 +16,7 @@
                     <div class="col-md-4">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("DoctorBirthDay")}}</mat-label>
-                            <input (dateChange)="birthDayChange($event.value)" matInput [matDatepicker]="picker" #birthDayPicker mask="0*" maxlength="10">
+                            <input (dateChange)="birthDayChange($event.value)" [max]="maxDate" matInput [matDatepicker]="picker" #birthDayPicker mask="0*" maxlength="10">
                             <mat-datepicker-toggle matSuffix [for]="picker" class="t-2"></mat-datepicker-toggle>
                             <mat-datepicker #picker [startAt]="_birthDay"></mat-datepicker>
                         </mat-form-field>
@@ -85,11 +85,11 @@
                     <div class="col-md-6">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("DoctorCertificationCode")}}</mat-label>
-                            <input formControlName="certificationCode" matInput  maxlength="45" (input)="certificationCodeChange($event)">
+                            <input formControlName="certificationCode" matInput  maxlength="45" #certification  (keyup)="certificationCodeChange($event)">
                         </mat-form-field>
                     </div>
                     <div class="col-md-4">
-                        <mat-form-field appearance="outline" class="w-100">
+                        <mat-form-field appearance="outline" class="w-100" [ngClass]="{'disabled': flagDate}">
                             <mat-label>{{l("DoctorCertificationDate")}}</mat-label>
                             <input [disabled]="_certificationInputCheck" #certificationDatePicker (dateChange)="certificationDateChange($event.value)" matInput [matDatepicker]="certificationDatePicker" matInput
                                 mask="0*" maxlength="10">
