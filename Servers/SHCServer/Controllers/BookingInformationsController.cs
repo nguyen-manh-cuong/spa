@@ -180,12 +180,21 @@ namespace SHCServer.Controllers
          public IActionResult GetByGroup(int skipCount = 0, int maxResultCount = 10, string sorting = null, string filter = null)
         {
             var objs = _context.Query<BookingInformations>().Where(b => b.BookingServiceType == 1);
+            var check = 0;
+
             if (filter != null)
             {
                 foreach (var (key, value) in JsonConvert.DeserializeObject<Dictionary<string, string>>(filter))
                 {
-                    if (string.Equals(key, "healthfacilities") && !string.IsNullOrWhiteSpace(value))
-                        objs = objs.Where(b => b.HealthFacilitiesId.ToString() == value.Trim() || b.HealthFacilitiesId.ToString() == null);
+                    if (string.Equals(key, "healthfacilities"))
+                    {
+                        if(!string.IsNullOrEmpty(value))
+                        {
+                            check = 1;
+                            objs = objs.Where(b => b.HealthFacilitiesId.ToString() == value.Trim() || b.HealthFacilitiesId.ToString() == null);
+                        }
+                    }
+
                     if (string.Equals(key, "doctor") && !string.IsNullOrWhiteSpace(value))
                         objs = objs.Where(b => b.DoctorId.ToString() == value.Trim());
                     if (string.Equals(key, "status") && !string.IsNullOrWhiteSpace(value))
@@ -208,8 +217,8 @@ namespace SHCServer.Controllers
                      
 
                 }
-
             }
+            if(check == 0) return Json(new ActionResultDto { Result = new { Items = new List<BookingInformationsViewModel>() } });
             if (sorting != null)
             {
                 foreach (var (key, value) in JsonConvert.DeserializeObject<Dictionary<string, string>>(sorting))
