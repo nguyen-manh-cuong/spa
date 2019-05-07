@@ -155,7 +155,27 @@ export class RegisterComponent implements OnInit {
         if (district) { this._dataService.get('wards', JSON.stringify({ DistrictCode: district.districtCode }), '', 0, 0).subscribe(resp => this._wards = resp.items); }
     }
 
-    submit() {
+    submit() {       
+        this.frmUser.value.birthDay = new Date($('#birthY').val() + '-' + $('#birthM').val() + '-' + $('#birthD').val());
+
+        if (this.frmUser.controls['password'].value != this.frmUser.controls['confirmPassword'].value) {
+            this.frmUser.controls['confirmPassword'].setErrors({ password: true });
+        }
+        if (this.frmUser.controls['accountType'].value == 3 && (!this.frmUser.controls['healthFacilitiesName'].value || (this.frmUser.controls['healthFacilitiesName'].value && !this.frmUser.controls['healthFacilitiesName'].value.trim()))) {
+            this.frmUser.controls['healthFacilitiesName'].setErrors({ required: true });
+        }
+
+        if (this.frmUser.invalid) {
+            for (let key in this.frmUser.controls) {
+                if (this.frmUser.controls[key] && this.frmUser.controls[key].errors) {
+                    this.frmUser.controls[key].markAsTouched();
+                    this.frmUser.controls[key].markAsDirty();
+                }
+            }
+
+            return;
+        }
+
         if (this.frmUser.controls['accountType'].value == 1 || this.frmUser.controls['accountType'].value == 2) {
             if (this.frmUser.controls['cmnd'].value === null || this.frmUser.controls['gp'].value === null) {
                 return swal({
@@ -183,26 +203,6 @@ export class RegisterComponent implements OnInit {
             }
         }
 
-        this.frmUser.value.birthDay = new Date($('#birthY').val() + '-' + $('#birthM').val() + '-' + $('#birthD').val());
-
-        if (this.frmUser.controls['password'].value != this.frmUser.controls['confirmPassword'].value) {
-            this.frmUser.controls['confirmPassword'].setErrors({ password: true });
-        }
-        if (this.frmUser.controls['accountType'].value == 3 && (!this.frmUser.controls['healthFacilitiesName'].value || (this.frmUser.controls['healthFacilitiesName'].value && !this.frmUser.controls['healthFacilitiesName'].value.trim()))) {
-            this.frmUser.controls['healthFacilitiesName'].setErrors({ required: true });
-        }
-
-        if (this.frmUser.invalid) {
-            for (let key in this.frmUser.controls) {
-                console.log(12, key, this.frmUser.controls[key])
-                if (this.frmUser.controls[key] && this.frmUser.controls[key].errors) {
-                    this.frmUser.controls[key].markAsTouched();
-                    this.frmUser.controls[key].markAsDirty();
-                }
-            }
-
-            return;
-        }
 
         if (this._invaliBirthday) return;
 
