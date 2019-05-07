@@ -28,14 +28,14 @@ namespace SHCServer.Models
         public string Address { get; set; }
 
         // Other
-        public string Register { get; set; }
+        public int? Register { get; set; }
         public string MedicalCode { get; set; }
         public string MedicalCodeRelatives { get; set; }
         public string Identification { get; set; }
         public string Insurrance { get; set; }
         public string WorkPlace { get; set; }
         public string HealthFacilitiesName { get; set; }
-        public string Specialist { get; set; }
+        public int Specialist { get; set; }
 
         public int? HealthFacilitiesId { get; set; }
     }

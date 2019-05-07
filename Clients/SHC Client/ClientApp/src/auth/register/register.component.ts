@@ -9,6 +9,7 @@ import { Location } from '@angular/common';
 import * as _ from 'lodash';
 import * as moment from 'moment';
 import swal from 'sweetalert2';
+import { FileValidator } from 'ngx-material-file-input';
 
 @Component({
     selector: 'app-register',
@@ -80,8 +81,8 @@ export class RegisterComponent implements OnInit {
             healthFacilitiesName: [this._user.healthFacilitiesName],
             specialist: [this._user.specialist],
             codeCapcha: [''],
-            cmnd: [],
-            gp: [],
+            cmnd: [null, [FileValidator.maxContentSize(20000000)]],
+            gp: [null, [FileValidator.maxContentSize(20000000)]],
             isUsingdoctor: [this._obj.isUsingdoctor],
             isUsingCall: [this._obj.isUsingCall],
             isUsingUpload: [this._obj.isUsingUpload],
@@ -156,6 +157,7 @@ export class RegisterComponent implements OnInit {
 
     submit() {
        // this.frmUser.controls['isActive'].setValue(this._obj.isActive);
+
         this.frmUser.value.birthDay = new Date($('#birthY').val() + '-' + $('#birthM').val() + '-' + $('#birthD').val());
 
         if (this.frmUser.controls['password'].value != this.frmUser.controls['confirmPassword'].value) {
@@ -183,7 +185,7 @@ export class RegisterComponent implements OnInit {
             return;
         }
 
-        this._dataService.create('Register', this.frmUser.value).subscribe(
+        this._dataService.createUpload('Register', this.frmUser.value).subscribe(
             () => {
                 swal({
                     title: '<u>Đăng ký mở tài khoản thành công !</u>',
@@ -199,7 +201,7 @@ export class RegisterComponent implements OnInit {
                     //}
                     this._location.back();
                 });
-            }, err => console.log(err))
+            }, err => console.log('err: ' + err))
     }
 
     //validate  
@@ -225,23 +227,35 @@ export class RegisterComponent implements OnInit {
         }
     }
 
+    arrayIdCard = [];
+    arrayCertificate = [];
     detectFiles(event, type) {
+        console.log(this.frmUser.controls['cmnd'].value);
+
         this._idCardError = "";
         this._certificateError = "";
+        
         let files = event.target.files;
+        //console.log(event.target.files);
         if (files) {
             for (let file of files) {
                 let reader = new FileReader();
+                reader.readAsDataURL(file);
                 if (file.type == 'image/jpeg' || file.type == 'image/png') {
-                    reader.onload = (e: any) => {
-                        if (type == 'idCard') {
+                    if (type == 'idCard') {
+                        reader.onload = (e: any) => {
                             this._idCardUrls.push(e.target.result);
                         }
-                        if (type == 'certificate') {
+                        this.arrayIdCard.push(file);
+                    }
+
+                    if (type == 'certificate') {
+                        reader.onload = (e: any) => {
                             this._certificateUrls.push(e.target.result);
                         }
+                        this.arrayCertificate.push(file);
                     }
-                    reader.readAsDataURL(file);
+
                 } else {
                     if (type == 'idCard') {
                         this._idCardError = "File tải lên không phải file ảnh";
@@ -251,6 +265,11 @@ export class RegisterComponent implements OnInit {
                     }
                 }
             }
+            ;
+            this.frmUser.controls['cmnd'].setValue({ files: this.arrayIdCard});
+            this.frmUser.controls['gp'].setValue({ files: this.arrayCertificate});
+            console.log(this.frmUser.controls['cmnd'].value);
+            
         }
     }
 

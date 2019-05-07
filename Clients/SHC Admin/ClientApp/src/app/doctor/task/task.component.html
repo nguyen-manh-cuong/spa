@@ -13,10 +13,17 @@
                             <validation matSuffix [control]="_frm.controls['fullName']"></validation>
                         </mat-form-field>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-4 class-icon">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("DoctorBirthDay")}}</mat-label>
-                            <input (dateChange)="birthDayChange($event.value)" [max]="maxDate" matInput [matDatepicker]="picker" #birthDayPicker mask="0*" maxlength="10">
+                            <input mask="0*"
+                                   (dateChange)="birthDayChange($event)"
+                                   [max]="maxDate"
+                                   matInput
+                                   [matDatepicker]="picker"
+                                   #birthDayPicker
+                                   maxlength="10">
+                            <validation matSuffix [control]="_frm.controls['birthDay']"></validation>
                             <mat-datepicker-toggle matSuffix [for]="picker" class="t-2"></mat-datepicker-toggle>
                             <mat-datepicker #picker [startAt]="_birthDay"></mat-datepicker>
                         </mat-form-field>
@@ -86,7 +93,7 @@
                     <div class="col-md-6">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("DoctorCertificationCode")}}</mat-label>
-                            <input formControlName="certificationCode" matInput  maxlength="45" (input)="certificationCodeChange($event)">
+                            <input formControlName="certificationCode" matInput #certification  maxlength="45" (keyup)="certificationCodeChange($event)">
                         </mat-form-field>
                     </div>
                     <div class="col-md-4">
