@@ -286,8 +286,6 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
             case 10:
             this._isDateTimeEnable = false;   
                 this.flagDisabled = false;
-                // document.getElementById("cbo-startTime").classList.remove("disabled");
-                // document.getElementById("cbo-endTime").classList.remove("disabled");
                 break;
         }
         this.updateTimeToSearch();
