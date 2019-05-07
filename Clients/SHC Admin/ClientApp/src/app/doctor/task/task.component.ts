@@ -1,11 +1,10 @@
 import { forEach } from '@angular/router/src/utils/collection';
-
 import { IDoctor, IHealthfacilities, IHealthfacilitiesDoctor, IDoctorSpecialists } from './../../../../../../SHC Client/ClientApp/src/shared/Interfaces';
 import * as _ from 'lodash';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { Component, Inject, Injector, OnInit, ViewChild, AfterViewInit, ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogRef, MatInput, MatCheckbox, MatAutocomplete, MatChipInputEvent, MatAutocompleteSelectedEvent } from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialogRef, MatInput, MatCheckbox, MatAutocomplete, MatChipInputEvent, MatAutocompleteSelectedEvent, MatDialog } from '@angular/material';
 import * as moment from 'moment';
 import { AppComponentBase } from '@shared/app-component-base';
 import { DataService } from '@shared/service-proxies/service-data';
@@ -44,6 +43,13 @@ export class HealthfacilitiesDoctor {
     public healthFacilitiesId: string) { }
 }
 
+export class Specialist {
+  constructor(
+    public specialistCode: string,
+    public name: string
+  ) { }
+}
+
 @Component({
   selector: 'app-task',
   templateUrl: './task.component.html',
@@ -54,6 +60,10 @@ export class HealthfacilitiesDoctor {
   ],
 })
 export class TaskComponent extends AppComponentBase implements OnInit, AfterViewInit {
+
+  flagDate = true;
+  maxDate = new Date(Date.now());
+  @ViewChild("certification") certification;
 
   dataService: DataService;
   isLoading = false;
@@ -162,13 +172,17 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
 
   public Editor = ClassicEditor;
 
+  dialogComponent: typeof TaskComponent;
+
+
   constructor(
     injector: Injector,
     private _dataService: DataService,
     private _formBuilder: FormBuilder,
     public dialogRef: MatDialogRef<TaskComponent>,
     @Inject(MAT_DIALOG_DATA)
-    public obj: IDoctor) {
+    public obj: IDoctor,
+    public dialog: MatDialog) {
     super(injector);
   }
 
@@ -189,6 +203,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     this.getEthnicities();
     this.filterSpecialistOptions();
 
+    this.dialogComponent = TaskComponent;
 
     const validationRule = new ValidationRule();
 
@@ -206,6 +221,8 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
       //   if (this._obj.birthDate) {
       this._birthDay = new Date(this._obj.birthMonth + "/" + this._obj.birthDate + "/" + this._obj.birthYear);
     }
+
+    console.log(this._birthDay);
 
     // else if (this._obj.birthMonth) {
     //   this._birthDay = new Date(this._obj.birthMonth + "/01/" + this._obj.birthYear);
@@ -280,6 +297,18 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
       this.filterOptions();
       this.healthfacilitiesControl.setValue(null);
     }
+
+    if (this.obj) {
+      if (this.obj.specialist) {
+        this.obj.specialist.forEach((e: any) => this._specialistChip.push(e));
+      }
+      if (this.obj) {
+        if (this.obj.healthFacilities) {
+          this.obj.healthFacilities.forEach((e: any) => this._healthfacilitiesChip.push(e));
+        }
+      }
+    }
+    this._obj.certificationCode ? this.flagDate = false : this.flagDate = true;
   }
 
 
@@ -304,7 +333,12 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   //Base//
 
   certificationCodeChange($event) {
-    console.log($event);
+    if($event.data!=null){
+      this.flagDate=false;
+    }
+    else{
+      this.flagDate=true;
+    }
   }
 
   getProvinces() {
@@ -353,6 +387,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
 
   getSpecialist() {
     this._dataService.getAll("categorycommon", "CHUYENKHOA").subscribe(resp => this._specialist = resp.items);
+
   }
 
   @ViewChild("continueAdd") continueAdd: MatCheckbox;
@@ -466,7 +501,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     return this.dataService
       .get("catcommon", JSON.stringify({
         name: isNaN(fValue) ? fValue : "",
-        max:300
+        max: 300
       }), '', null, null)
       .pipe(finalize(() => this.specialIsLoading = false));
   }
@@ -496,15 +531,29 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
         this._specialistChip.splice(i, 1);
       }
     }
+    if (this._specialistChip) {
+      this.checkSpecial = false;
+    }
+    else {
+      this.checkSpecial = true;
+    }
   }
 
 
   specialSelected(event: MatAutocompleteSelectedEvent): void {
-    this._specialistChip.push(event.option.value);
+    this.checkSpecial = true;
+    var s = new Specialist(event.option.value.code, event.option.value.name);
+    this._specialistChip.push(s);
     this.specialistInput.nativeElement.value = '';
     this.specialistCodeControl.setValue(null);
   }
 
+  specialInput() {
+    this._specialist = null;
+    this.filterSpecialistOptions();
+  }
+
+  //End auto complete specialist
 
   detectFiles(event) {
     this._avatarError = "";
@@ -527,6 +576,15 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   }
 
   birthDayChange(value: any) {
+    if (moment(this.birthDayPicker.nativeElement.value, 'DD/MM/YYYY').valueOf() > moment(moment(new Date()).format('DD/MM/YYYY'), 'DD/MM/YYYY').valueOf()) {
+      return swal({
+        title: this.l('Notification'),
+        text: 'Ngày sinh phải nhỏ hơn ngày hiện tại',
+        type: 'warning',
+        timer: 3000
+      });
+    }
+
     this._birthDay = this.birthDayPicker.nativeElement.value;
   }
 
@@ -547,7 +605,18 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     }
   }
 
-  //End auto complete specialist
+  checkSpecial: boolean;
+
+  fullNameInput($event) {
+    if ($event.data != null) {
+      if (this._specialistChip) {
+        this.checkSpecial = false;
+      }
+      else {
+        this.checkSpecial = true;
+      }
+    }
+  }
 
   //SUBMIT
   submit() {
@@ -645,11 +714,11 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
         params.updateUserId = this.appSession.userId;
       }
 
-      if(this._specialistChip){
-        params.specialist=this._specialistChip;
+      if (this._specialistChip) {
+        params.specialist = this._specialistChip;
       }
-      else{
-        params.specialist=[];
+      else {
+        params.specialist = [];
       }
 
       if (this.appSession.user.healthFacilitiesId) {
@@ -662,25 +731,43 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
       else {
         params.healthfacilities = [];
       }
-
-      this._isNew ?
-        this._dataService.createUpload(this.api, standardized(Object.assign(params, {}), {})).subscribe(() => {
-          swal({
-            title: this.l('SaveSuccess'),
-            text: '',
-            type: 'success'
-          });
-          this.dialogRef.close();
-        }, err => { }) :
-        this._dataService.updateUpload(this.api, standardized(Object.assign(params, {}), {})).subscribe(() => {
-          swal({
-            title: this.l('SaveSuccess'),
-            text: '',
-            type: 'success'
-          });
-          this.dialogRef.close();
-        }, err => { });
+      console.log(params);
+      if (!this._specialistChip) {
+        swal({
+          title: 'Thông báo',
+          text: 'Yêu cầu chọn ít nhất một chuyên khoa',
+          type: 'warning',
+          timer: 3000
+        })
+      } else {
+        this._isNew ?
+          this._dataService.createUpload(this.api, standardized(Object.assign(params, {}), {})).subscribe(() => {
+            swal({
+              title: this.l('SaveSuccess'),
+              text: '',
+              type: 'success'
+            });
+            if (this.continueAdd.checked == true) {
+              this.openDialogDoctor();
+              this.dialogRef.close();
+            } else {
+              this.dialogRef.close();
+            }
+          }, err => { }) :
+          this._dataService.updateUpload(this.api, standardized(Object.assign(params, {}), {})).subscribe(() => {
+            swal({
+              title: this.l('SaveSuccess'),
+              text: '',
+              type: 'success'
+            });
+            this.dialogRef.close();
+          }, err => { });
+      }
     }
   }
-
+  openDialogDoctor(): void {
+    const dialogRef = this.dialog.open(this.dialogComponent, { minWidth: 'calc(100vw/1.5)', maxWidth: 'calc(100vw - 100px)', disableClose: true });
+    dialogRef.afterClosed().subscribe(() => {
+    });
+  }
 }
