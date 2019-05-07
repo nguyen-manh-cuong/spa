@@ -156,7 +156,17 @@ export class RegisterComponent implements OnInit {
     }
 
     submit() {
-        // this.frmUser.controls['isActive'].setValue(this._obj.isActive);
+        if (this.frmUser.controls['accountType'].value == 1 || this.frmUser.controls['accountType'].value == 2) {
+            if (this.frmUser.controls['cmnd'].value === null || this.frmUser.controls['gp'].value === null) {
+                return swal({
+                    title: 'Thông báo',
+                    text: 'Bạn phải cung cấp giấy tờ xác thực',
+                    type: 'warning',
+                    timer: 3000
+                });
+            }
+        }
+
         if (this.frmUser.controls['accountType'].value != 1) {
             if (!this.frmUser.controls['isUsingdoctor'].value &&
                 !this.frmUser.controls['isUsingCall'].value &&
