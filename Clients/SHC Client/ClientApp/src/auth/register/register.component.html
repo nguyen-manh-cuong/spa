@@ -312,7 +312,7 @@
                                         </div>
 
                                         <div class="col-xs-12 col-md-8">
-                                            <input type="text" formControlName="identification" mask="00*.00" name="prof_spec"
+                                            <input type="text" formControlName="identification" mask="0*" name="prof_spec"
                                                 class="form-control" minlength="9" maxlength="12">
                                             <validation [control]="frmUser.controls['identification']"></validation>
                                         </div>
@@ -387,7 +387,7 @@
                                                 <div class="upload-content">
                                                     <span class="upload-description"> Chứng minh thư nhân dân / thẻ căn cước </span>
                                                     <div class="upload-button">
-                                                        <input type="file" accept="image/*" formControlName="cmnd" multiple (change)="detectFiles($event, 'idCard')"><span class="btn btn-sm btn-primary-inverted">
+                                                        <input type="file" accept="image/*, application/pdf" multiple (change)="detectFiles($event, 'idCard')"><span class="btn btn-sm btn-primary-inverted">
                                                             <i class="fa fa-paperclip" aria-hidden="true"></i>Tải
                                                             lên
                                                         </span>
@@ -411,7 +411,7 @@
                                                         hành nghề hoặc bằng tốt nghiệp
                                                     </span>
                                                     <div class="upload-button">
-                                                        <input type="file" accept="image/*" formControlName="gp" multiple (change)="detectFiles($event, 'certificate')"><span class="btn btn-sm btn-primary-inverted">
+                                                        <input type="file" accept="image/*, application/pdf" multiple (change)="detectFiles($event, 'certificate')"><span class="btn btn-sm btn-primary-inverted">
                                                             <i class="fa fa-paperclip" aria-hidden="true"></i>Tải
                                                             lên
                                                         </span>
@@ -439,7 +439,7 @@
                                         <div class="iq-accordion iq-mt-20 accordion custom-accordion" id="accordionExample">
                                             <!-- Hỏi Bác sĩ / Cộng đồng-->
                                             <div class="iq-ad-block">
-                                                <input type="checkbox" class="pull-right" formControlName="isUsingdoctor" name="isUsingdoctor" id="isUsingdoctor">
+                                                <input type="checkbox" class="pull-right" formControlName="isUsingdoctor" name="isUsingdoctor" id="isUsingdoctor"  data-toggle="collapse" data-target="#doctor">
                                                 <span href="" class="ad-title iq-tw-5 iq-font-grey" data-toggle="collapse" data-target="#doctor"><i class="fa fa-user-md"
                                                         aria-hidden="true"></i> Hỏi Bác sĩ / Cộng đồng </span>
                                                 <div class="ad-details collapse" id="doctor">
@@ -462,7 +462,7 @@
                                             </div>                                            
                                             <!-- Gọi Bác sỹ-->
                                             <div class="iq-ad-block">
-                                                <input type="checkbox" class="pull-right" formControlName="isUsingCall" name="isUsingCall" id="isUsingCall">
+                                                <input type="checkbox" class="pull-right" formControlName="isUsingCall" name="isUsingCall" id="isUsingCall" data-toggle="collapse" data-target="#call">
                                                 <span href="" class="ad-title iq-tw-5 iq-font-grey" data-toggle="collapse" data-target="#call"><i class="fa fa-phone fa-fw"
                                                         aria-hidden="true"></i> Gọi Bác sỹ </span>
                                                 <div class="ad-details collapse" id="call">
@@ -475,7 +475,7 @@
                                             </div>
                                              <!-- Đăng tải thông tin ưu đãi, khuyến mãi, voucher giảm giá-->
                                              <div class="iq-ad-block">
-                                                <input type="checkbox" class="pull-right" formControlName="isUsingUpload" name="isUsingUpload" id="isUsingUpload">
+                                                <input type="checkbox" class="pull-right" formControlName="isUsingUpload" name="isUsingUpload" id="isUsingUpload" data-toggle="collapse" data-target="#voucher ">
                                                 <span href="" class="ad-title iq-tw-5 iq-font-grey" data-toggle="collapse" data-target="#voucher "><i class="fa fa-gift fa-fw"
                                                         aria-hidden="true"></i> Đăng tải thông tin ưu đãi, khuyến mãi, voucher giảm giá </span>
                                                 <div class="ad-details collapse" id="voucher" data-parent="#accordionExample">
@@ -488,7 +488,7 @@
                                             </div>
                                              <!-- Đăng ký khám, quản lý thông tin khung giờ khám bệnh Online-->
                                              <div class="iq-ad-block">
-                                                <input type="checkbox" class="pull-right" formControlName="isUsingRegister" name="isUsingRegister" id="isUsingRegister">
+                                                <input type="checkbox" class="pull-right" formControlName="isUsingRegister" name="isUsingRegister" id="isUsingRegister" data-toggle="collapse" data-target="#register">
                                                 <span href="" class="ad-title iq-tw-5 iq-font-grey" data-toggle="collapse" data-target="#register"><i class="fa fa-calendar-plus-o fa-fw"
                                                         aria-hidden="true"></i> Đăng ký khám, quản lý thông tin khung giờ khám bệnh Online </span>
                                                 <div class="ad-details collapse" id="register" data-parent="#accordionExample">
@@ -501,7 +501,7 @@
                                             </div> 
                                              <!-- Đăng tin bài, video-->
                                              <div class="iq-ad-block">
-                                                <input type="checkbox" class="pull-right" formControlName="isUsingVideo" name="isUsingVideo" id ="isUsingVideo">
+                                                <input type="checkbox" class="pull-right" formControlName="isUsingVideo" name="isUsingVideo" id ="isUsingVideo" data-toggle="collapse" data-target="#file">
                                                 <span href="" class="ad-title iq-tw-5 iq-font-grey" data-toggle="collapse" data-target="#file"><i class="fa fa-file-text-o fa-fw"
                                                         aria-hidden="true"></i> Đăng tin bài, video </span>
                                                 <div class="ad-details collapse" id="file" data-parent="#accordionExample">
@@ -514,7 +514,7 @@
                                             </div>
                                              <!-- Đăng kí quản lý khám chữa bệnh-->
                                              <div class="iq-ad-block">
-                                                <input type="checkbox" class="pull-right" formControlName="isUsingExamination" name="isUsingExamination" id="isUsingExamination">
+                                                <input type="checkbox" class="pull-right" formControlName="isUsingExamination" name="isUsingExamination" id="isUsingExamination" data-toggle="collapse" data-target="#file-2">
                                                 <span href="" class="ad-title iq-tw-5 iq-font-grey" data-toggle="collapse" data-target="#file-2"><i class="fa fa-pencil-square fa-fw"
                                                         aria-hidden="true"></i> Đăng kí quản lý khám chữa bệnh </span>
                                                 <div class="ad-details collapse" id="file-2" data-parent="#accordionExample">

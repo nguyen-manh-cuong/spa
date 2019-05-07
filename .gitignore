@@ -469,3 +469,6 @@ healthchecksdb
 
 # Backup folder for Package Reference Convert tool in Visual Studio 2017
 MigrationBackup/
+/Servers/SHCServer/wwwroot/uploads/09_gettyimages_541733379_super_resized_f9e7.jpg
+/Servers/SHCServer/wwwroot/uploads
+/Clients/SHC Client/ClientApp/src/assets/images
