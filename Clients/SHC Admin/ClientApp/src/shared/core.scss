@@ -469,3 +469,9 @@ perfect-scrollbar>.ps.ps--scrolling-x>.ps__rail-x {
 .mat-option {
     border-bottom: inset;
 }
+
+.with-two-icon{
+    .mat-form-field-suffix{
+        display: flex !important;
+    }
+}
