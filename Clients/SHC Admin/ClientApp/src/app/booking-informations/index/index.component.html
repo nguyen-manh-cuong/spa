@@ -28,13 +28,13 @@
             </div>
             <div class="col-md-6 disabled" [hidden]="!this.appSession.user.healthFacilitiesId">
                 <mat-form-field appearance="outline" class="w-100">
-                    <mat-select formControlName="healthfacilities">
+                    <mat-select formControlName="healthfacilities" required>
                         <mat-option *ngFor="let o of _healthfacilities" [value]="o.healthFacilitiesId">{{ o.name }}</mat-option>
                     </mat-select>
                 </mat-form-field>
             </div>
             <div class="col-md-3">
-                <mat-form-field appearance="outline" class="w-100">
+                <mat-form-field appearance="outline" class="w-100" required>
                     <mat-label>{{l('Bác sĩ')}}</mat-label>
                     <mat-select formControlName="doctor">
                         <mat-option *ngIf="_doctors.length" class="text-center" [innerHTML]="'<div class=\'text-center border-bottom w-100\'>'+ l('Bỏ chọn') +'</div>'"></mat-option>
@@ -45,7 +45,7 @@
             <div class="col-md-3">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('Trạng thái khám')}}</mat-label>
-                    <mat-select formControlName="status">
+                    <mat-select formControlName="status" required>
                         <mat-option *ngFor="let o of _bookingServiceTypes" [value]="o.id">{{ o.name }}</mat-option>
                     </mat-select>
                 </mat-form-field>
@@ -78,7 +78,7 @@
             </div>
             <div class="col-md-3  text-center d-flex align-self-center">
                 <button #btnSearch mat-stroked-button (click)="search()" color="primary" class="w-100 mb-4">
-                    <mat-icon class="text-danger mr-2">search</mat-icon>{{l("Search")}}
+                    <mat-icon class="mr-2">search</mat-icon>{{l("Search")}}
                 </button>
             </div>
         </div>
