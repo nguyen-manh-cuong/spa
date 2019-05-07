@@ -75,7 +75,20 @@ namespace SHCServer.Controllers
             if (filterHf.districtCode != null) objs = objs.Where((o) => o.DistrictCode == filterHf.districtCode);
             if (filterHf.provinceCode != null) objs = objs.Where((o) => o.ProvinceCode == filterHf.provinceCode);
             if (filterHf.name != null) objs = objs.Where((o) => o.Name.Contains(filterHf.name));
-            if (filterHf.specialist != null && filterHf.specialist.Count != 0) objs = objs.Where((o) => filterHf.specialist.Contains(o.Specialist));
+            if (filterHf.specialist != null && filterHf.specialist.Count != 0) {
+                var specialist = _context.Query<HealthFacilitiesSpecialists>().Where(o => filterHf.specialist.Contains(o.SpecialistCode) && o.IsDelete == false).ToList();
+
+                if (specialist.Count() > 0)
+                {
+                    List<int> lstHealthFacilitiesId = new List<int>();
+                    foreach (var item in specialist)
+                    {
+                        lstHealthFacilitiesId.Add(item.HealthFacilitiesId);
+                    }
+
+                    objs = objs.Where((o) => lstHealthFacilitiesId.Contains(o.HealthFacilitiesId));
+                } 
+            }
 
             return Json(new ActionResultDto { Result = new { Items = objs.OrderBy(h => h.Name).Take(1000).Select(h => new HealthFacilitiesViewModel(h, _connectionString)).ToList() } });
         }
@@ -234,7 +247,7 @@ namespace SHCServer.Controllers
             public string name { get; set; }
 
             [JsonProperty("specialist")]
-            public List<int?> specialist { get; set; }
+            public List<string> specialist { get; set; }
         }
     }
 }

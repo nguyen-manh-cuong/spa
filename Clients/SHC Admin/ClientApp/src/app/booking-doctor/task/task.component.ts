@@ -72,7 +72,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
         const validationRule = new ValidationRule();
 
         this._context = {
-            startTime: [moment(new Date().setHours(7, 0, 0, 0)).toDate(), Validators.required],
+            startTime: [moment(new Date().setHours(7, 0, 0, 0)).toDate()],
             endTime: [moment(new Date()).add(6, 'days').toDate],
             healthfacilities: [,Validators.required],
             doctor: [,Validators.required],
@@ -145,8 +145,14 @@ export class TaskComponent extends AppComponentBase implements OnInit {
 
         setTimeout(() => {
             this.dataService.getAll('doctors', obj.healthFacilitiesId).subscribe(resp => this._doctors = resp.items);
-            this.dataService.getAll('bookingtimeslot', JSON.stringify({healthfacilities : obj.healthFacilitiesId})).subscribe(resp => this._timeSlot = _.orderBy(resp.items, ['hoursStart'], ['asc']));
         }, 500);
+    }
+
+    onSelectDoctor(obj: any){
+        this.dataService.getAll('bookingtimeslot', JSON.stringify({
+            healthfacilities : this._frm.controls['healthfacilities'].value,
+            doctorId : obj
+        })).subscribe(resp => this._timeSlot = _.orderBy(resp.items, ['hoursStart'], ['asc']));
     }
 
     closed(): void {

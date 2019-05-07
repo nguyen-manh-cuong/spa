@@ -241,7 +241,7 @@
                     <ng-select [searchable]="false" [multiple]="true" [closeOnSelect]="false"
                       placeholder="Chọn chuyên khoa" formControlName="specialists" id="specialists"
                       (change)="getHealthfacilities()">
-                      <ng-option *ngFor="let o of _specialists" [value]="o.id">{{ o.name }}</ng-option>
+                      <ng-option *ngFor="let o of _specialists" [value]="o.code">{{ o.name }}</ng-option>
                     </ng-select>
                   </div>
                 </div>

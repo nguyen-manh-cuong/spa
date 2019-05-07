@@ -11,7 +11,7 @@
             </ng-template>
             <div class="pt-4">
                 <div class="row">
-                    <div class="col-md-6 disabled">
+                    <div class="col-md-6 {{_isNew ? '' : 'disabled'}}">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("CategoryCommonCode")}}</mat-label>
                             <input formControlName="code" matInput [required]="true" maxlength="255" mask="A*">
