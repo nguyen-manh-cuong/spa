@@ -68,10 +68,6 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
       this.dataService.getAll('healthfacilities', "{healthfacilitiesId:" + String(this.appSession.user.healthFacilitiesId) + "}").subscribe(resp => this._healthfacilities = resp.items);
       this.frmSearch.controls['healthfacilitiesId'].setValue(this.appSession.user.healthFacilitiesId);
     }
-    else {
-      this.dataService.getAll('healthfacilities').subscribe(resp => this._healthfacilities = resp.items);
-      this.filterOptions();
-    }
   }
   showErrorDeleteMessage() {
     swal({

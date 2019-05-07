@@ -21,6 +21,7 @@ import { FileValidator } from 'ngx-material-file-input';
 import { Observable } from 'rxjs';
 import { standardized } from '@shared/helpers/utils';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
+import { stringify } from '@angular/compiler/src/util';
 export const MY_FORMATS = {
   parse: {
     dateInput: 'DD/MM/YYYY',
@@ -56,6 +57,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
 
   dataService: DataService;
   isLoading = false;
+  specialIsLoading = false;
 
   _certificationInputCheck: Boolean;
 
@@ -93,7 +95,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   checkProvince = false;
 
   //chips
-  _specialistChip = [];
+
   _healthfacilitiesChip = [];
   visible = true;
   selectable = true;
@@ -101,11 +103,20 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   addOnBlur = true;
   separatorKeysCodes: number[] = [ENTER, COMMA];
 
+  _specialistChip = [];
+  specialVisible = true;
+  specialSelectable = true;
+  specialRemovable = true;
+  specialDddOnBlur = true;
+  specialSeparatorKeysCodes: number[] = [ENTER, COMMA];
+
 
 
   //chips
   @ViewChild('healthfacilitiesInput') healthfacilitiesInput: ElementRef<HTMLInputElement>;
+  @ViewChild('specialistInput') specialistInput: ElementRef<HTMLInputElement>;
   @ViewChild('auto') matAutocomplete: MatAutocomplete;
+  @ViewChild('autoSpecialist') autoSpecialist: MatAutocomplete;
 
   _obj: IDoctor | any = {
     doctorId: 0,
@@ -176,7 +187,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     this.getNations();
     this.getSpecialist();
     this.getEthnicities();
-
+    this.filterSpecialistOptions();
 
 
     const validationRule = new ValidationRule();
@@ -214,7 +225,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     this._context = {
       doctorId: [this._obj.doctorId],
       fullName: [this._obj.fullName, [Validators.required, validationRule.hasValue]],
-      specialist: [this._obj.specialist, [Validators.required, validationRule.hasValue]],
+      specialist: [this._obj.specialist],
       //birthDay: [this._birthDay],
       gender: this._obj.gender,
       titleCode: this._obj.titleCode,
@@ -424,6 +435,10 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     this.healthfacilitiesControl.setValue(null);
   }
 
+  healthInput() {
+    this._healthfacilities = null;
+    this.filterOptions();
+  }
   //End auto complete health facilities
 
 
@@ -435,27 +450,61 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   }
 
 
-  _filterSpecialist(name: any): ICategoryCommon[] {
-    const filterValue = name.toLowerCase();
-    var specialist = isNaN(filterValue) ?
-      this._specialist.filter(c => c.code.toLowerCase().indexOf(filterValue) === 0) :
-      this._specialist.filter(c => c.name.toLowerCase().indexOf(filterValue) === 0);
-    return specialist;
-  }
-
-  clickSpecialistCbo() {
-    !this.specialistCodeControl.value ? this.filterSpecialistOptions() : '';
-  }
-
   filterSpecialistOptions() {
-    this.filteredSpecialistOptions = this.specialistCodeControl.valueChanges
+    this.specialistCodeControl.valueChanges
       .pipe(
-        startWith<string | ICategoryCommon>(''),
-        map(value => typeof value === 'string' ? value : value.name),
-        map(name => name ? this._filterSpecialist(name) : this._specialist.slice()),
-        map(data => data.slice())
-      );
+        debounceTime(500),
+        tap(() => this.specialIsLoading = true),
+        switchMap(value => this.filterSpecialist(value))
+      )
+      .subscribe(data => this._specialist = data.items);
   }
+
+  filterSpecialist(value: any) {
+    var fValue = value;
+    this._specialist = [];
+    return this.dataService
+      .get("catcommon", JSON.stringify({
+        name: isNaN(fValue) ? fValue : "",
+        max:300
+      }), '', null, null)
+      .pipe(finalize(() => this.specialIsLoading = false));
+  }
+
+  specialClosed(): void {
+    if (this.specialistCodeControl.value && typeof this.specialistCodeControl.value == 'string' && !this.specialistCodeControl.value.trim()) {
+      this.specialistCodeControl.setErrors({ required: true });
+    }
+  }
+
+
+
+  //chips
+  specialAdd(event: MatChipInputEvent): void {
+    if (!this.autoSpecialist.isOpen) {
+      const input = event.input;
+      if (input) {
+        input.value = '';
+      }
+      this.specialistCodeControl.setValue(null);
+    }
+  }
+
+  specialRemove(code: string): void {
+    for (let i = 0; i < this._specialistChip.length; i++) {
+      if (this._specialistChip[i].code == code) {
+        this._specialistChip.splice(i, 1);
+      }
+    }
+  }
+
+
+  specialSelected(event: MatAutocompleteSelectedEvent): void {
+    this._specialistChip.push(event.option.value);
+    this.specialistInput.nativeElement.value = '';
+    this.specialistCodeControl.setValue(null);
+  }
+
 
   detectFiles(event) {
     this._avatarError = "";
@@ -474,18 +523,6 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
           this._avatarError = "File tải lên không phải file ảnh";
         }
       }
-    }
-  }
-
-  onInputSpecialist(obj: any) {
-    this._frm.controls['specialist'].setValue("");
-    this._specialistCode = null;
-  }
-
-  onSelectSpecialist(value: any) {
-    if (value.code) {
-      this._frm.controls['specialist'].setValue(value.code);
-      this._specialistCode = value.code;
     }
   }
 
@@ -608,13 +645,15 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
         params.updateUserId = this.appSession.userId;
       }
 
-      if (this.specialistCodeControl.value != null) {
-        var special = new DoctorSpecialists(this.specialistCodeControl.value.code);
-        this._speciaList.push(special);
-        params.specialist = this._speciaList;
+      if(this._specialistChip){
+        params.specialist=this._specialistChip;
       }
-      else {
-        params.specialist = [];
+      else{
+        params.specialist=[];
+      }
+
+      if (this.appSession.user.healthFacilitiesId) {
+        this._healthfacilitiesChip.push({ healthFacilitiesId: this.appSession.user.healthFacilitiesId });
       }
 
       if (this._healthfacilitiesChip) {
