@@ -246,7 +246,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
         type: 'warning',
         timer:3000});
     }
-    if(((!this.appSession.user.healthFacilitiesId && this.healthfacilities.value) || (this.appSession.user.healthFacilitiesId))  && this.frmSearch.controls['doctor'].value){
+    if(((!this.appSession.user.healthFacilitiesId && this.healthfacilities.value) || (this.appSession.user.healthFacilitiesId))){
       if (this.appSession.user.healthFacilitiesId != null) {
         this.healthfacilities.value
           ? this.frmSearch.controls['healthfacilities'].setValue(this.healthfacilities.value.healthFacilitiesId)
