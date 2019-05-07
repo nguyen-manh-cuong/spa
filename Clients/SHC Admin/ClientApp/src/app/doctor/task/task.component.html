@@ -260,7 +260,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <mat-label><b>{{l('DoctorSummary')}}</b></mat-label>
-                        <ckeditor formControlName="summary" [editor]="Editor" (ready)="onReady($event)">
+                        <ckeditor [config]="{ toolbar: [ 'heading', '|', 'bold', 'italic','|','bulletedList','numberedList','|','blockQuote','link','undo','redo'] }" formControlName="summary" [editor]="Editor" (ready)="onReady($event)">
                         </ckeditor>
                     </div>
                 </div>

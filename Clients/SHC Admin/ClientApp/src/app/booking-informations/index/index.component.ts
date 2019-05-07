@@ -262,15 +262,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
           : this.frmSearch.controls['healthfacilities'].setValue('');
       }
     }
-    else if (!this.isFirstTime){
-      this.appSession.user.healthFacilitiesId == null ? this.frmSearch.controls['healthfacilities'].setValue(null) : '';
-      swal({
-        title: this.l('Notification'),
-        text: this.l('HealthfacilitiesAndDoctorNotNull'),
-        type: 'warning',
-        timer: 3000
-      });
-    }    
+    
     
     this.startTime.nativeElement.value ? this.frmSearch.controls['startTime'].setValue(moment(this.startTime.nativeElement.value + '00:00:00', 'DD/MM/YYYY hh:mm:ss').add(7, 'hours').toDate()) : '';
     this.endTime.nativeElement.value ? this.frmSearch.controls['endTime'].setValue(moment(this.endTime.nativeElement.value + '23:59:59', 'DD/MM/YYYY hh:mm:ss').add(7, 'hours').toDate()) : '';

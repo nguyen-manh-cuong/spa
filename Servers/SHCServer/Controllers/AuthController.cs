@@ -16,6 +16,7 @@ using System.Text;
 using Viettel.MySql;
 using AuthServer;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace SHCServer.Controllers
 {
@@ -186,7 +187,7 @@ namespace SHCServer.Controllers
             {
                 return StatusCode(409, _excep.Throw("Đăng ký không thành công.", "Số điện thoại đã tồn tại!"));
             }
-            if (obj.Identification != null && User.Where(u => u.Identification == obj.Identification).Count() > 0)
+            if (obj.Identification != "null" && !string.IsNullOrEmpty(obj.Identification) && User.Where(u => u.Identification == obj.Identification).Count() > 0)
             {
                 return StatusCode(409, _excep.Throw("Đăng ký không thành công.", "Số CMND đã tồn tại!"));
             }
@@ -241,7 +242,7 @@ namespace SHCServer.Controllers
                 {
                     foreach (var file in _files)
                     {
-                        var uniqueFileName = GetUniqueFileName(file.FileName);
+                        var uniqueFileName = GetUniqueFileName(convertToUnSign(file.FileName));
                         var uploads = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
                         var filePath = Path.Combine(uploads, uniqueFileName);
                         if (file.Name == "cmnd")
@@ -286,6 +287,14 @@ namespace SHCServer.Controllers
 
             return Json(new { Code = result.CaptchaCode, Data = result.CaptchBase64Data });
         }
+
+        public string convertToUnSign(string s)
+        {
+            Regex regex = new Regex("\\p{IsCombiningDiacriticalMarks}+");
+            string temp = s.Normalize(NormalizationForm.FormD);
+            return regex.Replace(temp, String.Empty).Replace('\u0111', 'd').Replace('\u0110', 'D');
+        }
+
         private string GetUniqueFileName(string fileName)
         {
             fileName = Path.GetFileName(fileName);

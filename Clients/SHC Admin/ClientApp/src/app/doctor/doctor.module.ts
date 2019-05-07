@@ -13,7 +13,6 @@ import { MAT_CHECKBOX_CLICK_ACTION } from '@angular/material';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { DetailComponent } from './detail/detail.component';
 import { TaskComponent} from './task/task.component';
-import { CtrlKeysDirective } from './ctrl-keys.directive';
 
 
 @NgModule({
@@ -28,7 +27,7 @@ import { CtrlKeysDirective } from './ctrl-keys.directive';
     ValidationModule,
     NgxMaskModule.forRoot()
   ],
-  declarations: [CustomCurrencyPipe,DoctorComponent, IndexComponent, TaskComponent, DetailComponent,CtrlKeysDirective],
+  declarations: [CustomCurrencyPipe,DoctorComponent, IndexComponent, TaskComponent, DetailComponent],
   entryComponents: [TaskComponent,DetailComponent],
   providers:[{provide: MAT_CHECKBOX_CLICK_ACTION, useValue: 'noop'}]
 })

@@ -11,12 +11,11 @@
             </ng-template>
             <div class="pt-4">
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-6 {{_isNew ? '' : 'disabled'}}">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("CategoryCommonCode")}}</mat-label>
-                            <input [readonly]="_obj.distribute !=0 &&_isNew == false" formControlName="code" matInput
-                                [required]="true" maxlength="255" mask="A*">
-                            <validation matSuffix [control]="_frm.controls['code']"></validation>
+                            <input formControlName="code" matInput [required]="true" maxlength="255" mask="A*" [readonly]="!_isNew">
+                            <validation [hidden]="!_isNew" matSuffix [control]="_frm.controls['code']"></validation>
                         </mat-form-field>
                     </div>
                     <div class="col-md-6">
