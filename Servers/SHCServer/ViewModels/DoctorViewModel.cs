@@ -78,11 +78,8 @@ namespace SHCServer.ViewModels
             HealthFacilities = context.JoinQuery<Doctor, HealthFacilitiesDoctors>((d, hf) => new object[]
                {
                     JoinType.InnerJoin,d.DoctorId==hf.DoctorId
-               }).Where((d, hf) => hf.IsDelete == false && hf.IsActive == true && hf.DoctorId == obj.DoctorId).Select((d, hf) => new HealthFacilitiesDoctors()
-               {
-                   DoctorId = hf.DoctorId,
-                   HealthFacilitiesId = hf.HealthFacilitiesId
-               }).ToList();
+               }).Where((d, hf) => hf.IsDelete == false && hf.IsActive == true && hf.DoctorId == obj.DoctorId).Select((d, hf) => 
+               new HealthFacilitiesDoctorViewModel(hf,connectionString)).ToList();
 
             Academic = academic != null ? academic.Name : "";
             Degree = degree != null ? degree.Name : "";
@@ -127,7 +124,7 @@ namespace SHCServer.ViewModels
         public DateTime? CreateDate { get; set; }
         public int? UpdateUserId { get; set; }
         public DateTime? UpdateDate { get; set; }
-        public List<HealthFacilitiesDoctors> HealthFacilities { set; get; }
+        public List<HealthFacilitiesDoctorViewModel> HealthFacilities { set; get; }
         public List<DoctorSpecialistsViewModel> Specialist { set; get; }
     }
 

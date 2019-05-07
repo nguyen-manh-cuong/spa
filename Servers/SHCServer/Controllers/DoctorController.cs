@@ -162,10 +162,16 @@ namespace SHCServer.Controllers
             {
                 foreach (var (key, value) in JsonConvert.DeserializeObject<Dictionary<string, string>>(sorting))
                 {
-                    if (!Utils.PropertyExists<Doctor>(key))
-                        continue;
-
-                    objs = value == "asc" ? objs.OrderBy(u => u.FullName) : objs.OrderByDesc(u => u.FullName);
+                    //if (!Utils.PropertyExists<Doctor>(key))
+                    //    continue;
+                    if (string.Equals(key, "id"))
+                    {
+                        objs = value == "asc" ? objs.OrderBy(u => u.CreateDate) : objs.OrderByDesc(u => u.CreateDate);
+                    }
+                    else
+                    {
+                        objs = value == "asc" ? objs.OrderBy(u => u.FullName) : objs.OrderByDesc(u => u.FullName);
+                    }
                 }
             }
             else
@@ -239,14 +245,9 @@ namespace SHCServer.Controllers
         public IActionResult Create([FromForm] DoctorInputViewModel doctor)
         {
             bool checkCertificationDate = true;
-            try
-            {
-                Convert.ToDateTime(doctor.CertificationDate);
-            }
-            catch
-            {
-                checkCertificationDate = false;
-            }
+
+            if (Convert.ToDateTime(doctor.CertificationDate).Year == 1) ;
+            checkCertificationDate = false;
 
             try
             {
@@ -278,7 +279,6 @@ namespace SHCServer.Controllers
                     BirthMonth = doctor.BirthMonth,
                     BirthYear = doctor.BirthYear,
                     CertificationCode = doctor.CertificationCode,
-                    CertificationDate = Convert.ToDateTime(doctor.CertificationDate).AddMonths(1),
                     CreateUserId = doctor.CreateUserId,
                     CreateDate = DateTime.Now,
                     DegreeId = doctor.DegreeId,
@@ -392,14 +392,9 @@ namespace SHCServer.Controllers
         public IActionResult Update([FromForm] DoctorInputViewModel doctor, int? allow)
         {
             bool checkCertificationDate = true;
-            try
-            {
-                Convert.ToDateTime(doctor.CertificationDate);
-            }
-            catch
-            {
-                checkCertificationDate = false;
-            }
+            if (Convert.ToDateTime(doctor.CertificationDate).Year == 1) ;
+            checkCertificationDate = false;
+
             if (!string.IsNullOrEmpty(doctor.EthnicityCode))
                 if (doctor.EthnicityCode.Equals("null"))
                 {
