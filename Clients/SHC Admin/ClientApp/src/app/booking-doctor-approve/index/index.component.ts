@@ -279,7 +279,8 @@ export class IndexComponent extends PagedListingComponentBase<IBookingDoctorsCal
             return swal({
                 title: this.l('Notification'),
                 text: this.l('ToDateIncorrectFormat'),
-                type: 'warning'
+                type: 'warning',
+                timer: 3000
             });
         }
 
@@ -287,7 +288,8 @@ export class IndexComponent extends PagedListingComponentBase<IBookingDoctorsCal
             return swal({
                 title: this.l('Notification'),
                 text: this.l('FromDateMustBeGreaterThanOrEqualToDate'),
-                type: 'warning'
+                type: 'warning',
+                timer: 3000
             });
         }
 
@@ -295,7 +297,8 @@ export class IndexComponent extends PagedListingComponentBase<IBookingDoctorsCal
             return swal({
                 title: this.l('Notification'),
                 text: this.l('SearchWithin7Day'),
-                type: 'warning'
+                type: 'warning',
+                timer: 3000
             });
         }
 

@@ -1,5 +1,5 @@
-import { DataService } from './../../../../SHC Outside/ClientApp/src/shared/service-proxies/service-data';
 import { Pipe, PipeTransform } from '@angular/core';
+import { DataService } from '@shared/service-proxies/service-data';
 
 @Pipe({ name: 'SpecialistPipe' })
 

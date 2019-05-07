@@ -87,7 +87,12 @@ import { startWith, map, debounceTime, tap, switchMap, finalize } from 'rxjs/ope
         });
       } else{
         this.appSession.user.healthFacilitiesId == null ? this.frmSearch.controls['healthfacilities'].setValue(null) : '';
-        swal(this.l('Notification'), this.l('HealthfacilitiesAndDoctorNotNull'), 'warning');
+        swal({
+          title: this.l('Notification'),
+          text: this.l('HealthfacilitiesAndDoctorNotNull'),
+          type: 'warning',
+          timer: 3000
+        });
       }    
     }
 
@@ -147,8 +152,5 @@ import { startWith, map, debounceTime, tap, switchMap, finalize } from 'rxjs/ope
       if (_filter.length <= 0) { return; }
       this.showFilter = !this.showFilter;
       _filter.css({ 'height': this.showFilter ? 'auto' : 0, 'overflow': this.showFilter ? 'auto' : 'hidden' });
-      //this.setTableHeight();
-
-
   }
 }

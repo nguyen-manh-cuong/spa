@@ -1,5 +1,5 @@
 import { Component, Injector, OnInit, ViewChild } from '@angular/core';
-import { IBookingInformations, IMedicalHealthcareHistories } from '@shared/Interfaces';
+import { IBookingInformations, IMedicalHealthcareHistories, IHealthfacilities } from '@shared/Interfaces';
 import { MatDialog } from '@angular/material';
 import { isEmpty, isNil, isNull, omitBy, zipObject } from 'lodash';
 
@@ -15,7 +15,6 @@ import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import * as moment from 'moment';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { ReasonComponent } from '../reason/reason.component';
-import { IHealthfacilities } from '../../../../../../SHC Outside/ClientApp/src/shared/Interfaces';
 import { Observable } from 'rxjs';
 import { startWith, map, debounceTime, tap, switchMap, finalize } from 'rxjs/operators';
 
