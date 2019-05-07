@@ -1,8 +1,7 @@
 import * as _ from 'lodash';
 import { AbstractControl } from '@angular/forms';
-import { DatePipe } from '@angular/common';
 
-export class ValidationRule {
+export class ValidationRule {   
     //So sanh 2 control
     compare(frmFirst: string, frmSecond: string) {
         return (ac: AbstractControl) => {
@@ -14,7 +13,6 @@ export class ValidationRule {
             return null;
         }
     }
-
 
     //Kiem tra space, null
     hasValue(control: AbstractControl) {
