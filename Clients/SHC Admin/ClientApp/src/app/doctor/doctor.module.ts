@@ -12,7 +12,8 @@ import { CustomCurrencyPipe } from 'pipes/custom-currency.pipe';
 import { MAT_CHECKBOX_CLICK_ACTION } from '@angular/material';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { DetailComponent } from './detail/detail.component';
-import { TaskComponent } from './task/task.component';
+import { TaskComponent} from './task/task.component';
+import { CtrlKeysDirective } from './ctrl-keys.directive';
 
 
 @NgModule({
@@ -27,7 +28,7 @@ import { TaskComponent } from './task/task.component';
     ValidationModule,
     NgxMaskModule.forRoot()
   ],
-  declarations: [CustomCurrencyPipe,DoctorComponent, IndexComponent, TaskComponent, DetailComponent],
+  declarations: [CustomCurrencyPipe,DoctorComponent, IndexComponent, TaskComponent, DetailComponent,CtrlKeysDirective],
   entryComponents: [TaskComponent,DetailComponent],
   providers:[{provide: MAT_CHECKBOX_CLICK_ACTION, useValue: 'noop'}]
 })

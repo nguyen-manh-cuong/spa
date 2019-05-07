@@ -2,22 +2,22 @@ import { forEach } from '@angular/router/src/utils/collection';
 import { IDoctor, IHealthfacilities, IHealthfacilitiesDoctor, IDoctorSpecialists } from './../../../../../../SHC Client/ClientApp/src/shared/Interfaces';
 import * as _ from 'lodash';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import { Component, Inject, Injector, OnInit, ViewChild, AfterViewInit, ElementRef } from '@angular/core';
+import { Component, Inject, Injector, OnInit, ViewChild, AfterViewInit, ElementRef, HostListener, Directive, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogRef, MatInput, MatCheckbox, MatAutocomplete, MatChipInputEvent, MatAutocompleteSelectedEvent, MatDialog } from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialogRef, MatInput, MatCheckbox, MatAutocomplete, MatChipInputEvent, MatAutocompleteSelectedEvent, MatDialog, MatPaginator } from '@angular/material';
 import * as moment from 'moment';
 import { AppComponentBase } from '@shared/app-component-base';
 import { DataService } from '@shared/service-proxies/service-data';
 import { ValidationRule } from '@shared/common/common';
 import swal from 'sweetalert2';
-import { publishBehavior, startWith, map, debounceTime, tap, switchMap, finalize } from 'rxjs/operators';
+import { publishBehavior, startWith, map, debounceTime, tap, switchMap, finalize, debounce } from 'rxjs/operators';
 import { element } from '@angular/core/src/render3/instructions';
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { ICategoryCommon } from '@shared/Interfaces';
 import { MatAutocompleteTrigger } from '@angular/material';
 import { FileValidator } from 'ngx-material-file-input';
-import { Observable } from 'rxjs';
+import { Observable, fromEvent, merge, timer } from 'rxjs';
 import { standardized } from '@shared/helpers/utils';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { stringify } from '@angular/compiler/src/util';
@@ -50,6 +50,7 @@ export class Specialist {
   ) { }
 }
 
+
 @Component({
   selector: 'app-task',
   templateUrl: './task.component.html',
@@ -61,8 +62,23 @@ export class Specialist {
 })
 export class TaskComponent extends AppComponentBase implements OnInit, AfterViewInit {
 
+  genders = [
+    {
+      code: 1,
+      name: "Nam"
+    },
+    {
+      code: 2,
+      name: "Nữ"
+    },
+    {
+      code: 0,
+      name: "Không xác định"
+    }];
+
   flagDate = true;
   maxDate = new Date(Date.now());
+  maxDate2 = new Date(Date.now());
   @ViewChild("certification") certification;
 
   dataService: DataService;
@@ -207,6 +223,8 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
 
     const validationRule = new ValidationRule();
 
+
+
     if (this.obj) {
 
       if (this.obj.provinceCode) {
@@ -222,7 +240,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
       this._birthDay = new Date(this._obj.birthMonth + "/" + this._obj.birthDate + "/" + this._obj.birthYear);
     }
 
-    console.log(this._birthDay);
+
 
     // else if (this._obj.birthMonth) {
     //   this._birthDay = new Date(this._obj.birthMonth + "/01/" + this._obj.birthYear);
@@ -274,6 +292,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
 
     this._frm = this._formBuilder.group(this._context);
 
+
     // if (this.appSession.user.healthFacilitiesId) {
     //   this._dataService.getAll('healthfacilities', "{healthfacilitiesId:" + String(this.appSession.user.healthFacilitiesId) + "}").subscribe(resp => this._healthfacilities = resp.items);
     //   this._frm.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId);
@@ -315,9 +334,13 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   ngAfterViewInit(): void {
     setTimeout(() => {
       if (this.obj) {
-        this.birthDayPicker.nativeElement.value = moment(this._birthDay).format("DD/MM/YYYY");
-        this.certificationDatePicker.nativeElement.value = moment(this._certificationDate).format("DD/MM/YYYY");
+        if (this.obj.birthDate) {
+          this.birthDayPicker.nativeElement.value = moment(this._birthDay).format("DD/MM/YYYY");
+        }
+        if (this.obj.certificationDate)
+          this.certificationDatePicker.nativeElement.value = moment(this._certificationDate).format("DD/MM/YYYY");
       }
+      console.log("this._frm.ethnicityCode",this._frm.controls['ethnicityCode'].value)
     });
   }
 
@@ -333,11 +356,11 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   //Base//
 
   certificationCodeChange($event) {
-    if($event.data!=null){
-      this.flagDate=false;
+    if ($event.data != null) {
+      this.flagDate = false;
     }
-    else{
-      this.flagDate=true;
+    else {
+      this.flagDate = true;
     }
   }
 
@@ -382,7 +405,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   }
 
   getEthnicities() {
-    this._dataService.getAll("ethnicity").subscribe(resp => this.ethnicities = resp.items);
+    this._dataService.getAll("ethnicity").subscribe(resp => {this.ethnicities = resp.items; console.log("ethnicityList",this.ethnicities);});
   }
 
   getSpecialist() {
@@ -460,7 +483,8 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
 
   remove(code: string): void {
     for (let i = 0; i < this._healthfacilitiesChip.length; i++) {
-      if (this._healthfacilitiesChip[i].code == code) this._healthfacilitiesChip.splice(i, 1);
+      if (this._healthfacilitiesChip[i].code == code)
+        this._healthfacilitiesChip.splice(i, 1);
     }
   }
 
@@ -468,6 +492,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     this._healthfacilitiesChip.push(event.option.value);
     this.healthfacilitiesInput.nativeElement.value = '';
     this.healthfacilitiesControl.setValue(null);
+
   }
 
   healthInput() {
@@ -527,15 +552,15 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
 
   specialRemove(code: string): void {
     for (let i = 0; i < this._specialistChip.length; i++) {
-      if (this._specialistChip[i].code == code) {
+      if (this._specialistChip[i].specialistCode == code) {
         this._specialistChip.splice(i, 1);
       }
     }
-    if (this._specialistChip) {
-      this.checkSpecial = false;
+    if (this._specialistChip.length > 0) {
+      this.checkSpecial = true;
     }
     else {
-      this.checkSpecial = true;
+      this.checkSpecial = false;
     }
   }
 
@@ -596,12 +621,21 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     this._certificationDate = value;
   }
 
-  rulePhoneNumber() {
-    var value = this._frm.controls['phoneNumber'].value;
-    const patternNum = /^[0-9]*$/;
+  onCtrlV() {
 
-    if (value && value.length > 1 && !patternNum.test(value.trim().substring(1))) {
-      this._frm.controls['phoneNumber'].setErrors({ special: true });
+  }
+
+  onCtrlC() {
+
+  }
+
+  rulePhoneNumber() {
+    var control = this._frm.controls['phoneNumber'];
+
+    const pattern = /^[0-9\+]*$/;
+
+    if (control.value && !pattern.test(control.value)) {
+      control.setValue(control.value.replace(/[^0-9\+]/g, ""));
     }
   }
 
@@ -609,7 +643,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
 
   fullNameInput($event) {
     if ($event.data != null) {
-      if (this._specialistChip) {
+      if (this._specialistChip.length == 0) {
         this.checkSpecial = false;
       }
       else {
@@ -617,6 +651,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
       }
     }
   }
+
 
   //SUBMIT
   submit() {
@@ -661,113 +696,155 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     var priceFrom = this._frm.controls['priceFrom'].value;
     var priceTo = this._frm.controls['priceTo'].value;
 
-    // if (!moment(this.birthDayPicker.nativeElement.value, 'DD/MM/YYYY').isValid()) {
-    //   return swal({
-    //     title: 'Thông báo',
-    //     text: 'Ngày sinh không đúng định dạng',
-    //     type: 'warning',
-    //     timer: 3000
-    //   });
-    // }
-    // else if (this.certificationDatePicker.nativeElement.value != "" && !moment(this.certificationDatePicker.nativeElement.value, 'DD/MM/YYYY').isValid()) {
-    //   return swal({
-    //     title: 'Thông báo',
-    //     text: 'Ngày cấp chứng chỉ hành ngành không đúng định dạng',
-    //     type: 'warning',
-    //     timer: 3000
-    //   });
-    // }
+    if (priceFrom > 2000000000) {
+      return swal({
+        title: 'Thông báo',
+        text: 'Giá khám từ không được lớn hơn 2,000,000,000',
+        type: 'warning',
+        timer: 3000
+      });
+    }
+    if (priceTo > 2000000000) {
+      return swal({
+        title: 'Thông báo',
+        text: 'Giá khám đến không được lớn hơn 2,000,000,000',
+        type: 'warning',
+        timer: 3000
+      });
+    }
+    if (this._specialistChip.length == 0) {
+      return swal({
+        title: 'Thông báo',
+        text: 'Yêu cầu chọn ít nhất một chuyên khoa',
+        type: 'warning',
+        timer: 3000
+      });
+    }
+    if (this.birthDayPicker.nativeElement.value != "" && !moment(this.birthDayPicker.nativeElement.value, 'DD/MM/YYYY').isValid()) {
+      return swal({
+        title: 'Thông báo',
+        text: 'Ngày sinh không đúng định dạng',
+        type: 'warning',
+        timer: 3000
+      });
+    }
+
+    if (moment(this.certificationDatePicker.nativeElement.value, 'DD/MM/YYYY').toDate() > new Date(Date.now())) {
+      return swal({
+        title: 'Thông báo',
+        text: 'Ngày cấp chứng chỉ hành nghề lớn hơn ngày hiện tại',
+        type: 'warning',
+        timer: 3000
+      });
+    }
+    if (this.certificationDatePicker.nativeElement.value != "" && !moment(this.certificationDatePicker.nativeElement.value, 'DD/MM/YYYY').isValid()) {
+      return swal({
+        title: 'Thông báo',
+        text: 'Ngày cấp chứng chỉ hành ngành không đúng định dạng',
+        type: 'warning',
+        timer: 3000
+      });
+    }
+    if (this._frm.controls['certificationCode'].value == "" && this.certificationDatePicker.nativeElement.value != "") {
+      return swal({
+        title: 'Thông báo',
+        text: 'Yêu cầu nhập mã giấy phép hành nghề trước khi nhập ngày cấp',
+        type: 'warning',
+        timer: 3000
+      });
+    }
     if (priceFrom >= priceTo && priceFrom != 0 && priceTo != 0) {
-      swal({
+      return swal({
         title: 'Thông báo',
         text: 'Giá khám từ phải nhỏ hơn giá khám đến',
         type: 'warning',
         timer: 3000
       });
     }
-    else {
-      if (this.obj) {
-        params.doctorId = this.obj.doctorId;
-      }
-
-      if (this._certificationDate) {
-        var cerdate = moment(this._certificationDate, 'DD/MM/YYYY').date() + "/" + moment(this._certificationDate, 'DD/MM/YYYY').month() + "/" + moment(this._certificationDate, 'DD/MM/YYYY').year();
-        params.certificationDate = cerdate;
-      }
-
-
-      params.avatar = this._frm.controls['avatar'].value;
-
-      //Set birthDate
-      if (this._birthDay) {
-        params.birthDate = moment(this._birthDay, 'DD/MM/YYYY').date();
-        params.birthMonth = moment(this._birthDay, 'DD/MM/YYYY').month() + 1;
-        params.birthYear = moment(this._birthDay, 'DD/MM/YYYY').year();
-      }
-
-      if (this.appSession.userId && this._isNew == true) {
-        params.createUserId = this.appSession.userId;
-        params.updateUserId = this.appSession.userId;
-      }
-
-      if (this.appSession.userId && this._isNew == false) {
-        params.updateUserId = this.appSession.userId;
-      }
-
-      if (this._specialistChip) {
-        params.specialist = this._specialistChip;
-      }
-      else {
-        params.specialist = [];
-      }
-
-      if (this.appSession.user.healthFacilitiesId) {
-        this._healthfacilitiesChip.push({ healthFacilitiesId: this.appSession.user.healthFacilitiesId });
-      }
-
-      if (this._healthfacilitiesChip) {
-        params.healthfacilities = this._healthfacilitiesChip;
-      }
-      else {
-        params.healthfacilities = [];
-      }
-      console.log(params);
-      if (!this._specialistChip) {
-        swal({
-          title: 'Thông báo',
-          text: 'Yêu cầu chọn ít nhất một chuyên khoa',
-          type: 'warning',
-          timer: 3000
-        })
-      } else {
-        this._isNew ?
-          this._dataService.createUpload(this.api, standardized(Object.assign(params, {}), {})).subscribe(() => {
-            swal({
-              title: this.l('SaveSuccess'),
-              text: '',
-              type: 'success'
-            });
-            if (this.continueAdd.checked == true) {
-              this.openDialogDoctor();
-              this.dialogRef.close();
-            } else {
-              this.dialogRef.close();
-            }
-          }, err => { }) :
-          this._dataService.updateUpload(this.api, standardized(Object.assign(params, {}), {})).subscribe(() => {
-            swal({
-              title: this.l('SaveSuccess'),
-              text: '',
-              type: 'success'
-            });
-            this.dialogRef.close();
-          }, err => { });
-      }
+    if (this.obj) {
+      params.doctorId = this.obj.doctorId;
     }
+
+    if (this._certificationDate) {
+      var cerdate = moment(this._certificationDate, 'DD/MM/YYYY').date() + "/" + moment(this._certificationDate, 'DD/MM/YYYY').month() + "/" + moment(this._certificationDate, 'DD/MM/YYYY').year();
+      params.certificationDate = cerdate;
+    }
+
+
+    params.avatar = this._frm.controls['avatar'].value;
+
+    //Set birthDate
+    if (this._birthDay && this.birthDayPicker.nativeElement.value != "") {
+      params.birthDate = moment(this._birthDay, 'DD/MM/YYYY').date();
+      params.birthMonth = moment(this._birthDay, 'DD/MM/YYYY').month() + 1;
+      params.birthYear = moment(this._birthDay, 'DD/MM/YYYY').year();
+    }
+
+    if (this.appSession.userId && this._isNew == true) {
+      params.createUserId = this.appSession.userId;
+      params.updateUserId = this.appSession.userId;
+    }
+
+    if (this.appSession.userId && this._isNew == false) {
+      params.updateUserId = this.appSession.userId;
+    }
+
+    if (this._specialistChip) {
+      params.specialist = this._specialistChip;
+    }
+    else {
+      params.specialist = [];
+    }
+
+    if (this.appSession.user.healthFacilitiesId) {
+      this._healthfacilitiesChip.push({ healthFacilitiesId: this.appSession.user.healthFacilitiesId });
+    }
+
+    if (this._healthfacilitiesChip) {
+      params.healthfacilities = this._healthfacilitiesChip;
+    }
+    else {
+      params.healthfacilities = [];
+    }
+
+    if (!this._specialistChip) {
+      swal({
+        title: 'Thông báo',
+        text: 'Yêu cầu chọn ít nhất một chuyên khoa',
+        type: 'warning',
+        timer: 3000
+      })
+    } else {
+      this._isNew ?
+        this._dataService.createUpload(this.api, standardized(Object.assign(params, {}), {})).subscribe(() => {
+          swal({
+            title: this.l('SaveSuccess'),
+            text: '',
+            type: 'success'
+          });
+          if (this.continueAdd.checked == true) {
+            this.openDialogDoctor();
+          } else {
+            this.dialogRef.close();
+          }
+        }, err => { }) :
+        this._dataService.updateUpload(this.api, standardized(Object.assign(params, {}), {})).subscribe(() => {
+          swal({
+            title: this.l('SaveSuccess'),
+            text: '',
+            type: 'success'
+          });
+          this.dialogRef.close();
+        }, err => { });
+    }
+
+
   }
+
   openDialogDoctor(): void {
     const dialogRef = this.dialog.open(this.dialogComponent, { minWidth: 'calc(100vw/1.5)', maxWidth: 'calc(100vw - 100px)', disableClose: true });
     dialogRef.afterClosed().subscribe(() => {
-    });
+      this.dialogRef.close();
+    }, err => { });
   }
 }
