@@ -95,7 +95,7 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
         this.dataService.delete(this.api, obj[doctorId ? doctorId : 'doctorId']).subscribe(() => {
           swal({
             title: this.l('SuccessfullyDeleted'),
-            text: this.l('DeletedInSystem', obj[key]),
+            html: this.l('DeletedInSystem', obj[key]),
             type: 'success',
             timer: 3000
           });
