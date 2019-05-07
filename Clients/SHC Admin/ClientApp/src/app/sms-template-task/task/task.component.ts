@@ -33,6 +33,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
         };
         this._frm = this._formBuilder.group(this._context);
         this.dataService.getAll('smstemplates', (this.appSession.user.healthFacilitiesId ? String(this.appSession.user.healthFacilitiesId) : '')).subscribe(resp => this._templates = resp.items);
+        this._frm.controls['smsContent'].disable();
     }
 
     onSelectTemplate(value: any) {

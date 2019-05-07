@@ -265,6 +265,10 @@ export class RegisterComponent implements OnInit {
         this._dataService.getAny('get-captcha-image').subscribe(res => this._capcha = { code: res.code, data: this._sanitizer.bypassSecurityTrustResourceUrl('data:image/jpg;base64,' + res.data) });
     }
 
+    validateCapcha(value: any){
+        if(value.length == 4) this._capcha.code != value ? this.capcha = true : this.capcha = false;
+    }
+
     cleanControl(listControl) {
         if (this.frmUser) {
             listControl.forEach(el => {

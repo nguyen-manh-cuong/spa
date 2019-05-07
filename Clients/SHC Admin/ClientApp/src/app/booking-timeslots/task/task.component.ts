@@ -93,7 +93,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
       this._frm.controls['hoursEnd'].setValue(this._obj.hoursEnd);
       this._frm.controls['minuteEnd'].setValue(this._obj.minuteEnd);
       this._frm.controls['isActive'].setValue(this._obj.isActive);
-
+      this._frm.controls['code'].disable();
     }
   }
 

@@ -81,8 +81,8 @@
                                     <mat-label>{{l('PackageSmsTo')}}</mat-label>
                                     <input type="text" id="{{_smsTo + item.index}}" mask="dot_separator" formControlName="{{_smsTo + item.index}}"
                                         matInput [required]="true" (keyup)="getValue($event.target.value, i, 1)"
-                                        (input)="inputOnlyNumber($event, _smsTo + item.index)" maxlength="11">
-                                    <validation matSuffix [control]="_frm.controls[_smsTo + item.index]"></validation>
+                                        (input)="inputOnlyNumber($event, _smsTo + item.index)" maxlength="11" [readonly]="_package.isDeleteDistribute != 0 && _isNew == false">
+                                    <validation [hidden]="_package.isDeleteDistribute != 0 && _isNew == false" matSuffix [control]="_frm.controls[_smsTo + item.index]" ></validation>
                                 </mat-form-field>
                             </div>
                             <div class="col-md-4">
@@ -91,13 +91,12 @@
                                     <input type="text" mask="dot_separator"
                                         formControlName="{{_detailCost + item.index}}" matInput [required]="true"
                                         (keyup)="getValue($event.target.value, i, 2)" (input)="inputOnlyNumber($event, _detailCost + item.index)"
-                                        maxlength="11">
-                                    <validation matSuffix [control]="_frm.controls[_detailCost + item.index]">
-                                    </validation>
+                                        maxlength="11" [readonly]="_package.isDeleteDistribute != 0 && _isNew == false">
+                                    <validation [hidden]="_package.isDeleteDistribute != 0 && _isNew == false" matSuffix [control]="_frm.controls[_detailCost + item.index]"></validation>
                                 </mat-form-field>
                             </div>
                             <div class="col-md-2">
-                                <button mat-icon-button [matTooltipPosition]="'right'" matTooltip="Xóa"
+                                <button mat-icon-button [matTooltipPosition]="'right'" matTooltip="Xóa" [disabled]="_package.isDeleteDistribute != 0 && _isNew == false"
                                     (click)="deleteDetail(i, item.index)">
                                     <mat-icon aria-label="Xóa">delete</mat-icon>
                                 </button>
