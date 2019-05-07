@@ -150,6 +150,52 @@ export class DataService {
         }));
     }
 
+    createUpload(enpoint: string, input: any | null | undefined): Observable<any> {
+        let url_ = this.baseUrl + `/${enpoint}`;
+        url_ = url_.replace(/[?&]$/, '');
+        const formData: FormData = new FormData();
+        console.log(input);
+        for (const key in input) {
+
+            if (key === 'cmnd') {
+                if (input.cmnd && input.cmnd.files && input.cmnd.files.length) {
+                    Array.from(input.cmnd.files).forEach((f: any) => formData.append('cmnd', f));
+                }
+            }
+            if (key === 'gp') {
+                if (input.cmnd && input.cmnd.files && input.cmnd.files.length) {
+                    Array.from(input.gp.files).forEach((f: any) => formData.append('gp', f));
+                }
+            }
+            else {
+                formData.append(key, input[key]);
+            }
+        }
+
+        const options_: any = {
+            body: formData,
+            observe: 'response',
+            responseType: 'blob',
+            headers: new HttpHeaders({
+                'Accept': 'application/json'
+            })
+        };
+
+        return this.http.request('post', url_, options_).pipe(_observableMergeMap((response_: any) => {
+            return this.processDataOk(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDataOk(<any>response_);
+                } catch (e) {
+                    return <Observable<any>><any>_observableThrow(e);
+                }
+            } else {
+                return <Observable<any>><any>_observableThrow(response_);
+            }
+        }));
+    }
+
     /**
      * @input (optional)
      * @return Success

@@ -173,7 +173,6 @@ namespace SHCServer.Controllers
         public object Register([FromForm] UserInputViewModel obj)
         {
             var User = _context.Query<User>();
-            var UsersAttach = _context.Query<UsersAttach>();
 
             if (User.Where(u => u.UserName == obj.UserName).Count() > 0)
             {
@@ -273,7 +272,7 @@ namespace SHCServer.Controllers
             catch (Exception e)
             {
                 if (_context.Session.IsInTransaction) _context.Session.RollbackTransaction();
-                return Json(new ActionResultDto { Error = e.Message });
+                return StatusCode(500, _excep.Throw("Đăng ký không thành công.", "Lỗi hệ thông!"));
             }
         }
 
