@@ -170,9 +170,10 @@ namespace SHCServer.Controllers
 
         [HttpPost]
         [Route("api/Register")]
-        public object Register([FromBody] UserInputViewModel obj)
+        public object Register([FromForm] UserInputViewModel obj)
         {
             var User = _context.Query<User>();
+            var UsersAttach = _context.Query<UsersAttach>();
 
             if (User.Where(u => u.UserName == obj.UserName).Count() > 0)
             {
@@ -194,7 +195,7 @@ namespace SHCServer.Controllers
             try
             {
                 _context.Session.BeginTransaction();
-                 _context.Insert(() => new User
+                _context.Insert(() => new User
                 {
                     UserName = obj.UserName,
                     Password = Utils.HashPassword(obj.Password),
@@ -222,7 +223,7 @@ namespace SHCServer.Controllers
 
                 User user = _context.Query<User>().Where(u => u.UserName == obj.UserName).FirstOrDefault();
 
-                if(user != null && obj.AccountType != 1)
+                if (user != null && obj.AccountType != 1)
                 {
                     _context.Insert(() => new UsersServices
                     {
@@ -234,21 +235,37 @@ namespace SHCServer.Controllers
                         isUsingUpload = obj.isUsingUpload != null ? obj.isUsingUpload : false,
                         isUsingVideo = obj.isUsingVideo != null ? obj.isUsingVideo : false,
                     });
-                }             
+                }
 
-                //var _files = Request.Form.Files;
-                //var _fileUpload = "";
-                //if (_files.Count > 0)
-                //{
-                //    foreach (var file in _files)
-                //    {
-                //        var uniqueFileName = GetUniqueFileName(file.FileName);
-                //        var uploads = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
-                //        var filePath = Path.Combine(uploads, uniqueFileName);
-                //        _fileUpload = "/uploads/" + uniqueFileName;
-                //        file.CopyTo(new FileStream(filePath, FileMode.Create));
-                //    }
-                //}
+                var _files = Request.Form.Files;
+                if (_files.Count > 0)
+                {
+                    foreach (var file in _files)
+                    {
+                        var uniqueFileName = GetUniqueFileName(file.FileName);
+                        var uploads = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+                        var filePath = Path.Combine(uploads, uniqueFileName);
+                        if (file.Name == "cmnd")
+                        {
+                            _context.Insert(() => new UsersAttach
+                            {
+                                UserId = user.Id,
+                                Path = "/uploads/" + uniqueFileName,
+                                Type = "1"
+                            });
+                        }
+                        else
+                        {
+                            _context.Insert(() => new UsersAttach
+                            {
+                                UserId = user.Id,
+                                Path = "/uploads/" + uniqueFileName,
+                                Type = "2"
+                            });
+                        }
+                        file.CopyTo(new FileStream(filePath, FileMode.Create));
+                    }
+                }
 
                 _context.Session.CommitTransaction();
                 return Json(new ActionResultDto());
