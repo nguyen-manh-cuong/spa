@@ -86,8 +86,12 @@ namespace SHCServer.Controllers
                         lstHealthFacilitiesId.Add(item.HealthFacilitiesId);
                     }
 
-                    objs = objs.Where((o) => lstHealthFacilitiesId.Contains(o.HealthFacilitiesId));
-                } 
+                    objs = objs.Where(o => lstHealthFacilitiesId.Contains(o.HealthFacilitiesId));
+                }
+                else
+                {
+                    return Json(new ActionResultDto { Result = new List<HealthFacilitiesViewModel>()});
+                }
             }
 
             return Json(new ActionResultDto { Result = new { Items = objs.OrderBy(h => h.Name).Take(1000).Select(h => new HealthFacilitiesViewModel(h, _connectionString)).ToList() } });
