@@ -9,6 +9,7 @@ import { Location } from '@angular/common';
 import * as _ from 'lodash';
 import * as moment from 'moment';
 import swal from 'sweetalert2';
+import { FileValidator } from 'ngx-material-file-input';
 
 @Component({
     selector: 'app-register',
@@ -45,7 +46,7 @@ export class RegisterComponent implements OnInit {
 
     _capcha: { code: string, data: any } = { code: '', data: '' };
     _sex: Array<{ id: number, name: string }> = [{ id: 1, name: 'Nam' }, { id: 2, name: 'Nữ' }, { id: 3, name: 'Không xác định' }];
-    _obj: IUsersServices | any = { isUsingdoctor: '', isUsingCall: '', isUsingUpload: '', isUsingRegister: '', isUsingVideo: '', isUsingExamination:''};
+    _obj: IUsersServices | any = { isUsingdoctor: '', isUsingCall: '', isUsingUpload: '', isUsingRegister: '', isUsingVideo: '', isUsingExamination: '' };
     capcha = false;
 
     @ViewChild("fullName") fullName: ElementRef;
@@ -53,7 +54,7 @@ export class RegisterComponent implements OnInit {
     constructor(private _sanitizer: DomSanitizer, private _dataService: DataService, private _formBuilder: FormBuilder, private _location: Location, ) { }
 
     ngOnInit() {
-        this._user = new CreateUserDto();        
+        this._user = new CreateUserDto();
         this._idCardUrls = [];
         this._certificateUrls = [];
         // if (this.obj) {
@@ -80,8 +81,8 @@ export class RegisterComponent implements OnInit {
             healthFacilitiesName: [this._user.healthFacilitiesName],
             specialist: [this._user.specialist],
             codeCapcha: [''],
-            cmnd: [],
-            gp: [],
+            cmnd: [null, [FileValidator.maxContentSize(20000000)]],
+            gp: [null, [FileValidator.maxContentSize(20000000)]],
             isUsingdoctor: [this._obj.isUsingdoctor],
             isUsingCall: [this._obj.isUsingCall],
             isUsingUpload: [this._obj.isUsingUpload],
@@ -99,11 +100,11 @@ export class RegisterComponent implements OnInit {
         this.getCapcha();
     }
 
-    onSelectBirthDay(obj: any){
+    onSelectBirthDay(obj: any) {
         this.checkBirthDate();
     }
 
-    onSelectBirthMonth(obj: any){
+    onSelectBirthMonth(obj: any) {
         this.checkBirthDate();
     }
 
@@ -155,7 +156,8 @@ export class RegisterComponent implements OnInit {
     }
 
     submit() {
-       // this.frmUser.controls['isActive'].setValue(this._obj.isActive);
+        // this.frmUser.controls['isActive'].setValue(this._obj.isActive);
+
         this.frmUser.value.birthDay = new Date($('#birthY').val() + '-' + $('#birthM').val() + '-' + $('#birthD').val());
 
         if (this.frmUser.controls['password'].value != this.frmUser.controls['confirmPassword'].value) {
@@ -167,6 +169,7 @@ export class RegisterComponent implements OnInit {
 
         if (this.frmUser.invalid) {
             for (let key in this.frmUser.controls) {
+                console.log(12, key,  this.frmUser.controls[key])
                 if (this.frmUser.controls[key] && this.frmUser.controls[key].errors) {
                     this.frmUser.controls[key].markAsTouched();
                     this.frmUser.controls[key].markAsDirty();
@@ -176,14 +179,14 @@ export class RegisterComponent implements OnInit {
             return;
         }
 
-        if(this._invaliBirthday) return;
+        if (this._invaliBirthday) return;
 
         if (this.frmUser.controls['codeCapcha'].value != this._capcha.code) {
             this.capcha = true;
             return;
         }
 
-        this._dataService.create('Register', this.frmUser.value).subscribe(
+        this._dataService.createUpload('Register', this.frmUser.value).subscribe(
             () => {
                 swal({
                     title: '<u>Đăng ký mở tài khoản thành công !</u>',
@@ -195,18 +198,18 @@ export class RegisterComponent implements OnInit {
                     timer: 3000
                 }).then((result) => {
                     //if (result.value) {
-                        //this._location.back();
+                    //this._location.back();
                     //}
                     this._location.back();
                 });
-            }, err => console.log(err))
+            }, err => console.log('err: ' + err))
     }
 
     //validate  
-    checkBirthDate(){
-        if(!moment($('#birthD').val() + '/' + $('#birthM').val() + '/' +  $('#birthY').val(), "DD/MM/YYYY").isValid()){
+    checkBirthDate() {
+        if (!moment($('#birthD').val() + '/' + $('#birthM').val() + '/' + $('#birthY').val(), "DD/MM/YYYY").isValid()) {
             this._invaliBirthday = true;
-        } else{
+        } else {
             this._invaliBirthday = false;
         }
     }
@@ -225,23 +228,34 @@ export class RegisterComponent implements OnInit {
         }
     }
 
+    arrayIdCard = [];
+    arrayCertificate = [];
     detectFiles(event, type) {
-        this._idCardError = "";
-        this._certificateError = "";
+        console.log(this.frmUser.controls['cmnd'].value);
+
+        
+
         let files = event.target.files;
+        //console.log(event.target.files);
         if (files) {
             for (let file of files) {
                 let reader = new FileReader();
+                reader.readAsDataURL(file);
                 if (file.type == 'image/jpeg' || file.type == 'image/png') {
-                    reader.onload = (e: any) => {
-                        if (type == 'idCard') {
+                    if (type == 'idCard') {
+                        reader.onload = (e: any) => {
                             this._idCardUrls.push(e.target.result);
                         }
-                        if (type == 'certificate') {
+                        this.arrayIdCard.push(file);
+                    }
+
+                    if (type == 'certificate') {
+                        reader.onload = (e: any) => {
                             this._certificateUrls.push(e.target.result);
                         }
+                        this.arrayCertificate.push(file);
                     }
-                    reader.readAsDataURL(file);
+
                 } else {
                     if (type == 'idCard') {
                         this._idCardError = "File tải lên không phải file ảnh";
@@ -251,6 +265,11 @@ export class RegisterComponent implements OnInit {
                     }
                 }
             }
+            ;
+            this.frmUser.controls['cmnd'].setValue({ files: this.arrayIdCard });
+            this.frmUser.controls['gp'].setValue({ files: this.arrayCertificate });
+            console.log(this.frmUser.controls['cmnd'].value);
+
         }
     }
 
