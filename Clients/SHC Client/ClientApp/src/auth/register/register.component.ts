@@ -157,6 +157,21 @@ export class RegisterComponent implements OnInit {
 
     submit() {
         // this.frmUser.controls['isActive'].setValue(this._obj.isActive);
+        if (this.frmUser.controls['accountType'].value != 1) {
+            if (!this.frmUser.controls['isUsingdoctor'].value &&
+                !this.frmUser.controls['isUsingCall'].value &&
+                !this.frmUser.controls['isUsingUpload'].value &&
+                !this.frmUser.controls['isUsingRegister'].value &&
+                !this.frmUser.controls['isUsingVideo'].value &&
+                !this.frmUser.controls['isUsingExamination'].value) {
+                return swal({
+                    title: 'Thông báo',
+                    text: 'Bạn phải chọn ít nhất một dịch vụ',
+                    type: 'warning',
+                    timer: 3000
+                });
+            }
+        }
 
         this.frmUser.value.birthDay = new Date($('#birthY').val() + '-' + $('#birthM').val() + '-' + $('#birthD').val());
 
@@ -169,7 +184,7 @@ export class RegisterComponent implements OnInit {
 
         if (this.frmUser.invalid) {
             for (let key in this.frmUser.controls) {
-                console.log(12, key,  this.frmUser.controls[key])
+                console.log(12, key, this.frmUser.controls[key])
                 if (this.frmUser.controls[key] && this.frmUser.controls[key].errors) {
                     this.frmUser.controls[key].markAsTouched();
                     this.frmUser.controls[key].markAsDirty();
@@ -233,8 +248,6 @@ export class RegisterComponent implements OnInit {
     detectFiles(event, type) {
         console.log(this.frmUser.controls['cmnd'].value);
 
-        
-
         let files = event.target.files;
         //console.log(event.target.files);
         if (files) {
@@ -244,24 +257,40 @@ export class RegisterComponent implements OnInit {
                 if (file.type == 'image/jpeg' || file.type == 'image/png') {
                     if (type == 'idCard') {
                         reader.onload = (e: any) => {
-                            this._idCardUrls.push(e.target.result);
+                            this._idCardUrls.push("/assets/images/212328-200.png");
                         }
                         this.arrayIdCard.push(file);
                     }
 
                     if (type == 'certificate') {
                         reader.onload = (e: any) => {
-                            this._certificateUrls.push(e.target.result);
+                            this._certificateUrls.push("/assets/images/212328-200.png");
                         }
                         this.arrayCertificate.push(file);
                     }
 
+                }
+                if (file.type == 'application/pdf') {
+                    console.log('vao day k');
+                    if (type == 'idCard') {
+                        reader.onload = (e: any) => {
+                            this._idCardUrls.push("/assets/images/24-512.png");
+                        }
+                        this.arrayIdCard.push(file);
+                    }
+
+                    if (type == 'certificate') {
+                        reader.onload = (e: any) => {
+                            this._certificateUrls.push("/assets/images/24-512.png");
+                        }
+                        this.arrayCertificate.push(file);
+                    }
                 } else {
                     if (type == 'idCard') {
-                        this._idCardError = "File tải lên không phải file ảnh";
+                        this._idCardError = "File tải lên không phải file ảnh và pdf";
                     }
                     if (type == 'certificate') {
-                        this._certificateError = "File tải lên không phải file ảnh";
+                        this._certificateError = "File tải lên không phải file ảnh và pdf";
                     }
                 }
             }
@@ -282,6 +311,10 @@ export class RegisterComponent implements OnInit {
 
     getCapcha() {
         this._dataService.getAny('get-captcha-image').subscribe(res => this._capcha = { code: res.code, data: this._sanitizer.bypassSecurityTrustResourceUrl('data:image/jpg;base64,' + res.data) });
+    }
+
+    validateCapcha(value: any){
+        if(value.length == 4) this._capcha.code != value ? this.capcha = true : this.capcha = false;
     }
 
     cleanControl(listControl) {

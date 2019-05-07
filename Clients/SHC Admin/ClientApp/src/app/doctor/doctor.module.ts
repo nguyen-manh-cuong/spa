@@ -12,7 +12,7 @@ import { CustomCurrencyPipe } from 'pipes/custom-currency.pipe';
 import { MAT_CHECKBOX_CLICK_ACTION } from '@angular/material';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { DetailComponent } from './detail/detail.component';
-import { TaskComponent } from './task/task.component';
+import { TaskComponent} from './task/task.component';
 
 
 @NgModule({

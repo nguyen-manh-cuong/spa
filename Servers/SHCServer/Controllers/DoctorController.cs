@@ -246,8 +246,15 @@ namespace SHCServer.Controllers
         {
             bool checkCertificationDate = true;
 
-            if (Convert.ToDateTime(doctor.CertificationDate).Year == 1) ;
-            checkCertificationDate = false;
+            try
+            {
+                if (Convert.ToDateTime(doctor.CertificationDate).Year == 1)
+                checkCertificationDate = false;
+            }
+            catch
+            {
+                checkCertificationDate = false;
+            }
 
             try
             {
@@ -391,9 +398,18 @@ namespace SHCServer.Controllers
         [Route("api/doctor")]
         public IActionResult Update([FromForm] DoctorInputViewModel doctor, int? allow)
         {
+
             bool checkCertificationDate = true;
-            if (Convert.ToDateTime(doctor.CertificationDate).Year == 1) ;
-            checkCertificationDate = false;
+            try
+            {
+                if (Convert.ToDateTime(doctor.CertificationDate).Year == 1)
+                checkCertificationDate = false;
+            }
+            catch
+            {
+                checkCertificationDate = false;
+            }
+
 
             if (!string.IsNullOrEmpty(doctor.EthnicityCode))
                 if (doctor.EthnicityCode.Equals("null"))
@@ -625,8 +641,9 @@ namespace SHCServer.Controllers
                     {
                         _context.Update<DoctorSpecialists>(s => s.DoctorId == item.DoctorId, x => new DoctorSpecialists()
                         {
-                            IsDelete = true
-                        });
+                            IsDelete = true,
+                            IsActive = false
+                        }) ;
                     }
 
                     var healthfacilities = _context.Query<HealthFacilitiesDoctors>().Where(hf => hf.IsDelete == false && hf.IsActive == true && hf.DoctorId == id);
@@ -634,7 +651,8 @@ namespace SHCServer.Controllers
                     {
                         _context.Update<HealthFacilitiesDoctors>(hf => hf.DoctorId == item.DoctorId, x => new HealthFacilitiesDoctors()
                         {
-                            IsDelete = true
+                            IsDelete = true,
+                            IsActive=false
                         });
                     }
 

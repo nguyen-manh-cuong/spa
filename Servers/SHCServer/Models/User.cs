@@ -35,7 +35,7 @@ namespace SHCServer.Models
         public string Insurrance { get; set; }
         public string WorkPlace { get; set; }
         public string HealthFacilitiesName { get; set; }
-        public int Specialist { get; set; }
+        public int? Specialist { get; set; }
 
         public int? HealthFacilitiesId { get; set; }
     }

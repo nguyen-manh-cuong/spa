@@ -15,6 +15,7 @@ import { TaskComponent, Specialist } from '../task/task.component';
 import swal from 'sweetalert2';
 import { start } from 'repl';
 import { DetailComponent } from '../detail/detail.component';
+import { HttpHeaders, HttpClient } from '@angular/common/http';
 
 
 
@@ -94,7 +95,7 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
         this.dataService.delete(this.api, obj[doctorId ? doctorId : 'doctorId']).subscribe(() => {
           swal({
             title: this.l('SuccessfullyDeleted'),
-            text: this.l('DeletedInSystem', obj[key]),
+            html: this.l('DeletedInSystem', obj[key]),
             type: 'success',
             timer: 3000
           });
@@ -157,7 +158,7 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
         if (result.value) {
           obj.allowBooking = !obj.allowBooking;
           obj.updateUserId = this.appSession.userId;
-          this.dataService.update(this.api + "?allow=1", obj).subscribe(() => {
+          this.dataService.updateMini(this.api + "?allow=1", obj).subscribe(() => {
             swal({
               title: this.l('DoctorUpdateAllowCompleteTitle'),
               text: this.l('DoctorTitle') + ' ' + obj.fullName + ' ' + this.ll('DoctorUpdateAllowBookingSuccessfully', obj.fullName),
@@ -187,7 +188,7 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
         if (result.value) {
           obj.allowBooking = !obj.allowBooking;
           obj.updateUserId = this.appSession.userId;
-          this.dataService.update(this.api + "?allow=1", obj).subscribe(() => {
+          this.dataService.updateMini(this.api + "?allow=1", obj).subscribe(() => {
             swal({
               title: this.l('DoctorUpdateAllowCompleteTitle'),
               text: this.l('DoctorTitle') + ' ' + obj.fullName + ' ' + this.ll('DoctorCancelAllowBookingSuccessfully', obj.fullName),
@@ -220,7 +221,7 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
         if (result.value) {
           obj.allowFilter = !obj.allowFilter;
           obj.updateUserId = this.appSession.userId;
-          this.dataService.update(this.api + "?allow=1", obj).subscribe(() => {
+          this.dataService.updateMini(this.api + "?allow=1", obj).subscribe(() => {
             swal({
               title: this.l('DoctorUpdateAllowCompleteTitle'),
               text: this.l('DoctorTitle') + ' ' + obj.fullName + ' ' + this.ll('DoctorUpdateAllowFilterSuccessfully', obj.fullName),
@@ -250,7 +251,7 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
         if (result.value) {
           obj.allowFilter = !obj.allowFilter;
           obj.updateUserId = this.appSession.userId;
-          this.dataService.update(this.api + "?allow=1", obj).subscribe(() => {
+          this.dataService.updateMini(this.api + "?allow=1", obj).subscribe(() => {
             swal({
               title: this.l('DoctorUpdateAllowCompleteTitle'),
               text: this.l('DoctorTitle') + ' ' + obj.fullName + ' ' + this.ll('DoctorCancelAllowFilterSuccessfully', obj.fullName),
@@ -283,7 +284,7 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
         if (result.value) {
           obj.allowSearch = !obj.allowSearch;
           obj.updateUserId = this.appSession.userId;
-          this.dataService.update(this.api + "?allow=1", obj).subscribe(() => {
+          this.dataService.updateMini(this.api + "?allow=1", obj).subscribe(() => {
             swal({
               title: this.l('DoctorUpdateAllowCompleteTitle'),
               text: this.l('DoctorTitle') + ' ' + obj.fullName + ' ' + this.l('DoctorUpdateAllowSearchSuccessfully', obj.fullName),
@@ -313,7 +314,7 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
         if (result.value) {
           obj.allowSearch = !obj.allowSearch;
           obj.updateUserId = this.appSession.userId;
-          this.dataService.update(this.api + "?allow=1", obj).subscribe(() => {
+          this.dataService.updateMini(this.api + "?allow=1", obj).subscribe(() => {
             swal({
               title: this.l('DoctorUpdateAllowCompleteTitle'),
               text: this.l('DoctorTitle') + ' ' + obj.fullName + ' ' + this.l('DoctorCancelAllowSearchSuccessfully', obj.fullName),

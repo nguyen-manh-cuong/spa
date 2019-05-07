@@ -14,7 +14,7 @@
                     <div class="col-md-6">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("DoctorName")}}</mat-label>
-                            <input (input)="fullNameInput($event)" formControlName="fullName" matInput [required]="true"
+                            <input (keyup)="fullNameInput($event)" formControlName="fullName" matInput [required]="true"
                                 maxlength="255">
                             <validation matSuffix [control]="_frm.controls['fullName']"></validation>
                         </mat-form-field>
@@ -32,12 +32,12 @@
 
                 <div class="row pb-2">
                     <div class="col-md-6">
-                        <mat-radio-group formControlName="gender" appearance="outline" class="w-100">
-                            <mat-radio-button [checked]="_obj.gender==1" value="1" color="primary" class="ml-3">
-                                {{l('Male')}}</mat-radio-button>
-                            <mat-radio-button [checked]="_obj.gender==2" value="2" color="primary" class="ml-3">
-                                {{l('Female')}}</mat-radio-button>
-                        </mat-radio-group>
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l('DoctorGender')}}</mat-label>
+                            <mat-select formControlName="gender">
+                                <mat-option *ngFor="let g of genders" [value]="g.code">{{g.name}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
                     </div>
                 </div>
 
@@ -93,18 +93,17 @@
                     <div class="col-md-6">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("DoctorCertificationCode")}}</mat-label>
-                            <input formControlName="certificationCode" matInput maxlength="45"
-                                (input)="certificationCodeChange($event)">
+                            <input ctrlKeys (ctrlV)="onCtrlV()" (ctrlC)="onCtrlC()" formControlName="certificationCode"
+                                matInput maxlength="45" (input)="certificationCodeChange($event)">
                         </mat-form-field>
                     </div>
                     <div class="col-md-4">
-                        <mat-form-field appearance="outline" class="w-100" [ngClass]="{'disabled': flagDate}">
+                        <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("DoctorCertificationDate")}}</mat-label>
-                            <input [disabled]="_certificationInputCheck" #certificationDatePicker
-                                (dateChange)="certificationDateChange($event.value)" matInput
-                                [matDatepicker]="certificationDatePicker" matInput mask="0*" maxlength="10">
-                            <mat-datepicker-toggle [disabled]="_certificationInputCheck" matSuffix
-                                [for]="certificationDatePicker" class="t-2">
+                            <input #certificationDatePicker (dateChange)="certificationDateChange($event.value)" mask="0*"
+                                [max]="maxDate2" matInput [matDatepicker]="certificationDatePicker" matInput 
+                                maxlength="10">
+                            <mat-datepicker-toggle matSuffix [for]="certificationDatePicker" class="t-2">
                             </mat-datepicker-toggle>
                             <mat-datepicker #certificationDatePicker [startAt]="startDate">
                             </mat-datepicker>
@@ -196,7 +195,7 @@
                             <mat-label>{{l('DoctorSpecialist')}}</mat-label>
                             <mat-chip-list #specialChipList [required]="true">
                                 <mat-chip *ngFor="let o of _specialistChip" [selectable]="specialSelectable"
-                                    [removable]="specialRemovable" (removed)="specialRemove(o.code)">
+                                    [removable]="specialRemovable" (removed)="specialRemove(o.specialistCode)">
                                     {{o.name}}
                                     <mat-icon matChipRemove *ngIf="specialRemovable">cancel</mat-icon>
                                 </mat-chip>
@@ -244,11 +243,7 @@
                         <div class="col-md-3 btn btn-primary">
                             <br>
                             <div class="upload-button">
-                                <input type="file" accept="image/*" multiple (change)="detectFiles($event)"><span
-                                    class="btn btn-sm btn-primary-inverted">
-                                    <i class="fa fa-paperclip" aria-hidden="true"></i>Tải
-                                    lên
-                                </span>
+                                <input type="file" accept="image/*" (change)="detectFiles($event)">
                             </div>
                         </div>
                         <div class="pl-3">
@@ -274,13 +269,13 @@
                     <div class="col-md-6">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("DoctorPriceFrom")}}</mat-label>
-                            <input mask="dot_separator" maxlength="14" formControlName="priceFrom" matInput>
+                            <input mask="dot_separator" maxlength="12" formControlName="priceFrom" matInput>
                         </mat-form-field>
                     </div>
                     <div class="col-md-6">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("DoctorPriceTo")}}</mat-label>
-                            <input mask="dot_separator" maxlength="14" formControlName="priceTo" matInput>
+                            <input mask="dot_separator" maxlength="12" formControlName="priceTo" matInput>
                         </mat-form-field>
                     </div>
                 </div>
@@ -379,7 +374,8 @@
 
                 <div class="text-right mb-3">
                     <div *ngIf="_isNew" class="mb-2 mr-3">
-                        <mat-checkbox #continueAdd (click)="checkBoxChange()" color="primary">{{l('DoctorContinueAdd')}}
+                        <mat-checkbox #continueAdd (click)="checkBoxChange()" color="primary">
+                            <b>{{l('DoctorContinueAdd')}}</b>
                         </mat-checkbox>
                     </div>
                     <button class="mr-3" mat-button mat-dialog-close>{{l("Close")}}</button>
