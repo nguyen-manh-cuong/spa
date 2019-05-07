@@ -30,13 +30,13 @@
                     <div class="col-md-6 disabled">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l('PackageCost')}}</mat-label>
-                            <input type="text" mask="dot_separator" formControlName="cost" matInput>
+                            <input type="text" mask="dot_separator" formControlName="cost" matInput [readonly]="true" [readonly]="true">
                         </mat-form-field>
                     </div>
                     <div class="col-md-6 disabled">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l('PackageQuantity')}}</mat-label>
-                            <input type="text" mask="dot_separator" formControlName="quantity" matInput>
+                            <input type="text" mask="dot_separator" formControlName="quantity" matInput [readonly]="true">
                         </mat-form-field>
                     </div>
                     <section class="col-md-12 m-b-20">
@@ -44,12 +44,12 @@
                     </section><br>
 
                     <div class="col-md-3 disabled">
-                        <mat-form-field appearance="outline" class="w-100">
+                        <mat-form-field appearance="outline" class="w-100" tabindex="-1">
                             <mat-label>{{l('PackageSmsFrom')}}</mat-label>
-                            <input type="text" formControlName="smsFrom" matInput [required]="true">
+                            <input type="text" formControlName="smsFrom" matInput [required]="true" [readonly]="true">
                         </mat-form-field>
                     </div>
-                    <div class="col-md-3" [ngClass]="{'disabled': _package.isDeleteDistribute != 0 && _isNew == false}">
+                    <div class="col-md-3">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l('PackageSmsTo')}}</mat-label>
                             <input type="text" mask="dot_separator" formControlName="smsTo" matInput [required]="true"
@@ -58,7 +58,7 @@
                             <validation matSuffix [control]="_frm.controls['smsTo']"></validation>
                         </mat-form-field>
                     </div>
-                    <div class="col-md-4" [ngClass]="{'disabled': _package.isDeleteDistribute != 0 && _isNew == false}">
+                    <div class="col-md-4">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l('PackageDetailCost')}}</mat-label>
                             <input type="text" mask="dot_separator" formControlName="detailCost" matInput
@@ -67,13 +67,13 @@
                             <validation matSuffix [control]="_frm.controls['detailCost']"></validation>
                         </mat-form-field>
                     </div>
-                    <div class="col-md-12" [ngClass]="{'disabled': _package.isDeleteDistribute != 0 && _isNew == false}">
+                    <div class="col-md-12">
                         <div class="row" *ngFor="let item of _details; index as i">
                             <div class="col-md-3 disabled">
                                 <mat-form-field appearance="outline" class="w-100">
                                     <mat-label>{{l('PackageSmsFrom')}}</mat-label>
                                     <input type="text" mask="dot_separator" formControlName="{{_smsFrom + item.index}}"
-                                        matInput [required]="true" [readonly]="true">
+                                        matInput [required]="true" [readonly]="true" tabindex="-1">
                                 </mat-form-field>
                             </div>
                             <div class="col-md-3">
