@@ -49,7 +49,9 @@
 }
 
 /*============= common ============= */
+.color-primary{color: #00695c!important;}
 .is-loading .mat-option-text {display: flex;justify-content: center;}
+.pl-10{padding-left: 10px!important;}
 /*============= end common ============= */
 /*============= font ============= */
 .f14{font-size: 14px!important;}    
@@ -58,8 +60,6 @@
 .fw-500{font-weight: 500;}
 /*============= end font ============= */
 .wrap-text{white-space: normal!important;word-break: break-all!important; overflow: visible!important;}  
-.custom-form .mat-form-field-label-wrapper {left: -5px;}
-.color-primary{color: #00695c!important;}
 .wrap-text-word {word-break: word-break!important;white-space: normal!important;overflow: visible!important;}
 /*============= table ============= */
 .table-custom  .mat-table.task td.mat-cell:last-of-type{ padding-left: 10px !important; padding-right: 10px!important;}
@@ -74,6 +74,13 @@
 .form-detail .mat-select-arrow{visibility: hidden;}
 .form-detail mat-label{color: black;}
 .form-detail .mat-form-field input.mat-input-element {color: #00695c!important;}    
-.form-detail .mat-checkbox-disabled .mat-checkbox-label {color:black;}
+.form-detail .mat-checkbox-disabled .mat-checkbox-label {color:black;font-size: 14px;font-weight: 500;}
+.custom-form .mat-form-field-label-wrapper {left: -5px;}
 /*============= end form-detail ============= */
-
+/*============= responsive ============= */
+@media (min-width: 1024px){
+    .lbl-start{min-width: 100px;}
+    .pr-5--md{padding-right: 5px!important;}
+    .pl-5--md{padding-left: 5px!important;}
+  }
+/*============= end responsive ============= */

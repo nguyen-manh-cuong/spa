@@ -62,7 +62,7 @@
             </ng-container>
             <ng-container matColumnDef="smsContent">
                 <th mat-header-cell *matHeaderCellDef class="text-center"> {{l('PackageTemplateMessageContent')}} </th>
-                <td mat-cell *matCellDef="let element" class="td-ellipsis" title="{{element.smsContent}}"> {{element.smsContent}} </td>
+                <td mat-cell *matCellDef="let element" class="wrap-text" title="{{element.smsContent}}"> {{element.smsContent}} </td>
             </ng-container>
             <ng-container matColumnDef="isActive">
                 <th mat-header-cell *matHeaderCellDef class="min-w-55 text-center"> {{l('Using')}}</th>
