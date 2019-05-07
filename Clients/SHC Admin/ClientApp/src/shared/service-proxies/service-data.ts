@@ -94,7 +94,7 @@ export class DataService {
                 }
             }
             if(key==='specialist'){
-                Array.from(input.specialist).forEach((e:any)=>specialist += e.specialistCode+",");
+                Array.from(input.specialist).forEach((e:any)=>specialist += e.code+",");
             }
             if(key==='healthfacilities'){
                 Array.from(input.healthfacilities).forEach((h:any)=>healhFacilities+=h.healthFacilitiesId+",");
@@ -161,7 +161,7 @@ export class DataService {
                 }
             }
             if(key==='specialist'){
-                Array.from(input.specialist).forEach((e:any)=>specialist += e.specialistCode+",");
+                Array.from(input.specialist).forEach((e:any)=>specialist += e.code+",");
             }
             if(key==='healthfacilities'){
                 Array.from(input.healthfacilities).forEach((h:any)=>healhFacilities+=h.healthFacilitiesId+",");
