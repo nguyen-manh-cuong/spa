@@ -44,7 +44,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingDoctorsCal
 
     displayedColumns = [];
     lstCalendarId: number[] = [];
-    status = [{ id: 3, name: 'Tất cả' }, { id: 0, name: 'Chờ duyêt' }, { id: 1, name: 'Đã duyệt' }, { id: 2, name: 'Đã hủy' },];
+    status = [{ id: 3, name: 'Tất cả' }, { id: 0, name: 'Chờ duyệt' }, { id: 1, name: 'Đã duyệt' }, { id: 2, name: 'Đã hủy' },];
     dialogDetail: any;
     healthfacilities = new FormControl();
     filteredOptions: Observable<IHealthfacilities[]>;
@@ -185,8 +185,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingDoctorsCal
         var status = obj ? (obj.status == 1 ? 2 : 0) : 1;
         var lstCalendarId = obj ? [obj.calendarId] : this.getSelected();
         if (!lstCalendarId.length)
-            return
-        swal({
+            return swal({
             title: this.l('Notification'),
             text: this.l('NoWaitingSchedule'),
             type: 'warning',
