@@ -94,7 +94,7 @@ namespace SHCServer.Controllers
                     {
                         objs = objs.Where(d => d.DistrictCode.ToString().Equals(value.Trim()));
                     }
-                    if (string.Equals(key, "healthFacilitiesId"))
+                    if (string.Equals(key, "healthfacilitiesId"))
                     {
                         objs = objs.Where(d => d.HealthFacilitiesId.ToString().Equals(value.Trim()));
                     }
