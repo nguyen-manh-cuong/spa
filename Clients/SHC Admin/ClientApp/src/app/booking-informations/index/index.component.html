@@ -36,7 +36,7 @@
             <div class="col-md-3">
                 <mat-form-field appearance="outline" class="w-100" required>
                     <mat-label>{{l('Bác sĩ')}}</mat-label>
-                    <mat-select formControlName="doctor">
+                    <mat-select formControlName="doctor" required>
                         <mat-option *ngIf="_doctors.length" class="text-center" [innerHTML]="'<div class=\'text-center border-bottom w-100\'>'+ l('Bỏ chọn') +'</div>'"></mat-option>
                         <mat-option *ngFor="let o of _doctors" [value]="o.doctorId">{{ o.fullName }}</mat-option>
                     </mat-select>
