@@ -16,6 +16,7 @@ using System.Text;
 using Viettel.MySql;
 using AuthServer;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace SHCServer.Controllers
 {
@@ -241,7 +242,7 @@ namespace SHCServer.Controllers
                 {
                     foreach (var file in _files)
                     {
-                        var uniqueFileName = GetUniqueFileName(file.FileName);
+                        var uniqueFileName = GetUniqueFileName(convertToUnSign(file.FileName));
                         var uploads = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
                         var filePath = Path.Combine(uploads, uniqueFileName);
                         if (file.Name == "cmnd")
@@ -286,6 +287,14 @@ namespace SHCServer.Controllers
 
             return Json(new { Code = result.CaptchaCode, Data = result.CaptchBase64Data });
         }
+
+        public string convertToUnSign(string s)
+        {
+            Regex regex = new Regex("\\p{IsCombiningDiacriticalMarks}+");
+            string temp = s.Normalize(NormalizationForm.FormD);
+            return regex.Replace(temp, String.Empty).Replace('\u0111', 'd').Replace('\u0110', 'D');
+        }
+
         private string GetUniqueFileName(string fileName)
         {
             fileName = Path.GetFileName(fileName);
