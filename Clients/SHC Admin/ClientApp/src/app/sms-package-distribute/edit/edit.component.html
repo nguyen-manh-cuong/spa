@@ -52,7 +52,7 @@
                   <mat-form-field appearance="outline" class="w-100">
                       <mat-label>{{l("Từ năm")}}</mat-label>
                       <input min="0" max="9999" maxlength="4" formControlName="yearStart" mask="0*"
-                             matInput autocomplete [required]="true">
+                             matInput autocomplete [required]="true" #yearStart>
                       <mat-icon matSuffix
                                 *ngIf="_frmpackagedistributeedit.controls['yearStart'].invalid && (_frmpackagedistributeedit.controls['yearStart'].dirty || _frmpackagedistributeedit.controls['yearStart'].touched)"
                                 [matTooltipPosition]="'before'" matTooltipClass="bg-danger text-light mr-1"
@@ -77,7 +77,7 @@
                   <mat-form-field appearance="outline" class="w-100">
                       <mat-label>{{l("Đến năm")}}</mat-label>
                       <input min="0" max="9999" maxlength="4" formControlName="yearEnd" mask="0*"
-                             matInput autocomplete [required]="true">
+                             matInput autocomplete [required]="true" #yearEnd>
                       <mat-icon matSuffix
                                 *ngIf="_frmpackagedistributeedit.controls['yearEnd'].invalid && (_frmpackagedistributeedit.controls['yearEnd'].dirty || _frmpackagedistributeedit.controls['yearEnd'].touched)"
                                 [matTooltipPosition]="'before'" matTooltipClass="bg-danger text-light mr-1"
@@ -103,7 +103,7 @@
           </button>
           <button mat-raised-button color="primary"
                     (click)="submit()"
-            [disabled]="((_frmpackagedistributeedit.controls['yearStart'].invalid) || (_frmpackagedistributeedit.controls['yearEnd'].invalid) || (_frmpackagedistributeedit.controls['yearStart'].value > _currentYear) || (_frmpackagedistributeedit.controls['yearEnd'].value < _frmpackagedistributeedit.controls['yearStart'].value) || (_frmpackagedistributeedit.controls['monthStart'].value > _frmpackagedistributeedit.controls['monthEnd'].value))">
+            [disabled]="((_frmpackagedistributeedit.controls['yearStart'].invalid) || (_frmpackagedistributeedit.controls['yearEnd'].invalid) || (_frmpackagedistributeedit.controls['yearStart'].value < _currentYear) || (_frmpackagedistributeedit.controls['yearEnd'].value < _frmpackagedistributeedit.controls['yearStart'].value) || (_frmpackagedistributeedit.controls['monthStart'].value > _frmpackagedistributeedit.controls['monthEnd'].value))">
           
             {{l("Save")}}
           </button>
