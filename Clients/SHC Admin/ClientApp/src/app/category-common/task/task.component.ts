@@ -51,8 +51,9 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
 
     this._frm = this._formBuilder.group(this._context);
     if(this.obj)
+      //(this._obj.distribute != 0 && this._isNew == false) ? this._frm.controls['code'].disable() : '';
       this._frm.controls['isActive'].setValue(this._obj.isActive);
-      (this._obj.distribute != 0 && this._isNew == false) ? this._frm.controls['code'].disable() : '';
+      
   }
 
   ngAfterViewInit(): void {

@@ -14,8 +14,8 @@
           <div class="col-md-6 pr-5--md {{_isNew ? '' : 'disabled'}}">
             <mat-form-field appearance="outline" class="w-100" autofocus>
               <mat-label>{{l("BookingTimeslotsCode")}}</mat-label>
-              <input formControlName="code" matInput mask="A*" [required]="true" maxlength="255">              
-              <validation matSuffix [control]="_frm.controls['code']"></validation>
+              <input formControlName="code" matInput mask="A*" [required]="true" maxlength="255" [readonly]="!_isNew">              
+              <validation [hidden]="!_isNew" matSuffix [control]="_frm.controls['code']"></validation>
             </mat-form-field>
           </div>
           <div class="col-md-6 pl-5--md">
