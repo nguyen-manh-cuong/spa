@@ -39,8 +39,8 @@ export class RegisterComponent implements OnInit {
 
     _specialist: any = [];
     _context: any;
-    _idCardUrls = new Array<string>();
-    _certificateUrls = new Array<string>();
+    _idCardUrls: Array<{ url: string, name: string }>;
+    _certificateUrls: Array<{ url: string, name: string }>;
     _user: CreateUserDto;
     _invaliBirthday = false;
 
@@ -50,6 +50,7 @@ export class RegisterComponent implements OnInit {
     capcha = false;
 
     @ViewChild("fullName") fullName: ElementRef;
+    @ViewChild("imageData") imageData: ElementRef;
 
     constructor(private _sanitizer: DomSanitizer, private _dataService: DataService, private _formBuilder: FormBuilder, private _location: Location, ) { }
 
@@ -243,6 +244,18 @@ export class RegisterComponent implements OnInit {
         }
     }
 
+    removeFile(i: number) {
+        console.log(i);
+        this._idCardUrls.splice(i, 1);
+        this.arrayIdCard.splice(i, 1);
+        //for (var i = 0; i < this._idCardUrls.length; i++) {
+        //    if (storedFiles[i].name === file) {
+        //        storedFiles.splice(i, 1);
+        //        break;
+        //    }
+        //}
+    }
+
     arrayIdCard = [];
     arrayCertificate = [];
     detectFiles(event, type) {
@@ -257,31 +270,30 @@ export class RegisterComponent implements OnInit {
                 if (file.type == 'image/jpeg' || file.type == 'image/png') {
                     if (type == 'idCard') {
                         reader.onload = (e: any) => {
-                            this._idCardUrls.push("/assets/images/212328-200.png");
+                            this._idCardUrls.push({ url: "/assets/images/212328-200.png", name: file });
                         }
                         this.arrayIdCard.push(file);
                     }
 
                     if (type == 'certificate') {
                         reader.onload = (e: any) => {
-                            this._certificateUrls.push("/assets/images/212328-200.png");
+                            this._certificateUrls.push({ url: "/assets/images/212328-200.png", name: file });
                         }
                         this.arrayCertificate.push(file);
                     }
 
                 }
                 if (file.type == 'application/pdf') {
-                    console.log('vao day k');
                     if (type == 'idCard') {
                         reader.onload = (e: any) => {
-                            this._idCardUrls.push("/assets/images/24-512.png");
+                            this._idCardUrls.push({ url: "/assets/images/24-512.png", name: file });
                         }
                         this.arrayIdCard.push(file);
                     }
 
                     if (type == 'certificate') {
                         reader.onload = (e: any) => {
-                            this._certificateUrls.push("/assets/images/24-512.png");
+                            this._certificateUrls.push({ url: "/assets/images/212328-200.png", name: file });
                         }
                         this.arrayCertificate.push(file);
                     }
