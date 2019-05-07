@@ -63,6 +63,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
   healthfacilities = new FormControl();
   bookingServiceType = new FormControl();
   flagDisabled = true;
+  isFirstTime = true;
   _isDateTimeEnable = true;
   arrayStatus = [{ position: 1, status: 'Đã khám', quantitystatus: 0 }, { position: 2, status: 'Chờ khám', quantitystatus: 0 }, { position: 3, status: 'Hủy khám', quantitystatus: 0 }, { position: 4, status: 'Mới đăng ký', quantitystatus: 0 }];
   isLoading = false;
@@ -107,7 +108,10 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
     setTimeout(() => {
       this.startTime.nativeElement.value = moment(new Date().setDate(new Date().getDate())).format("DD/MM/YYYY");
       this.endTime.nativeElement.value = moment(new Date().setDate(new Date().getDate())).format("DD/MM/YYYY");
+    this.search();
     });
+
+    
   }
   displayFn(h?: IHealthfacilities): string | undefined {
     return h ? h.name : undefined;
@@ -205,8 +209,8 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
       this._isDateTimeEnable = false;       
     }
   }
-  search() {  
-    if (!this.startTime.nativeElement.value) {
+  search() { 
+    if (!this.startTime.nativeElement.value && !this.isFirstTime) {
       this.startTime.nativeElement.focus();
       return swal({
         title:'Thông báo', 
@@ -214,7 +218,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
         type:'warning',
         timer:3000});
     }
-    if (!this.endTime.nativeElement.value) {
+    if (!this.endTime.nativeElement.value && !this.isFirstTime) {
       this.endTime.nativeElement.focus();
       return swal({
         title:'Thông báo', 
@@ -222,7 +226,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
         type:'warning',
         timer:3000});       
     }
-    if (!moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').isValid()) {
+    if (!moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').isValid() && !this.isFirstTime) {
       this.startTime.nativeElement.focus();
       return swal({
         title:'Thông báo', 
@@ -230,7 +234,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
         type:'warning',
         timer:3000});
     }
-    if (!moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').isValid()) {
+    if (!moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').isValid() && !this.isFirstTime) {
       this.endTime.nativeElement.focus();
       return swal({
         title:'Thông báo', 
@@ -238,7 +242,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
         type: 'warning',
         timer:3000});        
     }
-    if (((moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').valueOf() - moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').valueOf()) / (1000 * 60 * 60 * 24)) < 0) {
+    if (((moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').valueOf() - moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').valueOf()) / (1000 * 60 * 60 * 24)) < 0 && !this.isFirstTime) {
       this.endTime.nativeElement.focus();
       return swal({
         title:'Thông báo', 
@@ -246,7 +250,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
         type: 'warning',
         timer:3000});
     }
-    if(((!this.appSession.user.healthFacilitiesId && this.healthfacilities.value) || (this.appSession.user.healthFacilitiesId))){
+    if(((!this.appSession.user.healthFacilitiesId && this.healthfacilities.value) || (this.appSession.user.healthFacilitiesId)) && !this.isFirstTime){
       if (this.appSession.user.healthFacilitiesId != null) {
         this.healthfacilities.value
           ? this.frmSearch.controls['healthfacilities'].setValue(this.healthfacilities.value.healthFacilitiesId)
@@ -258,7 +262,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
           : this.frmSearch.controls['healthfacilities'].setValue('');
       }
     }
-    else{
+    else if (!this.isFirstTime){
       this.appSession.user.healthFacilitiesId == null ? this.frmSearch.controls['healthfacilities'].setValue(null) : '';
       swal({
         title: this.l('Notification'),
@@ -278,12 +282,14 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
       .get(this.api, JSON.stringify(req), '', this.paginator.pageIndex, this.paginator.pageSize)
       .subscribe(resp => {
         setTimeout(() => this.isTableLoading = true, 0);
+        this.isFirstTime = false;
         this.totalItems = resp.totalCount;
         this.totalPatientCount = resp.totalPatientCount;
         this.dataSources.data = resp.items;
         setTimeout(() => {
           this.listBooking = this.dataSources.data;
           if (this.listBooking.length == 0) {
+            console.log('vao ham if')
             this._quantityCancel = 0;
             this._quantityDone = 0;
             this._quantityPending = 0;
@@ -292,7 +298,8 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
             this._quantityFemale = 0;
           }
           else {
-            for (var item of this.listBooking) {
+            console.log('vao ham else')
+            for (var item of this.listBooking) {              
               this._quantityCancel = item.quantityByStatusCancel;
               this._quantityDone = item.quantityByStatusDone;
               this._quantityPending = item.quantityByStatusPending;
