@@ -16,3 +16,6 @@
     transform: translateY(10px);
     font-size: 75%;
 }
+.btn-refresh{
+    margin-left: 10px;
+}

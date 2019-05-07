@@ -20,14 +20,6 @@
         <div class="row m-0 pt-3">
             <div class="col-md-3">
                 <mat-form-field appearance="outline" class="w-100">
-                    <mat-label>{{l('PackageDistributeHealthFacilities')}}</mat-label>
-                    <mat-select formControlName="HealthFacilitiesId" multiple>
-                        <mat-option *ngFor="let o of _medicalFacility" [value]="o.healthFacilitiesId">{{ o.code }} - {{ o.name }}</mat-option>
-                    </mat-select>
-                </mat-form-field>
-            </div>
-            <div class="col-md-3">
-                <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('PackageDistributeMonth')}}</mat-label>
                     <mat-select formControlName="monthStart">
                         <mat-option *ngFor="let o of _month" [value]="o.id">{{ o.name }}</mat-option>
@@ -40,8 +32,14 @@
                     <input mask="0*" maxlength="4" formControlName="fromYear" matInput autocomplete>
                 </mat-form-field>
             </div>
-            <div class="col-md-3">
-                </div>
+            <div class="col-md-6">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>{{l('PackageDistributeHealthFacilities')}}</mat-label>
+                    <mat-select formControlName="HealthFacilitiesId" multiple>
+                        <mat-option *ngFor="let o of _medicalFacility" [value]="o.healthFacilitiesId">{{ o.code }} - {{ o.name }}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
             <div class="col-md-3">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('Đến tháng')}}</mat-label>
@@ -51,11 +49,11 @@
                 </mat-form-field>
             </div>
             <!-- <div class="col-md-3">
-        <mat-form-field appearance="outline" class="w-100">
-            <mat-label>{{l("PackageDistributeYear")}}</mat-label>
-            <input mask="0*" maxlength="4" formControlName="year" matInput autocomplete>
-        </mat-form-field>
-    </div> -->
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>{{l("PackageDistributeYear")}}</mat-label>
+                        <input mask="0*" maxlength="4" formControlName="year" matInput autocomplete>
+                    </mat-form-field>
+                </div> -->
             <div class="col-md-3">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l("Đến năm")}}</mat-label>

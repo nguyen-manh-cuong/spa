@@ -8,7 +8,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { TaskComponent } from '@app/sms-template-task/task/task.component';
 import { Observable } from 'rxjs';
 import { MatPaginator, MatSort } from '@angular/material';
-import { startWith, map } from 'rxjs/operators';
+import { startWith, map, finalize, switchMap, debounceTime, tap } from 'rxjs/operators';
 
 import * as moment from 'moment';
 import swal from 'sweetalert2';
@@ -51,6 +51,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     _sex = [{ id: 0, name: 'Tất cả' }, { id: 1, name: 'Nam' }, { id: 2, name: 'Nữ' }, { id: 3, name: 'Không xác định' }];
     selection = new SelectionModel<IMedicalHealthcareHistories>(true, []);
 
+    isLoading = false;
     filteredOptions: Observable<IHealthfacilities[]>;
     healthfacilities = new FormControl();
     cDate = new Date();
@@ -84,10 +85,18 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
         this.dialogComponent = TaskComponent;
         this.dataService = this._dataService;
         this.dataService.getAll('provinces').subscribe(resp => this._provinces = resp.items);
-        this.dataService.getAll('healthfacilities', (this.appSession.user.healthFacilitiesId ? String(this.appSession.user.healthFacilitiesId) : '')).subscribe(resp => this._healthfacilities = resp.items);
-        if (this.appSession.user.healthFacilitiesId) this.dataService.getAll('doctors', String(this.appSession.user.healthFacilitiesId)).subscribe(resp => this._doctors = resp.items);
 
-        this.appSession.user.healthFacilitiesId ? this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId) : this.filterOptions();
+        if(this.appSession.user.healthFacilitiesId){
+            this.dataService.get("healthfacilities", JSON.stringify({healthfacilitiesId : this.appSession.user.healthFacilitiesId}), '', null, null).subscribe(resp => {this._healthfacilities = resp.items;});
+            this.dataService.getAll('doctors', String(this.appSession.user.healthFacilitiesId)).subscribe(resp => this._doctors = resp.items);
+    
+            setTimeout(() => {
+              this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId);
+            }, 500);
+        } else{
+            this.filterOptions();
+            this.healthfacilities.setValue(null);
+        }
     }
 
 
@@ -128,23 +137,30 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
         return h ? h.name : undefined;
     }
 
-    _filter(name: string): IHealthfacilities[] {
-        const filterValue = name.toLowerCase();
-        return this._healthfacilities.filter(h => h.name.toLowerCase().indexOf(filterValue) === 0);
-    }
-
-    clickCbo() {
-        !this.healthfacilities.value ? this.filterOptions() : '';
-    }
-
     filterOptions() {
-        this.filteredOptions = this.healthfacilities.valueChanges
+        this.healthfacilities.valueChanges
             .pipe(
-                startWith<string | IHealthfacilities>(''),
-                map(value => typeof value === 'string' ? value : value.name),
-                map(name => name ? this._filter(name) : this._healthfacilities.slice()),
-                map(data => data.slice(0, 30))
-            );
+              debounceTime(500),
+              tap(() => this.isLoading = true),
+              switchMap(value => this.filter(value))
+            )
+            .subscribe(data => {
+                this._healthfacilities = data.items;
+            });
+    }
+  
+    filter(value: any){
+        var fValue = typeof value === 'string'  ? value : (value ? value.name : '')
+        this._healthfacilities = [];
+  
+        return this.dataService
+            .get("healthfacilities", JSON.stringify({
+                name : isNaN(fValue) ? fValue : "",
+                code : !isNaN(fValue) ? fValue : ""
+            }), '', null, null)
+            .pipe(
+                finalize(() => this.isLoading = false)
+            )
     }
 
     customSearch() {

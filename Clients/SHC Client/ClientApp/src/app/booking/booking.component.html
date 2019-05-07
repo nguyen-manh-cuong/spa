@@ -136,13 +136,13 @@
                           (ngModelChange)="onSelectBirthDay($event)" placeholder="Ngày"></ng-select>
                       </div>
                       <div class="col-xs-5">
-                        <ng-select formControlName="birthMonth" id="birthM" (ngModelChange)="onSelectBirthMonth($event)"
+                        <ng-select formControlName="birthMonth" id="birthM" 
                           placeholder="Tháng">
                           <ng-option *ngFor="let o of _months" [value]="o">Tháng {{o}}</ng-option>
                         </ng-select>
                       </div>
                       <div class="col-xs-4">
-                        <ng-select formControlName="birthYear" id="birthY" [items]="_years" placeholder="Năm">
+                        <ng-select formControlName="birthYear" id="birthY" [items]="_years" (ngModelChange)="onSelectBirthYear($event)" placeholder="Năm">
                         </ng-select>
                       </div>
                     </div>

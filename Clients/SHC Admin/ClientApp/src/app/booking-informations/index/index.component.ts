@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatButton, MatDialog, MatDialogRef, MatTableDataSource, MatSort } from '@angular/material';
 import { Subject, merge, of } from 'rxjs';
 import { Observable } from 'rxjs';
-import { catchError, map, startWith, switchMap, filter } from 'rxjs/operators';
+import { catchError, map, startWith, switchMap, filter, debounceTime, tap, finalize } from 'rxjs/operators';
 import { standardized } from '../../../shared/helpers/Utils';
 import { isEmpty, isNil, isNull, omitBy, zipObject } from 'lodash';
 import { SelectionModel } from '@angular/cdk/collections';
@@ -64,16 +64,18 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
   bookingServiceType = new FormControl();
   flagDisabled = true;
   arrayStatus = [{ position: 1, status: 'Đã khám', quantitystatus: 0 }, { position: 2, status: 'Chờ khám', quantitystatus: 0 }, { position: 3, status: 'Hủy khám', quantitystatus: 0 }, { position: 4, status: 'Mới đăng ký', quantitystatus: 0 }];
+  isLoading = false;
 
   displayedColumns = ['orderNumber', 'healthFacilitiesName', 'doctorName', 'quantity'];
+  _bookingServiceTypes = [{ id: 0, name: 'Mới đăng ký' }, { id: 1, name: 'Chờ khám' }, { id: 2, name: 'Đã khám' }, { id: 3, name: 'Hủy khám' }, { id: 4, name: 'Tất cả' }];
+  _bookingInformationsTime = [{ id: 0, name: 'Hôm nay' }, { id: 1, name: 'Hôm qua' }, { id: 2, name: 'Tuần này' }, { id: 3, name: 'Tuần trước' }, { id: 4, name: 'Tháng này' }, { id: 5, name: 'Tháng trước' }, { id: 6, name: 'Quý này' }, { id: 7, name: 'Quý trước' }, { id: 8, name: 'Năm nay' }, { id: 9, name: 'Năm trước' }, { id: 10, name: 'Theo khoảng thời gian' }];
+
   @ViewChild("endTime") endTime;
   @ViewChild("startTime") startTime;
   @ViewChild(MatSort) sort: MatSort;
   
   constructor(injector: Injector, private _dataService: DataService, public dialog: MatDialog, private _formBuilder: FormBuilder) { super(injector); }
-  _bookingServiceTypes = [{ id: 0, name: 'Mới đăng ký' }, { id: 1, name: 'Chờ khám' }, { id: 2, name: 'Đã khám' }, { id: 3, name: 'Hủy khám' }, { id: 4, name: 'Tất cả' }];
-  _bookingInformationsTime = [{ id: 0, name: 'Hôm nay' }, { id: 1, name: 'Hôm qua' }, { id: 2, name: 'Tuần này' }, { id: 3, name: 'Tuần trước' }, { id: 4, name: 'Tháng này' }, { id: 5, name: 'Tháng trước' }, { id: 6, name: 'Quý này' }, { id: 7, name: 'Quý trước' }, { id: 8, name: 'Năm nay' }, { id: 9, name: 'Năm trước' }, { id: 10, name: 'Theo khoảng thời gian' }];
-
+  
   ngOnInit() {
     this.api = 'bookinginformationsgroupby';
     this.dataService = this._dataService;
@@ -87,25 +89,18 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
       endTime: new Date(),
       time: [0],
     });
-    //old
-    // this.dataService.getAll('healthfacilities', (this.appSession.user.healthFacilitiesId ? String(this.appSession.user.healthFacilitiesId) : '')).subscribe(resp => {
-    //   this._healthfacilities = resp.items;
-    // });
-    // if (this.appSession.user.healthFacilitiesId != null) {
-    //   this.healthFacilitiesId = this.appSession.user.healthFacilitiesId;
-    //   this.dataService.getAll('doctors', this.healthFacilitiesId).subscribe(resp => {
-    //     this._doctors = resp.items;
-    //   });
-    // }
+
     //new
-    if(this.appSession.user.healthFacilitiesId) {
-      this.dataService.getAll('healthfacilities', "{healthfacilitiesId:"+String(this.appSession.user.healthFacilitiesId)+"}").subscribe(resp => this._healthfacilities = resp.items);
-      this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId);
+    if(this.appSession.user.healthFacilitiesId){
+      this.dataService.get("healthfacilities", JSON.stringify({healthfacilitiesId : this.appSession.user.healthFacilitiesId}), '', null, null).subscribe(resp => {this._healthfacilities = resp.items;});
       this.dataService.getAll('doctors', String(this.appSession.user.healthFacilitiesId)).subscribe(resp => this._doctors = resp.items);
-    }
-    else{
-        this.dataService.getAll('healthfacilities').subscribe(resp => this._healthfacilities = resp.items);
-        this.filterOptions();
+
+      setTimeout(() => {
+        this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId);
+      }, 500);
+    } else{
+      this.filterOptions();
+      this.healthfacilities.setValue(null);
     }
 
     setTimeout(() => {
@@ -117,23 +112,32 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
     return h ? h.name : undefined;
   }
 
-  _filter(name: string): IHealthfacilities[] {
-    const filterValue = name.toLowerCase();
-    return this._healthfacilities.filter(h => h.name.toLowerCase().indexOf(filterValue) === 0);
-  }
-  clickCbo() {
-    !this.healthfacilities.value ? this.filterOptions() : '';
+  filterOptions() {
+    this.healthfacilities.valueChanges
+        .pipe(
+          debounceTime(500),
+          tap(() => this.isLoading = true),
+          switchMap(value => this.filter(value))
+        )
+        .subscribe(data => {
+            this._healthfacilities = data.items;
+        });
   }
 
-  filterOptions() {
-    this.filteredOptions = this.healthfacilities.valueChanges
-      .pipe(
-        startWith<string | IHealthfacilities>(''),
-        map(value => typeof value === 'string' ? value : value.name),
-        map(name => name ? this._filter(name) : this._healthfacilities.slice()),
-        map(data => data.slice(0, 30))
-      );
+  filter(value: any){
+    var fValue = typeof value === 'string'  ? value : (value ? value.name : '')
+    this._healthfacilities = [];
+
+    return this.dataService
+        .get("healthfacilities", JSON.stringify({
+            name : isNaN(fValue) ? fValue : "",
+            code : !isNaN(fValue) ? fValue : ""
+        }), '', null, null)
+        .pipe(
+            finalize(() => this.isLoading = false)
+        )
   }
+
   onselectBookingInformationsTime(obj: any) {
     this.flagDisabled = true;
     if (obj == 0) {    
@@ -191,21 +195,17 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
     }
   }
   search() {
-    if (!this.endTime.nativeElement.value && !this.startTime.nativeElement.value) {
-      return swal({
-        title:'Thông báo', 
-        text:'Từ ngày và Đến ngày không được để trống', 
-        type:'warning',
-        timer:3000});
-    }
-    if (!moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').isValid()) {
-      return swal({
-        title:'Thông báo', 
-        text:'Đến ngày không đúng định dạng',
-        type: 'warning',
-        timer:3000});
-    }
+    // if (!this.endTime.nativeElement.value && !this.startTime.nativeElement.value) {
+    //   this.startTime.nativeElement.focus();
+    //   this.endTime.nativeElement.focus();
+    //   return swal({
+    //     title:'Thông báo', 
+    //     text:'Từ ngày và Đến ngày không được để trống', 
+    //     type:'warning',
+    //     timer:3000});       
+    // }   
     if (!this.startTime.nativeElement.value) {
+      this.startTime.nativeElement.focus();
       return swal({
         title:'Thông báo', 
         text:'Từ ngày không được để trống', 
@@ -213,20 +213,31 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
         timer:3000});
     }
     if (!this.endTime.nativeElement.value) {
+      this.endTime.nativeElement.focus();
       return swal({
         title:'Thông báo', 
-        text:'Từ ngày không được để trống', 
+        text:'Đến ngày không được để trống', 
         type:'warning',
-        timer:3000});
+        timer:3000});       
     }
     if (!moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').isValid()) {
+      this.startTime.nativeElement.focus();
       return swal({
         title:'Thông báo', 
         text:'Từ ngày không đúng định dạng', 
         type:'warning',
         timer:3000});
     }
+    if (!moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').isValid()) {
+      this.endTime.nativeElement.focus();
+      return swal({
+        title:'Thông báo', 
+        text:'Đến ngày không đúng định dạng',
+        type: 'warning',
+        timer:3000});        
+    }
     if (((moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').valueOf() - moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').valueOf()) / (1000 * 60 * 60 * 24)) < 0) {
+      this.endTime.nativeElement.focus();
       return swal({
         title:'Thông báo', 
         text:'Đến ngày phải lớn hơn hoặc bằng Từ ngày',
@@ -289,21 +300,4 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
       this._doctors = resp.items
     });
   }
-  onChangeHealthfacilities() {
-    var val = this.healthfacilities.value;
-
-    if (val && val.trim()) {
-      var rs = this._filter(val.trim());
-      //TODO:lọc lấy Id
-      if (rs.length > 0) {
-        this.healthfacilities.setValue(rs[0]);
-      } else {
-        this.healthfacilities.setValue('');
-      }
-    } else {
-      this.healthfacilities.setValue('');
-    }
-  }
-
-
 }

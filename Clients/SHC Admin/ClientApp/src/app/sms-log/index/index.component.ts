@@ -4,7 +4,7 @@ import { DataService } from '@shared/service-proxies/service-data';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { PagedListingComponentBase } from '@shared/paged-listing-component-base';
 import { Observable } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
+import { map, startWith, finalize, switchMap, tap, debounceTime } from 'rxjs/operators';
 import swal from 'sweetalert2';
 import * as moment from 'moment';
 
@@ -44,6 +44,7 @@ export class IndexComponent extends PagedListingComponentBase<ISmsLogs> implemen
     _type = [{ id: 0, name: 'Tất cả' }, { id: 1, name: 'Gửi chủ động' }, { id: 2, name: 'Gửi tự động' }];
     _telco = [{ id: 0, name: 'Tất cả', code: 'all' }, { id: 1, name: 'Viettel', code: 'viettel' }, { id: 2, name: 'Vinaphone', code: 'vinaphone' }, { id: 3, name: 'Mobifone', code: 'mobifone' }, { id: 4, name: 'Vietnamobile', code: 'vietnamobile' }, { id: 5, name: 'Gmobile', code: 'gmobile' }];
 
+    isLoading = false;
     filteredOptions: Observable<IHealthfacilities[]>;
     healthfacilities = new FormControl();
 
@@ -70,36 +71,54 @@ export class IndexComponent extends PagedListingComponentBase<ISmsLogs> implemen
         setTimeout(() => {
             this.startTime.nativeElement.value = moment(new Date()).format("DD/MM/YYYY");
             this.endTime.nativeElement.value = moment(new Date()).format("DD/MM/YYYY");
+            this.startTime.nativeElement.focus();
+            this.endTime.nativeElement.focus();
             this.customSearch();
         });
 
         this.dataService = this._dataService;
-        this.dataService.getAll('healthfacilities', (this.appSession.user.healthFacilitiesId ? String(this.appSession.user.healthFacilitiesId) : '')).subscribe(resp => this._healthfacilities = resp.items);
-        this.appSession.user.healthFacilitiesId ? this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId) : this.filterOptions();
+
+        if(this.appSession.user.healthFacilitiesId){
+            this.dataService.get("healthfacilities", JSON.stringify({healthfacilitiesId : this.appSession.user.healthFacilitiesId}), '', null, null).subscribe(resp => {this._healthfacilities = resp.items;});
+    
+            setTimeout(() => {
+              this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId);
+            }, 500);
+          } else{
+            this.filterOptions();
+            this.healthfacilities.setValue(null);
+          }
     }
 
     displayFn(h?: IHealthfacilities): string | undefined {
         return h ? h.name : undefined;
     }
 
-    _filter(name: string): IHealthfacilities[] {
-        const filterValue = name.toLowerCase();
-        return this._healthfacilities.filter(h => h.name.toLowerCase().indexOf(filterValue) === 0);
-    }
-
-    clickCbo() {
-        !this.healthfacilities.value ? this.filterOptions() : '';
-    }
-
     filterOptions() {
-        this.filteredOptions = this.healthfacilities.valueChanges
+        this.healthfacilities.valueChanges
             .pipe(
-                startWith<string | IHealthfacilities>(''),
-                map(value => typeof value === 'string' ? value : value.name),
-                map(name => name ? this._filter(name) : this._healthfacilities.slice()),
-                map(data => data.slice(0, 30))
-            );
-    }
+              debounceTime(500),
+              tap(() => this.isLoading = true),
+              switchMap(value => this.filter(value))
+            )
+            .subscribe(data => {
+                this._healthfacilities = data.items;
+            });
+      }
+  
+      filter(value: any){
+        var fValue = typeof value === 'string'  ? value : (value ? value.name : '')
+        this._healthfacilities = [];
+  
+        return this.dataService
+            .get("healthfacilities", JSON.stringify({
+                name : isNaN(fValue) ? fValue : "",
+                code : !isNaN(fValue) ? fValue : ""
+            }), '', null, null)
+            .pipe(
+                finalize(() => this.isLoading = false)
+            )
+      }
 
     customSearch() {
         if(!this.endTime.nativeElement.value || !this.startTime.nativeElement.value){
@@ -126,8 +145,13 @@ export class IndexComponent extends PagedListingComponentBase<ISmsLogs> implemen
                 timer:3000});
         }
 
-        var startTime = moment(this.startTime.nativeElement.value, 'DD/MM/YYYY hh:mm:ss').toDate();
-        var endTime = moment(this.endTime.nativeElement.value + '23:59:59:', 'DD/MM/YYYY hh:mm:ss').toDate();
+        if(((moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').valueOf() - moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').valueOf()) / (1000*60*60*24)) < 0){
+            swal(this.l('Notification'), this.l('FromDateMustBeGreaterThanOrEqualToDate'), 'warning');
+            return true;
+        }
+
+        var startTime = moment(this.startTime.nativeElement.value + '00:00:00', 'DD/MM/YYYY hh:mm:ss').add(7, 'hours').toDate();
+        var endTime = moment(this.endTime.nativeElement.value + '23:59:59:', 'DD/MM/YYYY hh:mm:ss').add(7, 'hours').toDate();
 
         if (endTime.getFullYear() - startTime.getFullYear() > 1) {
 
