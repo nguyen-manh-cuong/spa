@@ -194,16 +194,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
       this.flagDisabled = false;
     }
   }
-  search() {
-    // if (!this.endTime.nativeElement.value && !this.startTime.nativeElement.value) {
-    //   this.startTime.nativeElement.focus();
-    //   this.endTime.nativeElement.focus();
-    //   return swal({
-    //     title:'Thông báo', 
-    //     text:'Từ ngày và Đến ngày không được để trống', 
-    //     type:'warning',
-    //     timer:3000});       
-    // }   
+  search() {  
     if (!this.startTime.nativeElement.value) {
       this.startTime.nativeElement.focus();
       return swal({
@@ -244,16 +235,28 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
         type: 'warning',
         timer:3000});
     }
-    if (this.appSession.user.healthFacilitiesId != null) {
-      this.healthfacilities.value
-        ? this.frmSearch.controls['healthfacilities'].setValue(this.healthfacilities.value.healthFacilitiesId)
-        : '';
+    if(((!this.appSession.user.healthFacilitiesId && this.healthfacilities.value) || (this.appSession.user.healthFacilitiesId))  && this.frmSearch.controls['doctor'].value){
+      if (this.appSession.user.healthFacilitiesId != null) {
+        this.healthfacilities.value
+          ? this.frmSearch.controls['healthfacilities'].setValue(this.healthfacilities.value.healthFacilitiesId)
+          : '';
+      }
+      else {
+        this.healthfacilities.value
+          ? this.frmSearch.controls['healthfacilities'].setValue(this.healthfacilities.value.healthFacilitiesId)
+          : this.frmSearch.controls['healthfacilities'].setValue('');
+      }
     }
-    else {
-      this.healthfacilities.value
-        ? this.frmSearch.controls['healthfacilities'].setValue(this.healthfacilities.value.healthFacilitiesId)
-        : this.frmSearch.controls['healthfacilities'].setValue('');
-    }
+    else{
+      this.appSession.user.healthFacilitiesId == null ? this.frmSearch.controls['healthfacilities'].setValue(null) : '';
+      swal({
+        title: this.l('Notification'),
+        text: this.l('HealthfacilitiesAndDoctorNotNull'),
+        type: 'warning',
+        timer: 3000
+      });
+    }    
+    
     this.startTime.nativeElement.value ? this.frmSearch.controls['startTime'].setValue(moment(this.startTime.nativeElement.value + '00:00:00', 'DD/MM/YYYY hh:mm:ss').add(7, 'hours').toDate()) : '';
     this.endTime.nativeElement.value ? this.frmSearch.controls['endTime'].setValue(moment(this.endTime.nativeElement.value + '23:59:59', 'DD/MM/YYYY hh:mm:ss').add(7, 'hours').toDate()) : '';
     var req = omitBy(this.frmSearch.value, isNil);

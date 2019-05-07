@@ -36,7 +36,7 @@
             <div class="col-md-3">
                 <mat-form-field appearance="outline" class="w-100" required>
                     <mat-label>{{l('Bác sĩ')}}</mat-label>
-                    <mat-select formControlName="doctor">
+                    <mat-select formControlName="doctor" required>
                         <mat-option *ngIf="_doctors.length" class="text-center" [innerHTML]="'<div class=\'text-center border-bottom w-100\'>'+ l('Bỏ chọn') +'</div>'"></mat-option>
                         <mat-option *ngFor="let o of _doctors" [value]="o.doctorId">{{ o.fullName }}</mat-option>
                     </mat-select>
@@ -87,7 +87,7 @@
     <div class="row">
         <div class="col-lg-7">
             <div class="mb-2 pl-2 f14"> <b>{{l('Số lượng bệnh nhân theo bác sỹ ')}}</b> {{l('(Tổng số')}} {{totalPatientCount}} {{('bệnh nhân)')}}</div>
-            <div class="table table-content brd-right table-custom">
+            <div class="table table-content  table-custom">
                 <table mat-table [dataSource]="dataSources" matSort #sort="matSort" matSortDisableClear matSortDirection="asc" matSortActive="healthFacilitiesName" class="w-100 task">
                     <ng-container matColumnDef="orderNumber">
                         <th mat-header-cell *matHeaderCellDef class="min-w-30 text-center"> {{l("OrderNumber")}} </th>

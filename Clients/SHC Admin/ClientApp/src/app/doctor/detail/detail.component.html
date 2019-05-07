@@ -20,7 +20,7 @@
                     <div class="col-md-4 disabled">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label class="f16">{{l("DoctorBirthDay")}}</mat-label>
-                            <input matInput [matDatepicker]="picker" #birthDayPicker>
+                            <input matInput [matDatepicker]="picker" #birthDayPicker formControlName="birthday">
                             <mat-datepicker-toggle matSuffix [for]="picker" class="t-2"></mat-datepicker-toggle>
                             <mat-datepicker #picker [startAt]="_birthDay"></mat-datepicker>
                         </mat-form-field>
