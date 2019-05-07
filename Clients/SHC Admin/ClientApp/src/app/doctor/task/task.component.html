@@ -1,4 +1,9 @@
-<form [formGroup]="_frm" class="container" novalidate>
+<form [formGroup]="_frm" class="container p-relative" novalidate>
+    <div class="p-absolute t-5 r-5">
+        <button mat-icon-button mat-dialog-close style="z-index: 9;" [matTooltipPosition]="'left'" matTooltip="Đóng">
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
     <mat-tab-group>
         <mat-tab>
             <ng-template mat-tab-label>
@@ -9,15 +14,16 @@
                     <div class="col-md-6">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("DoctorName")}}</mat-label>
-                            <input formControlName="fullName" matInput [required]="true" maxlength="255">
+                            <input (input)="fullNameInput($event)" formControlName="fullName" matInput [required]="true"
+                                maxlength="255">
                             <validation matSuffix [control]="_frm.controls['fullName']"></validation>
                         </mat-form-field>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-4 class-icon">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("DoctorBirthDay")}}</mat-label>
-                            <input (dateChange)="birthDayChange($event.value)" matInput [matDatepicker]="picker"
-                                #birthDayPicker mask="0*" maxlength="10">
+                            <input mask="0*" (dateChange)="birthDayChange($event)" [max]="maxDate" matInput
+                                [matDatepicker]="picker" #birthDayPicker maxlength="10">
                             <mat-datepicker-toggle matSuffix [for]="picker" class="t-2"></mat-datepicker-toggle>
                             <mat-datepicker #picker [startAt]="_birthDay"></mat-datepicker>
                         </mat-form-field>
@@ -92,7 +98,7 @@
                         </mat-form-field>
                     </div>
                     <div class="col-md-4">
-                        <mat-form-field appearance="outline" class="w-100">
+                        <mat-form-field appearance="outline" class="w-100" [ngClass]="{'disabled': flagDate}">
                             <mat-label>{{l("DoctorCertificationDate")}}</mat-label>
                             <input [disabled]="_certificationInputCheck" #certificationDatePicker
                                 (dateChange)="certificationDateChange($event.value)" matInput
@@ -103,10 +109,8 @@
                             <mat-datepicker #certificationDatePicker [startAt]="startDate">
                             </mat-datepicker>
                         </mat-form-field>
-
                     </div>
                 </div>
-
                 <div class="row">
                     <div class="col-md-6">
                         <mat-form-field appearance="outline" class="w-100">
@@ -190,7 +194,7 @@
 
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l('DoctorSpecialist')}}</mat-label>
-                            <mat-chip-list #specialChipList>
+                            <mat-chip-list #specialChipList [required]="true">
                                 <mat-chip *ngFor="let o of _specialistChip" [selectable]="specialSelectable"
                                     [removable]="specialRemovable" (removed)="specialRemove(o.code)">
                                     {{o.name}}
@@ -200,7 +204,8 @@
                                     [matAutocomplete]="autoSpecialist" [matChipInputFor]="specialChipList"
                                     [matChipInputSeparatorKeyCodes]="specialSeparatorKeysCodes"
                                     [matChipInputAddOnBlur]="specialAddOnBlur"
-                                    (matChipInputTokenEnd)="specialAdd($event)">
+                                    (matChipInputTokenEnd)="specialAdd($event)" (input)="specialInput()"
+                                    [required]="true">
                             </mat-chip-list>
                             <mat-autocomplete matInput #autoSpecialist="matAutocomplete"
                                 (optionSelected)="specialSelected($event)">
@@ -211,7 +216,7 @@
                                     {{o.code +' - '+o.name}}
                                 </mat-option>
                             </mat-autocomplete>
-                            <validation matSuffix [control]="specialistCodeControl"></validation>
+                            <validation *ngIf="!checkSpecial" matSuffix [control]="specialistCodeControl"></validation>
                         </mat-form-field>
                     </div>
                 </div>
@@ -269,13 +274,13 @@
                     <div class="col-md-6">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("DoctorPriceFrom")}}</mat-label>
-                            <input mask="comma_separator" maxlength="14" formControlName="priceFrom" matInput>
+                            <input mask="dot_separator" maxlength="14" formControlName="priceFrom" matInput>
                         </mat-form-field>
                     </div>
                     <div class="col-md-6">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("DoctorPriceTo")}}</mat-label>
-                            <input mask="comma_separator" maxlength="14" formControlName="priceTo" matInput>
+                            <input mask="dot_separator" maxlength="14" formControlName="priceTo" matInput>
                         </mat-form-field>
                     </div>
                 </div>

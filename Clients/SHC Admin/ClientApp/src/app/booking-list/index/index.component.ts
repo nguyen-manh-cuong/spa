@@ -55,6 +55,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
     _medicalFacility = [];
     _doctors = [];
     _isRequest = false;
+    _isDateTimeEnable = true;
     _isChosenTime = false;
     isLoading = false;
 
@@ -226,31 +227,38 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
     onSelectTime(type: number) {
         this.flagDisabled = true;
         switch (type) {            
-            case 0:            
+            case 0:         
+            this._isDateTimeEnable = true;   
                 this.startTime.nativeElement.value = moment(new Date()).format("DD/MM/YYYY");
                 this.endTime.nativeElement.value = moment(new Date()).format("DD/MM/YYYY");
                 break;
             case 1:
+            this._isDateTimeEnable = true;   
                 this.startTime.nativeElement.value = moment(new Date()).add(-1, 'day').format("DD/MM/YYYY");
                 this.endTime.nativeElement.value = moment(new Date()).format("DD/MM/YYYY");
                 break;
             case 2:
+            this._isDateTimeEnable = true;   
                 this.startTime.nativeElement.value = moment(new Date()).startOf('week').format("DD/MM/YYYY");
                 this.endTime.nativeElement.value = moment(new Date()).endOf('week').format("DD/MM/YYYY");
                 break;
             case 3:
+            this._isDateTimeEnable = true;   
                 this.startTime.nativeElement.value = moment(new Date()).add(-1, 'week').startOf('week').format("DD/MM/YYYY");
                 this.endTime.nativeElement.value = moment(new Date()).add(-1, 'week').endOf('week').format("DD/MM/YYYY");
                 break;
             case 4:
+            this._isDateTimeEnable = true;   
                 this.startTime.nativeElement.value = moment(new Date()).startOf('month').format("DD/MM/YYYY");
                 this.endTime.nativeElement.value = moment(new Date()).endOf('month').format("DD/MM/YYYY");
                 break;
             case 5:
+            this._isDateTimeEnable = true;   
                 this.startTime.nativeElement.value = moment(new Date()).add(-1, 'month').startOf('month').format("DD/MM/YYYY");
                 this.endTime.nativeElement.value = moment(new Date()).add(-1, 'month').endOf('month').format("DD/MM/YYYY");
                 break;
             case 6:
+            this._isDateTimeEnable = true;   
                 var quarterAdjustment = (moment().month() % 3) + 1;
                 console.log(quarterAdjustment);
                 var lastQuarterEndDate = moment().subtract({ months: quarterAdjustment }).endOf('month');
@@ -258,6 +266,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
                 this.startTime.nativeElement.value = lastQuarterEndDate.clone().subtract({ months: 2 }).startOf('month').format("DD/MM/YYYY");
                 break;
             case 7:
+            this._isDateTimeEnable = true;   
                 var quarterAdjustment = (moment().month() % 3) + 4;
                 console.log(quarterAdjustment);
                 var lastQuarterEndDate = moment().subtract({ months: quarterAdjustment }).endOf('month');
@@ -265,17 +274,18 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
                 this.startTime.nativeElement.value = lastQuarterEndDate.clone().subtract({ months: 2 }).startOf('month').format("DD/MM/YYYY");
                 break;
             case 8:
+            this._isDateTimeEnable = true;   
                 this.startTime.nativeElement.value = moment(new Date()).startOf('year').format("DD/MM/YYYY");
                 this.endTime.nativeElement.value = moment(new Date()).endOf('year').format("DD/MM/YYYY");
                 break;
             case 9:
+            this._isDateTimeEnable = true;   
                 this.startTime.nativeElement.value = moment(new Date()).add(-1, 'year').startOf('year').format("DD/MM/YYYY");
                 this.endTime.nativeElement.value = moment(new Date()).add(-1, 'year').endOf('year').format("DD/MM/YYYY");
                 break;
             case 10:
+            this._isDateTimeEnable = false;   
                 this.flagDisabled = false;
-                // document.getElementById("cbo-startTime").classList.remove("disabled");
-                // document.getElementById("cbo-endTime").classList.remove("disabled");
                 break;
         }
         this.updateTimeToSearch();

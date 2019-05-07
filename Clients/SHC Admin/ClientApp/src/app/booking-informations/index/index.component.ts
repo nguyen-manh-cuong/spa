@@ -63,6 +63,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
   healthfacilities = new FormControl();
   bookingServiceType = new FormControl();
   flagDisabled = true;
+  _isDateTimeEnable = true;
   arrayStatus = [{ position: 1, status: 'Đã khám', quantitystatus: 0 }, { position: 2, status: 'Chờ khám', quantitystatus: 0 }, { position: 3, status: 'Hủy khám', quantitystatus: 0 }, { position: 4, status: 'Mới đăng ký', quantitystatus: 0 }];
   isLoading = false;
 
@@ -140,58 +141,68 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
 
   onselectBookingInformationsTime(obj: any) {
     this.flagDisabled = true;
-    if (obj == 0) {    
+    if (obj == 0) {
+      this._isDateTimeEnable = true; 
       this.startTime.nativeElement.value = moment(new Date().setDate(new Date().getDate())).format("DD/MM/YYYY");
       this.endTime.nativeElement.value = moment(new Date().setDate(new Date().getDate())).format("DD/MM/YYYY");
     }
     // Hôm qua
     if (obj == 1) {
+      this._isDateTimeEnable = true; 
       this.startTime.nativeElement.value = moment(new Date().setDate(new Date().getDate() - 1)).format("DD/MM/YYYY");
       this.endTime.nativeElement.value = moment(new Date().setDate(new Date().getDate())).format("DD/MM/YYYY");
     }
     // Tuần này
     if (obj == 2) {
+      this._isDateTimeEnable = true; 
       this.startTime.nativeElement.value = moment(moment().startOf("isoWeek").toDate()).format("DD/MM/YYYY");
       this.endTime.nativeElement.value = moment(moment().endOf("isoWeek").toDate()).format("DD/MM/YYYY");
     }
     // Tuần trước
     if (obj == 3) {
+      this._isDateTimeEnable = true; 
       this.startTime.nativeElement.value = moment(moment().subtract(1, 'weeks').startOf('isoWeek')).format("DD/MM/YYYY");
       this.endTime.nativeElement.value = moment(moment().subtract(1, 'weeks').endOf('isoWeek')).format("DD/MM/YYYY");
     }
     // Tháng này
     if (obj == 4) {
+      this._isDateTimeEnable = true; 
       this.startTime.nativeElement.value = moment(moment().startOf("month").toDate()).format("DD/MM/YYYY");
       this.endTime.nativeElement.value = moment(moment().endOf("month").toDate()).format("DD/MM/YYYY");
     }
     // Tháng trước
     if (obj == 5) {
+      this._isDateTimeEnable = true; 
       this.startTime.nativeElement.value = moment(moment().subtract(1, 'months').startOf('month')).format("DD/MM/YYYY");
       this.endTime.nativeElement.value = moment(moment().subtract(1, 'months').endOf('month')).format("DD/MM/YYYY");
     }
     // Qúy này
     if (obj == 6) {
+      this._isDateTimeEnable = true; 
       this.startTime.nativeElement.value = moment(moment().quarter(moment().quarter()).startOf('quarter')).format("DD/MM/YYYY");
       this.endTime.nativeElement.value = moment(moment().quarter(moment().quarter()).endOf('quarter')).format("DD/MM/YYYY");
     }
     // Quý trước
     if (obj == 7) {
+      this._isDateTimeEnable = true; 
       this.startTime.nativeElement.value = moment(moment().subtract(1, 'quarter').startOf('quarter')).format("DD/MM/YYYY");
       this.endTime.nativeElement.value = moment(moment().subtract(1, 'quarter').endOf('quarter')).format("DD/MM/YYYY");
     }
     // Năm nay
     if (obj == 8) {
+      this._isDateTimeEnable = true; 
       this.startTime.nativeElement.value = moment(moment().startOf('year')).format("DD/MM/YYYY");
       this.endTime.nativeElement.value = moment(moment().endOf('year')).format("DD/MM/YYYY");
     }
 
     // Năm trước
     if (obj == 9) {
+      this._isDateTimeEnable = true; 
       this.startTime.nativeElement.value = moment(moment().subtract(1, 'year').startOf('year')).format("DD/MM/YYYY");
       this.endTime.nativeElement.value = moment(moment().subtract(1, 'year').endOf('year')).format("DD/MM/YYYY");
     }
     if (obj == 10) {
-      this.flagDisabled = false;
+      this._isDateTimeEnable = false;       
     }
   }
   search() {  
