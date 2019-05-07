@@ -88,6 +88,7 @@ namespace SHCServer.Controllers
         [Route("api/bookingtimeslot")]
         public IActionResult GetBookingTimesSlot(int skipCount = 0, int maxResultCount = 10, string sorting = null, string filter = null)
         {
+            int doctorId = 0;
             var objs = _context
                 //.JoinQuery<BookingTimeslots, BookingDoctorsCalendars> ((t, dc) => new object[] { JoinType.InnerJoin, t.TimeSlotId == dc.TimeSlotId })
                 .Query<BookingTimeslots>()
@@ -99,10 +100,11 @@ namespace SHCServer.Controllers
                 {
                     if (string.IsNullOrEmpty(value)) continue;
                     if (string.Equals(key, "healthfacilities")) objs = objs.Where(t => t.HealthFacilitiesId == int.Parse(value));
+                    if (string.Equals(key, "doctorId")) doctorId = int.Parse(value);
                 }
             }
 
-            return Json(new ActionResultDto { Result = new { Items = objs.Select(t => new BookingDoctorsViewModel(t, _connectionString)).ToList() } });
+            return Json(new ActionResultDto { Result = new { Items = objs.Select(t => new BookingDoctorsViewModel(t, doctorId, _connectionString)).ToList() } });
         }
 
     }

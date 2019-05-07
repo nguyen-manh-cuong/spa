@@ -16,7 +16,7 @@ namespace SHCServer.ViewModels
         {
         }
 
-        public BookingDoctorsViewModel(BookingTimeslots ts, string connectionString) : this()
+        public BookingDoctorsViewModel(BookingTimeslots ts, int doctorId, string connectionString) : this()
         {
             context = new MySqlContext(new MySqlConnectionFactory(connectionString));
 
@@ -25,7 +25,7 @@ namespace SHCServer.ViewModels
             HoursEnd = ts.HoursEnd;
             MinuteEnd = ts.MinuteEnd;
             TimeSlotId = ts.TimeSlotId;
-            DoctorCalendar = ConvertListString(context.Query<BookingDoctorsCalendars>().Where(dc => dc.TimeSlotId == ts.TimeSlotId).ToList());
+            DoctorCalendar = ConvertListString(context.Query<BookingDoctorsCalendars>().Where(dc => dc.TimeSlotId == ts.TimeSlotId && dc.DoctorId == doctorId).ToList());
         }
 
         public string HoursStart { set; get; }

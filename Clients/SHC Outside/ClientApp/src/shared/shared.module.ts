@@ -3,7 +3,6 @@
 import { ModuleWithProviders, NgModule } from '@angular/core';
 
 import { AbpModule } from '@abp/abp.module';
-import { AccountTypePipe } from 'pipes/account-type.pipe';
 import { AppAuthService } from './auth/app-auth.service';
 import { AppRouteGuard } from './auth/auth-route-guard';
 import { AppSessionService } from './session/app-session.service';
@@ -19,11 +18,9 @@ import { RouterModule } from '@angular/router';
         FormsModule,
         ReactiveFormsModule
     ],
-    declarations: [AccountTypePipe],
+    declarations: [],
     providers: [],
     exports: [
-
-        AccountTypePipe
     ]
 })
 export class SharedModule {
