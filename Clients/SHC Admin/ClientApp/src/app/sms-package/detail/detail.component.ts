@@ -50,6 +50,20 @@ export class DetailComponent extends AppComponentBase implements OnInit {
             smsTo: [this._package.smsTo], 
             detailCost: [this._package.detailCost]       
         };
+        setTimeout(() => {
+                this._frm.controls['name'].disable();
+                this._frm.controls['description'].disable();
+                this._frm.controls['cost'].disable();
+                this._frm.controls['quantity'].disable();
+                this._frm.controls['smsFrom'].disable();
+                this._frm.controls['smsTo'].disable();
+                this._frm.controls['detailCost'].disable();
+                this._frm.controls['PackageCost'].disable();                
+                this._frm.controls['cost'].disable();
+                this._frm.controls['quantity'].disable();
+                this._frm.controls['smsFrom'].disable();
+                this._frm.controls['smsTo'].disable();
+        }, 100);
 
         this._frm = this._formBuilder.group(this._context);  
         

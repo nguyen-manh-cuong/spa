@@ -58,6 +58,17 @@ export class packagedistributeViewComponent extends AppComponentBase implements 
       isActive: [this._obj.isActive],
       quantity: [this._obj.quantity]
     };
+    setTimeout(() => {
+      this._frmpackagedistributeview.controls['healthFacilitiesId'].disable();
+      this._frmpackagedistributeview.controls['smsPackageId'].disable();
+      this._frmpackagedistributeview.controls['monthStart'].disable();
+      this._frmpackagedistributeview.controls['fromYear'].disable();
+      this._frmpackagedistributeview.controls['monthEnd'].disable();
+      this._frmpackagedistributeview.controls['toYear'].disable();
+      this._frmpackagedistributeview.controls['smsBrandsId'].disable();
+      this._frmpackagedistributeview.controls['quantity'].disable();                
+      this._frmpackagedistributeview.controls['isActive'].disable();
+}, 100);
     this._frmpackagedistributeview = this._formBuilder.group(this._context);
   }
 }
