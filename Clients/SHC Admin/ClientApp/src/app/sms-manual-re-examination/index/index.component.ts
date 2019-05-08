@@ -226,6 +226,15 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
             });
         }
 
+        if (!moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').isValid()) {
+            return swal({
+                title: 'Thông báo',
+                text: 'Từ ngày không đúng định dạng',
+                type: 'warning',
+                timer: 3000
+            });
+        }
+
         if (this.birthday.nativeElement.value && !moment(this.birthday.nativeElement.value, 'DD/MM/YYYY').isValid()) {
             return swal({
                 title: 'Thông báo',
