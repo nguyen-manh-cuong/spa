@@ -96,14 +96,14 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
         this.frmSearch.controls['startTime'].setValue(new Date(new Date().setDate(new Date().getDate())));
         this.dataService.getAll('provinces').subscribe(resp => this._provinces = resp.items);
 
-        if(this.appSession.user.healthFacilitiesId){
-            this.dataService.get("healthfacilities", JSON.stringify({healthfacilitiesId : this.appSession.user.healthFacilitiesId}), '', null, null).subscribe(resp => {this._healthfacilities = resp.items;});
+        if (this.appSession.user.healthFacilitiesId) {
+            this.dataService.get("healthfacilities", JSON.stringify({ healthfacilitiesId: this.appSession.user.healthFacilitiesId }), '', null, null).subscribe(resp => { this._healthfacilities = resp.items; });
             this.dataService.getAll('doctors', String(this.appSession.user.healthFacilitiesId)).subscribe(resp => this._doctors = resp.items);
-    
+
             setTimeout(() => {
-              this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId);
+                this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId);
             }, 500);
-        } else{
+        } else {
             this.filterOptions();
             this.healthfacilities.setValue(null);
         }
@@ -153,18 +153,18 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     }
 
     changeDate(value: any, type: number) {
-        if(this.startTime.nativeElement.value && moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').isValid() && this.endTime.nativeElement.value && moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').isValid()){
-            if(type == 2){     
+        if (this.startTime.nativeElement.value && moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').isValid() && this.endTime.nativeElement.value && moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').isValid()) {
+            if (type == 2) {
                 return this.endTime.nativeElement.value = moment(
                     new Date(
                         moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').toDate().setDate(
                             moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').toDate().getDate() + Number(value)))).format("DD/MM/YYYY");
             }
-    
-            var days = (moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').valueOf() - moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').valueOf()) / (1000*60*60*24);
+
+            var days = (moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').valueOf() - moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').valueOf()) / (1000 * 60 * 60 * 24);
         }
-       
-        this.frmSearch.controls['about'].setValue(days >= 0 ? days : 0); 
+
+        this.frmSearch.controls['about'].setValue(days >= 0 ? days : 0);
     }
 
     displayFn(h?: IHealthfacilities): string | undefined {
@@ -174,29 +174,29 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     filterOptions() {
         this.healthfacilities.valueChanges
             .pipe(
-              debounceTime(500),
-              tap(() => this.isLoading = true),
-              switchMap(value => this.filter(value))
+                debounceTime(500),
+                tap(() => this.isLoading = true),
+                switchMap(value => this.filter(value))
             )
             .subscribe(data => {
                 this._healthfacilities = data.items;
             });
-      }
-  
-    filter(value: any){
-        var fValue = typeof value === 'string'  ? value : (value ? value.name : '')
+    }
+
+    filter(value: any) {
+        var fValue = typeof value === 'string' ? value : (value ? value.name : '')
         this._healthfacilities = [];
-  
+
         return this.dataService
             .get("healthfacilities", JSON.stringify({
-                name : isNaN(fValue) ? fValue : "",
-                code : !isNaN(fValue) ? fValue : ""
+                name: isNaN(fValue) ? fValue : "",
+                code: !isNaN(fValue) ? fValue : ""
             }), '', null, null)
             .pipe(
                 finalize(() => this.isLoading = false)
             )
     }
-  
+
 
     customSearch() {
         if (!this.endTime.nativeElement.value) {
@@ -244,7 +244,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
             });
         }
 
-        if(((moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').valueOf() - moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').valueOf()) / (1000*60*60*24)) < 0){
+        if (((moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').valueOf() - moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').valueOf()) / (1000 * 60 * 60 * 24)) < 0) {
             swal(this.l('Notification'), this.l('FromDateMustBeGreaterThanOrEqualToDate'), 'warning');
             return true;
         }

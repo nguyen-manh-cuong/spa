@@ -5,7 +5,7 @@ import { AfterViewInit, Component, Injector, OnInit, ViewChild, Input } from '@a
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatButton, MatDialog, MatDialogRef, MatSort, MatCheckbox, MatInput, AUTOCOMPLETE_OPTION_HEIGHT, MatSelect } from '@angular/material';
 import { Subject, merge, of, Observable } from 'rxjs';
-import { catchError, map, startWith, switchMap } from 'rxjs/operators';
+import { catchError, map, startWith, switchMap, debounceTime, finalize, tap } from 'rxjs/operators';
 import { compact, isEmpty, omitBy, zipObject } from 'lodash';
 import * as _ from 'lodash';
 import { DataService } from '@shared/service-proxies/service-data';
@@ -43,7 +43,7 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
   _healthFacilitiesId: number;
   _specialistCode: number;
 
-
+  isLoading: boolean;
   filteredHealthFacilitiesOptions: Observable<IHealthfacilities[]>;
   filteredSpecialistOptions: Observable<ICategoryCommon[]>;
   healthfacilities = new FormControl();
@@ -332,14 +332,14 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
   }
 
 
-  getHealthfacilities(provinceCode, districtCode?) {
+  getHealthfacilities(provinceCode?, districtCode?) {
     if (!this.appSession.user.healthFacilitiesId) {
       if (districtCode == null) {
-        this.dataService.getAll("healthfacilities", "{ provinceCode:" + provinceCode + "}")
+        this.dataService.getAll("healthfacilities", "{ provinceCode:" + provinceCode + ",max:1}")
           .subscribe(resp => this._healthfacilities = resp.items);
       }
       else {
-        this.dataService.getAll("healthfacilities", "{provinceCode:" + provinceCode + ",districtCode:" + districtCode + "}")
+        this.dataService.getAll("healthfacilities", "{provinceCode:" + provinceCode + ",districtCode:" + districtCode + ",max:1}")
           .subscribe(resp => this._healthfacilities = resp.items)
       }
     }
@@ -375,7 +375,7 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
       .pipe(
         startWith<string | IHealthfacilities>(''),
         map(value => typeof value === 'string' ? value : value.name),
-        map(name => name ? this._filterHealthfacilities(name) : this._healthfacilities.slice()),
+        map(name => name ? this._filterHealthfacilities(name.trim()) : this._healthfacilities.slice()),
         map(data => data.slice())
       );
   }
@@ -394,6 +394,32 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
       this._healthFacilitiesId = value.healthFacilitiesId;
     }
   }
+
+  // filterOptions() {
+  //   this.healthfacilities.valueChanges
+  //     .pipe(
+  //       debounceTime(500),
+  //       tap(() => this.isLoading = true),
+  //       switchMap(value => this.filter(value))
+  //     )
+  //     .subscribe(data => {
+  //       this._healthfacilities = data.items;
+  //     });
+  // }
+
+  // filter(value: any) {
+  //   var fValue = typeof value === 'string' ? value : (value ? value.name : '')
+  //   this._healthfacilities = [];
+
+  //   return this.dataService
+  //     .get("healthfacilities", JSON.stringify({
+  //       name: isNaN(fValue) ? fValue : "",
+  //       code: !isNaN(fValue) ? fValue : ""
+  //     }), '', null, null)
+  //     .pipe(
+  //       finalize(() => this.isLoading = false)
+  //     )
+  // }
   //End auto complete health facilities
 
   ///////////////////////////////////
@@ -406,9 +432,7 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
 
   _filterSpecialist(name: any): ICategoryCommon[] {
     const filterValue = name.toLowerCase();
-    var specialist = isNaN(filterValue) ?
-      this._specialist.filter(c => c.code.toLowerCase().indexOf(filterValue) === 0) :
-      this._specialist.filter(c => c.name.toLowerCase().indexOf(filterValue) === 0);
+    var specialist =  this._specialist.filter(c => c.name.toLowerCase().indexOf(filterValue) === 0);
     return specialist;
   }
 
@@ -424,8 +448,7 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
     this.filteredSpecialistOptions = this.specialistCode.valueChanges
       .pipe(
         startWith<string | ICategoryCommon>(''),
-        map(value => typeof value === 'string' ? value : value.name),
-        map(name => name ? this._filterSpecialist(name) : this._specialist.slice()),
+        map(name => name ? this._filterSpecialist(name.toString().trim()) : this._specialist.slice()),
         map(data => data.slice())
       );
   }
