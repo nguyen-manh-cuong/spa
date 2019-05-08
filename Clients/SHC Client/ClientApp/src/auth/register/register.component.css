@@ -19,3 +19,9 @@
 .btn-refresh{
     margin-left: 10px;
 }
+.img-name{margin-top:12px}
+.btn-delete {
+    position: absolute;
+    right: -22px;
+    top: 10px;
+}

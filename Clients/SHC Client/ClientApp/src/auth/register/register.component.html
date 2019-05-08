@@ -381,27 +381,40 @@
                                             <label class="primary-label">Gửi giấy tờ xác thực<span class="text-danger">*</span></label>
                                         </div>
 
+
                                         <div class="col-xs-12 col-md-8">
                                             <div class="image-uploader text-muted" data-name="first"
                                                  data-description="Chứng minh thư nhân dân / thẻ căn cước">
                                                 <div class="upload-content">
                                                     <span class="upload-description"> Chứng minh thư nhân dân / thẻ căn cước </span>
                                                     <div class="upload-button">
-                                                        <input type="file" accept="image/*, application/pdf" multiple (change)="detectFiles($event, 'idCard')"><span class="btn btn-sm btn-primary-inverted">
+                                                        <input #dataContainer type="file" accept="image/*, application/pdf" multiple (change)="detectFiles($event, 'idCard')"><span class="btn btn-sm btn-primary-inverted">
                                                             <i class="fa fa-paperclip" aria-hidden="true"></i>Tải
                                                             lên
                                                         </span>
                                                     </div>
                                                 </div>
-                                                <div>
-                                                    <img style="padding: 5px" *ngFor="let url of _idCardUrls" [src]="url" class="rounded mb-3" width="180">
-                                                </div>
-                                                <!-- <div class="text-danger margin-bottom-thin my-mat-hint">
-                                                    {{_idCardError}}<span>&nbsp;</span>
-                                                </div> -->
-                                                <div class="upload-target">
-                                                    <div class="row"></div>
-                                                </div>
+                                                        <div class="upload-content">
+                                                            <div class="row" *ngFor="let o of _idCardUrls; let i = index">
+                                                                <div class="col-md-2">
+                                                                    <img src="{{o.url}}" class="rounded mb-3 selFile" title={{o.name.name}} width="50">
+                                                                </div>
+                                                                <div style="text-align: " class="col-md-7">
+                                                                    <p class="img-name">{{o.name.name}}</p>
+                                                                </div>
+                                                                <div style="padding: 15px" class="col-md-2">
+                                                                    <span class="btn btn-sm btn-default btn-delete" (click)="removeFile(i)">
+                                                                        <i aria-hidden="true"></i>Xóa file
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <!-- <div class="text-danger margin-bottom-thin my-mat-hint">
+                {{_idCardError}}<span>&nbsp;</span>
+            </div> -->
+                                                        <div class="upload-target">
+                                                            <div class="row"></div>
+                                                        </div>
                                             </div>
                                             <div class="image-uploader text-muted" data-name="second"
                                                  data-description="Giấy phép hành nghề hoặc bằng tốt nghiệp">
@@ -417,12 +430,26 @@
                                                         </span>
                                                     </div>
                                                 </div>
-                                                <div>
-                                                    <img style="padding: 5px" *ngFor="let url of _certificateUrls" [src]="url" class="rounded mb-3" width="180">
+
+                                                <div class="upload-content">
+                                                    <div class="row" *ngFor="let o of _certificateUrls; let i = index">
+                                                        <div class="col-md-2">
+                                                            <img src="{{o.url}}" class="rounded mb-3 selFile" title={{o.name.name}} width="50">
+                                                        </div>
+                                                        <div style="text-align: " class="col-md-7">
+                                                            <p class="img-name">{{o.name.name}}</p>
+                                                        </div>
+                                                        <div style="padding: 15px" class="col-md-2">
+                                                            <span class="btn btn-sm btn-default btn-delete" (click)="removeFile(i)">
+                                                                <i aria-hidden="true"></i>Xóa file
+                                                            </span>
+                                                        </div>
+                                                    </div>
                                                 </div>
+
                                                 <!-- <div class="text-danger margin-bottom-thin my-mat-hint">
-                                                    {{_certificateError}}<span>&nbsp;</span>
-                                                </div> -->
+        {{_certificateError}}<span>&nbsp;</span>
+    </div> -->
                                                 <div class="upload-target">
                                                     <div class="row"></div>
                                                 </div>
