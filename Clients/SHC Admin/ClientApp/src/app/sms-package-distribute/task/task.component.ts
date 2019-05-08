@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 
-import { Component, Inject, Injector, OnInit } from '@angular/core';
+import { Component, Inject, Injector, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 
@@ -31,7 +31,9 @@ export class packagedistributeTaskComponent extends AppComponentBase implements 
   _package: any = [];
   _brands = [];
   _currentYear = moment().year();
-  _currentMonth = moment().month() + 1;
+    _currentMonth = moment().month() + 1;
+    @ViewChild("yearStart") yearStart;
+    @ViewChild("yearEnd") yearEnd;
 
   private rules = { month: 'noSpace,capitalize', year: 'singleSpace' };
 
@@ -85,7 +87,35 @@ export class packagedistributeTaskComponent extends AppComponentBase implements 
     this._frmpackagedistribute = this._formBuilder.group(this._context);
   }
 
-  submit() {
+    submit() {
+        const yearNow = new Date().getFullYear();
+        if (this._frmpackagedistribute.controls['yearStart'].value < yearNow) {
+            this.yearStart.nativeElement.focus();
+            return swal({
+                title: 'Thông báo',
+                text: 'Từ năm phải lớn hơn hoặc bằng năm hiện tại',
+                type: 'warning',
+                timer: 3000
+            });
+        }
+        if (this._frmpackagedistribute.controls['yearEnd'].value < yearNow) {
+            this.yearEnd.nativeElement.focus();
+            return swal({
+                title: 'Thông báo',
+                text: 'Đến năm phải lớn hơn hoặc bằng năm hiện tại',
+                type: 'warning',
+                timer: 3000
+            });
+        }
+        if (this._frmpackagedistribute.controls['yearEnd'].value < this._frmpackagedistribute.controls['yearStart'].value) {
+            return swal({
+                title: 'Thông báo',
+                text: 'Đến năm phải lớn hơn hoặc bằng Từ năm',
+                type: 'warning',
+                timer: 3000
+            });
+        }   
+
     this._frmpackagedistribute.value.userId = this.appSession.userId;
 
     if (this._isNew) {
