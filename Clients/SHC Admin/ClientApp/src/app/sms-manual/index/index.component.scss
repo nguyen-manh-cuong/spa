@@ -7,3 +7,17 @@ mat-header-cell {
     display: flex;
     justify-content: center; // or flex-end
 }
+
+.mat-tab-body.mat-tab-body-active {
+    position: relative;
+     overflow-x: hidden; 
+     overflow-y: hidden !important; 
+    z-index: 1;
+    flex-grow: 1;
+}
+
+a:not([href]):not([tabindex]), a:not([href]):not([tabindex]):hover, a:not([href]):not([tabindex]):focus {
+    text-decoration: underline !important;
+    cursor: pointer;
+    color: #00695c !important;
+}

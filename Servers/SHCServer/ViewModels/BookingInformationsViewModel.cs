@@ -155,7 +155,7 @@ namespace SHCServer.ViewModels
         public int QuantityByStatusPending { get; set; }
         public int QuantityByStatusCancel { get; set; }
         public int QuantityByStatusDone { get; set; }
-
+        public int? PatientId { set; get; }
     }
 
     public class BookingInformationsInputCreateViewModel

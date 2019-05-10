@@ -405,7 +405,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
             .subscribe(resp => {
                 swal({
                     title:'Thông báo', 
-                    text:resp, 
+                    html: resp, 
                     type:'error',
                     timer:3000});
                 this.selection = new SelectionModel<IMedicalHealthcareHistories>(true, []);
