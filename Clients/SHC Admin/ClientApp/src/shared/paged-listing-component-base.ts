@@ -83,19 +83,14 @@ export abstract class PagedListingComponentBase<EntityDto> extends AppComponentB
     }
 
     convertAge(date: number, month: number, year: number) {
-        console.log('vao ham convert')
         // ngày sinh nhật
         var strBirthday =  date.toString().concat('-', month.toString(), '-',  year.toString()); 
-        const birthday = moment(strBirthday, 'DD-MM-YYYY').valueOf();
-        console.log('ngay sinh nhat', birthday)
+        const birthday = moment(strBirthday, 'DD-MM-YYYY').valueOf();        
         // Ngày hiện tại
         const yearNow = new Date().getFullYear();
         const monthNow = new Date().getMonth() + 1;
         const dateNow = moment(new Date()).valueOf();
         var time1 = (dateNow -birthday)/(1000*24*60*60);
-        console.log('thoi gian: ',  time1)
-
-        console.log('Ngay hien tai', dateNow)
         const strNow = dateNow.toString().concat('-', monthNow.toString(), '-',  yearNow.toString());       
         var time = new Date().getTime() - new Date(birthday).getTime();
         // Convert thời gian (milliseconds) sang ngày
