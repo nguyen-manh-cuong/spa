@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, Injector, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
 import { SelectionModel } from '@angular/cdk/collections';
-import { IMedicalHealthcareHistories, IHealthfacilities } from '@shared/Interfaces';
+import { IMedicalHealthcareHistories, IHealthfacilities, IProvince, IDistrict, IWard } from '@shared/Interfaces';
 import { DataService } from '@shared/service-proxies/service-data';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { PagedListingComponentBase } from '@shared/paged-listing-component-base';
@@ -11,7 +11,7 @@ import { TaskComponent } from '@app/sms-template-task/task/task.component';
 import * as moment from 'moment';
 import swal from 'sweetalert2';
 
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatInput, MatDatepicker } from '@angular/material';
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { startTimeRange } from '@angular/core/src/profile/wtf_impl';
@@ -58,6 +58,18 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     healthfacilities = new FormControl();
     cDate = new Date();
 
+    filteredProvinceOptions: Observable<IProvince[]>;
+    provinceCode = new FormControl();
+    _provinceCode: string;
+
+    filteredDistrictOptions: Observable<IDistrict[]>;
+    districtCode = new FormControl();
+    _districtCode: string;
+
+    filteredWardOptions: Observable<IWard[]>;
+    wardCode = new FormControl();
+    _wardCode: string;
+
     @ViewChild("birthday") birthday;
     @ViewChild("endTime") endTime;
     @ViewChild("startTime") startTime;
@@ -96,6 +108,8 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
         this.frmSearch.controls['startTime'].setValue(new Date(new Date().setDate(new Date().getDate())));
         this.dataService.getAll('provinces').subscribe(resp => this._provinces = resp.items);
 
+
+
         if (this.appSession.user.healthFacilitiesId) {
             this.dataService.get("healthfacilities", JSON.stringify({ healthfacilitiesId: this.appSession.user.healthFacilitiesId }), '', null, null).subscribe(resp => { this._healthfacilities = resp.items; });
             this.dataService.getAll('doctors', String(this.appSession.user.healthFacilitiesId)).subscribe(resp => this._doctors = resp.items);
@@ -116,7 +130,6 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
             this.endTime.nativeElement.focus();
         });
         this.appSession.user.healthFacilitiesId ? this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId) : this.filterOptions();
-
     }
 
     isAllSelected() {
@@ -138,19 +151,164 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
         this.dataService.getAll('doctors', obj.healthFacilitiesId).subscribe(resp => this._doctors = resp.items);
     }
 
-    onSelectProvince(obj: any) {
-        this._districts = this._wards = [];
-        this.frmSearch.patchValue({ districtCode: null, wardCode: null });
-        const province = this._provinces.find((o: { provinceCode: string, name: string; }) => o.provinceCode === obj);
-        if (province) { this.dataService.get('districts', JSON.stringify({ ProvinceCode: province.provinceCode }), '', 0, 0).subscribe(resp => this._districts = resp.items); }
+    // onSelectProvince(obj: any) {
+    //     this._districts = this._wards = [];
+    //     this.frmSearch.patchValue({ districtCode: null, wardCode: null });
+    //     const province = this._provinces.find((o: { provinceCode: string, name: string; }) => o.provinceCode === obj);
+    //     if (province) { this.dataService.get('districts', JSON.stringify({ ProvinceCode: province.provinceCode }), '', 0, 0).subscribe(resp => this._districts = resp.items); }
+    // }
+
+
+
+
+
+    displayProvinceFn(h?: IProvince): string | undefined {
+        return h ? h.name : undefined;
     }
 
-    onSelectDistrict(obj: any) {
-        this._wards = [];
-        this.frmSearch.patchValue({ wardCode: null });
-        const district = this._districts.find((o: { districtCode: string, name: string; }) => o.districtCode === obj);
-        if (district) { this.dataService.get('wards', JSON.stringify({ DistrictCode: district.districtCode }), '', 0, 0).subscribe(resp => this._wards = resp.items); }
+
+    _filterProvince(name: any): IProvince[] {
+        const filterValue = name.toLowerCase();
+        var provinces = this._provinces.filter(c => c.name.toLowerCase().indexOf(filterValue) === 0);
+        return provinces;
     }
+
+    clickProvinceCbo() {
+        !this.provinceCode.value ? this.filterProvinceOptions() : '';
+    }
+
+
+
+    filterProvinceOptions() {
+        this.filteredProvinceOptions = this.provinceCode.valueChanges
+            .pipe(
+                startWith<string | IProvince>(''),
+                map(name => name ? this._filterProvince(name.toString().trim()) : this._provinces.slice()),
+                map(data => data.slice())
+            );
+    }
+
+    @ViewChild('districtInput') districtInput;
+    @ViewChild('wardInput') wardInput;
+
+    onInputProvince(obj: any) {
+        if (obj.data != " " || obj.inputType == "deleteContentBackward") {
+            this._districts = [];
+            this._wards = [];
+            this.districtInput.nativeElement.value = "";
+            this.wardInput.nativeElement.value = "";
+            this._provinceCode = null;
+            this._districtCode = null;
+            this._wardCode = null;
+        }
+    }
+
+    onSelectProvince(value: any) {
+        if (value.provinceCode) {
+            this._provinceCode = value.provinceCode;
+            this.dataService.get('districts', JSON.stringify({ ProvinceCode: value.provinceCode }), '', 0, 0)
+                .subscribe(resp => {
+                    this._districts = resp.items;
+                    this.districtCode.setValue(null);
+                });
+        }
+    }
+
+    //District
+
+    displayDistrictFn(h?: IDistrict): string | undefined {
+        return h ? h.name : undefined;
+    }
+
+
+    _filterDistrict(name: any): IDistrict[] {
+        const filterValue = name.toLowerCase();
+        var districts = this._districts.filter(c => c.name.toLowerCase().indexOf(filterValue) === 0);
+        return districts;
+    }
+
+    clickDistrictCbo() {
+        !this.districtCode.value ? this.filterDistrictOptions() : '';
+    }
+
+
+
+    filterDistrictOptions() {
+        this.filteredDistrictOptions = this.districtCode.valueChanges
+            .pipe(
+                startWith<string | IDistrict>(''),
+                map(name => name ? this._filterDistrict(name.toString().trim()) : this._districts.slice()),
+                map(data => data.slice())
+            );
+    }
+
+    onInputDistrict(obj: any) {
+        if (obj.data != " " || obj.inputType == "deleteContentBackward") {
+            this._wards = [];
+            this.wardInput.nativeElement.value = "";
+            this._districtCode = null;
+            this._wardCode = null;
+        }
+    }
+
+    onSelectDistrict(value: any) {
+        if (value.districtCode) {
+            this._districtCode = value.districtCode;
+            this.dataService.get('wards', JSON.stringify({ DistrictCode: value.districtCode }), '', 0, 0)
+                .subscribe(resp => {
+                    this._wards = resp.items;
+                    this.wardCode.setValue(null);
+                });
+        }
+    }
+
+
+
+    // onSelectDistrict(obj: any) {
+    //     this._wards = [];
+    //     this.frmSearch.patchValue({ wardCode: null });
+    //     const district = this._districts.find((o: { districtCode: string, name: string; }) => o.districtCode === obj);
+    //     if (district) { this.dataService.get('wards', JSON.stringify({ DistrictCode: district.districtCode }), '', 0, 0).subscribe(resp => this._wards = resp.items); }
+    // }
+
+    displayWardFn(h?: IWard): string | undefined {
+        return h ? h.name : undefined;
+    }
+
+
+    _filterWard(name: any): IWard[] {
+        const filterValue = name.toLowerCase();
+        var wards = this._wards.filter(c => c.name.toLowerCase().indexOf(filterValue) === 0);
+        return wards;
+    }
+
+    clickWardCbo() {
+        !this.wardCode.value ? this.filterWardOptions() : '';
+    }
+
+
+
+    filterWardOptions() {
+        this.filteredWardOptions = this.wardCode.valueChanges
+            .pipe(
+                startWith<string | IWard>(''),
+                map(name => name ? this._filterWard(name.toString().trim()) : this._wards.slice()),
+                map(data => data.slice())
+            );
+    }
+
+    onInputWard(obj: any) {
+        if (obj.data != " " || obj.inputType == "deleteContentBackward") {
+            this._wardCode = null;
+        }
+    }
+
+    onSelectWard(value: any) {
+        if (value.wardCode) {
+            this._wardCode = value.wardCode;
+        }
+    }
+
 
     changeDate(value: any, type: number) {
         if (this.startTime.nativeElement.value && moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').isValid() && this.endTime.nativeElement.value && moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').isValid()) {
@@ -208,7 +366,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
             });
         }
 
-        if (moment(this.endTime.nativeElement.value, "DD/MM/YYYY") <= moment(this.startTime.nativeElement.value, "DD/MM/YYYY")) {
+        if (moment(this.endTime.nativeElement.value, "DD/MM/YYYY") < moment(this.startTime.nativeElement.value, "DD/MM/YYYY")) {
             return swal({
                 title: 'Thông báo',
                 text: 'Ngày kết thúc không được nhỏ hơn ngày bắt đầu',
@@ -243,6 +401,11 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
                 timer: 3000
             });
         }
+
+        this.frmSearch.controls['provinceCode'].setValue(this._provinceCode);
+        this.frmSearch.controls['districtCode'].setValue(this._districtCode);
+        this.frmSearch.controls['wardCode'].setValue(this._wardCode);
+
 
         if (((moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').valueOf() - moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').valueOf()) / (1000 * 60 * 60 * 24)) < 0) {
             swal(this.l('Notification'), this.l('FromDateMustBeGreaterThanOrEqualToDate'), 'warning');
@@ -309,7 +472,6 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     }
 
     openCustomDialog(): void {
-        console.log(this.selection.selected);
         const dialogRef = this.dialog.open(this.dialogComponent, { minWidth: 'calc(100vw/2)', maxWidth: 'calc(100vw - 300px)', disableClose: true, data: { selection: this.selection, type: 1 } });
 
         dialogRef.afterClosed().subscribe(() => {
@@ -320,7 +482,6 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     }
 
     sendSms() {
-        console.log(this.appSession.user.healthFacilitiesId);
 
         this._isRequest = true;
         setTimeout(() => this._isRequest = false, 3000)
