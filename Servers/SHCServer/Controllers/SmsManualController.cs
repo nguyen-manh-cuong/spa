@@ -420,7 +420,7 @@ namespace SHCServer.Controllers
 
             if (string.IsNullOrEmpty(infoInput.content))
             {
-                var config = _context.Query<HealthFacilitiesConfigs>().Where(hp => hp.Code == code).FirstOrDefault();
+                var config = _context.Query<HealthFacilitiesConfigs>().Where(hp => hp.Code == code && hp.HealthFacilitiesId == infoInput.healthFacilitiesId).FirstOrDefault();
                 templateId = config != null ? config.Values : 0;
                 var template = _context.Query<SmsTemplate>().Where(t => t.Id == templateId).FirstOrDefault();
                 content = template != null ? template.SmsContent : "";

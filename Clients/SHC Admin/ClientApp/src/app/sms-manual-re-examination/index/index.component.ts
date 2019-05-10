@@ -325,7 +325,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
         this._isRequest = true;
         setTimeout(() => this._isRequest = false, 3000)
 
-        if (this.appSession.user.healthFacilitiesId) {
+        if (!this.appSession.user.healthFacilitiesId) {
             return this.openCustomDialog();
         }
 
@@ -333,6 +333,8 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
             code: "A01.SMSTAIKHAM",
             healthFacilitiesId: this.appSession.user.healthFacilitiesId
         }), '', 0, 0).subscribe(resp => {
+            console.log(336, resp);
+
             if (!resp || !resp.items) {
                 return this.openCustomDialog();
             }
@@ -348,7 +350,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
                 .subscribe(resp => {
                     swal({
                         title: 'Thông báo',
-                        text: resp,
+                        html: resp,
                         type: 'error',
                         timer: 3000
                     });
