@@ -26,6 +26,9 @@ namespace SHCServer
         public int SmsPackageUsedId { set; get; }
         public int? PatientHistoriesId { set; get; }
         public string Telco { set; get; }
+
+        public int? PatientId { get; set; }
+        public string objectType { get; set; }
     }
 
     public class SmsContent
@@ -38,6 +41,8 @@ namespace SHCServer
         public int SmsPackagesDistributeId { set; get; }
         public int SmsPackageUsedId { set; get; }
         public int? PatientHistoriesId { set; get; }
+        public int? PatientId { get; set; }
+        public string objectType { get; set; }
     }
 
     public class Utils
@@ -251,7 +256,9 @@ namespace SHCServer
                     SmsPackagesDistributeId = content.SmsPackagesDistributeId,
                     SmsPackageUsedId = content.SmsPackageUsedId,
                     PatientHistoriesId = content.PatientHistoriesId,
-                    Telco = telco
+                    Telco = telco,
+                    PatientId = content.PatientId,
+                    objectType = content.objectType
                 };
             }
             catch(Exception e)

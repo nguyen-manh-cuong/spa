@@ -273,7 +273,7 @@ namespace SHCServer.Controllers
             catch (Exception e)
             {
                 if (_context.Session.IsInTransaction) _context.Session.RollbackTransaction();
-                return StatusCode(500, _excep.Throw("Đăng ký không thành công.", "Lỗi hệ thông!"));
+                return StatusCode(500, _excep.Throw("Đăng ký không thành công.", e.Message.ToString()));
             }
         }
 

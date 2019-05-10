@@ -7,6 +7,7 @@ import { Observable } from 'rxjs';
 import { map, startWith, finalize, switchMap, tap, debounceTime } from 'rxjs/operators';
 import swal from 'sweetalert2';
 import * as moment from 'moment';
+import { MaterialDateTimePicker } from 'material-datetime-picker';
 
 import {MomentDateAdapter} from '@angular/material-moment-adapter';
 import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
@@ -50,8 +51,7 @@ export class IndexComponent extends PagedListingComponentBase<ISmsLogs> implemen
 
     @ViewChild("startTime") startTime;
     @ViewChild("endTime") endTime;
-    
-    
+
     constructor(injector: Injector, private _dataService: DataService /*, public dialog: MatDialog*/, private _formBuilder: FormBuilder) {
         super(injector);
     }

@@ -11,6 +11,7 @@ import { UtilsModule } from '@shared/utils/utils.module';
 import { ValidationModule } from '@app/validation/validation.module';
 import { NgxMaskModule } from 'ngx-mask';
 import { SmsTemplateTaskModule } from '@app/sms-template-task/sms-template-task.module';
+import { DetailComponent } from './detail/detail.component';
 
 
 @NgModule({
@@ -24,7 +25,7 @@ import { SmsTemplateTaskModule } from '@app/sms-template-task/sms-template-task.
         SmsTemplateTaskModule,
         NgxMaskModule.forRoot()
     ],
-    declarations: [SmsManualComponent, IndexComponent],
-    entryComponents: []
+    declarations: [SmsManualComponent, IndexComponent, DetailComponent],
+    entryComponents: [DetailComponent]
 })
 export class SmsManualModule { }

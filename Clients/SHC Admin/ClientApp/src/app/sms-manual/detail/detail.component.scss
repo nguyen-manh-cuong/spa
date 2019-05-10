@@ -1,0 +1,15 @@
+.custom-form .mat-form-field-appearance-outline .mat-form-field-outline {
+    color: transparent !important;
+}
+
+.custom-form .disabled .mat-form-field-outline {
+    background-color: transparent;
+}
+
+.disabled .mat-form-field-outline {
+    background-color: transparent !important;
+}
+
+form:not(.task-form) .mat-form-field:not(.mat-focused) .mat-form-field-label.mat-empty:not(.mat-form-field-invalid) {
+    color: black;
+}

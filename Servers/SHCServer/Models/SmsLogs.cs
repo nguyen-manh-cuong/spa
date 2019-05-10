@@ -26,5 +26,7 @@ namespace SHCServer.Models
         public int? LogType { set; get; }
         public string Telco { set; get; }
         public string ResultMessage { set; get; }
+        public int? ObjectType { set; get; }
+        public int? ObjectId { set; get; }
     }
 }

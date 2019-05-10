@@ -130,7 +130,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingDoctorsCal
                 finalize(() => this.isLoading = false)
             )
       }
-
+                                                                                                                                                                                            
     //selected checkbox table
     isAllSelected() {
         const numSelected = this.selection.selected.length;

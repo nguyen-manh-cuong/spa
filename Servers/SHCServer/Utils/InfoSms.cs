@@ -30,6 +30,8 @@ namespace SHCServer
                 smsLog.SentDate = DateTime.Now;
                 smsLog.LogType = 1;
                 smsLog.Telco = resp.Telco;
+                smsLog.ObjectId = resp.PatientId;
+                smsLog.ObjectType = int.Parse(resp.objectType);
                 lstSmsLog.Add(smsLog);
 
                 result = resp.Result;
