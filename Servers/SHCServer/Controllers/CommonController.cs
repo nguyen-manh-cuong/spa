@@ -148,7 +148,7 @@ namespace SHCServer.Controllers
 
         [HttpGet]
         [Route("api/healthfacilities")]
-        public IActionResult GetHealthfacilities(string filter,int maxResultCount=30)
+        public IActionResult GetHealthfacilities(string filter)
         {
             var objs = _context.Query<HealthFacilities>().Where(o => o.IsActive == true && o.IsDelete == false);
             if (filter != null)
@@ -177,16 +177,10 @@ namespace SHCServer.Controllers
                     {
                         objs = objs.Where(o => o.Code.Contains(value.Trim()));
                     }
-                    if (string.Equals(key, "max"))
-                    {
-                        maxResultCount = 1000;
-                    }
                 }
             }
-            if(maxResultCount==30)
                 return Json(new ActionResultDto { Result = new { Items = objs.OrderBy(h => h.Name).Take(30).ToList() } });
-            else
-                return Json(new ActionResultDto { Result = new { Items = objs.OrderBy(h => h.Name).Take(maxResultCount).ToList() } });
+          
         }
 
         [HttpGet]

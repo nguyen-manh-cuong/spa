@@ -1,7 +1,7 @@
 import { IHealthfacilities } from './../../../../../../SHC Outside/ClientApp/src/shared/Interfaces';
 import { IDoctor } from './../../../../../../SHC Client/ClientApp/src/shared/Interfaces';
-import { ICategoryCommon } from './../../../shared/Interfaces';
-import { AfterViewInit, Component, Injector, OnInit, ViewChild, Input } from '@angular/core';
+import { ICategoryCommon, IProvince, IDistrict, IWard } from './../../../shared/Interfaces';
+import { AfterViewInit, Component, Injector, OnInit, ViewChild, Input, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatButton, MatDialog, MatDialogRef, MatSort, MatCheckbox, MatInput, AUTOCOMPLETE_OPTION_HEIGHT, MatSelect } from '@angular/material';
 import { Subject, merge, of, Observable } from 'rxjs';
@@ -27,27 +27,39 @@ export class EntityDto {
   id: number;
 }
 
+
+
 @Component({
   selector: 'app-index',
   templateUrl: './index.component.html',
-  styleUrls: ['./index.component.scss']
+  styleUrls: ['./index.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> implements OnInit {
   dialogDetail: any;
 
-  provinces = [];
-  districts = [];
+  _provinces = [];
+  _districts = [];
   checkProvince = false;
   _healthfacilities = [];
   _specialist = [];
   _healthFacilitiesId: number;
   _specialistCode: number;
 
-  isLoading: boolean;
+  isLoading = false;
   filteredHealthFacilitiesOptions: Observable<IHealthfacilities[]>;
   filteredSpecialistOptions: Observable<ICategoryCommon[]>;
   healthfacilities = new FormControl();
   specialistCode = new FormControl();
+
+  filteredProvinceOptions: Observable<IProvince[]>;
+  provinceCode = new FormControl();
+  _provinceCode: string;
+
+  filteredDistrictOptions: Observable<IDistrict[]>;
+  districtCode = new FormControl();
+  _districtCode: string;
+
 
   displayedColumns = ['orderNumber', 'fullName', 'specialist', 'phoneNumber', 'address', 'priceFrom', 'allowBooking', 'allowFilter', 'allowSearch', 'task'];
 
@@ -65,9 +77,14 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
     this.getProvinces();
     this.getSpecialist();
 
+
     if (this.appSession.user.healthFacilitiesId) {
       this.dataService.getAll('healthfacilities', "{healthfacilitiesId:" + String(this.appSession.user.healthFacilitiesId) + "}").subscribe(resp => this._healthfacilities = resp.items);
       this.frmSearch.controls['healthfacilitiesId'].setValue(this.appSession.user.healthFacilitiesId);
+    }
+    else {
+      this.getHealthfacilities();
+      this.filterOptions();
     }
   }
   showErrorDeleteMessage() {
@@ -107,34 +124,33 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
   }
 
   getProvinces() {
-    this._dataService.getAll("provinces").subscribe(resp => this.provinces = resp.items);
+    this._dataService.getAll("provinces").subscribe(resp => this._provinces = resp.items);
   }
 
   getDistricts(provinceCode) {
-    this._dataService.getAll("districts", "{ProvinceCode:" + provinceCode + "}").subscribe(resp => this.districts = resp.items);
+    this._dataService.getAll("districts", "{ProvinceCode:" + provinceCode + "}").subscribe(resp => this._districts = resp.items);
   }
 
-  provinceChange($event) {
-    this.frmSearch.patchValue({ districtCode: null });
-    if ($event.value != undefined) {
-      this.getDistricts($event.value);
-      this.checkProvince = true;
-      this.getHealthfacilities($event.value);
-    }
-    else {
-      this.checkProvince = false;
-      this.districts = null;
-      if (!this.appSession.user.healthFacilitiesId)
-        this._healthfacilities = null;
-    }
-  }
+  // provinceChange($event) {
+  //   this.frmSearch.patchValue({ districtCode: null });
+  //   if ($event.value != undefined) {
+  //     this.getDistricts($event.value);
+  //     this.checkProvince = true;
+  //     this.getHealthfacilities($event.value);
+  //   }
+  //   else {
+  //     this.checkProvince = false;
+  //     this.districts = null;
+  //     if (!this.appSession.user.healthFacilitiesId)
+  //       this._healthfacilities = null;
+  //   }
+  // }
 
   districtChange(province, $event) {
     this.getHealthfacilities(province.value, $event.value);
   }
 
   resetSearch() {
-    this.provinces = null;
     this._specialist = null;
 
     if (!this.appSession.user.healthFacilitiesId) {
@@ -333,13 +349,17 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
 
 
   getHealthfacilities(provinceCode?, districtCode?) {
+    if (provinceCode == null && districtCode == null) {
+      return this.dataService.getAll("healthfacilities")
+        .subscribe(resp => this._healthfacilities = resp.items);
+    }
     if (!this.appSession.user.healthFacilitiesId) {
-      if (districtCode == null) {
-        this.dataService.getAll("healthfacilities", "{ provinceCode:" + provinceCode + ",max:1}")
+      if (provinceCode != null && districtCode == null) {
+        this.dataService.getAll("healthfacilities", "{ provinceCode:" + provinceCode + "}")
           .subscribe(resp => this._healthfacilities = resp.items);
       }
       else {
-        this.dataService.getAll("healthfacilities", "{provinceCode:" + provinceCode + ",districtCode:" + districtCode + ",max:1}")
+        this.dataService.getAll("healthfacilities", "{provinceCode:" + provinceCode + ",districtCode:" + districtCode + "}")
           .subscribe(resp => this._healthfacilities = resp.items)
       }
     }
@@ -352,78 +372,125 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
   }
 
 
-  //Auto complete health facilities
-
-  displayFn(h?: IHealthfacilities): string | undefined {
+  displayProvinceFn(h?: IProvince): string | undefined {
     return h ? h.name : undefined;
-  }
+}
 
-  _filterHealthfacilities(name: any): IHealthfacilities[] {
+
+_filterProvince(name: any): IProvince[] {
     const filterValue = name.toLowerCase();
-    var healthfacilities = isNaN(filterValue) ?
-      this._healthfacilities.filter(h => h.name.toLowerCase().indexOf(filterValue) === 0) :
-      this._healthfacilities.filter(h => h.code.toLowerCase().indexOf(filterValue) === 0);
-    return healthfacilities;
-  }
+    var provinces = this._provinces.filter(c => c.name.toLowerCase().indexOf(filterValue) === 0);
+    return provinces;
+}
 
-  clickCbo() {
-    !this.healthfacilities.value ? this.filterOptions() : '';
-  }
+clickProvinceCbo() {
+    !this.provinceCode.value ? this.filterProvinceOptions() : '';
+}
+
+
+
+filterProvinceOptions() {
+    this.filteredProvinceOptions = this.provinceCode.valueChanges
+        .pipe(
+            startWith<string | IProvince>(''),
+            map(name => name ? this._filterProvince(name.toString().trim()) : this._provinces.slice()),
+            map(data => data.slice())
+        );
+}
+
+@ViewChild('districtInput') districtInput;
+
+onInputProvince(obj: any) {
+    if (obj.data != " " || obj.inputType == "deleteContentBackward") {
+        this._districts = [];
+        this.districtInput.nativeElement.value = "";
+        this._provinceCode = null;
+        this._districtCode = null;
+    }
+}
+
+onSelectProvince(value: any) {
+    if (value.provinceCode) {
+        this._provinceCode = value.provinceCode;
+        this.dataService.get('districts', JSON.stringify({ ProvinceCode: value.provinceCode }), '', 0, 0)
+            .subscribe(resp => {
+                this._districts = resp.items;
+                this.districtCode.setValue(null);
+            });
+    }
+}
+
+//District
+
+displayDistrictFn(h?: IDistrict): string | undefined {
+    return h ? h.name : undefined;
+}
+
+
+_filterDistrict(name: any): IDistrict[] {
+    const filterValue = name.toLowerCase();
+    var districts = this._districts.filter(c => c.name.toLowerCase().indexOf(filterValue) === 0);
+    return districts;
+}
+
+clickDistrictCbo() {
+    !this.districtCode.value ? this.filterDistrictOptions() : '';
+}
+
+
+
+filterDistrictOptions() {
+    this.filteredDistrictOptions = this.districtCode.valueChanges
+        .pipe(
+            startWith<string | IDistrict>(''),
+            map(name => name ? this._filterDistrict(name.toString().trim()) : this._districts.slice()),
+            map(data => data.slice())
+        );
+}
+
+onInputDistrict(obj: any) {
+    if (obj.data != " " || obj.inputType == "deleteContentBackward") {
+        this._districtCode = null;
+    }
+}
+
+onSelectDistrict(value: any) {
+    if (value.districtCode) {
+        this._districtCode = value.districtCode;
+    }
+}
 
   filterOptions() {
-    this.filteredHealthFacilitiesOptions = this.healthfacilities.valueChanges
+    this.healthfacilities.valueChanges
       .pipe(
-        startWith<string | IHealthfacilities>(''),
-        map(value => typeof value === 'string' ? value : value.name),
-        map(name => name ? this._filterHealthfacilities(name.trim()) : this._healthfacilities.slice()),
-        map(data => data.slice())
-      );
+        debounceTime(500),
+        tap(() => this.isLoading = true),
+        switchMap(value => this.filter(value))
+      )
+      .subscribe(data => {
+        this._healthfacilities = data.items;
+      });
   }
 
-  onInputHealthfacilities(obj: any) {
-    if (obj != "") {
-      this.frmSearch.controls['healthfacilitiesId'].setValue(0);
-    } else {
-      this.frmSearch.controls['healthfacilitiesId'].setValue('');
-    }
+  filter(value: any) {
+    var fValue = typeof value === 'string' ? value : (value ? value.name : '')
+    this._healthfacilities = [];
+
+    return this.dataService
+      .get("healthfacilities", JSON.stringify({
+        name: isNaN(fValue) ? fValue : "",
+        code: !isNaN(fValue) ? fValue : ""
+      }), '', null, null)
+      .pipe(
+        finalize(() => this.isLoading = false)
+      )
   }
-
-  onSelectHealthFacilities(value: any) {
-    if (value.healthFacilitiesId) {
-      this.frmSearch.controls['healthfacilitiesId'].setValue(value.healthFacilitiesId);
-      this._healthFacilitiesId = value.healthFacilitiesId;
-    }
-  }
-
-  // filterOptions() {
-  //   this.healthfacilities.valueChanges
-  //     .pipe(
-  //       debounceTime(500),
-  //       tap(() => this.isLoading = true),
-  //       switchMap(value => this.filter(value))
-  //     )
-  //     .subscribe(data => {
-  //       this._healthfacilities = data.items;
-  //     });
-  // }
-
-  // filter(value: any) {
-  //   var fValue = typeof value === 'string' ? value : (value ? value.name : '')
-  //   this._healthfacilities = [];
-
-  //   return this.dataService
-  //     .get("healthfacilities", JSON.stringify({
-  //       name: isNaN(fValue) ? fValue : "",
-  //       code: !isNaN(fValue) ? fValue : ""
-  //     }), '', null, null)
-  //     .pipe(
-  //       finalize(() => this.isLoading = false)
-  //     )
-  // }
   //End auto complete health facilities
 
   ///////////////////////////////////
-
+  getSpecialJoin(element: [Specialist]) {
+    return element.map((e) => e.name).join(", ");
+  }
   //Auto complete specialist
   displaySpecialistFn(h?: ICategoryCommon): string | undefined {
     return h ? h.name : undefined;
@@ -432,7 +499,7 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
 
   _filterSpecialist(name: any): ICategoryCommon[] {
     const filterValue = name.toLowerCase();
-    var specialist =  this._specialist.filter(c => c.name.toLowerCase().indexOf(filterValue) === 0);
+    var specialist = this._specialist.filter(c => c.name.toLowerCase().indexOf(filterValue) === 0);
     return specialist;
   }
 
@@ -440,9 +507,7 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
     !this.specialistCode.value ? this.filterSpecialistOptions() : '';
   }
 
-  getSpecialJoin(element: [Specialist]) {
-    return element.map((e) => e.name).join(", ");
-  }
+
 
   filterSpecialistOptions() {
     this.filteredSpecialistOptions = this.specialistCode.valueChanges
@@ -467,8 +532,12 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
       this._specialistCode = value.code;
     }
   }
+
+  
   //End auto complete specialist
   customSearch() {
+    this.frmSearch.controls['provinceCode'].setValue(this._provinceCode);
+    this.frmSearch.controls['districtCode'].setValue(this._districtCode);
     this.btnSearchClicks$.next();
   }
 
