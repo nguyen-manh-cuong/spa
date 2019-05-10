@@ -28,10 +28,11 @@ namespace SHCServer.Controllers
         public IActionResult GetAll(int skipCount = 0, int maxResultCount = 10, string sorting = null, string filter = null)
         {
             var objs = _context.Query<SmsLogs>();
-
+            
             if (filter != null)
             {
-                foreach (var (key, value) in JsonConvert.DeserializeObject<Dictionary<string, string>>(filter))
+                var data = JsonConvert.DeserializeObject<Dictionary<string, string>>(filter);
+                foreach (var (key, value) in data)
                 {
                     if (string.IsNullOrEmpty(value) || value == "false" || value == "0") continue;
                     if (string.Equals(key, "healthfacilities")) objs = objs.Where(s => s.HealthFacilitiesId == int.Parse(value));
@@ -44,6 +45,9 @@ namespace SHCServer.Controllers
                     if (string.Equals(key, "type")) objs = objs.Where(s => s.LogType == int.Parse(value));
                     if (string.Equals(key, "telco") && value != "all") objs = objs.Where(s => s.Telco == value);
                 }
+
+                if (data.ContainsKey("patientId")) objs = objs.Where(s => s.ObjectId == int.Parse(data["patientId"]));
+                if (data.ContainsKey("objectType")) objs = objs.Where(s => s.ObjectType == int.Parse(data["objectType"]));
             }
 
             //if (sorting != null)
@@ -58,7 +62,15 @@ namespace SHCServer.Controllers
 
             objs = objs.OrderByDesc(o => o.Id);
 
-            return Json(new ActionResultDto { Result = new { Items = objs.TakePage(skipCount == 0 ? 1 : skipCount + 1, maxResultCount).Select(l => new SmsLogViewModel(l, _connectionString)).ToList(), TotalCount = objs.Count() } });
+            var list = objs.TakePage(skipCount == 0 ? 1 : skipCount + 1, maxResultCount).Select(l => new SmsLogViewModel(l, _connectionString)).ToList();
+            foreach (var item in list)
+            {
+                item.SentDay = item.SentDate.Day.ToString();
+                item.SentMonth = item.SentDate.Month.ToString();
+                item.SentYear = item.SentDate.Year.ToString();
+            }
+
+            return Json(new ActionResultDto { Result = new { Items = list, TotalCount = objs.Count() } });
         }
     }
 }

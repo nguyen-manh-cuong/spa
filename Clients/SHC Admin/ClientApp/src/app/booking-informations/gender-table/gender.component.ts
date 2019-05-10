@@ -1,4 +1,4 @@
-﻿import { AfterViewInit, Component, Injector, OnInit, ViewChild, Input} from '@angular/core';
+import { AfterViewInit, Component, Injector, OnInit, ViewChild, Input} from '@angular/core';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatButton, MatDialog, MatPaginator, MatTableDataSource } from '@angular/material';
 import { Subject, merge, of } from 'rxjs';

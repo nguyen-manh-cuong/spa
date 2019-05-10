@@ -50,8 +50,7 @@ export class IndexComponent extends PagedListingComponentBase<ISmsLogs> implemen
 
     @ViewChild("startTime") startTime;
     @ViewChild("endTime") endTime;
-    
-    
+
     constructor(injector: Injector, private _dataService: DataService /*, public dialog: MatDialog*/, private _formBuilder: FormBuilder) {
         super(injector);
     }

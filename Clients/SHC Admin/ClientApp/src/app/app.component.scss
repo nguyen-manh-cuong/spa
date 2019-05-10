@@ -52,6 +52,7 @@
 .color-primary{color: #00695c!important;}
 .is-loading .mat-option-text {display: flex;justify-content: center;}
 .pl-10{padding-left: 10px!important;}
+.pl-0{padding-left: 0px!important;}
 /*============= end common ============= */
 /*============= font ============= */
 .f14{font-size: 14px!important;}    
@@ -88,4 +89,23 @@
 .icon-alert{margin-top:-2px;}
 .mat-form-field-suffix{display:flex!important;}
 
-/*============= end responsive ============= */
+/*============= end  validate form ============= */
+/*============= calender ============= */
+.group-calender {
+    background: #fff;
+    height: 40px;
+}
+.group-calender .txt-time {
+    border: 0;
+    margin-left: -100px;
+    margin-top: 10px;
+}
+.group-calender .mat-form-field-suffix {
+    right: -260px !important;
+    z-index: 10;
+}
+.group-calender .mat-form-field-appearance-outline:not(.mat-form-field-disabled) .mat-form-field-flex:hover .mat-form-field-outline-thick {
+    opacity: 0;
+}
+    
+/*============= end  calender ============= */

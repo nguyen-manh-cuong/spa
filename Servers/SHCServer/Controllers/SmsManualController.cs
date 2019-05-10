@@ -44,10 +44,11 @@ namespace SHCServer.Controllers
                                     p.Gender,
                                     p.PhoneNumber,
                                     p.Address,
-                                    p.Email
+                                    p.Email,
+                                    (select count(*) from sms_logs s where s.ObjectId = p.PatientId and s.ObjectType = 1) as smsCount
                                 from smarthealthcare.medical_healthcare_histories h
                                 inner join smarthealthcare.cats_patients p on h.PatientId = p.PatientId";
-            List<string> clause = new List<string>(); ;
+            List<string> clause = new List<string>();
             List<DbParam> param = new List<DbParam>();
             List<MedicalHealthcareHistoriesViewModel> lst = new List<MedicalHealthcareHistoriesViewModel>();
 
@@ -275,7 +276,8 @@ namespace SHCServer.Controllers
                     Gender = Convert.ToInt32(reader["Gender"]),
                     PhoneNumber = reader["PhoneNumber"].ToString(),
                     Address = reader["Address"].ToString(),
-                    Email = reader["Email"].ToString()
+                    Email = reader["Email"].ToString(),
+                    smsCount = Convert.ToInt32(reader["smsCount"])
                 });
             }
 

@@ -6,6 +6,7 @@ import { FormBuilder, FormControl } from '@angular/forms';
 import { PagedListingComponentBase } from '@shared/paged-listing-component-base';
 import { MatDialog } from '@angular/material/dialog';
 import { TaskComponent } from '@app/sms-template-task/task/task.component';
+import { DetailComponent } from './../detail/detail.component';
 import { Observable } from 'rxjs';
 import { MatPaginator, MatSort } from '@angular/material';
 import { startWith, map, finalize, switchMap, debounceTime, tap } from 'rxjs/operators';
@@ -40,7 +41,7 @@ export const MY_FORMATS = {
 })
 export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcareHistories> implements OnInit, AfterViewInit {
 
-    displayedColumns = ['orderNumber', 'select', 'code', 'fullName', 'birthday', 'age', 'gender', 'phoneNumber', 'address'];
+    displayedColumns = ['orderNumber', 'select', 'code', 'fullName', 'birthday', 'age', 'gender', 'phoneNumber', 'address', 'smsCount'];
 
     _provinces = [];
     _districts = [];
@@ -58,6 +59,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
 
     @ViewChild("birthday") birthday;
 
+    dialogDetail: any;
 
     constructor(injector: Injector, private _dataService: DataService, public dialog: MatDialog, private _formBuilder: FormBuilder) {
         super(injector);
@@ -97,6 +99,8 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
             this.filterOptions();
             this.healthfacilities.setValue(null);
         }
+
+        this.dialogDetail = DetailComponent;
     }
 
 
@@ -200,5 +204,10 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
 
             this.selection = new SelectionModel<IMedicalHealthcareHistories>(true, []);
         });
+    }
+
+    detail(obj): void {
+        const dialogRef = this.dialog.open(this.dialogDetail, { minWidth: 'calc(100vw/2)', maxWidth: 'calc(100vw - 300px)', data: obj});
+        dialogRef.afterClosed().subscribe(() => this.paginator._changePageSize(this.paginator.pageSize));
     }
 }

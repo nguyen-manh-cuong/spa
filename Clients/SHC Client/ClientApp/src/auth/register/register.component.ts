@@ -68,10 +68,10 @@ export class RegisterComponent implements OnInit {
             fullName: [this._user.fullName, [Validators.required, this.validateRule.hasValue]],
             email: [this._user.email, [Validators.required, this.validateRule.hasValue, this.validateRule.email]],
             phoneNumber: [this._user.phoneNumber, [Validators.required, this.validateRule.hasValue, this.validateRule.topPhoneNumber]],
-            provinceCode: [this._user.provinceCode],
-            districtCode: [this._user.districtCode],
-            wardCode: [this._user.wardCode],
-            address: [this._user.address],
+            provinceCode: [this._user.provinceCode ? this._user.provinceCode : '' ],
+            districtCode: [this._user.districtCode ? this._user.districtCode : ''],
+            wardCode: [this._user.wardCode ? this._user.wardCode : ''],
+            address: [this._user.address ? this._user.address : ''],
             sex: [1],
             accountType: [1],
             birthDay: [''],
@@ -142,7 +142,7 @@ export class RegisterComponent implements OnInit {
         var idProvince = obj.target.value.split(":")[1].trim();
 
         this._districts = this._wards = [];
-        this.frmUser.patchValue({ districtCode: null, wardCode: null });
+        this.frmUser.patchValue({ districtCode: '', wardCode: '' });
         const province = this._provinces.find((o: { provinceCode: string, name: string; }) => o.provinceCode === idProvince);
         if (province) { this._dataService.get('districts', JSON.stringify({ ProvinceCode: province.provinceCode }), '', 0, 0).subscribe(resp => this._districts = resp.items); }
     }
@@ -151,12 +151,12 @@ export class RegisterComponent implements OnInit {
         var idDistrict = obj.target.value.split(":")[1].trim();
 
         this._wards = [];
-        this.frmUser.patchValue({ wardCode: null });
+        this.frmUser.patchValue({ wardCode: '' });
         const district = this._districts.find((o: { districtCode: string, name: string; }) => o.districtCode === idDistrict);
         if (district) { this._dataService.get('wards', JSON.stringify({ DistrictCode: district.districtCode }), '', 0, 0).subscribe(resp => this._wards = resp.items); }
     }
 
-    submit() {       
+    submit() {
         this.frmUser.value.birthDay = new Date($('#birthY').val() + '-' + $('#birthM').val() + '-' + $('#birthD').val());
 
         if (this.frmUser.controls['password'].value != this.frmUser.controls['confirmPassword'].value) {
@@ -176,15 +176,26 @@ export class RegisterComponent implements OnInit {
 
             return;
         }
-
+       
         if (this.frmUser.controls['accountType'].value == 1 || this.frmUser.controls['accountType'].value == 2) {
-            if (this.frmUser.controls['cmnd'].value === null || this.frmUser.controls['gp'].value === null) {
+            if (this.frmUser.controls['cmnd'].value == null || this.frmUser.controls['gp'].value == null) {
                 return swal({
                     title: 'Thông báo',
                     text: 'Bạn phải cung cấp giấy tờ xác thực',
                     type: 'warning',
                     timer: 3000
                 });
+            }
+
+            else if (this.frmUser.controls['cmnd'].value.files != null || this.frmUser.controls['gp'].value.files != null) {
+                if (this.frmUser.controls['cmnd'].value.files.length == 0 || this.frmUser.controls['gp'].value.files.length == 0) {
+                    return swal({
+                        title: 'Thông báo',
+                        text: 'Bạn phải cung cấp giấy tờ xác thực',
+                        type: 'warning',
+                        timer: 3000
+                    });
+                }
             }
         }
 
@@ -255,7 +266,6 @@ export class RegisterComponent implements OnInit {
     }
 
     removeFile(i: number) {
-        console.log(i);
         this._idCardUrls.splice(i, 1);
         this.arrayIdCard.splice(i, 1);
         //for (var i = 0; i < this._idCardUrls.length; i++) {
@@ -269,10 +279,7 @@ export class RegisterComponent implements OnInit {
     arrayIdCard = [];
     arrayCertificate = [];
     detectFiles(event, type) {
-        console.log(this.frmUser.controls['cmnd'].value);
-
         let files = event.target.files;
-        //console.log(event.target.files);
         if (files) {
             for (let file of files) {
                 let reader = new FileReader();
@@ -316,11 +323,9 @@ export class RegisterComponent implements OnInit {
                     }
                 }
             }
-            ;
+
             this.frmUser.controls['cmnd'].setValue({ files: this.arrayIdCard });
             this.frmUser.controls['gp'].setValue({ files: this.arrayCertificate });
-            console.log(this.frmUser.controls['cmnd'].value);
-
         }
     }
 
