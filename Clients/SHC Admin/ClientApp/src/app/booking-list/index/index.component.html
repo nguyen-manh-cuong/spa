@@ -9,7 +9,7 @@
         </div>
         <div class="col-8">
             <mat-paginator #paginator [pageSizeOptions]="pageSizeOptions" [length]="totalItems" [pageSize]="pageSize"
-                showFirstLastButtons></mat-paginator>
+                           showFirstLastButtons></mat-paginator>
         </div>
     </div>
 </div>
@@ -21,7 +21,7 @@
                     <mat-label>{{l('Unit')}}</mat-label>
                     <input matInput [formControl]="healthfacilities" [matAutocomplete]="auto">
                     <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn"
-                        (optionSelected)="onSelectHealthFacilities($event.option.value)">
+                                      (optionSelected)="onSelectHealthFacilities($event.option.value)">
                         <mat-option *ngIf="isLoading" class="is-loading">
                             <mat-spinner diameter="50"></mat-spinner>
                         </mat-option>
@@ -35,7 +35,8 @@
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('Unit')}}</mat-label>
                     <mat-select formControlName="healthfacilities">
-                        <mat-option *ngFor="let o of _healthfacilities" [value]="o.healthFacilitiesId">{{ o.name }}
+                        <mat-option *ngFor="let o of _healthfacilities" [value]="o.healthFacilitiesId">
+                            {{ o.name }}
                         </mat-option>
                     </mat-select>
                 </mat-form-field>
@@ -45,8 +46,7 @@
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('Bác sĩ đăng ký')}}</mat-label>
                     <mat-select formControlName="doctor">
-                        <mat-option
-                            [innerHTML]="'<div class=\'text-center border-bottom w-100\'>'+ l('Bỏ chọn') +'</div>'">
+                        <mat-option [innerHTML]="'<div class=\'text-center border-bottom w-100\'>'+ l('Bỏ chọn') +'</div>'">
                         </mat-option>
                         <mat-option *ngFor="let o of _doctors" [value]="o.doctorId">{{ o.fullName }}</mat-option>
                     </mat-select>
@@ -56,7 +56,7 @@
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l("Tìm kiếm")}}</mat-label>
                     <input maxlength="255" placeholder="Họ tên, Số điện thoại, Mã đặt khám"
-                        formControlName="packagesNameDescription" matInput autocomplete>
+                           formControlName="packagesNameDescription" matInput autocomplete>
                 </mat-form-field>
             </div>
             <div class="col-md-4">
@@ -69,52 +69,49 @@
             </div>
             <div class="col-md-4">
                 <mat-form-field appearance="outline" class="w-100">
-        <mat-label>{{l('Thời gian')}}</mat-label>
-        <mat-select required formControlName="time" (selectionChange)="onSelectTime($event.value)">
-            <mat-option *ngFor="let o of times" [value]="o.id">{{ o.name }}</mat-option>
-        </mat-select>
-    </mat-form-field>
+                    <mat-label>{{l('Thời gian')}}</mat-label>
+                    <mat-select required formControlName="time" (selectionChange)="onSelectTime($event.value)">
+                        <mat-option *ngFor="let o of times" [value]="o.id">{{ o.name }}</mat-option>
+                    </mat-select>
+                </mat-form-field>
 
-                
+
             </div>
             <div class="col-md-4">
                 <div class="group-calender d-flex">
                     <div class="col pl-0">
-                    <mat-form-field appearance="outline" class="d-flex w"
-                                    [ngClass]="{'mat-form-field-invalid': (frmSearch.get('time').value==10 && !startTime.value) || (frmSearch.get('time').value==10 && (startTime.value > endTime.value))}">
-                        <mat-label>{{l('Từ ngày')}}</mat-label>
-                        <input [disabled]="_isDateTimeEnable" matInput #startTime [matDatepicker]="picker" mask="0*"
-                               required maxlength="10" [disabled]="type == 10"
-                               [required]="frmSearch.get('time').value==10 && !startTime.value">
-                        <mat-datepicker-toggle matSuffix [for]="picker" class="t-2"></mat-datepicker-toggle>
-                        <mat-datepicker #picker></mat-datepicker>
-                        <mat-icon class="icon-alert" matSuffix
-                                  *ngIf="frmSearch.get('time').value==10 && !startTime.value" class="text-danger"
-                                  matTooltip="{{l('Không được để trống')}}">info</mat-icon>
-                        <mat-icon matSuffix
-                                  *ngIf="frmSearch.get('time').value==10 && (startTime.value > endTime.value)"
-                                  class="text-danger" matTooltip="{{l('Từ ngày không được lớn hơn Đến ngày')}}">info</mat-icon>
-                    </mat-form-field>
+                        <mat-form-field appearance="outline" class="d-flex w"
+                                        [ngClass]="{'mat-form-field-invalid': (frmSearch.get('time').value==10 && !startTime.value) || (frmSearch.get('time').value==10 && (startTime.value > endTime.value))}">
+                            <mat-label>{{l('Từ ngày')}}</mat-label>
+                            <input [disabled]="_isDateTimeEnable" matInput #startTime [matDatepicker]="picker" mask="0*"
+                                   required maxlength="10" [disabled]="type == 10"
+                                   [required]="frmSearch.get('time').value==10 && !startTime.value">
+                            <mat-datepicker-toggle matSuffix [for]="picker" class="t-2"></mat-datepicker-toggle>
+                            <mat-datepicker #picker></mat-datepicker>
+                            <mat-icon class="icon-alert" matSuffix
+                                      *ngIf="frmSearch.get('time').value==10 && !startTime.value" class="text-danger"
+                                      matTooltip="{{l('Không được để trống')}}">info</mat-icon>
+                            <mat-icon matSuffix
+                                      *ngIf="frmSearch.get('time').value==10 && (startTime.value > endTime.value)"
+                                      class="text-danger" matTooltip="{{l('Từ ngày không được lớn hơn Đến ngày')}}">info</mat-icon>
+                        </mat-form-field>
+                    </div>
                 </div>
-                <div class="col">
-                 <input type="time" name="usr_time" class="txt-time">
-                </div>
-                </div>
-                
+
             </div>
             <div class="col-md-4" id="cbo-endTime"
-                [ngClass]="{'mat-form-field-invalid':(frmSearch.get('time').value==10 && !startTime.value) || (frmSearch.get('time').value==10 && (startTime.value > endTime.value))}">
+                 [ngClass]="{'mat-form-field-invalid':(frmSearch.get('time').value==10 && !startTime.value) || (frmSearch.get('time').value==10 && (startTime.value > endTime.value))}">
                 <mat-form-field appearance="outline" class="icon-alert w-100">
                     <mat-label>{{l('Đến ngày')}}</mat-label>
                     <input [disabled]="_isDateTimeEnable" matInput #endTime [matDatepicker]="picker1" mask="0*"
-                        [required]="frmSearch.get('time').value==10 && !endTime.value" maxlength="10">
+                           [required]="frmSearch.get('time').value==10 && !endTime.value" maxlength="10">
                     <mat-datepicker-toggle matSuffix [for]="picker1" class="t-2"></mat-datepicker-toggle>
                     <mat-datepicker #picker1></mat-datepicker>
                     <mat-icon matSuffix *ngIf="frmSearch.get('time').value==10 && !endTime.value" class="text-danger"
-                        matTooltip="{{l('Không được để trống')}}">info</mat-icon>
+                              matTooltip="{{l('Không được để trống')}}">info</mat-icon>
                     <mat-icon class="icon-alert" matSuffix
-                        *ngIf="frmSearch.get('time').value==10 && (startTime.value > endTime.value)"
-                        class="text-danger" matTooltip="{{l('Đến ngày không được nhỏ hơn Từ ngày')}}">info</mat-icon>
+                              *ngIf="frmSearch.get('time').value==10 && (startTime.value > endTime.value)"
+                              class="text-danger" matTooltip="{{l('Đến ngày không được nhỏ hơn Từ ngày')}}">info</mat-icon>
                 </mat-form-field>
             </div>
             <div class="col-md-3 text-center d-flex align-self-center fadeIn animated ml-auto">
@@ -122,10 +119,11 @@
                     <mat-icon class="mr-2">search</mat-icon>{{l("Search")}}
                 </button>
             </div>
-            <div class="col-md-3 text-center d-flex align-self-center fadeIn animated mr-auto"> 
+            <div class="col-md-3 text-center d-flex align-self-center fadeIn animated mr-auto">
                 <button mat-stroked-button color="primary"
-                    [disabled]="frmSearch.get('time').value==10 && !startTime.value || frmSearch.get('time').value==10 && !endTime.value || startTime.value > endTime.value"
-                    (click)="btnSearchClicks$.next($event)" class="w-100 mb-4">{{l("Xuất Excel")}}
+                        [disabled]="frmSearch.get('time').value==10 && !startTime.value || frmSearch.get('time').value==10 && !endTime.value || startTime.value > endTime.value"
+                        (click)="btnSearchClicks$.next($event)" class="w-100 mb-4">
+                    {{l("Xuất Excel")}}
                 </button>
             </div>
         </div>
@@ -133,7 +131,7 @@
 
     <div class="table-content" style="height: calc(100vh - 245px);">
         <table mat-table [dataSource]="dataSources" matSort #sort="matSort" matSortDisableClear matSortActive="id"
-            matSortDirection="desc" class="w-100 task">
+               matSortDirection="desc" class="w-100 task">
             <ng-container matColumnDef="orderNumber">
                 <th mat-header-cell *matHeaderCellDef class="min-w-50 text-center pl-0"> {{l("OrderNumber")}} </th>
                 <td mat-cell *matCellDef="let element; let i = index;" class="min-w-30 text-center">
@@ -173,7 +171,8 @@
             <ng-container matColumnDef="examinationDate">
                 <th mat-header-cell *matHeaderCellDef class="text-center"> {{l('Thời gian hẹn')}}</th>
                 <td mat-cell *matCellDef="let element" class="text-center">
-                    {{element.examinationDate | date: 'dd/MM/yyyy'}} {{handleTime(element)}}</td>
+                    {{element.examinationDate | date: 'dd/MM/yyyy'}} {{handleTime(element)}}
+                </td>
             </ng-container>
             <ng-container matColumnDef="status">
                 <th mat-header-cell *matHeaderCellDef class="min-w-100 text-center pr-2"> {{l('Trạng thái khám')}} </th>
@@ -184,18 +183,18 @@
                 <td mat-cell *matCellDef="let element" class="w-px-30 pr-0">
                     <div class="d-flex">
                         <button mat-icon-button *ngIf="element.status != 3 ? true : false"
-                            (click)="openCustomDialog(element)">
+                                (click)="openCustomDialog(element)">
                             <mat-icon class="text-muted">sms</mat-icon>
                         </button>
                         <button mat-icon-button (click)="detail(element)">
                             <mat-icon class="text-muted">dvr</mat-icon>
                         </button>
                         <button mat-icon-button *ngIf="element.status == 0 || element.status == 1 ? true : false"
-                            (click)="openDialog(element)">
+                                (click)="openDialog(element)">
                             <mat-icon class="text-muted f-18">edit</mat-icon>
                         </button>
                         <button mat-icon-button *ngIf="element.status == 0 || element.status == 1 ? true : false"
-                            (click)="deleteDialogPackage(element)">
+                                (click)="deleteDialogPackage(element)">
                             <mat-icon class="text-danger f-18">cancel</mat-icon>
                         </button>
                     </div>

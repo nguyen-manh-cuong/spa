@@ -90,22 +90,4 @@
 .mat-form-field-suffix{display:flex!important;}
 
 /*============= end  validate form ============= */
-/*============= calender ============= */
-.group-calender {
-    background: #fff;
-    height: 40px;
-}
-.group-calender .txt-time {
-    border: 0;
-    margin-left: -100px;
-    margin-top: 10px;
-}
-.group-calender .mat-form-field-suffix {
-    right: -260px !important;
-    z-index: 10;
-}
-.group-calender .mat-form-field-appearance-outline:not(.mat-form-field-disabled) .mat-form-field-flex:hover .mat-form-field-outline-thick {
-    opacity: 0;
-}
-    
-/*============= end  calender ============= */
+
