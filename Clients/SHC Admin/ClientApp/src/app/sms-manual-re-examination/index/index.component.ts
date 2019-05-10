@@ -208,7 +208,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
             });
         }
 
-        if (moment(this.endTime.nativeElement.value, "DD/MM/YYYY") <= moment(this.startTime.nativeElement.value, "DD/MM/YYYY")) {
+        if (moment(this.endTime.nativeElement.value, "DD/MM/YYYY") < moment(this.startTime.nativeElement.value, "DD/MM/YYYY")) {
             return swal({
                 title: 'Thông báo',
                 text: 'Ngày kết thúc không được nhỏ hơn ngày bắt đầu',
