@@ -188,6 +188,7 @@ namespace SHCServer
         public static SmsRespone SendSMS(SmsContent content, int type = 1)
         {
             tinnhanthuonghieu.CcApiClient requestMT = new tinnhanthuonghieu.CcApiClient();
+            requestMT.Endpoint.Binding.OpenTimeout = TimeSpan.FromSeconds(5);
              
             string User = content.SmsBrand.UserName;
             string Password = content.SmsBrand.UserName;
