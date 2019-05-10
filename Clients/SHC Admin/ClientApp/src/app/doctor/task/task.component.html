@@ -100,8 +100,8 @@
                     <div class="col-md-4">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("DoctorCertificationDate")}}</mat-label>
-                            <input #certificationDatePicker (dateChange)="certificationDateChange($event.value)" mask="0*"
-                                [max]="maxDate2" matInput [matDatepicker]="certificationDatePicker" matInput 
+                            <input #certificationDatePicker (dateChange)="certificationDateChange($event.value)"
+                                mask="0*" [max]="maxDate2" matInput [matDatepicker]="certificationDatePicker" matInput
                                 maxlength="10">
                             <mat-datepicker-toggle matSuffix [for]="certificationDatePicker" class="t-2">
                             </mat-datepicker-toggle>
@@ -196,8 +196,8 @@
                             <mat-chip-list #specialChipList [required]="true">
                                 <mat-chip *ngFor="let o of _specialistChip" [selectable]="specialSelectable"
                                     [removable]="specialRemovable" (removed)="specialRemove(o.specialistCode)">
+                                    <mat-icon class="chip" matChipRemove *ngIf="specialRemovable">cancel</mat-icon>
                                     {{o.name}}
-                                    <mat-icon matChipRemove *ngIf="specialRemovable">cancel</mat-icon>
                                 </mat-chip>
                                 <input matInput #specialistInput [formControl]="specialistCodeControl"
                                     [matAutocomplete]="autoSpecialist" [matChipInputFor]="specialChipList"
@@ -260,7 +260,9 @@
                 <div class="row">
                     <div class="col-md-12">
                         <mat-label><b>{{l('DoctorSummary')}}</b></mat-label>
-                        <ckeditor formControlName="summary" [editor]="Editor" (ready)="onReady($event)">
+                        <ckeditor
+                            [config]="{ toolbar: [ 'heading', '|', 'bold', 'italic','|','bulletedList','numberedList','|','blockQuote','link','undo','redo'] }"
+                            formControlName="summary" [editor]="Editor" (ready)="onReady($event)">
                         </ckeditor>
                     </div>
                 </div>
@@ -318,8 +320,8 @@
                             <mat-chip-list #chipList>
                                 <mat-chip *ngFor="let o of _healthfacilitiesChip" [selectable]="selectable"
                                     [removable]="removable" (removed)="remove(o.code)">
+                                    <mat-icon class="chip" matChipRemove *ngIf="removable">cancel</mat-icon>
                                     {{o.name}}
-                                    <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
                                 </mat-chip>
                                 <input matInput #healthfacilitiesInput [formControl]="healthfacilitiesControl"
                                     [matAutocomplete]="auto" [matChipInputFor]="chipList"

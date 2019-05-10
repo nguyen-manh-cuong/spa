@@ -133,7 +133,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   specialVisible = true;
   specialSelectable = true;
   specialRemovable = true;
-  specialDddOnBlur = true;
+  specialAddOnBlur = true;
   specialSeparatorKeysCodes: number[] = [ENTER, COMMA];
 
 
@@ -169,8 +169,8 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     educationCountryCode: '',
     avatar: '',
     description: '',
-    priceFrom: 0,
-    priceTo: 0,
+    priceFrom: '',
+    priceTo: '',
     priceDescription: '',
     summary: '',
     isSync: true,
@@ -216,7 +216,10 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     this.getDegrees();
     this.getNations();
     this.getSpecialist();
-    this.getEthnicities();
+
+
+
+
     this.filterSpecialistOptions();
 
     this.dialogComponent = TaskComponent;
@@ -328,6 +331,10 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
       }
     }
     this._obj.certificationCode ? this.flagDate = false : this.flagDate = true;
+
+    setTimeout(() => {
+      this.getEthnicities();
+    }, 1000);
   }
 
 
@@ -340,7 +347,6 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
         if (this.obj.certificationDate)
           this.certificationDatePicker.nativeElement.value = moment(this._certificationDate).format("DD/MM/YYYY");
       }
-      console.log("this._frm.ethnicityCode",this._frm.controls['ethnicityCode'].value)
     });
   }
 
@@ -405,7 +411,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   }
 
   getEthnicities() {
-    this._dataService.getAll("ethnicity").subscribe(resp => {this.ethnicities = resp.items; console.log("ethnicityList",this.ethnicities);});
+    this._dataService.getAll("ethnicity").subscribe(resp => { this.ethnicities = resp.items; });
   }
 
   getSpecialist() {
@@ -753,7 +759,8 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
         timer: 3000
       });
     }
-    if (priceFrom >= priceTo && priceFrom != 0 && priceTo != 0) {
+    console.log(priceFrom+" "+priceTo);
+    if (priceFrom >= priceTo && priceFrom != 0 && priceTo != 0 && priceTo!=null && priceTo!=null) {
       return swal({
         title: 'Thông báo',
         text: 'Giá khám từ phải nhỏ hơn giá khám đến',

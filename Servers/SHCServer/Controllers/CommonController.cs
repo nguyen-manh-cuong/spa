@@ -179,8 +179,8 @@ namespace SHCServer.Controllers
                     }
                 }
             }
-
-            return Json(new ActionResultDto { Result = new { Items = objs.OrderBy(h => h.Name).Take(30).ToList() } });
+                return Json(new ActionResultDto { Result = new { Items = objs.OrderBy(h => h.Name).Take(30).ToList() } });
+          
         }
 
         [HttpGet]

@@ -4353,6 +4353,11 @@ ng-packagr@^3.0.0-rc.2:
     uglify-js "^3.0.7"
     update-notifier "^2.3.0"
 
+ng2-ckeditor@^1.2.2:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/ng2-ckeditor/-/ng2-ckeditor-1.2.2.tgz#b2f55c3e929a72c15336106950df0bf5ad31b806"
+  integrity sha512-4md+hLpELy1ni0SbUYDD0XPpwjn9PUT+Loq8AyXzJutwg3xBQB7K4P2TxDr6wTiYZX+ZVSqmUOFwTL25LW129A==
+
 ngx-mask@^7.8.5:
   version "7.9.7"
   resolved "https://registry.yarnpkg.com/ngx-mask/-/ngx-mask-7.9.7.tgz#98cc8e9983301dd542378c112991ca26eec12bdb"

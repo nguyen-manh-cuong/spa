@@ -39,8 +39,8 @@ export class RegisterComponent implements OnInit {
 
     _specialist: any = [];
     _context: any;
-    _idCardUrls = new Array<string>();
-    _certificateUrls = new Array<string>();
+    _idCardUrls: Array<{ url: string, name: string }>;
+    _certificateUrls: Array<{ url: string, name: string }>;
     _user: CreateUserDto;
     _invaliBirthday = false;
 
@@ -50,6 +50,7 @@ export class RegisterComponent implements OnInit {
     capcha = false;
 
     @ViewChild("fullName") fullName: ElementRef;
+    @ViewChild("imageData") imageData: ElementRef;
 
     constructor(private _sanitizer: DomSanitizer, private _dataService: DataService, private _formBuilder: FormBuilder, private _location: Location, ) { }
 
@@ -155,7 +156,27 @@ export class RegisterComponent implements OnInit {
         if (district) { this._dataService.get('wards', JSON.stringify({ DistrictCode: district.districtCode }), '', 0, 0).subscribe(resp => this._wards = resp.items); }
     }
 
-    submit() {
+    submit() {       
+        this.frmUser.value.birthDay = new Date($('#birthY').val() + '-' + $('#birthM').val() + '-' + $('#birthD').val());
+
+        if (this.frmUser.controls['password'].value != this.frmUser.controls['confirmPassword'].value) {
+            this.frmUser.controls['confirmPassword'].setErrors({ password: true });
+        }
+        if (this.frmUser.controls['accountType'].value == 3 && (!this.frmUser.controls['healthFacilitiesName'].value || (this.frmUser.controls['healthFacilitiesName'].value && !this.frmUser.controls['healthFacilitiesName'].value.trim()))) {
+            this.frmUser.controls['healthFacilitiesName'].setErrors({ required: true });
+        }
+
+        if (this.frmUser.invalid) {
+            for (let key in this.frmUser.controls) {
+                if (this.frmUser.controls[key] && this.frmUser.controls[key].errors) {
+                    this.frmUser.controls[key].markAsTouched();
+                    this.frmUser.controls[key].markAsDirty();
+                }
+            }
+
+            return;
+        }
+
         if (this.frmUser.controls['accountType'].value == 1 || this.frmUser.controls['accountType'].value == 2) {
             if (this.frmUser.controls['cmnd'].value === null || this.frmUser.controls['gp'].value === null) {
                 return swal({
@@ -183,26 +204,6 @@ export class RegisterComponent implements OnInit {
             }
         }
 
-        this.frmUser.value.birthDay = new Date($('#birthY').val() + '-' + $('#birthM').val() + '-' + $('#birthD').val());
-
-        if (this.frmUser.controls['password'].value != this.frmUser.controls['confirmPassword'].value) {
-            this.frmUser.controls['confirmPassword'].setErrors({ password: true });
-        }
-        if (this.frmUser.controls['accountType'].value == 3 && (!this.frmUser.controls['healthFacilitiesName'].value || (this.frmUser.controls['healthFacilitiesName'].value && !this.frmUser.controls['healthFacilitiesName'].value.trim()))) {
-            this.frmUser.controls['healthFacilitiesName'].setErrors({ required: true });
-        }
-
-        if (this.frmUser.invalid) {
-            for (let key in this.frmUser.controls) {
-                console.log(12, key, this.frmUser.controls[key])
-                if (this.frmUser.controls[key] && this.frmUser.controls[key].errors) {
-                    this.frmUser.controls[key].markAsTouched();
-                    this.frmUser.controls[key].markAsDirty();
-                }
-            }
-
-            return;
-        }
 
         if (this._invaliBirthday) return;
 
@@ -253,6 +254,18 @@ export class RegisterComponent implements OnInit {
         }
     }
 
+    removeFile(i: number) {
+        console.log(i);
+        this._idCardUrls.splice(i, 1);
+        this.arrayIdCard.splice(i, 1);
+        //for (var i = 0; i < this._idCardUrls.length; i++) {
+        //    if (storedFiles[i].name === file) {
+        //        storedFiles.splice(i, 1);
+        //        break;
+        //    }
+        //}
+    }
+
     arrayIdCard = [];
     arrayCertificate = [];
     detectFiles(event, type) {
@@ -267,31 +280,30 @@ export class RegisterComponent implements OnInit {
                 if (file.type == 'image/jpeg' || file.type == 'image/png') {
                     if (type == 'idCard') {
                         reader.onload = (e: any) => {
-                            this._idCardUrls.push("/assets/images/212328-200.png");
+                            this._idCardUrls.push({ url: "/assets/images/212328-200.png", name: file });
                         }
                         this.arrayIdCard.push(file);
                     }
 
                     if (type == 'certificate') {
                         reader.onload = (e: any) => {
-                            this._certificateUrls.push("/assets/images/212328-200.png");
+                            this._certificateUrls.push({ url: "/assets/images/212328-200.png", name: file });
                         }
                         this.arrayCertificate.push(file);
                     }
 
                 }
                 if (file.type == 'application/pdf') {
-                    console.log('vao day k');
                     if (type == 'idCard') {
                         reader.onload = (e: any) => {
-                            this._idCardUrls.push("/assets/images/24-512.png");
+                            this._idCardUrls.push({ url: "/assets/images/24-512.png", name: file });
                         }
                         this.arrayIdCard.push(file);
                     }
 
                     if (type == 'certificate') {
                         reader.onload = (e: any) => {
-                            this._certificateUrls.push("/assets/images/24-512.png");
+                            this._certificateUrls.push({ url: "/assets/images/212328-200.png", name: file });
                         }
                         this.arrayCertificate.push(file);
                     }
