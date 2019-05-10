@@ -17,11 +17,12 @@
         <div class="row m-0 pt-4">
             <div class="col-md-5" [hidden]="this.appSession.user.healthFacilitiesId">
                 <mat-form-field appearance="outline" class="w-100">
-                    <mat-label>{{l('Phòng khám')}}</mat-label>
-                    <input matInput [formControl]="healthfacilities" (click)="clickCbo()" [matAutocomplete]="auto">
-                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
-                        <mat-option *ngFor="let o of filteredOptions | async" [value]="o">
-                            {{o.name}}
+                    <mat-label>{{l('Unit')}}</mat-label>
+                    <input matInput [formControl]="healthfacilities" [matAutocomplete]="auto">
+                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="onSelectHealthFacilities($event.option.value)">
+                        <mat-option *ngIf="isLoading" class="is-loading"><mat-spinner diameter="50"></mat-spinner></mat-option>
+                        <mat-option *ngFor="let o of _healthfacilities" [value]="o">
+                            {{o.code + ' - ' + o.name}}
                         </mat-option>
                     </mat-autocomplete>
                 </mat-form-field>
@@ -53,7 +54,7 @@
             <div class="col-md-3">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('Ngày gửi từ')}}</mat-label>
-                    <input matInput #startTime [matDatepicker]="picker" mask="0*" required maxlength="8">
+                    <input matInput #startTime [matDatepicker]="picker" mask="0*" required maxlength="10">
                     <mat-datepicker-toggle matSuffix [for]="picker" class="t-2"></mat-datepicker-toggle>
                     <mat-datepicker #picker></mat-datepicker>
                 </mat-form-field>
@@ -61,7 +62,7 @@
             <div class="col-md-3">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('Đến ngày')}}</mat-label>
-                    <input matInput #endTime [matDatepicker]="picker1" mask="0*" required maxlength="8">
+                    <input matInput #endTime [matDatepicker]="picker1" mask="0*" required maxlength="10">
                     <mat-datepicker-toggle matSuffix [for]="picker1" class="t-2"></mat-datepicker-toggle>
                     <mat-datepicker #picker1></mat-datepicker>
                 </mat-form-field>

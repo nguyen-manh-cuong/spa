@@ -2,7 +2,7 @@
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatButton, MatDialog, MatPaginator, MatTableDataSource } from '@angular/material';
 import { Subject, merge, of } from 'rxjs';
-import { standardized } from '../../../shared/helpers/Utils';
+import { standardized } from '../../../shared/helpers/utils';
 import { isEmpty, isNil, isNull, omitBy, zipObject } from 'lodash';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { SelectionModel } from '@angular/cdk/collections';

@@ -4,7 +4,7 @@ import { IMedicalHealthcareHistories, IHealthfacilities } from '@shared/Interfac
 import { DataService } from '@shared/service-proxies/service-data';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { PagedListingComponentBase } from '@shared/paged-listing-component-base';
-import { startWith, map, ignoreElements } from 'rxjs/operators';
+import { startWith, map, ignoreElements, debounceTime, tap, switchMap, finalize } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { TaskComponent } from '@app/sms-template-task/task/task.component';
 
@@ -52,6 +52,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     _sex = [{ id: 0, name: 'Tất cả' }, { id: 1, name: 'Nam' }, { id: 2, name: 'Nữ' }, { id: 3, name: 'Không xác định' }];
     //_currentYear = new Date().getFullYear();
 
+    isLoading = false;
     selection = new SelectionModel<IMedicalHealthcareHistories>(true, []);
     filteredOptions: Observable<IHealthfacilities[]>;
     healthfacilities = new FormControl();
@@ -85,7 +86,8 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
             sex: [],
             startTime: new Date(new Date().setDate(new Date().getDate())),
             endTime: new Date(new Date().setDate(new Date().getDate() + 3)),
-            about: 3
+            about: 3,
+            flagReExamination: 0
         });
 
         this.dialogComponent = TaskComponent;
@@ -93,15 +95,24 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
         this.frmSearch.controls['endTime'].setValue(new Date(new Date().setDate(new Date().getDate() + this.frmSearch.controls['about'].value)));
         this.frmSearch.controls['startTime'].setValue(new Date(new Date().setDate(new Date().getDate())));
         this.dataService.getAll('provinces').subscribe(resp => this._provinces = resp.items);
-        this.dataService.getAll('healthfacilities', (this.appSession.user.healthFacilitiesId ? String(this.appSession.user.healthFacilitiesId) : '')).subscribe(resp => this._healthfacilities = resp.items);
-        if (this.appSession.user.healthFacilitiesId) this.dataService.getAll('doctors', String(this.appSession.user.healthFacilitiesId)).subscribe(resp => this._doctors = resp.items);
 
-
+        if(this.appSession.user.healthFacilitiesId){
+            this.dataService.get("healthfacilities", JSON.stringify({healthfacilitiesId : this.appSession.user.healthFacilitiesId}), '', null, null).subscribe(resp => {this._healthfacilities = resp.items;});
+            this.dataService.getAll('doctors', String(this.appSession.user.healthFacilitiesId)).subscribe(resp => this._doctors = resp.items);
+    
+            setTimeout(() => {
+              this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId);
+            }, 500);
+        } else{
+            this.filterOptions();
+            this.healthfacilities.setValue(null);
+        }
 
         setTimeout(() => {
             this.endTime.nativeElement.value = moment(new Date().setDate(new Date().getDate() + 3)).format("DD/MM/YYYY");
             this.startTime.nativeElement.value = moment(new Date().setDate(new Date().getDate())).format("DD/MM/YYYY");
             this.frmSearch.controls['about'].setValue(new Date().getDate() - new Date().getDate() + 3);
+            this.startTime.nativeElement.focus();
             this.endTime.nativeElement.focus();
         });
         this.appSession.user.healthFacilitiesId ? this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId) : this.filterOptions();
@@ -141,47 +152,51 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
         if (district) { this.dataService.get('wards', JSON.stringify({ DistrictCode: district.districtCode }), '', 0, 0).subscribe(resp => this._wards = resp.items); }
     }
 
-    changeStartDate(value: any, type: number) {
-        if (type == 2) {
-            return this.endTime.nativeElement.value = moment(new Date(new Date().setDate(new Date().getDate() + Number(value)))).format("DD/MM/YYYY");
+    changeDate(value: any, type: number) {
+        if(this.startTime.nativeElement.value && moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').isValid() && this.endTime.nativeElement.value && moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').isValid()){
+            if(type == 2){     
+                return this.endTime.nativeElement.value = moment(
+                    new Date(
+                        moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').toDate().setDate(
+                            moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').toDate().getDate() + Number(value)))).format("DD/MM/YYYY");
+            }
+    
+            var days = (moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').valueOf() - moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').valueOf()) / (1000*60*60*24);
         }
-
-        var days = (moment(this.endTime.nativeElement.value, "DD/MM/YYYY").valueOf() - value.valueOf()) / (1000 * 60 * 60 * 24) > 0 ? (moment(this.endTime.nativeElement.value, "DD/MM/YYYY").valueOf() - value.valueOf()) / (1000 * 60 * 60 * 24) : 0;
-        this.frmSearch.controls['about'].setValue(days);
+       
+        this.frmSearch.controls['about'].setValue(days >= 0 ? days : 0); 
     }
-
-    changeEndDate(value: any, type: number) {
-        if (type == 2) {
-            return this.endTime.nativeElement.value = moment(new Date(new Date().setDate(new Date().getDate() + Number(value)))).format("DD/MM/YYYY");
-        }
-
-        var days = (value.valueOf() - moment(this.startTime.nativeElement.value, "DD/MM/YYYY").valueOf()) / (1000 * 60 * 60 * 24) > 0 ? (value.valueOf() - moment(this.startTime.nativeElement.value, "DD/MM/YYYY").valueOf()) / (1000 * 60 * 60 * 24) : 0;
-        this.frmSearch.controls['about'].setValue(days);
-    }
-
 
     displayFn(h?: IHealthfacilities): string | undefined {
         return h ? h.name : undefined;
     }
 
-    _filter(name: string): IHealthfacilities[] {
-        const filterValue = name.toLowerCase();
-        return this._healthfacilities.filter(h => h.name.toLowerCase().indexOf(filterValue) === 0);
-    }
-
-    clickCbo() {
-        !this.healthfacilities.value ? this.filterOptions() : '';
-    }
-
     filterOptions() {
-        this.filteredOptions = this.healthfacilities.valueChanges
+        this.healthfacilities.valueChanges
             .pipe(
-                startWith<string | IHealthfacilities>(''),
-                map(value => typeof value === 'string' ? value : value.name),
-                map(name => name ? this._filter(name) : this._healthfacilities.slice()),
-                map(data => data.slice(0, 30))
-            );
+              debounceTime(500),
+              tap(() => this.isLoading = true),
+              switchMap(value => this.filter(value))
+            )
+            .subscribe(data => {
+                this._healthfacilities = data.items;
+            });
+      }
+  
+    filter(value: any){
+        var fValue = typeof value === 'string'  ? value : (value ? value.name : '')
+        this._healthfacilities = [];
+  
+        return this.dataService
+            .get("healthfacilities", JSON.stringify({
+                name : isNaN(fValue) ? fValue : "",
+                code : !isNaN(fValue) ? fValue : ""
+            }), '', null, null)
+            .pipe(
+                finalize(() => this.isLoading = false)
+            )
     }
+  
 
     customSearch() {
         if (!this.endTime.nativeElement.value) {
@@ -193,7 +208,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
             });
         }
 
-        if (moment(this.endTime.nativeElement.value, "DD/MM/YYYY") <= moment(this.startTime.nativeElement.value, "DD/MM/YYYY")) {
+        if (moment(this.endTime.nativeElement.value, "DD/MM/YYYY") < moment(this.startTime.nativeElement.value, "DD/MM/YYYY")) {
             return swal({
                 title: 'Thông báo',
                 text: 'Ngày kết thúc không được nhỏ hơn ngày bắt đầu',
@@ -220,11 +235,15 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
             });
         }
 
-        var startTime = moment(this.frmSearch.controls['startTime'].value, 'DD/MM/YYYY').toDate();
+        if(((moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').valueOf() - moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').valueOf()) / (1000*60*60*24)) < 0){
+            swal(this.l('Notification'), this.l('FromDateMustBeGreaterThanOrEqualToDate'), 'warning');
+            return true;
+        }
+
+        var startTime = moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').toDate(); //this.frmSearch.controls['startTime'].value, 'DD/MM/YYYY'
         var endTime = moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').toDate();
 
         if (endTime.getFullYear() - startTime.getFullYear() > 1) {
-
             return swal({
                 title: 'Thông báo',
                 text: 'Dữ liệu không được lấy quá 1 năm',
@@ -260,9 +279,10 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
         this.birthday.nativeElement.value ? this.frmSearch.controls['birthdayDate'].setValue(moment(this.birthday.nativeElement.value, 'DD/MM/YYYY').toDate().getDate()) : this.frmSearch.controls['birthdayDate'].setValue('');
 
         this.birthday.nativeElement.value ? this.frmSearch.controls['birthdayMonth'].setValue(moment(this.birthday.nativeElement.value, 'DD/MM/YYYY').toDate().getMonth() + 1) : this.frmSearch.controls['birthdayMonth'].setValue('');
-        
+
+        this.startTime.nativeElement.value ? this.frmSearch.controls['startTime'].setValue(startTime) : '';
         this.endTime.nativeElement.value ? this.frmSearch.controls['endTime'].setValue(endTime) : '';
-        
+
         this.btnSearchClicks$.next();
     }
 
@@ -280,6 +300,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     }
 
     openCustomDialog(): void {
+        console.log(this.selection.selected);
         const dialogRef = this.dialog.open(this.dialogComponent, { minWidth: 'calc(100vw/2)', maxWidth: 'calc(100vw - 300px)', disableClose: true, data: { selection: this.selection, type: 1 } });
 
         dialogRef.afterClosed().subscribe(() => {
@@ -290,10 +311,12 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     }
 
     sendSms() {
+        console.log(this.appSession.user.healthFacilitiesId);
+
         this._isRequest = true;
         setTimeout(() => this._isRequest = false, 3000)
 
-        if (!this.appSession.user.healthFacilitiesId) {
+        if (this.appSession.user.healthFacilitiesId) {
             return this.openCustomDialog();
         }
 

@@ -1,5 +1,5 @@
 import { Component, Injector, OnInit, ViewChild } from '@angular/core';
-import { IBookingInformations, IMedicalHealthcareHistories } from '@shared/Interfaces';
+import { IBookingInformations, IMedicalHealthcareHistories, IHealthfacilities } from '@shared/Interfaces';
 import { MatDialog } from '@angular/material';
 import { isEmpty, isNil, isNull, omitBy, zipObject } from 'lodash';
 
@@ -15,9 +15,8 @@ import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import * as moment from 'moment';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { ReasonComponent } from '../reason/reason.component';
-import { IHealthfacilities } from '../../../../../../SHC Outside/ClientApp/src/shared/Interfaces';
 import { Observable } from 'rxjs';
-import { startWith, map } from 'rxjs/operators';
+import { startWith, map, debounceTime, tap, switchMap, finalize } from 'rxjs/operators';
 
 export const MY_FORMATS = {
     parse: {
@@ -41,24 +40,29 @@ export const MY_FORMATS = {
     ],
 })
 export class IndexComponent extends PagedListingComponentBase<IBookingInformations> implements OnInit {
+    flagDisabled = true;
     _healthfacilities = [];
     healthfacilities = new FormControl();
     filteredOptions: Observable<IHealthfacilities[]>;
     displayedColumns = ['orderNumber', 'code', 'patient', 'gender', 'phone', 'year', 'description', 'doctor', 'examinationDate', 'status', 'task'];
     status = [{ id: 4, name: 'Tất cả' }, { id: 3, name: 'Hủy khám' }, { id: 2, name: 'Đã khám' }, { id: 1, name: 'Chờ khám' }, { id: 0, name: 'Mới đăng ký' }];
    
-        times = [  
-           { id: 0, name: 'Hôm nay' }, { id: 1, name: 'Hôm qua' }, { id: 2, name: 'Tuần này' }, { id: 3, name: 'Tuần trước' }, { id: 4, name: 'Tháng này' }, { id: 5, name: 'Tháng trước' },
-            { id: 6, name: 'Quý này' }, { id: 7, name: 'Quý trước' }, { id: 8, name: 'Năm nay' },  { id: 9, name: 'Năm trước' }, { id: 10, name: 'Theo khoảng thời gian' }, ];
+    times = [  
+        { id: 0, name: 'Hôm nay' }, { id: 1, name: 'Hôm qua' }, { id: 2, name: 'Tuần này' }, { id: 3, name: 'Tuần trước' }, { id: 4, name: 'Tháng này' }, { id: 5, name: 'Tháng trước' },
+        { id: 6, name: 'Quý này' }, { id: 7, name: 'Quý trước' }, { id: 8, name: 'Năm nay' },  { id: 9, name: 'Năm trước' }, { id: 10, name: 'Theo khoảng thời gian' }, ];
     dialogDetail: any;
     dialogReasonReject: any;
     _medicalFacility = [];
     _doctors = [];
     _isRequest = false;
+    _isDateTimeEnable = true;
     _isChosenTime = false;
+    isLoading = false;
+
     dialogSendComponent: any;
     selectionData = new SelectionModel<IMedicalHealthcareHistories>(true, []);
-
+    
+    _checkStatus = true;
     @ViewChild("startTime") startTime;
     @ViewChild("endTime") endTime;
     @ViewChild("auto") auto;
@@ -77,70 +81,70 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
         this.dialogDetail = DetailComponent;
         this.dialogReasonReject = ReasonComponent;
         
-        // if(this.appSession.user.healthFacilitiesId){
-        //     this.dataService.getAll('healthfacilities', "{healthfacilitiesId:"+String(this.appSession.user.healthFacilitiesId)+"}").subscribe(resp => this._healthfacilities = resp.items);
-        //     this.dataService.getAll('doctors', String(this.appSession.user.healthFacilitiesId)).subscribe(resp => this._doctors = resp.items);
-        //     this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId);
-        // }
-        // else{
-        //     this.filterOptions();
-        // }
         if(this.appSession.user.healthFacilitiesId) {
-            this.dataService.getAll('healthfacilities', "{healthfacilitiesId:"+String(this.appSession.user.healthFacilitiesId)+"}").subscribe(resp => this._healthfacilities = resp.items);
-            this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId);
-            this.dataService.getAll('doctors', String(this.appSession.user.healthFacilitiesId)).subscribe(resp => {
-                console.log(resp.items);
-                this._doctors = resp.items;
-            });
+            this.dataService.get("healthfacilities", JSON.stringify({healthfacilitiesId : this.appSession.user.healthFacilitiesId}), '', null, null).subscribe(resp => {this._healthfacilities = resp.items;});
+            this.dataService.getAll('doctors', String(this.appSession.user.healthFacilitiesId)).subscribe(resp => {this._doctors = resp.items;});
+
+            setTimeout(() => {
+                this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId);
+            }, 500);        
         }
         else{
-            this.dataService.getAll('healthfacilities').subscribe(resp => this._healthfacilities = resp.items);
             this.filterOptions();
+            this.healthfacilities.setValue(null);
         }
 
         setTimeout(() => {
             this.startTime.nativeElement.value = moment(new Date()).format("DD/MM/YYYY");
             this.endTime.nativeElement.value = moment(new Date()).format("DD/MM/YYYY");
         });
+        
     }
 
     displayFn(h?: IHealthfacilities): string | undefined {
         return h ? h.name : undefined;
     }
 
-    
-    _filter(name: any): IHealthfacilities[] {
-        const filterValue = name.toLowerCase();
-        var healthfacilities = isNaN(filterValue) ?         
-        this._healthfacilities.filter(h => h.name.toLowerCase().indexOf(filterValue) === 0) : 
-        this._healthfacilities.filter(h => h.code.toLowerCase().indexOf(filterValue) === 0);
-        //if(healthfacilities.length == 0 && filterValue.length) this.frmSearch.controls['healthfacilities'].setValue(0);
-        
-        return healthfacilities
-    }
-
-    clickCbo() {
-        !this.healthfacilities.value ? this.filterOptions() : '';
-    }
-
     filterOptions() {
-        this.filteredOptions = this.healthfacilities.valueChanges
+        this.healthfacilities.valueChanges
             .pipe(
-                startWith<string | IHealthfacilities>(''),
-                map(value => typeof value === 'string' ? value : value.name),
-                map(name => name ? this._filter(name) : this._healthfacilities.slice()),
-                map(data => data.slice())
-            );
+                debounceTime(500),
+                tap(() => this.isLoading = true),
+                switchMap(value => this.filter(value))
+            )
+            .subscribe(data => {
+                this._healthfacilities = data.items;
+            });
+    }
+
+    filter(value: any){
+        var fValue = typeof value === 'string'  ? value : (value ? value.name : '')
+        this._healthfacilities = [];
+
+        return this.dataService
+            .get("healthfacilities", JSON.stringify({
+                name : isNaN(fValue) ? fValue : "",
+                code : !isNaN(fValue) ? fValue : ""
+            }), '', null, null)
+            .pipe(
+                finalize(() => this.isLoading = false)
+            )
     }
 
     onInputHealthfacilities(obj: any){
-        this.frmSearch.controls['healthfacilities'].setValue(0);
+        console.log(obj);
+        if(obj != "") {
+            this.frmSearch.controls['healthfacilities'].setValue(0);
+        } else {
+            this.frmSearch.controls['healthfacilities'].setValue('');
+        }   
+
         this._doctors=null;
     }
 
     onSelectHealthFacilities(value:any){
         if(value.healthFacilitiesId){
-            this.dataService.getAll('doctor',"{healthfacilities:"+value.healthFacilitiesId+"}", "{FullName: 'asc'}").subscribe(resp => { this._doctors = resp.items });
+            this.dataService.getAll('doctor',"{healthFacilitiesId:"+value.healthFacilitiesId+"}", "{FullName: 'asc'}").subscribe(resp => { this._doctors = resp.items });
         }
         else{
             this._doctors=null;
@@ -221,32 +225,40 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
     }
 
     onSelectTime(type: number) {
-        switch (type) {
-            case 0:
+        this.flagDisabled = true;
+        switch (type) {            
+            case 0:         
+            this._isDateTimeEnable = true;   
                 this.startTime.nativeElement.value = moment(new Date()).format("DD/MM/YYYY");
                 this.endTime.nativeElement.value = moment(new Date()).format("DD/MM/YYYY");
                 break;
             case 1:
+            this._isDateTimeEnable = true;   
                 this.startTime.nativeElement.value = moment(new Date()).add(-1, 'day').format("DD/MM/YYYY");
                 this.endTime.nativeElement.value = moment(new Date()).format("DD/MM/YYYY");
                 break;
             case 2:
+            this._isDateTimeEnable = true;   
                 this.startTime.nativeElement.value = moment(new Date()).startOf('week').format("DD/MM/YYYY");
                 this.endTime.nativeElement.value = moment(new Date()).endOf('week').format("DD/MM/YYYY");
                 break;
             case 3:
+            this._isDateTimeEnable = true;   
                 this.startTime.nativeElement.value = moment(new Date()).add(-1, 'week').startOf('week').format("DD/MM/YYYY");
                 this.endTime.nativeElement.value = moment(new Date()).add(-1, 'week').endOf('week').format("DD/MM/YYYY");
                 break;
             case 4:
+            this._isDateTimeEnable = true;   
                 this.startTime.nativeElement.value = moment(new Date()).startOf('month').format("DD/MM/YYYY");
                 this.endTime.nativeElement.value = moment(new Date()).endOf('month').format("DD/MM/YYYY");
                 break;
             case 5:
+            this._isDateTimeEnable = true;   
                 this.startTime.nativeElement.value = moment(new Date()).add(-1, 'month').startOf('month').format("DD/MM/YYYY");
                 this.endTime.nativeElement.value = moment(new Date()).add(-1, 'month').endOf('month').format("DD/MM/YYYY");
                 break;
             case 6:
+            this._isDateTimeEnable = true;   
                 var quarterAdjustment = (moment().month() % 3) + 1;
                 console.log(quarterAdjustment);
                 var lastQuarterEndDate = moment().subtract({ months: quarterAdjustment }).endOf('month');
@@ -254,6 +266,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
                 this.startTime.nativeElement.value = lastQuarterEndDate.clone().subtract({ months: 2 }).startOf('month').format("DD/MM/YYYY");
                 break;
             case 7:
+            this._isDateTimeEnable = true;   
                 var quarterAdjustment = (moment().month() % 3) + 4;
                 console.log(quarterAdjustment);
                 var lastQuarterEndDate = moment().subtract({ months: quarterAdjustment }).endOf('month');
@@ -261,16 +274,18 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
                 this.startTime.nativeElement.value = lastQuarterEndDate.clone().subtract({ months: 2 }).startOf('month').format("DD/MM/YYYY");
                 break;
             case 8:
+            this._isDateTimeEnable = true;   
                 this.startTime.nativeElement.value = moment(new Date()).startOf('year').format("DD/MM/YYYY");
                 this.endTime.nativeElement.value = moment(new Date()).endOf('year').format("DD/MM/YYYY");
                 break;
             case 9:
+            this._isDateTimeEnable = true;   
                 this.startTime.nativeElement.value = moment(new Date()).add(-1, 'year').startOf('year').format("DD/MM/YYYY");
                 this.endTime.nativeElement.value = moment(new Date()).add(-1, 'year').endOf('year').format("DD/MM/YYYY");
                 break;
             case 10:
-                document.getElementById("cbo-startTime").classList.remove("disabled");
-                document.getElementById("cbo-endTime").classList.remove("disabled");
+            this._isDateTimeEnable = false;   
+                this.flagDisabled = false;
                 break;
         }
         this.updateTimeToSearch();
@@ -321,7 +336,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
             this.startTime.nativeElement.focus();
             return swal({
                 title:'Thông báo', 
-                text:'Ngày gửi từ và Đến ngày không được để trống', 
+                text:'Từ ngày và Đến ngày không được để trống', 
                 type:'warning',
                 timer:3000});
         }

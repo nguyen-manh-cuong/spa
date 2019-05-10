@@ -46,13 +46,14 @@ export class EditComponent extends AppComponentBase implements OnInit, AfterView
         }
 
     ngOnInit() {
+        console.log(_.trim("     dfgdfgd      12   haha a     ".replace(/\s+/g," ")))
         const validationRule = new ValidationRule();
         if (this.bookingData) {
             this._booking = _.clone(this.bookingData);
             this.selectedStatus = this._status.find(x => x.id == this._booking.status).name;
             console.log(this.selectedStatus);
         }
-
+        setTimeout(() => { this.getAddress() }, 1000);
         this._dataService.getAll('provinces').subscribe(resp => { this._province = resp.items });
         this._dataService.getAll('districts').subscribe(resp => { this._district = resp.items });
 
@@ -73,6 +74,16 @@ export class EditComponent extends AppComponentBase implements OnInit, AfterView
             address: [this._booking.address],
             bookingId: [this._booking.bookingId,]
         };
+
+        setTimeout(() => {
+            this._frm.controls['doctorName'].disable();
+            this._frm.controls['examinationDate'].disable();
+            this._frm.controls['gender'].disable();
+            this._frm.controls['age'].disable();
+            this._frm.controls['phoneNumber'].disable();
+            this._frm.controls['email'].disable(); 
+        }, 100);
+
 
         this._frm = this._formBuilder.group(this._context);
     }
@@ -97,8 +108,9 @@ export class EditComponent extends AppComponentBase implements OnInit, AfterView
                 district = data.name
             }
         }
-        address = this._booking.address != undefined ? this._booking.address + ", " : "" + (district != "" ? district : "") + (province != "" ? ", " + province : "");
-        console.log(address);
+        //address = this._booking.address != undefined ? this._booking.address + ", " : "" + (district != "" ? district : "") + (province != "" ? ", " + province : "");
+        address = this._booking.address != undefined ? this._booking.address : "" +  (this._booking.address != undefined && district != "" ? ", " : "") +  (district != "" ?  district : "") +  ((district != "") || (this._booking.address != undefined) && province != "" ? ", " : "")   + (province != "" ? province : "");
+        console.log('Địa chỉ', address);
         this._frm.controls['address'].setValue(address);
     }
 
@@ -132,7 +144,7 @@ export class EditComponent extends AppComponentBase implements OnInit, AfterView
                 time = element.examinationTime;
             }
         }
-        return moment(date).format("DD/MM/YYYY") + ", " + time;
+        return moment(date).format("DD/MM/YYYY") + (time ? "," + time : "");
     }
 
     submit() {
@@ -146,7 +158,9 @@ export class EditComponent extends AppComponentBase implements OnInit, AfterView
             params.reason = this._frm.value.reason;
             params.status = this._frm.value.status;
             params.bookingUser = this._frm.value.bookingUser;
-            params.address = this._frm.value.address;
+            if(this._frm.value.address != null){
+                params.address =_.trim(this._frm.value.address.replace(/\s+/g," "))
+            }
             params.updateUserId = this.appSession.userId;
         }
 
@@ -158,6 +172,8 @@ export class EditComponent extends AppComponentBase implements OnInit, AfterView
                 timer:3000});
             this.dialogRef.close();
         }, err => console.log(err));
+
+        
     }
 
 

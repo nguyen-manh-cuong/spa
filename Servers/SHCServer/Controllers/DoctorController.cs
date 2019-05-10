@@ -6,7 +6,7 @@ using SHCServer.Models;
 using SHCServer.ViewModels;
 using System;
 using System.Collections.Generic;
-using System.Data;
+using System.IO;
 using Viettel;
 using Viettel.MySql;
 
@@ -109,8 +109,6 @@ namespace SHCServer.Controllers
                 }
             }
 
-
-
             objs = objs.GroupBy(o => o.DoctorId).Select((d) => new
             {
                 d.AcademicId,
@@ -164,10 +162,16 @@ namespace SHCServer.Controllers
             {
                 foreach (var (key, value) in JsonConvert.DeserializeObject<Dictionary<string, string>>(sorting))
                 {
-                    if (!Utils.PropertyExists<Doctor>(key))
-                        continue;
-
-                    objs = value == "asc" ? objs.OrderBy(u => u.FullName) : objs.OrderByDesc(u => u.FullName);
+                    //if (!Utils.PropertyExists<Doctor>(key))
+                    //    continue;
+                    if (string.Equals(key, "id"))
+                    {
+                        objs = value == "asc" ? objs.OrderBy(u => u.CreateDate) : objs.OrderByDesc(u => u.CreateDate);
+                    }
+                    else
+                    {
+                        objs = value == "asc" ? objs.OrderBy(u => u.FullName) : objs.OrderByDesc(u => u.FullName);
+                    }
                 }
             }
             else
@@ -176,6 +180,8 @@ namespace SHCServer.Controllers
             }
 
             List<DoctorViewModel> doctorList = new List<DoctorViewModel>();
+
+            var total = objs.Count();
 
             objs = objs.TakePage(skipCount == 0 ? 1 : skipCount + 1, maxResultCount);
 
@@ -229,18 +235,43 @@ namespace SHCServer.Controllers
             }
 
             //return Json(new ActionResultDto { Result = new { Items = objs.TakePage(skipCount == 0 ? 1 : skipCount + 1, maxResultCount).ToList(), TotalCount = objs.Count() } });
-            return Json(new ActionResultDto { Result = new { Items = doctorList, TotalCount = doctorList.Count } });
+            return Json(new ActionResultDto { Result = new { Items = doctorList, TotalCount = total } });
         }
 
-
-
         #region Old_Code
+
         [HttpPost]
         [Route("api/doctor")]
-        public IActionResult Create([FromBody] DoctorViewModel doctor)
+        public IActionResult Create([FromForm] DoctorInputViewModel doctor)
         {
+            bool checkCertificationDate = true;
+
             try
             {
+                if (Convert.ToDateTime(doctor.CertificationDate).Year == 1)
+                checkCertificationDate = false;
+            }
+            catch
+            {
+                checkCertificationDate = false;
+            }
+
+            try
+            {
+                var _files = Request.Form.Files;
+                var _fileUpload = "";
+                if (_files.Count > 0)
+                {
+                    foreach (var file in _files)
+                    {
+                        var uniqueFileName = GetUniqueFileName(file.FileName);
+                        var uploads = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+                        var filePath = Path.Combine(uploads, uniqueFileName);
+                        _fileUpload = "/uploads/" + uniqueFileName;
+                        file.CopyTo(new FileStream(filePath, FileMode.Create));
+                    }
+                }
+
                 _context.Session.BeginTransaction();
 
                 _context.Insert(() => new Doctor()
@@ -250,14 +281,13 @@ namespace SHCServer.Controllers
                     AllowBooking = doctor.AllowBooking,
                     AllowFilter = doctor.AllowFilter,
                     AllowSearch = doctor.AllowSearch,
-                    Avatar = doctor.Avatar,
+                    Avatar = _fileUpload,
                     BirthDate = doctor.BirthDate,
                     BirthMonth = doctor.BirthMonth,
                     BirthYear = doctor.BirthYear,
                     CertificationCode = doctor.CertificationCode,
-                    CertificationDate = doctor.CertificationDate,
                     CreateUserId = doctor.CreateUserId,
-                    CreateDate=DateTime.Now,
+                    CreateDate = DateTime.Now,
                     DegreeId = doctor.DegreeId,
                     Description = doctor.Description,
                     DistrictCode = doctor.DistrictCode,
@@ -282,33 +312,75 @@ namespace SHCServer.Controllers
 
                 _context.Session.CommitTransaction();
 
-                var newDoctor = _context.Query<Doctor>().Where(d=>d.IsDelete==false&&d.IsActive==true).OrderByDesc(d=>d.CreateDate).FirstOrDefault();
+                var newDoctor = _context.Query<Doctor>().Where(d => d.IsDelete == false && d.IsActive == true).OrderByDesc(d => d.CreateDate).FirstOrDefault();
 
                 _context.Session.BeginTransaction();
 
-                if (doctor.Specialist.Count != 0)
+                //if (doctor.Specialist.Count != 0)
+                //{
+                //    foreach (var item in doctor.Specialist)
+                //    {
+                //        _context.Insert(() => new DoctorSpecialists()
+                //        {
+                //            DoctorId = newDoctor.DoctorId,
+                //            SpecialistCode = item.SpecialistCode
+                //        });
+                //    }
+                //}
+                string[] specialist;
+                if (!string.IsNullOrEmpty(doctor.Specials))
                 {
-                    foreach (var item in doctor.Specialist)
+                    specialist = doctor.Specials.Split(',');
+                    foreach (var item in specialist)
                     {
-                        _context.Insert(() => new DoctorSpecialists()
+                        if (!string.IsNullOrEmpty(item))
                         {
-                            DoctorId = newDoctor.DoctorId,
-                            SpecialistCode = item.SpecialistCode
-                        });
+                            _context.Insert(() => new DoctorSpecialists()
+                            {
+                                DoctorId = newDoctor.DoctorId,
+                                SpecialistCode = item
+                            });
+                        }
                     }
                 }
 
-                if (doctor.HealthFacilities.Count != 0)
+                string[] healhs;
+
+                if (!string.IsNullOrEmpty(doctor.Healths))
                 {
-                    foreach (var item in doctor.HealthFacilities)
+                    healhs = doctor.Healths.Split(',');
+                    foreach (var item in healhs)
                     {
-                        _context.Insert(() => new HealthFacilitiesDoctors()
+                        if (!string.IsNullOrEmpty(item))
                         {
-                            HealthFacilitiesId = item.HealthFacilitiesId,
-                            DoctorId = newDoctor.DoctorId
-                        });
+                            _context.Insert(() => new HealthFacilitiesDoctors()
+                            {
+                                DoctorId = newDoctor.DoctorId,
+                                HealthFacilitiesId = Convert.ToInt32(item)
+                            });
+                        }
                     }
                 }
+
+                if (checkCertificationDate == true)
+                {
+                    _context.Update<Doctor>(d => d.DoctorId == newDoctor.DoctorId, x => new Doctor()
+                    {
+                        CertificationDate = Convert.ToDateTime(doctor.CertificationDate).AddMonths(1)
+                    });
+                }
+
+                //if (doctor.HealthFacilities.Count != 0)
+                //{
+                //    foreach (var item in doctor.HealthFacilities)
+                //    {
+                //        _context.Insert(() => new HealthFacilitiesDoctors()
+                //        {
+                //            HealthFacilitiesId = item.HealthFacilitiesId,
+                //            DoctorId = newDoctor.DoctorId
+                //        });
+                //    }
+                //}
 
                 _context.Session.CommitTransaction();
 
@@ -324,8 +396,72 @@ namespace SHCServer.Controllers
 
         [HttpPut]
         [Route("api/doctor")]
-        public IActionResult Update([FromBody] DoctorViewModel doctor, int? allow)
+        public IActionResult Update([FromForm] DoctorInputViewModel doctor, int? allow)
         {
+
+            bool checkCertificationDate = true;
+            try
+            {
+                if (Convert.ToDateTime(doctor.CertificationDate).Year == 1)
+                checkCertificationDate = false;
+            }
+            catch
+            {
+                checkCertificationDate = false;
+            }
+
+
+            if (!string.IsNullOrEmpty(doctor.EthnicityCode))
+                if (doctor.EthnicityCode.Equals("null"))
+                {
+                    doctor.EthnicityCode = "";
+                }
+            if (!string.IsNullOrEmpty(doctor.EducationCountryCode))
+                if (doctor.EducationCountryCode.Equals("null"))
+                {
+                    doctor.EducationCountryCode = "";
+                }
+            if (!string.IsNullOrEmpty(doctor.NationCode))
+                if (doctor.NationCode.Equals("null"))
+                {
+                    doctor.NationCode = "";
+                }
+            if (!string.IsNullOrEmpty(doctor.Address))
+                if (doctor.Address.Equals("null"))
+                {
+                    doctor.Address = "";
+                }
+            if (!string.IsNullOrEmpty(doctor.PhoneNumber))
+                if (doctor.PhoneNumber.Equals("null"))
+                {
+                    doctor.PhoneNumber = "";
+                }
+            if (!string.IsNullOrEmpty(doctor.Email))
+                if (doctor.Email.Equals("null"))
+                {
+                    doctor.Email = "";
+                }
+            if (!string.IsNullOrEmpty(doctor.CertificationCode))
+                if (doctor.CertificationCode.Equals("null"))
+                {
+                    doctor.CertificationCode = "";
+                }
+            if (!string.IsNullOrEmpty(doctor.Summary))
+                if (doctor.Summary.Equals("null"))
+                {
+                    doctor.Summary = "";
+                }
+            if (!string.IsNullOrEmpty(doctor.PriceDescription))
+                if (doctor.PriceDescription.Equals("null"))
+                {
+                    doctor.PriceDescription = "";
+                }
+            if (!string.IsNullOrEmpty(doctor.Description))
+                if (doctor.Description.Equals("null"))
+                {
+                    doctor.Description = "";
+                }
+
             var checkDoctor = _context.Query<Doctor>().Where(d => d.DoctorId == doctor.DoctorId).FirstOrDefault();
 
             if (checkDoctor == null)
@@ -334,6 +470,20 @@ namespace SHCServer.Controllers
             }
             try
             {
+                var _files = Request.Form.Files;
+                var _fileUpload = "";
+                if (_files.Count > 0)
+                {
+                    foreach (var file in _files)
+                    {
+                        var uniqueFileName = GetUniqueFileName(file.FileName);
+                        var uploads = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+                        var filePath = Path.Combine(uploads, uniqueFileName);
+                        _fileUpload = "/uploads/" + uniqueFileName;
+                        file.CopyTo(new FileStream(filePath, FileMode.Create));
+                    }
+                }
+
                 _context.BeginTransaction();
 
                 _context.Update<Doctor>(d => d.DoctorId == doctor.DoctorId, x => new Doctor()
@@ -343,12 +493,11 @@ namespace SHCServer.Controllers
                     AllowBooking = doctor.AllowBooking,
                     AllowFilter = doctor.AllowFilter,
                     AllowSearch = doctor.AllowSearch,
-                    Avatar = doctor.Avatar,
+                    Avatar = _fileUpload,
                     BirthDate = doctor.BirthDate,
                     BirthMonth = doctor.BirthMonth,
                     BirthYear = doctor.BirthYear,
                     CertificationCode = doctor.CertificationCode,
-                    CertificationDate = doctor.CertificationDate,
                     DegreeId = doctor.DegreeId,
                     Description = doctor.Description,
                     DistrictCode = doctor.DistrictCode,
@@ -371,6 +520,14 @@ namespace SHCServer.Controllers
                     TitleCode = doctor.TitleCode,
                 });
 
+                if (checkCertificationDate == true)
+                {
+                    _context.Update<Doctor>(d => d.DoctorId == doctor.DoctorId, x => new Doctor()
+                    {
+                        CertificationDate = Convert.ToDateTime(doctor.CertificationDate).AddMonths(1)
+                    });
+                }
+
                 if (allow == null)
                 {
                     var specialist = _context.Query<DoctorSpecialists>().Where(s => s.IsDelete == false && s.IsActive == true && s.DoctorId == doctor.DoctorId);
@@ -382,7 +539,7 @@ namespace SHCServer.Controllers
                         });
                     }
 
-                    var healthfacilities = _context.Query<HealthFacilitiesDoctors>().Where(hf => hf.IsDelete == false && hf.IsActive == true && hf.DoctorId==doctor.DoctorId);
+                    var healthfacilities = _context.Query<HealthFacilitiesDoctors>().Where(hf => hf.IsDelete == false && hf.IsActive == true && hf.DoctorId == doctor.DoctorId);
                     foreach (var item in healthfacilities.ToList())
                     {
                         _context.Update<HealthFacilitiesDoctors>(hf => hf.DoctorId == item.DoctorId, x => new HealthFacilitiesDoctors()
@@ -391,27 +548,38 @@ namespace SHCServer.Controllers
                         });
                     }
 
-                    if (doctor.Specialist.Count != 0)
+                    string[] specials;
+                    if (!string.IsNullOrEmpty(doctor.Specials))
                     {
-                        foreach(var item in doctor.Specialist)
+                        specials = doctor.Specials.Split(',');
+                        foreach (var item in specials)
                         {
-                            _context.Insert<DoctorSpecialists>(() => new DoctorSpecialists()
+                            if (!string.IsNullOrEmpty(item))
                             {
-                                DoctorId = doctor.DoctorId,
-                                SpecialistCode = item.SpecialistCode
-                            });
+                                _context.Insert(() => new DoctorSpecialists()
+                                {
+                                    DoctorId = doctor.DoctorId,
+                                    SpecialistCode = item
+                                });
+                            }
                         }
                     }
 
-                    if (doctor.HealthFacilities.Count != 0)
+                    string[] healhs;
+
+                    if (!string.IsNullOrEmpty(doctor.Healths))
                     {
-                        foreach (var item in doctor.HealthFacilities)
+                        healhs = doctor.Healths.Split(',');
+                        foreach (var item in healhs)
                         {
-                            _context.Insert<HealthFacilitiesDoctors>(() => new HealthFacilitiesDoctors()
+                            if (!string.IsNullOrEmpty(item))
                             {
-                                DoctorId = doctor.DoctorId,
-                                HealthFacilitiesId = item.HealthFacilitiesId
-                            });
+                                _context.Insert(() => new HealthFacilitiesDoctors()
+                                {
+                                    DoctorId = doctor.DoctorId,
+                                    HealthFacilitiesId = Convert.ToInt32(item)
+                                });
+                            }
                         }
                     }
                 }
@@ -457,7 +625,6 @@ namespace SHCServer.Controllers
             }
             else
             {
-                
                 try
                 {
                     _context.Session.CurrentConnection.Close();
@@ -474,8 +641,9 @@ namespace SHCServer.Controllers
                     {
                         _context.Update<DoctorSpecialists>(s => s.DoctorId == item.DoctorId, x => new DoctorSpecialists()
                         {
-                            IsDelete = true
-                        });
+                            IsDelete = true,
+                            IsActive = false
+                        }) ;
                     }
 
                     var healthfacilities = _context.Query<HealthFacilitiesDoctors>().Where(hf => hf.IsDelete == false && hf.IsActive == true && hf.DoctorId == id);
@@ -483,7 +651,8 @@ namespace SHCServer.Controllers
                     {
                         _context.Update<HealthFacilitiesDoctors>(hf => hf.DoctorId == item.DoctorId, x => new HealthFacilitiesDoctors()
                         {
-                            IsDelete = true
+                            IsDelete = true,
+                            IsActive=false
                         });
                     }
 
@@ -500,6 +669,16 @@ namespace SHCServer.Controllers
                 return Json(new ActionResultDto());
             }
         }
+
         #endregion Old_Code
+
+        private string GetUniqueFileName(string fileName)
+        {
+            fileName = Path.GetFileName(fileName);
+            return Path.GetFileNameWithoutExtension(fileName)
+                      + "_"
+                      + Guid.NewGuid().ToString().Substring(0, 4)
+                      + Path.GetExtension(fileName);
+        }
     }
 }

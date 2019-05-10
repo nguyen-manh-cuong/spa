@@ -163,7 +163,7 @@ export class BookingIPCCComponent extends AppComponentBase implements OnInit {
     this._dataService.create('bookinginformations', _.pickBy(fromData, _.identity)).subscribe(
       () => {
         this._dataService.create('infosms', {
-            lstMedicalHealthcareHistories: [{phoneNumber: this.frmBooking.value.phoneSecondNumber}], 
+            lstMedicalHealthcareHistories: [{phoneNumber: fromData.phoneNumber}], 
             healthFacilitiesId: this.frmBooking.value.healthFacilitiesId,           
             smsTemplateId: null,
             type: 4, 
@@ -222,6 +222,10 @@ export class BookingIPCCComponent extends AppComponentBase implements OnInit {
   }
 
   onSelectBirthMonth(obj: any){
+    this.checkBirthDate();
+  }
+
+  onSelectBirthYear(obj: any){
     this.checkBirthDate();
   }
 

@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using SHCServer.Models;
-using Viettel;
+﻿using Viettel;
 using Viettel.MySql;
-
 
 namespace SHCServer.Models
 {
@@ -26,14 +22,16 @@ namespace SHCServer.Models
                 {
                     JoinType.InnerJoin, d.SpecialistCode == c.Code
                 })
-                .Where((d, c) => d.DoctorId == obj.DoctorId && d.SpecialistCode == obj.SpecialistCode)
+                .Where((d, c) => d.DoctorId == obj.DoctorId && d.SpecialistCode == obj.SpecialistCode && c.IsDelete == false && c.IsActive == true)
                 .Select((d, c) => c).FirstOrDefault();
 
             Specialist = specialist != null ? specialist.Name : "";
+            Name = specialist != null ? specialist.Name : "";
         }
 
         public int DoctorId { set; get; }
         public string SpecialistCode { set; get; }
         public string Specialist { set; get; }
+        public string Name { get; set; }
     }
 }

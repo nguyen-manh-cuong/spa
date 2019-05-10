@@ -11,9 +11,11 @@ import * as _ from 'lodash';
 import { DataService } from '@shared/service-proxies/service-data';
 import { ILanguage, IBookingTimeslots } from '@shared/Interfaces';
 import { PagedListingComponentBase } from '@shared/paged-listing-component-base';
-import { TaskComponent } from '../task/task.component';
+import { TaskComponent, Specialist } from '../task/task.component';
 import swal from 'sweetalert2';
 import { start } from 'repl';
+import { DetailComponent } from '../detail/detail.component';
+import { HttpHeaders, HttpClient } from '@angular/common/http';
 
 
 
@@ -31,6 +33,7 @@ export class EntityDto {
   styleUrls: ['./index.component.scss']
 })
 export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> implements OnInit {
+  dialogDetail: any;
 
   provinces = [];
   districts = [];
@@ -55,6 +58,8 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
     this.api = 'doctor';
     this.dataService = this._dataService;
     this.dialogComponent = TaskComponent;
+    this.dialogDetail = DetailComponent;
+
     this.frmSearch = this._formBuilder.group({ provinceCode: [], districtCode: [], info: [], healthfacilitiesId: [], specialistCode: [] });
 
     this.getProvinces();
@@ -63,10 +68,6 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
     if (this.appSession.user.healthFacilitiesId) {
       this.dataService.getAll('healthfacilities', "{healthfacilitiesId:" + String(this.appSession.user.healthFacilitiesId) + "}").subscribe(resp => this._healthfacilities = resp.items);
       this.frmSearch.controls['healthfacilitiesId'].setValue(this.appSession.user.healthFacilitiesId);
-    }
-    else {
-      this.dataService.getAll('healthfacilities').subscribe(resp => this._healthfacilities = resp.items);
-      this.filterOptions();
     }
   }
   showErrorDeleteMessage() {
@@ -94,7 +95,7 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
         this.dataService.delete(this.api, obj[doctorId ? doctorId : 'doctorId']).subscribe(() => {
           swal({
             title: this.l('SuccessfullyDeleted'),
-            text: this.l('DeletedInSystem', obj[key]),
+            html: this.l('DeletedInSystem', obj[key]),
             type: 'success',
             timer: 3000
           });
@@ -157,7 +158,7 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
         if (result.value) {
           obj.allowBooking = !obj.allowBooking;
           obj.updateUserId = this.appSession.userId;
-          this.dataService.update(this.api + "?allow=1", obj).subscribe(() => {
+          this.dataService.updateMini(this.api + "?allow=1", obj).subscribe(() => {
             swal({
               title: this.l('DoctorUpdateAllowCompleteTitle'),
               text: this.l('DoctorTitle') + ' ' + obj.fullName + ' ' + this.ll('DoctorUpdateAllowBookingSuccessfully', obj.fullName),
@@ -187,7 +188,7 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
         if (result.value) {
           obj.allowBooking = !obj.allowBooking;
           obj.updateUserId = this.appSession.userId;
-          this.dataService.update(this.api + "?allow=1", obj).subscribe(() => {
+          this.dataService.updateMini(this.api + "?allow=1", obj).subscribe(() => {
             swal({
               title: this.l('DoctorUpdateAllowCompleteTitle'),
               text: this.l('DoctorTitle') + ' ' + obj.fullName + ' ' + this.ll('DoctorCancelAllowBookingSuccessfully', obj.fullName),
@@ -220,7 +221,7 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
         if (result.value) {
           obj.allowFilter = !obj.allowFilter;
           obj.updateUserId = this.appSession.userId;
-          this.dataService.update(this.api + "?allow=1", obj).subscribe(() => {
+          this.dataService.updateMini(this.api + "?allow=1", obj).subscribe(() => {
             swal({
               title: this.l('DoctorUpdateAllowCompleteTitle'),
               text: this.l('DoctorTitle') + ' ' + obj.fullName + ' ' + this.ll('DoctorUpdateAllowFilterSuccessfully', obj.fullName),
@@ -250,7 +251,7 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
         if (result.value) {
           obj.allowFilter = !obj.allowFilter;
           obj.updateUserId = this.appSession.userId;
-          this.dataService.update(this.api + "?allow=1", obj).subscribe(() => {
+          this.dataService.updateMini(this.api + "?allow=1", obj).subscribe(() => {
             swal({
               title: this.l('DoctorUpdateAllowCompleteTitle'),
               text: this.l('DoctorTitle') + ' ' + obj.fullName + ' ' + this.ll('DoctorCancelAllowFilterSuccessfully', obj.fullName),
@@ -283,7 +284,7 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
         if (result.value) {
           obj.allowSearch = !obj.allowSearch;
           obj.updateUserId = this.appSession.userId;
-          this.dataService.update(this.api + "?allow=1", obj).subscribe(() => {
+          this.dataService.updateMini(this.api + "?allow=1", obj).subscribe(() => {
             swal({
               title: this.l('DoctorUpdateAllowCompleteTitle'),
               text: this.l('DoctorTitle') + ' ' + obj.fullName + ' ' + this.l('DoctorUpdateAllowSearchSuccessfully', obj.fullName),
@@ -313,7 +314,7 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
         if (result.value) {
           obj.allowSearch = !obj.allowSearch;
           obj.updateUserId = this.appSession.userId;
-          this.dataService.update(this.api + "?allow=1", obj).subscribe(() => {
+          this.dataService.updateMini(this.api + "?allow=1", obj).subscribe(() => {
             swal({
               title: this.l('DoctorUpdateAllowCompleteTitle'),
               text: this.l('DoctorTitle') + ' ' + obj.fullName + ' ' + this.l('DoctorCancelAllowSearchSuccessfully', obj.fullName),
@@ -380,8 +381,11 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
   }
 
   onInputHealthfacilities(obj: any) {
-    this.frmSearch.controls['healthfacilitiesId'].setValue("");
-    this._healthFacilitiesId = null;
+    if (obj != "") {
+      this.frmSearch.controls['healthfacilitiesId'].setValue(0);
+    } else {
+      this.frmSearch.controls['healthfacilitiesId'].setValue('');
+    }
   }
 
   onSelectHealthFacilities(value: any) {
@@ -412,6 +416,10 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
     !this.specialistCode.value ? this.filterSpecialistOptions() : '';
   }
 
+  getSpecialJoin(element: [Specialist]) {
+    return element.map((e) => e.name).join(", ");
+  }
+
   filterSpecialistOptions() {
     this.filteredSpecialistOptions = this.specialistCode.valueChanges
       .pipe(
@@ -423,8 +431,11 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
   }
 
   onInputSpecialist(obj: any) {
-    this.frmSearch.controls['specialistCode'].setValue("");
-    this._specialistCode = null;
+    if (obj != "") {
+      this.frmSearch.controls['specialistCode'].setValue(0);
+    } else {
+      this.frmSearch.controls['specialistCode'].setValue('');
+    }
   }
 
   onSelectSpecialist(value: any) {
@@ -435,13 +446,19 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
   }
   //End auto complete specialist
   customSearch() {
-    this.frmSearch.controls['healthfacilitiesId'].setValue(this._healthFacilitiesId);
-    this.frmSearch.controls['specialistCode'].setValue(this._specialistCode);
     this.btnSearchClicks$.next();
   }
 
   openDialogDoctor(obj?: EntityDto): void {
     const dialogRef = this.dialog.open(this.dialogComponent, { minWidth: 'calc(100vw/1.5)', maxWidth: 'calc(100vw - 100px)', disableClose: true, data: obj ? obj : null });
+    dialogRef.afterClosed().subscribe(() => {
+      this.paginator.pageIndex = 0;
+      this.paginator._changePageSize(this.paginator.pageSize);
+    });
+  }
+
+  detailDialogDoctor(obj?: EntityDto): void {
+    const dialogRef = this.dialog.open(this.dialogDetail, { minWidth: 'calc(100vw/1.5)', maxWidth: 'calc(100vw - 100px)', disableClose: true, data: obj ? obj : null });
     dialogRef.afterClosed().subscribe(() => {
       this.paginator.pageIndex = 0;
       this.paginator._changePageSize(this.paginator.pageSize);

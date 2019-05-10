@@ -38,7 +38,7 @@ namespace SHCServer.Controllers
                 foreach (var (key, value) in JsonConvert.DeserializeObject<Dictionary<string, string>>(filter))
                 {
                     if (string.IsNullOrEmpty(value)) continue;
-                    if (string.Equals(key, "healthfacilities")) objs = objs.Where((dc, t) => t.HealthFacilitiesId == int.Parse(value));
+                    if (string.Equals(key, "healthfacilities")) objs = objs.Where((dc, t) => dc.HealthFacilitiesId == int.Parse(value));
                     if (string.Equals(key, "doctor")) objs = objs.Where((dc, t) => dc.DoctorId == int.Parse(value));
                     if (string.Equals(key, "month")) objs = objs.Where((dc, t) => dc.CalendarDate.Month == int.Parse(value));
                     if (string.Equals(key, "status") && value != "3") objs = objs.Where((dc, t) => dc.Status == int.Parse(value));
@@ -60,6 +60,7 @@ namespace SHCServer.Controllers
                 doctorCalendar.Address = bookingdoctor.Address;
                 doctorCalendar.HealthFacilitiesId = bookingdoctor.Healthfacilities;
                 doctorCalendar.Status = bookingdoctor.Status;
+                doctorCalendar.IsActive = true;
                 doctorCalendar.DoctorId = bookingdoctor.Doctor;
                 doctorCalendar.TimeSlotId = el.TimeSlotId;
                 doctorCalendar.CalendarDate = DateTime.Parse(el.DateTime);
@@ -87,6 +88,7 @@ namespace SHCServer.Controllers
         [Route("api/bookingtimeslot")]
         public IActionResult GetBookingTimesSlot(int skipCount = 0, int maxResultCount = 10, string sorting = null, string filter = null)
         {
+            int doctorId = 0;
             var objs = _context
                 //.JoinQuery<BookingTimeslots, BookingDoctorsCalendars> ((t, dc) => new object[] { JoinType.InnerJoin, t.TimeSlotId == dc.TimeSlotId })
                 .Query<BookingTimeslots>()
@@ -98,10 +100,11 @@ namespace SHCServer.Controllers
                 {
                     if (string.IsNullOrEmpty(value)) continue;
                     if (string.Equals(key, "healthfacilities")) objs = objs.Where(t => t.HealthFacilitiesId == int.Parse(value));
+                    if (string.Equals(key, "doctorId")) doctorId = int.Parse(value);
                 }
             }
 
-            return Json(new ActionResultDto { Result = new { Items = objs.Select(t => new BookingDoctorsViewModel(t, _connectionString)).ToList() } });
+            return Json(new ActionResultDto { Result = new { Items = objs.Select(t => new BookingDoctorsViewModel(t, doctorId, _connectionString)).ToList() } });
         }
 
     }

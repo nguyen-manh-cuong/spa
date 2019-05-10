@@ -1,13 +1,15 @@
+import { IUsersServices } from '@shared/Interfaces';
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { DataService } from '@shared/service-proxies/service-data';
 import { CreateUserDto } from '@shared/service-proxies/service-proxies';
 import { ValidationRule } from '@shared/common/common';
 import { Validators, FormGroup, FormBuilder } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
-import { Location } from '@angular/common'
+import { Location } from '@angular/common';
 import * as _ from 'lodash';
 import * as moment from 'moment';
 import swal from 'sweetalert2';
+import { FileValidator } from 'ngx-material-file-input';
 
 @Component({
     selector: 'app-register',
@@ -40,19 +42,24 @@ export class RegisterComponent implements OnInit {
     _idCardUrls = new Array<string>();
     _certificateUrls = new Array<string>();
     _user: CreateUserDto;
+    _invaliBirthday = false;
 
     _capcha: { code: string, data: any } = { code: '', data: '' };
     _sex: Array<{ id: number, name: string }> = [{ id: 1, name: 'Nam' }, { id: 2, name: 'Nữ' }, { id: 3, name: 'Không xác định' }];
+    _obj: IUsersServices | any = { isUsingdoctor: '', isUsingCall: '', isUsingUpload: '', isUsingRegister: '', isUsingVideo: '', isUsingExamination: '' };
     capcha = false;
 
     @ViewChild("fullName") fullName: ElementRef;
 
-    constructor(private _sanitizer: DomSanitizer, private _dataService: DataService, private _formBuilder: FormBuilder, private _location: Location) { }
+    constructor(private _sanitizer: DomSanitizer, private _dataService: DataService, private _formBuilder: FormBuilder, private _location: Location, ) { }
 
     ngOnInit() {
         this._user = new CreateUserDto();
         this._idCardUrls = [];
         this._certificateUrls = [];
+        // if (this.obj) {
+        //     this._obj = _.clone(this.obj);
+        //   }
         this._context = {
             userName: [this._user.userName, [Validators.required, this.validateRule.hasValue]],
             password: ['', [Validators.required, this.validateRule.passwordStrong]],
@@ -74,8 +81,15 @@ export class RegisterComponent implements OnInit {
             healthFacilitiesName: [this._user.healthFacilitiesName],
             specialist: [this._user.specialist],
             codeCapcha: [''],
-            cmnd: [],
-            gp: []
+            cmnd: [null, [FileValidator.maxContentSize(20000000)]],
+            gp: [null, [FileValidator.maxContentSize(20000000)]],
+            isUsingdoctor: [this._obj.isUsingdoctor],
+            isUsingCall: [this._obj.isUsingCall],
+            isUsingUpload: [this._obj.isUsingUpload],
+            isUsingRegister: [this._obj.isUsingRegister],
+            isUsingVideo: [this._obj.isUsingVideo],
+            isUsingExamination: [this._obj.isUsingExamination],
+            rules: [false]
         };
 
         this.frmUser = this._formBuilder.group(this._context);
@@ -84,6 +98,14 @@ export class RegisterComponent implements OnInit {
         this.fullName.nativeElement.focus();
 
         this.getCapcha();
+    }
+
+    onSelectBirthDay(obj: any) {
+        this.checkBirthDate();
+    }
+
+    onSelectBirthMonth(obj: any) {
+        this.checkBirthDate();
     }
 
     onChangeAccountType(value: number) {
@@ -134,6 +156,33 @@ export class RegisterComponent implements OnInit {
     }
 
     submit() {
+        if (this.frmUser.controls['accountType'].value == 1 || this.frmUser.controls['accountType'].value == 2) {
+            if (this.frmUser.controls['cmnd'].value === null || this.frmUser.controls['gp'].value === null) {
+                return swal({
+                    title: 'Thông báo',
+                    text: 'Bạn phải cung cấp giấy tờ xác thực',
+                    type: 'warning',
+                    timer: 3000
+                });
+            }
+        }
+
+        if (this.frmUser.controls['accountType'].value != 1) {
+            if (!this.frmUser.controls['isUsingdoctor'].value &&
+                !this.frmUser.controls['isUsingCall'].value &&
+                !this.frmUser.controls['isUsingUpload'].value &&
+                !this.frmUser.controls['isUsingRegister'].value &&
+                !this.frmUser.controls['isUsingVideo'].value &&
+                !this.frmUser.controls['isUsingExamination'].value) {
+                return swal({
+                    title: 'Thông báo',
+                    text: 'Bạn phải chọn ít nhất một dịch vụ',
+                    type: 'warning',
+                    timer: 3000
+                });
+            }
+        }
+
         this.frmUser.value.birthDay = new Date($('#birthY').val() + '-' + $('#birthM').val() + '-' + $('#birthD').val());
 
         if (this.frmUser.controls['password'].value != this.frmUser.controls['confirmPassword'].value) {
@@ -145,6 +194,7 @@ export class RegisterComponent implements OnInit {
 
         if (this.frmUser.invalid) {
             for (let key in this.frmUser.controls) {
+                console.log(12, key, this.frmUser.controls[key])
                 if (this.frmUser.controls[key] && this.frmUser.controls[key].errors) {
                     this.frmUser.controls[key].markAsTouched();
                     this.frmUser.controls[key].markAsDirty();
@@ -154,12 +204,14 @@ export class RegisterComponent implements OnInit {
             return;
         }
 
+        if (this._invaliBirthday) return;
+
         if (this.frmUser.controls['codeCapcha'].value != this._capcha.code) {
             this.capcha = true;
             return;
         }
 
-        this._dataService.create('Register', this.frmUser.value).subscribe(
+        this._dataService.createUpload('Register', this.frmUser.value).subscribe(
             () => {
                 swal({
                     title: '<u>Đăng ký mở tài khoản thành công !</u>',
@@ -170,12 +222,21 @@ export class RegisterComponent implements OnInit {
                     buttonsStyling: false,
                     timer: 3000
                 }).then((result) => {
-                    if (result.value) {
-                        this._location.back();
-                    }
+                    //if (result.value) {
+                    //this._location.back();
+                    //}
                     this._location.back();
                 });
-            }, err => console.log(err))
+            }, err => console.log('err: ' + err))
+    }
+
+    //validate  
+    checkBirthDate() {
+        if (!moment($('#birthD').val() + '/' + $('#birthM').val() + '/' + $('#birthY').val(), "DD/MM/YYYY").isValid()) {
+            this._invaliBirthday = true;
+        } else {
+            this._invaliBirthday = false;
+        }
     }
 
     ruleRequire(value: any) {
@@ -192,32 +253,62 @@ export class RegisterComponent implements OnInit {
         }
     }
 
+    arrayIdCard = [];
+    arrayCertificate = [];
     detectFiles(event, type) {
-        this._idCardError = "";
-        this._certificateError = "";
+        console.log(this.frmUser.controls['cmnd'].value);
+
         let files = event.target.files;
+        //console.log(event.target.files);
         if (files) {
             for (let file of files) {
                 let reader = new FileReader();
+                reader.readAsDataURL(file);
                 if (file.type == 'image/jpeg' || file.type == 'image/png') {
-                    reader.onload = (e: any) => {
-                        if (type == 'idCard') {
-                            this._idCardUrls.push(e.target.result);
+                    if (type == 'idCard') {
+                        reader.onload = (e: any) => {
+                            this._idCardUrls.push("/assets/images/212328-200.png");
                         }
-                        if (type == 'certificate') {
-                            this._certificateUrls.push(e.target.result);
-                        }
+                        this.arrayIdCard.push(file);
                     }
-                    reader.readAsDataURL(file);
+
+                    if (type == 'certificate') {
+                        reader.onload = (e: any) => {
+                            this._certificateUrls.push("/assets/images/212328-200.png");
+                        }
+                        this.arrayCertificate.push(file);
+                    }
+
+                }
+                if (file.type == 'application/pdf') {
+                    console.log('vao day k');
+                    if (type == 'idCard') {
+                        reader.onload = (e: any) => {
+                            this._idCardUrls.push("/assets/images/24-512.png");
+                        }
+                        this.arrayIdCard.push(file);
+                    }
+
+                    if (type == 'certificate') {
+                        reader.onload = (e: any) => {
+                            this._certificateUrls.push("/assets/images/24-512.png");
+                        }
+                        this.arrayCertificate.push(file);
+                    }
                 } else {
                     if (type == 'idCard') {
-                        this._idCardError = "File tải lên không phải file ảnh";
+                        this._idCardError = "File tải lên không phải file ảnh và pdf";
                     }
                     if (type == 'certificate') {
-                        this._certificateError = "File tải lên không phải file ảnh";
+                        this._certificateError = "File tải lên không phải file ảnh và pdf";
                     }
                 }
             }
+            ;
+            this.frmUser.controls['cmnd'].setValue({ files: this.arrayIdCard });
+            this.frmUser.controls['gp'].setValue({ files: this.arrayCertificate });
+            console.log(this.frmUser.controls['cmnd'].value);
+
         }
     }
 
@@ -230,6 +321,10 @@ export class RegisterComponent implements OnInit {
 
     getCapcha() {
         this._dataService.getAny('get-captcha-image').subscribe(res => this._capcha = { code: res.code, data: this._sanitizer.bypassSecurityTrustResourceUrl('data:image/jpg;base64,' + res.data) });
+    }
+
+    validateCapcha(value: any){
+        if(value.length == 4) this._capcha.code != value ? this.capcha = true : this.capcha = false;
     }
 
     cleanControl(listControl) {

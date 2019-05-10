@@ -20,14 +20,6 @@
         <div class="row m-0 pt-3">
             <div class="col-md-3">
                 <mat-form-field appearance="outline" class="w-100">
-                    <mat-label>{{l('PackageDistributeHealthFacilities')}}</mat-label>
-                    <mat-select formControlName="HealthFacilitiesId" multiple>
-                        <mat-option *ngFor="let o of _medicalFacility" [value]="o.healthFacilitiesId">{{ o.code }} - {{ o.name }}</mat-option>
-                    </mat-select>
-                </mat-form-field>
-            </div>
-            <div class="col-md-3">
-                <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('PackageDistributeMonth')}}</mat-label>
                     <mat-select formControlName="monthStart">
                         <mat-option *ngFor="let o of _month" [value]="o.id">{{ o.name }}</mat-option>
@@ -40,8 +32,14 @@
                     <input mask="0*" maxlength="4" formControlName="fromYear" matInput autocomplete>
                 </mat-form-field>
             </div>
-            <div class="col-md-3">
-                </div>
+            <div class="col-md-6">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>{{l('PackageDistributeHealthFacilities')}}</mat-label>
+                    <mat-select formControlName="HealthFacilitiesId" multiple>
+                        <mat-option *ngFor="let o of _medicalFacility" [value]="o.healthFacilitiesId">{{ o.code }} - {{ o.name }}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
             <div class="col-md-3">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('Đến tháng')}}</mat-label>
@@ -51,11 +49,11 @@
                 </mat-form-field>
             </div>
             <!-- <div class="col-md-3">
-        <mat-form-field appearance="outline" class="w-100">
-            <mat-label>{{l("PackageDistributeYear")}}</mat-label>
-            <input mask="0*" maxlength="4" formControlName="year" matInput autocomplete>
-        </mat-form-field>
-    </div> -->
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>{{l("PackageDistributeYear")}}</mat-label>
+                        <input mask="0*" maxlength="4" formControlName="year" matInput autocomplete>
+                    </mat-form-field>
+                </div> -->
             <div class="col-md-3">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l("Đến năm")}}</mat-label>
@@ -103,7 +101,7 @@
             </ng-container>
             <ng-container matColumnDef="sms">
                 <th mat-header-cell *matHeaderCellDef class="text-center"> {{'Số tin nhắn đã gửi'}}</th>
-                <td mat-cell *matCellDef="let element" style="text-align: right;">{{ (element.quantity - element.smsPackageUsed.quantityused) | mask: 'dot_separator' }}/{{element.quantity | mask: 'dot_separator'}} </td>
+                <td mat-cell *matCellDef="let element" style="text-align: right;">{{ (element.quantity - (element.smsPackageUsed !== null ? element.smsPackageUsed.quantityused : 0)) | mask: 'dot_separator' }}/{{element.quantity | mask: 'dot_separator'}} </td>
             </ng-container>
             <ng-container matColumnDef="isActive">
                 <th mat-header-cell *matHeaderCellDef class="min-w-55 text-center"> {{l("Using")}}</th>

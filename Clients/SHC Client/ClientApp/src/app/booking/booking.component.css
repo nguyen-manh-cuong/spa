@@ -286,10 +286,11 @@
     -moz-transition: 0.4s ease-out;
     -o-transition: 0.4s ease-out;
     transition: 0.4s ease-out;
+    background-color: #2ad6df73;
 }
 @media (min-width: 1024px){
     .article{
-        min-height: 355px;
+        min-height: 365px;
     }
 }
 .article .thumbnail-img{
@@ -299,4 +300,7 @@
 .article:hover .thumbnail-img{
     border: 1px solid ccc;
     transform: .4s all;
+}
+.overlay[_ngcontent-c1] {
+    position: fixed!important;
 }

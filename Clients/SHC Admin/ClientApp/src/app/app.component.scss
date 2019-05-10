@@ -48,50 +48,44 @@
     }
 }
 
-.wrap-text{
-    white-space: normal;
-    word-break: break-all;
-}
-.custom-form .mat-form-field-label-wrapper {
-    left: -5px;
-}
-.color-primary{
-    color: #00695c!important;
-}
-// .mat-table td.mat-cell:not(.mat-column-HealthFacilitiesId) {
-//     word-break: break-all!important;
-//     white-space: normal!important;
-//     overflow: visible!important;
-// }
-.wrap-text {
-    word-break: break-all!important;
-    white-space: normal!important;
-    overflow: visible!important;
-}
-.fw-500{
-    font-weight: 500;
-}
-.f14{
-    font-size: 14px!important;
-}
-.f16{
-    font-size: 16px!important;
-}
-.table-custom  .mat-table.task td.mat-cell:last-of-type{    
-    padding-left: 10px !important;
-    padding-right: 10px!important;
-}
-.form-custom .mat-form-field.mat-form-field-should-float mat-label{
-    font-size: 17px;
-    font-weight: 500;
-    color: black;
-}
-.text-center .mat-sort-header-container{
-    justify-content: center;
- }
+/*============= common ============= */
+.color-primary{color: #00695c!important;}
+.is-loading .mat-option-text {display: flex;justify-content: center;}
+.pl-10{padding-left: 10px!important;}
+/*============= end common ============= */
+/*============= font ============= */
+.f14{font-size: 14px!important;}    
+.f16{font-size: 16px!important;}    
+.f18{font-size: 18px!important;}
+.fw-500{font-weight: 500;}
+/*============= end font ============= */
+.wrap-text{white-space: normal!important;word-break: break-all!important; overflow: visible!important;}  
+.wrap-text-word {word-break: word-break!important;white-space: normal!important;overflow: visible!important;}
+/*============= table ============= */
+.table-custom  .mat-table.task td.mat-cell:last-of-type{ padding-left: 10px !important; padding-right: 10px!important;}
+/*============= end table ============= */
+.form-custom .mat-form-field.mat-form-field-should-float mat-label{font-size: 17px;font-weight: 500;color: black;}
+.text-center .mat-sort-header-container{justify-content: center;}
+ /*============= firefox ============= */
+ @-moz-document url-prefix() { table { border-collapse: unset!important;}}
+/*============= end firefox ============= */
+/*============= form-detail ============= */
+.form-detail .mat-datepicker-toggle-default-icon{display: none!important;}
+.form-detail .mat-select-arrow{visibility: hidden;}
+.form-detail mat-label{color: black;}
+.form-detail .mat-form-field input.mat-input-element {color: #00695c!important;}    
+.form-detail .mat-checkbox-disabled .mat-checkbox-label {color:black;font-size: 14px;font-weight: 500;}
+.custom-form .mat-form-field-label-wrapper {left: -5px;}
+/*============= end form-detail ============= */
+/*============= responsive ============= */
+@media (min-width: 1024px){
+    .lbl-start{min-width: 100px;}
+    .pr-5--md{padding-right: 5px!important;}
+    .pl-5--md{padding-left: 5px!important;}
+  }
+/*============= end responsive ============= */
+/*============= validate form ============= */
+.icon-alert{margin-top:-2px;}
+.mat-form-field-suffix{display:flex!important;}
 
- @-moz-document url-prefix() {
-    table {
-        border-collapse: unset!important;
-    }
-}
+/*============= end responsive ============= */

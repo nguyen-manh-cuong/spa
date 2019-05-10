@@ -16,6 +16,7 @@ using System.Text;
 using Viettel.MySql;
 using AuthServer;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace SHCServer.Controllers
 {
@@ -117,6 +118,7 @@ namespace SHCServer.Controllers
                                          new MenuItem {Name = "ExamScheduleDoctor", Icon="", Route="/app/booking-doctor"},
                                          new MenuItem {Name = "Thống kê DS bệnh nhân đặt khám", Icon="", Route="/app/booking-informations"},
                                          new MenuItem {Name = "Danh sách bệnh nhân đặt khám", Icon="", Route="/app/booking-list"},
+                                         new MenuItem {Name = "Danh sách bác sĩ", Icon="", Route="/app/doctor"},
                                     }}
                                 } 
                             }
@@ -169,7 +171,7 @@ namespace SHCServer.Controllers
 
         [HttpPost]
         [Route("api/Register")]
-        public object Register([FromBody] UserInputViewModel obj)
+        public object Register([FromForm] UserInputViewModel obj)
         {
             var User = _context.Query<User>();
 
@@ -219,19 +221,51 @@ namespace SHCServer.Controllers
                     Specialist = obj.Specialist
                 });
 
-                //var _files = Request.Form.Files;
-                //var _fileUpload = "";
-                //if (_files.Count > 0)
-                //{
-                //    foreach (var file in _files)
-                //    {
-                //        var uniqueFileName = GetUniqueFileName(file.FileName);
-                //        var uploads = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
-                //        var filePath = Path.Combine(uploads, uniqueFileName);
-                //        _fileUpload = "/uploads/" + uniqueFileName;
-                //        file.CopyTo(new FileStream(filePath, FileMode.Create));
-                //    }
-                //}
+                User user = _context.Query<User>().Where(u => u.UserName == obj.UserName).FirstOrDefault();
+
+                if (user != null && obj.AccountType != 1)
+                {
+                    _context.Insert(() => new UsersServices
+                    {
+                        UserId = user.Id,
+                        isUsingCall = obj.isUsingCall != null ? obj.isUsingCall : false,
+                        isUsingdoctor = obj.isUsingdoctor != null ? obj.isUsingdoctor : false,
+                        isUsingExamination = obj.isUsingExamination != null ? obj.isUsingExamination : false,
+                        isUsingRegister = obj.isUsingRegister != null ? obj.isUsingRegister : false,
+                        isUsingUpload = obj.isUsingUpload != null ? obj.isUsingUpload : false,
+                        isUsingVideo = obj.isUsingVideo != null ? obj.isUsingVideo : false,
+                    });
+                }
+
+                var _files = Request.Form.Files;
+                if (_files.Count > 0)
+                {
+                    foreach (var file in _files)
+                    {
+                        var uniqueFileName = GetUniqueFileName(convertToUnSign(file.FileName));
+                        var uploads = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+                        var filePath = Path.Combine(uploads, uniqueFileName);
+                        if (file.Name == "cmnd")
+                        {
+                            _context.Insert(() => new UsersAttach
+                            {
+                                UserId = user.Id,
+                                Path = "/uploads/" + uniqueFileName,
+                                Type = "1"
+                            });
+                        }
+                        else
+                        {
+                            _context.Insert(() => new UsersAttach
+                            {
+                                UserId = user.Id,
+                                Path = "/uploads/" + uniqueFileName,
+                                Type = "2"
+                            });
+                        }
+                        file.CopyTo(new FileStream(filePath, FileMode.Create));
+                    }
+                }
 
                 _context.Session.CommitTransaction();
                 return Json(new ActionResultDto());
@@ -239,7 +273,7 @@ namespace SHCServer.Controllers
             catch (Exception e)
             {
                 if (_context.Session.IsInTransaction) _context.Session.RollbackTransaction();
-                return Json(new ActionResultDto { Error = e.Message });
+                return StatusCode(500, _excep.Throw("Đăng ký không thành công.", "Lỗi hệ thông!"));
             }
         }
 
@@ -253,6 +287,14 @@ namespace SHCServer.Controllers
 
             return Json(new { Code = result.CaptchaCode, Data = result.CaptchBase64Data });
         }
+
+        public string convertToUnSign(string s)
+        {
+            Regex regex = new Regex("\\p{IsCombiningDiacriticalMarks}+");
+            string temp = s.Normalize(NormalizationForm.FormD);
+            return regex.Replace(temp, String.Empty).Replace('\u0111', 'd').Replace('\u0110', 'D');
+        }
+
         private string GetUniqueFileName(string fileName)
         {
             fileName = Path.GetFileName(fileName);

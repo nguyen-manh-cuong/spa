@@ -48,8 +48,10 @@
             <div class="col-md-5" [hidden]="this.appSession.user.healthFacilitiesId">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('HealthFacilities')}}</mat-label>
-                    <input matInput [formControl]="healthfacilities" (click)="clickCbo()" (input)="onInputHealthfacilities()" [matAutocomplete]="auto"> 
-                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)='onSelectHealthFacilities($event.option.value)'>
+                    <input matInput [formControl]="healthfacilities" (click)="clickCbo()"
+                        (input)="onInputHealthfacilities($event.target.value)" [matAutocomplete]="auto">
+                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn"
+                        (optionSelected)='onSelectHealthFacilities($event.option.value)'>
                         <mat-option *ngFor="let o of filteredHealthFacilitiesOptions | async" [value]="o">
                             {{o.code + ' - ' + o.name}}
                         </mat-option>
@@ -60,15 +62,18 @@
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('HealthFacilities')}}</mat-label>
                     <mat-select formControlName="healthfacilitiesId">
-                        <mat-option *ngFor="let o of _healthfacilities" [value]="o.healthFacilitiesId">{{ o.name }}</mat-option>
+                        <mat-option *ngFor="let o of _healthfacilities" [value]="o.healthFacilitiesId">{{ o.name }}
+                        </mat-option>
                     </mat-select>
                 </mat-form-field>
             </div>
             <div class="col-md-4 fadeIn animated">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('DoctorSpecialist')}}</mat-label>
-                    <input matInput [formControl]="specialistCode" (click)="clickSpecialistCbo()" (input)="onInputSpecialist()" [matAutocomplete]="autoSpecialist"> 
-                    <mat-autocomplete #autoSpecialist="matAutocomplete" [displayWith]="displaySpecialistFn" (optionSelected)='onSelectSpecialist($event.option.value)'>
+                    <input matInput [formControl]="specialistCode" (click)="clickSpecialistCbo()"
+                        (input)="onInputSpecialist($event.target.value)" [matAutocomplete]="autoSpecialist">
+                    <mat-autocomplete #autoSpecialist="matAutocomplete" [displayWith]="displaySpecialistFn"
+                        (optionSelected)='onSelectSpecialist($event.option.value)'>
                         <mat-option *ngFor="let o of filteredSpecialistOptions | async" [value]="o">
                             {{o.code + ' - ' + o.name}}
                         </mat-option>
@@ -76,8 +81,7 @@
                 </mat-form-field>
             </div>
             <div class="col-md-3 text-center d-flex align-self-center fadeIn animated">
-                <button #btnSearch mat-stroked-button color="primary" (click)="customSearch()"
-                    class="w-100 mb-4">
+                <button #btnSearch mat-stroked-button color="primary" (click)="customSearch()" class="w-100 mb-4">
                     <mat-icon class="mr-2">search</mat-icon>{{l("Search")}}
                 </button>
             </div>
@@ -94,12 +98,12 @@
             </ng-container>
             <ng-container matColumnDef="fullName">
                 <th mat-header-cell *matHeaderCellDef class="min-w-150 text-center"> {{l('DoctorName')}} </th>
-                <td mat-cell *matCellDef="let element" class="min-w-150 td-left">{{element.fullName}} </td>
+                <td mat-cell *matCellDef="let element" class="min-w-150 td-left"><b (click)="detailDialogDoctor(element)"><u>{{element.fullName}}</u> </b></td>
             </ng-container>
             <ng-container matColumnDef="specialist">
                 <th mat-header-cell *matHeaderCellDef class="min-w-150 text-center"> {{l('DoctorSpecialist')}} </th>
                 <td mat-cell *matCellDef="let element" class="min-w-150 td-left">
-                    <span *ngFor="let e of element.specialist">{{e.specialistCode}}</span></td>
+                    <span>{{ getSpecialJoin(element.specialist) }}</span></td>
             </ng-container>
             <ng-container matColumnDef="phoneNumber">
                 <th mat-header-cell *matHeaderCellDef class="min-w-40 text-center"> {{l('PhoneNumber')}}</th>
@@ -119,22 +123,22 @@
             <ng-container matColumnDef="allowBooking">
                 <th mat-header-cell *matHeaderCellDef class="min-w-30 text-center"> {{l('DoctorAllowBooking')}}</th>
                 <td mat-cell *matCellDef="let element" class="min-w-30 text-center">
-                    <mat-checkbox [checked]="element.allowBooking"
-                        (click)="doctorUpdateAllowBooking(element)" color="primary"></mat-checkbox>
+                    <mat-checkbox [checked]="element.allowBooking" (click)="doctorUpdateAllowBooking(element)"
+                        color="primary"></mat-checkbox>
                 </td>
             </ng-container>
             <ng-container matColumnDef="allowFilter">
                 <th mat-header-cell *matHeaderCellDef class="min-w-30 text-center"> {{l('DoctorAllowFilter')}}</th>
                 <td mat-cell *matCellDef="let element" class="min-w-30 text-center">
-                    <mat-checkbox [checked]="element.allowFilter"
-                        (click)="doctorUpdateAllowFilter(element)" color="primary"></mat-checkbox>
+                    <mat-checkbox [checked]="element.allowFilter" (click)="doctorUpdateAllowFilter(element)"
+                        color="primary"></mat-checkbox>
                 </td>
             </ng-container>
             <ng-container matColumnDef="allowSearch">
                 <th mat-header-cell *matHeaderCellDef class="min-w-30 text-center"> {{l('DoctorAllowSearch')}}</th>
                 <td mat-cell *matCellDef="let element" class="min-w-30 text-center">
-                    <mat-checkbox [checked]="element.allowSearch"
-                        (click)="doctorUpdateAllowSearch(element)" color="primary"></mat-checkbox>
+                    <mat-checkbox [checked]="element.allowSearch" (click)="doctorUpdateAllowSearch(element)"
+                        color="primary"></mat-checkbox>
                 </td>
             </ng-container>
             <ng-container matColumnDef="task">

@@ -206,6 +206,15 @@ namespace SHCServer.Controllers
 
             clause.Add(" group by p.Code");
 
+            if (filter != null)
+            {
+                var data = JsonConvert.DeserializeObject<Dictionary<string, string>>(filter);
+                if (data.ContainsKey("flagReExamination") && data["flagReExamination"] == "0")
+                {
+                    clause.Remove(" group by p.Code");
+                }
+            }
+
             if (sorting != null)
             {
                 foreach (var (key, value) in JsonConvert.DeserializeObject<Dictionary<string, string>>(sorting))
@@ -228,16 +237,21 @@ namespace SHCServer.Controllers
                 }
             }
 
+            var readerAll = _context.Session.ExecuteReader($"{query} {string.Join(" ", clause)}", param);
+            var total = 0;
 
+            while (readerAll.Read())
+            {
+                total++;
+            }
+
+            readerAll.Close();
             clause.Add("limit @skipCount, @resultCount");
             param.Add(DbParam.Create("@skipCount", skipCount * maxResultCount));
             param.Add(DbParam.Create("@resultCount", maxResultCount));
 
-
             var str = $"{query} {string.Join(" ", clause)}";
             var reader = _context.Session.ExecuteReader($"{query} {string.Join(" ", clause)}", param);
-
-
 
             while (reader.Read())
             {
@@ -265,7 +279,7 @@ namespace SHCServer.Controllers
                 });
             }
 
-            return Json(new ActionResultDto { Result = new { Items = lst, TotalCount = lst.Count } });
+            return Json(new ActionResultDto { Result = new { Items = lst, TotalCount = total } });
             #region old
             //var objs = _context.JoinQuery<MedicalHealthcareHistories, Patient>((mhh, p) => new object[] { JoinType.InnerJoin, mhh.PatientId == p.PatientId });
 
@@ -373,7 +387,10 @@ namespace SHCServer.Controllers
 
             foreach (var s in packages)
             {
-                totalSms += s.SmsPackageUsed.Quantityused;
+                if(s.SmsPackageUsed != null)
+                {
+                    totalSms += s.SmsPackageUsed.Quantityused;
+                }
             }
 
             if (totalSms < totalSmsSend) {
@@ -419,7 +436,7 @@ namespace SHCServer.Controllers
             foreach (var m in infoInput.lstMedicalHealthcareHistories)
             {
                 indexM++;
-                if(indexM > packages[indexUsed].SmsPackageUsed.Quantityused)
+                if(packages[indexUsed].SmsPackageUsed != null && indexM > packages[indexUsed].SmsPackageUsed.Quantityused)
                 {
                     indexM = 0;
                     indexUsed++;
@@ -433,7 +450,7 @@ namespace SHCServer.Controllers
                 scontent.HealthFacilitiesId = infoInput.healthFacilitiesId.Value;
                 scontent.SmsTemplateId = templateId;
                 scontent.SmsPackagesDistributeId = packages[indexUsed].Id;
-                scontent.SmsPackageUsedId = packages[indexUsed].SmsPackageUsed.SmsPackageUsedId;
+                scontent.SmsPackageUsedId = packages[indexUsed].SmsPackageUsed != null ? packages[indexUsed].SmsPackageUsed.SmsPackageUsedId : 0;
                 scontent.PatientHistoriesId = m.PatientHistoriesId;
 
                 lstContent.Add(scontent);

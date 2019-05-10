@@ -59,7 +59,9 @@ export class ValidationRule {
         if (control.value && !pattern.test(control.value)) {
             control.setValue(control.value.replace(/[^0-9\+]/g, ""));
         }
-
+        if(!control.value){
+            return {required: true};
+        }
         if (control.value && control.value.charAt(0) != '+' && control.value.length >= 3 && (arr.indexOf(control.value.substring(0, 3)) < 0)) {
             return {topnumber: true};
         }
