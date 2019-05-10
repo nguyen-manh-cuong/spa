@@ -16,27 +16,27 @@
                         <mat-form-field appearance="outline" class="w-100" autofocus>
                             <mat-label>{{l("PackageName")}}</mat-label>
                             <input #txtName="matInput" [required]="true" formControlName="name" matInput
-                                maxlength="255">
+                                maxlength="255" tabindex="{{_package.isDeleteDistribute != 0 && _isNew == false ? -1 : 0}}">
                             <validation matSuffix [control]="_frm.controls['name']"></validation>
                         </mat-form-field>
                     </div>
                     <div class="col-md-12" [ngClass]="{'disabled': _package.isDeleteDistribute != 0 && _isNew == false}">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("PackageDescription")}}</mat-label>
-                            <input formControlName="description" matInput [required]="true" maxlength="4000">
+                            <input formControlName="description" matInput [required]="true" maxlength="4000" tabindex="{{_package.isDeleteDistribute != 0 && _isNew == false ? -1 : 0}}">
                             <validation matSuffix [control]="_frm.controls['description']"></validation>
                         </mat-form-field>
                     </div>
                     <div class="col-md-6 disabled">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l('PackageCost')}}</mat-label>
-                            <input type="text" mask="dot_separator" formControlName="cost" matInput [readonly]="true" [readonly]="true">
+                            <input type="text" mask="dot_separator" formControlName="cost" matInput tabindex="-1">
                         </mat-form-field>
                     </div>
                     <div class="col-md-6 disabled">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l('PackageQuantity')}}</mat-label>
-                            <input type="text" mask="dot_separator" formControlName="quantity" matInput [readonly]="true">
+                            <input type="text" mask="dot_separator" formControlName="quantity" matInput tabindex="-1">
                         </mat-form-field>
                     </div>
                     <section class="col-md-12 m-b-20">
@@ -44,36 +44,36 @@
                     </section><br>
 
                     <div class="col-md-3 disabled">
-                        <mat-form-field appearance="outline" class="w-100" tabindex="-1">
+                        <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l('PackageSmsFrom')}}</mat-label>
-                            <input type="text" formControlName="smsFrom" matInput [required]="true" [readonly]="true">
+                            <input type="text" formControlName="smsFrom" matInput [required]="true" tabindex="-1">
                         </mat-form-field>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-3" [ngClass]="{'disabled': _package.isDeleteDistribute != 0 && _isNew == false}">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l('PackageSmsTo')}}</mat-label>
                             <input type="text" mask="dot_separator" formControlName="smsTo" matInput [required]="true"
                                 (keyup)="getValue($event.target.value, -1, 1)" (input)="inputOnlyNumber($event, 'smsTo')"
-                                maxlength="11" #smsTo>
+                                maxlength="11" #smsTo tabindex="{{_package.isDeleteDistribute != 0 && _isNew == false ? -1 : 0}}">
                             <validation matSuffix [control]="_frm.controls['smsTo']"></validation>
                         </mat-form-field>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-4" [ngClass]="{'disabled': _package.isDeleteDistribute != 0 && _isNew == false}">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l('PackageDetailCost')}}</mat-label>
                             <input type="text" mask="dot_separator" formControlName="detailCost" matInput
                                 [required]="true" (keyup)="getValue($event.target.value, -1, 2)"
-                                (input)="inputOnlyNumber($event, 'detailCost')" maxlength="11" #detailCost>
+                                (input)="inputOnlyNumber($event, 'detailCost')" maxlength="11" #detailCost tabindex="{{_package.isDeleteDistribute != 0 && _isNew == false ? -1 : 0}}">
                             <validation matSuffix [control]="_frm.controls['detailCost']"></validation>
                         </mat-form-field>
                     </div>
-                    <div class="col-md-12">
+                    <div class="col-md-12" [ngClass]="{'disabled': _package.isDeleteDistribute != 0 && _isNew == false}">
                         <div class="row" *ngFor="let item of _details; index as i">
                             <div class="col-md-3 disabled">
                                 <mat-form-field appearance="outline" class="w-100">
                                     <mat-label>{{l('PackageSmsFrom')}}</mat-label>
                                     <input type="text" mask="dot_separator" formControlName="{{_smsFrom + item.index}}"
-                                        matInput [required]="true" [readonly]="true" tabindex="-1">
+                                        matInput [required]="true" tabindex="-1">
                                 </mat-form-field>
                             </div>
                             <div class="col-md-3">
@@ -81,8 +81,8 @@
                                     <mat-label>{{l('PackageSmsTo')}}</mat-label>
                                     <input type="text" id="{{_smsTo + item.index}}" mask="dot_separator" formControlName="{{_smsTo + item.index}}"
                                         matInput [required]="true" (keyup)="getValue($event.target.value, i, 1)"
-                                        (input)="inputOnlyNumber($event, _smsTo + item.index)" maxlength="11" [readonly]="_package.isDeleteDistribute != 0 && _isNew == false">
-                                    <validation [hidden]="_package.isDeleteDistribute != 0 && _isNew == false" matSuffix [control]="_frm.controls[_smsTo + item.index]" ></validation>
+                                        (input)="inputOnlyNumber($event, _smsTo + item.index)" maxlength="11" tabindex="{{_package.isDeleteDistribute != 0 && _isNew == false ? -1 : 0}}">
+                                    <validation matSuffix [control]="_frm.controls[_smsTo + item.index]"></validation>
                                 </mat-form-field>
                             </div>
                             <div class="col-md-4">
@@ -91,13 +91,14 @@
                                     <input type="text" mask="dot_separator"
                                         formControlName="{{_detailCost + item.index}}" matInput [required]="true"
                                         (keyup)="getValue($event.target.value, i, 2)" (input)="inputOnlyNumber($event, _detailCost + item.index)"
-                                        maxlength="11" [readonly]="_package.isDeleteDistribute != 0 && _isNew == false">
-                                    <validation [hidden]="_package.isDeleteDistribute != 0 && _isNew == false" matSuffix [control]="_frm.controls[_detailCost + item.index]"></validation>
+                                        maxlength="11" tabindex="{{_package.isDeleteDistribute != 0 && _isNew == false ? -1 : 0}}">
+                                    <validation matSuffix [control]="_frm.controls[_detailCost + item.index]">
+                                    </validation>
                                 </mat-form-field>
                             </div>
                             <div class="col-md-2">
-                                <button mat-icon-button [matTooltipPosition]="'right'" matTooltip="Xóa" [disabled]="_package.isDeleteDistribute != 0 && _isNew == false"
-                                    (click)="deleteDetail(i, item.index)">
+                                <button mat-icon-button [matTooltipPosition]="'right'" matTooltip="Xóa"
+                                    (click)="deleteDetail(i, item.index)" tabindex="{{_package.isDeleteDistribute != 0 && _isNew == false ? -1 : 0}}">
                                     <mat-icon aria-label="Xóa">delete</mat-icon>
                                 </button>
                             </div>
@@ -110,7 +111,7 @@
     <div class="row">
         <div class="col-md-4" [ngClass]="{'disabled': _package.isDeleteDistribute != 0 && _isNew == false}">
             <button mat-raised-button color="primary" (click)="addDetail()"
-                [disabled]="!smsTo.value || !detailCost.value || checkPackageDetail()">Thêm</button>
+                [disabled]="!smsTo.value || !detailCost.value || checkPackageDetail()" tabindex="{{_package.isDeleteDistribute != 0 && _isNew == false ? -1 : 0}}">Thêm</button>
         </div>
         <div class="col-md-8">
             <div class="text-right mb-3"><button class="mr-3" mat-raised-button color="primary"

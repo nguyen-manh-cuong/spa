@@ -20,7 +20,7 @@
                     <mat-label>{{l('Unit')}}</mat-label>
                     <input matInput [formControl]="healthfacilities" [matAutocomplete]="auto">
                     <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="onSelectHealthFacilities($event.option.value)">
-                        <mat-option *ngIf="isLoading" class="is-loading"><mat-spinner diameter="50"></mat-spinner></mat-option>
+                        <mat-option *ngIf="isLoading" class="is-loading"><mat-spinner diameter="30"></mat-spinner></mat-option>
                         <mat-option *ngFor="let o of _healthfacilities" [value]="o">
                             {{o.code + ' - ' + o.name}}
                         </mat-option>
@@ -89,12 +89,12 @@
                 </button>
             </div>
             <!-- <div class="col-md-3 text-center d-flex align-self-center">
-        <mat-form-field>
-            <input matInput [matDatepicker]="dp" placeholder="Different locale">
-            <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
-            <mat-datepicker #dp></mat-datepicker>
-          </mat-form-field>
-    </div> -->
+            <mat-form-field>
+                <input matInput [matDatepicker]="dp" placeholder="Different locale">
+                <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
+                <mat-datepicker #dp></mat-datepicker>
+              </mat-form-field>
+        </div> -->
         </div>
     </form>
     <div class="table-content" style="height: calc(100vh - 245px);">

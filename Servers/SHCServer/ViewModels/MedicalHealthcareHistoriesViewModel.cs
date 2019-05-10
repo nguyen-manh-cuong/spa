@@ -49,5 +49,6 @@ namespace SHCServer.ViewModels
         public string PhoneNumber { set; get; }
         public string Address { set; get; }
         public string Email { set; get; }
+        public int smsCount { get; set; }
     }
 }

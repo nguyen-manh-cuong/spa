@@ -11,7 +11,6 @@ import { DatePipe } from '@angular/common';
 import { ValidationModule } from './validation/validation.module';
 import {MatInputModule} from '@angular/material';
 
-
 @NgModule({
     imports: [        
         ValidationModule,

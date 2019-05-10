@@ -187,7 +187,7 @@ namespace SHCServer.Controllers
             {
                 return StatusCode(409, _excep.Throw("Đăng ký không thành công.", "Số điện thoại đã tồn tại!"));
             }
-            if (obj.Identification != null && User.Where(u => u.Identification == obj.Identification).Count() > 0)
+            if (obj.Identification != "null" && !string.IsNullOrEmpty(obj.Identification) && User.Where(u => u.Identification == obj.Identification).Count() > 0)
             {
                 return StatusCode(409, _excep.Throw("Đăng ký không thành công.", "Số CMND đã tồn tại!"));
             }
@@ -273,7 +273,7 @@ namespace SHCServer.Controllers
             catch (Exception e)
             {
                 if (_context.Session.IsInTransaction) _context.Session.RollbackTransaction();
-                return StatusCode(500, _excep.Throw("Đăng ký không thành công.", "Lỗi hệ thông!"));
+                return StatusCode(500, _excep.Throw("Đăng ký không thành công.", e.Message.ToString()));
             }
         }
 

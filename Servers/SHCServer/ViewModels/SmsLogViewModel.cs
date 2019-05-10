@@ -51,5 +51,9 @@ namespace SHCServer.ViewModels
         public string Telco { set; get; }
         public string ResultMessage { set; get; }
         public string healthfacilitiesName { set; get; }
+
+        public string SentDay { get; set; }
+        public string SentMonth { get; set; }
+        public string SentYear { get; set; }
     }
 }

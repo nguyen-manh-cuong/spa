@@ -200,7 +200,7 @@ export class DataService {
         url_ = url_.replace(/[?&]$/, '');
 
         const content_ = JSON.stringify(input);
-
+        console.log(input);
         const options_: any = {
             body: content_,
             observe: 'response',

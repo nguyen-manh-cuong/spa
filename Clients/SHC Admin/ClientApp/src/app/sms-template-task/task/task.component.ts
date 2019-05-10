@@ -43,6 +43,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
 
     sendSms() {
         if (this.data && this.data.selection && this.data.selection.selected.length) {
+            console.log(this.data.selection.selected);
             if (this.data.selection.selected[0].phoneNumber != undefined) {
                 this._dataService.create('infoSendsms', {
                     lstMedicalHealthcareHistories: this.data.selection.selected,
@@ -50,6 +51,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
                     smsTemplateId: this._template.id,
                     content: this._frm.controls['smsContent'].value,
                     type: this.data.type,
+                    objectType: this.data.objectType
                 }).subscribe(resp => {
                     this.dialogRef.close()
                     swal({
@@ -66,6 +68,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
                     smsTemplateId: this._template.id,
                     content: this._frm.controls['smsContent'].value,
                     type: this.data.type,
+                    objectType: this.data.objectType
                 }).subscribe(resp => {
                     this.dialogRef.close()
                     swal({

@@ -39,8 +39,8 @@ export class RegisterComponent implements OnInit {
 
     _specialist: any = [];
     _context: any;
-    _idCardUrls = new Array<string>();
-    _certificateUrls = new Array<string>();
+    _idCardUrls: Array<{ url: string, name: string }>;
+    _certificateUrls: Array<{ url: string, name: string }>;
     _user: CreateUserDto;
     _invaliBirthday = false;
 
@@ -50,6 +50,7 @@ export class RegisterComponent implements OnInit {
     capcha = false;
 
     @ViewChild("fullName") fullName: ElementRef;
+    @ViewChild("imageData") imageData: ElementRef;
 
     constructor(private _sanitizer: DomSanitizer, private _dataService: DataService, private _formBuilder: FormBuilder, private _location: Location, ) { }
 
@@ -67,10 +68,10 @@ export class RegisterComponent implements OnInit {
             fullName: [this._user.fullName, [Validators.required, this.validateRule.hasValue]],
             email: [this._user.email, [Validators.required, this.validateRule.hasValue, this.validateRule.email]],
             phoneNumber: [this._user.phoneNumber, [Validators.required, this.validateRule.hasValue, this.validateRule.topPhoneNumber]],
-            provinceCode: [this._user.provinceCode],
-            districtCode: [this._user.districtCode],
-            wardCode: [this._user.wardCode],
-            address: [this._user.address],
+            provinceCode: [this._user.provinceCode ? this._user.provinceCode : '' ],
+            districtCode: [this._user.districtCode ? this._user.districtCode : ''],
+            wardCode: [this._user.wardCode ? this._user.wardCode : ''],
+            address: [this._user.address ? this._user.address : ''],
             sex: [1],
             accountType: [1],
             birthDay: [''],
@@ -141,7 +142,7 @@ export class RegisterComponent implements OnInit {
         var idProvince = obj.target.value.split(":")[1].trim();
 
         this._districts = this._wards = [];
-        this.frmUser.patchValue({ districtCode: null, wardCode: null });
+        this.frmUser.patchValue({ districtCode: '', wardCode: '' });
         const province = this._provinces.find((o: { provinceCode: string, name: string; }) => o.provinceCode === idProvince);
         if (province) { this._dataService.get('districts', JSON.stringify({ ProvinceCode: province.provinceCode }), '', 0, 0).subscribe(resp => this._districts = resp.items); }
     }
@@ -150,20 +151,51 @@ export class RegisterComponent implements OnInit {
         var idDistrict = obj.target.value.split(":")[1].trim();
 
         this._wards = [];
-        this.frmUser.patchValue({ wardCode: null });
+        this.frmUser.patchValue({ wardCode: '' });
         const district = this._districts.find((o: { districtCode: string, name: string; }) => o.districtCode === idDistrict);
         if (district) { this._dataService.get('wards', JSON.stringify({ DistrictCode: district.districtCode }), '', 0, 0).subscribe(resp => this._wards = resp.items); }
     }
 
     submit() {
+        this.frmUser.value.birthDay = new Date($('#birthY').val() + '-' + $('#birthM').val() + '-' + $('#birthD').val());
+
+        if (this.frmUser.controls['password'].value != this.frmUser.controls['confirmPassword'].value) {
+            this.frmUser.controls['confirmPassword'].setErrors({ password: true });
+        }
+        if (this.frmUser.controls['accountType'].value == 3 && (!this.frmUser.controls['healthFacilitiesName'].value || (this.frmUser.controls['healthFacilitiesName'].value && !this.frmUser.controls['healthFacilitiesName'].value.trim()))) {
+            this.frmUser.controls['healthFacilitiesName'].setErrors({ required: true });
+        }
+
+        if (this.frmUser.invalid) {
+            for (let key in this.frmUser.controls) {
+                if (this.frmUser.controls[key] && this.frmUser.controls[key].errors) {
+                    this.frmUser.controls[key].markAsTouched();
+                    this.frmUser.controls[key].markAsDirty();
+                }
+            }
+
+            return;
+        }
+       
         if (this.frmUser.controls['accountType'].value == 1 || this.frmUser.controls['accountType'].value == 2) {
-            if (this.frmUser.controls['cmnd'].value === null || this.frmUser.controls['gp'].value === null) {
+            if (this.frmUser.controls['cmnd'].value == null || this.frmUser.controls['gp'].value == null) {
                 return swal({
                     title: 'Thông báo',
                     text: 'Bạn phải cung cấp giấy tờ xác thực',
                     type: 'warning',
                     timer: 3000
                 });
+            }
+
+            else if (this.frmUser.controls['cmnd'].value.files != null || this.frmUser.controls['gp'].value.files != null) {
+                if (this.frmUser.controls['cmnd'].value.files.length == 0 || this.frmUser.controls['gp'].value.files.length == 0) {
+                    return swal({
+                        title: 'Thông báo',
+                        text: 'Bạn phải cung cấp giấy tờ xác thực',
+                        type: 'warning',
+                        timer: 3000
+                    });
+                }
             }
         }
 
@@ -183,26 +215,6 @@ export class RegisterComponent implements OnInit {
             }
         }
 
-        this.frmUser.value.birthDay = new Date($('#birthY').val() + '-' + $('#birthM').val() + '-' + $('#birthD').val());
-
-        if (this.frmUser.controls['password'].value != this.frmUser.controls['confirmPassword'].value) {
-            this.frmUser.controls['confirmPassword'].setErrors({ password: true });
-        }
-        if (this.frmUser.controls['accountType'].value == 3 && (!this.frmUser.controls['healthFacilitiesName'].value || (this.frmUser.controls['healthFacilitiesName'].value && !this.frmUser.controls['healthFacilitiesName'].value.trim()))) {
-            this.frmUser.controls['healthFacilitiesName'].setErrors({ required: true });
-        }
-
-        if (this.frmUser.invalid) {
-            for (let key in this.frmUser.controls) {
-                console.log(12, key, this.frmUser.controls[key])
-                if (this.frmUser.controls[key] && this.frmUser.controls[key].errors) {
-                    this.frmUser.controls[key].markAsTouched();
-                    this.frmUser.controls[key].markAsDirty();
-                }
-            }
-
-            return;
-        }
 
         if (this._invaliBirthday) return;
 
@@ -253,13 +265,21 @@ export class RegisterComponent implements OnInit {
         }
     }
 
+    removeFile(i: number) {
+        this._idCardUrls.splice(i, 1);
+        this.arrayIdCard.splice(i, 1);
+        //for (var i = 0; i < this._idCardUrls.length; i++) {
+        //    if (storedFiles[i].name === file) {
+        //        storedFiles.splice(i, 1);
+        //        break;
+        //    }
+        //}
+    }
+
     arrayIdCard = [];
     arrayCertificate = [];
     detectFiles(event, type) {
-        console.log(this.frmUser.controls['cmnd'].value);
-
         let files = event.target.files;
-        //console.log(event.target.files);
         if (files) {
             for (let file of files) {
                 let reader = new FileReader();
@@ -267,31 +287,30 @@ export class RegisterComponent implements OnInit {
                 if (file.type == 'image/jpeg' || file.type == 'image/png') {
                     if (type == 'idCard') {
                         reader.onload = (e: any) => {
-                            this._idCardUrls.push("/assets/images/212328-200.png");
+                            this._idCardUrls.push({ url: "/assets/images/212328-200.png", name: file });
                         }
                         this.arrayIdCard.push(file);
                     }
 
                     if (type == 'certificate') {
                         reader.onload = (e: any) => {
-                            this._certificateUrls.push("/assets/images/212328-200.png");
+                            this._certificateUrls.push({ url: "/assets/images/212328-200.png", name: file });
                         }
                         this.arrayCertificate.push(file);
                     }
 
                 }
                 if (file.type == 'application/pdf') {
-                    console.log('vao day k');
                     if (type == 'idCard') {
                         reader.onload = (e: any) => {
-                            this._idCardUrls.push("/assets/images/24-512.png");
+                            this._idCardUrls.push({ url: "/assets/images/24-512.png", name: file });
                         }
                         this.arrayIdCard.push(file);
                     }
 
                     if (type == 'certificate') {
                         reader.onload = (e: any) => {
-                            this._certificateUrls.push("/assets/images/24-512.png");
+                            this._certificateUrls.push({ url: "/assets/images/212328-200.png", name: file });
                         }
                         this.arrayCertificate.push(file);
                     }
@@ -304,11 +323,9 @@ export class RegisterComponent implements OnInit {
                     }
                 }
             }
-            ;
+
             this.frmUser.controls['cmnd'].setValue({ files: this.arrayIdCard });
             this.frmUser.controls['gp'].setValue({ files: this.arrayCertificate });
-            console.log(this.frmUser.controls['cmnd'].value);
-
         }
     }
 

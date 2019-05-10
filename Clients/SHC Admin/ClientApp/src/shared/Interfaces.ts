@@ -26,6 +26,21 @@ export interface IUser {
     groups: IGroup[];
 }
 
+export interface IProvince {
+    provinceCode: string;
+    name: string;
+}
+
+export interface IDistrict {
+    districtCode: string;
+    name: string;
+}
+
+export interface IWard {
+    wardCode: string;
+    name: string;
+}
+
 export interface IGroup {
     id: number;
     name: string;
@@ -61,7 +76,7 @@ export interface IBookingTimeslots {
     healthFacilitiesName: string;
 }
 
-export interface IBookingInformations{
+export interface IBookingInformations {
     healthFacilitiesId: number;
     doctorId: number;
     status: number;
@@ -118,14 +133,14 @@ export interface IPackageDetail {
     index: number;
 }
 
-export interface IPachkageDistribute{
-    id : number;
-    smsPackage : number;
-    healthFacilities : number;
-    smsPackageId :number;
-    healthFacilitiesId : number;
-    monthStart : Number;
-    monthEnd : Number;
+export interface IPachkageDistribute {
+    id: number;
+    smsPackage: number;
+    healthFacilities: number;
+    smsPackageId: number;
+    healthFacilitiesId: number;
+    monthStart: Number;
+    monthEnd: Number;
     yearStart: Number;
     yearEnd: Number;
     status: number;
@@ -156,16 +171,16 @@ export interface ISmsTemplate {
     typeNumber: string;
     organizationCode: string;
     organizationName: string;
- }
- 
- export interface ICategoryCommon{
+}
+
+export interface ICategoryCommon {
     id: number;
     name: string;
     code?: string;
     type?: string;
     isDelete?: boolean;
     createDate?: Date;
- 
+
     users?: IUser[];
 }
 
@@ -183,7 +198,7 @@ export interface IDistrict {
     isActive: boolean;
 }
 
- export interface IPatient{
+export interface IPatient {
     patientId: number;
     code: number;
     fullName: string;
@@ -198,8 +213,8 @@ export interface IDistrict {
     healthInsuranceNumber: number;
     provinceCode: string;
     districtCode: string;
- }
- 
+}
+
 export interface IHealthfacilities {
     healthFacilitiesId: number,
     name?: string,
@@ -211,14 +226,14 @@ export interface ISmsLogs {
     message: string
 }
 
-export interface IMedicalHealthcareHistories{
+export interface IMedicalHealthcareHistories {
     patientHistoriesId?: number,
     healthFacilitiesId?: number,
     healthInsuranceNumber?: string,
     doctorId?: number,
     patientId?: number,
     reExaminationDate?: Date,
-    
+
     code?: number;
     fullName: string;
     birthDate?: number;
@@ -229,7 +244,7 @@ export interface IMedicalHealthcareHistories{
     address?: string;
 }
 
-export interface IBookingDoctorsCalendars{
+export interface IBookingDoctorsCalendars {
     calendarDate?: string;
     calendarId: number;
     hoursEnd: string;
@@ -245,18 +260,18 @@ export interface IBookingDoctorsCalendars{
     healthFacilitiesName: string;
 }
 
-export interface IBookingDoctorsCalendarsView{
+export interface IBookingDoctorsCalendarsView {
     doctorId?: number,
     name: string;
 
     lstBookingDoctorsCalendars: Array<IBookingDoctorsCalendars>;
 }
 
-export interface IBookingDoctorsApprove{
+export interface IBookingDoctorsApprove {
     title?: string,
     start?: Date,
     color?: string,
-    description?: string 
+    description?: string
 }
 
 // tslint:disable-next-line:no-empty-interface

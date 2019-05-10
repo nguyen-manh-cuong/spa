@@ -88,6 +88,8 @@ namespace SHCServer.Controllers
             List<SmsPackagesDistribute> lstPD = new List<SmsPackagesDistribute>();
             List<SmsPackageUsed> lstPU = new List<SmsPackageUsed>();
 
+            //GetTotal(string.Concat(obj.MonthStart, "/", obj.YearStart), string.Concat(obj.MonthEnd, "/", obj.YearEnd));
+
             for (int i = 0; i < obj.HealthFacilitiesId.Count; i++)
             {
                 SmsPackagesDistribute pd = new SmsPackagesDistribute();
@@ -196,6 +198,30 @@ namespace SHCServer.Controllers
                 if (_context.Session.IsInTransaction) _context.Session.RollbackTransaction();
                 return Json(new ActionResultDto { Error = e.Message });
             }
+        }
+
+        public int GetTotal(string startDate, string endDate)
+        {
+            string query = @"SELECT count(*) as Total
+                                FROM smarthealthcare.sms_packages_distribute 
+                                WHERE 
+	                                STR_TO_DATE(CONCAT(MonthStart, '/', YearStart), '%m/%Y') >= STR_TO_DATE(@StartDate, '%m/%Y') AND
+                                    STR_TO_DATE(CONCAT(MonthEnd, '/', YearEnd), '%m/%Y') <= STR_TO_DATE(@EndDate, '%m/%Y')";
+
+            List<DbParam> param = new List<DbParam>();
+            param.Add(DbParam.Create("@StartDate", startDate));
+            param.Add(DbParam.Create("@EndDate", endDate));
+
+            var reader = _context.Session.ExecuteReader(query, param);
+            int total = 0;
+
+            while (reader.Read())
+            {
+                total = Convert.ToInt32(reader["Total"]);
+            }
+            reader.Close();
+
+            return total;
         }
     }
 
