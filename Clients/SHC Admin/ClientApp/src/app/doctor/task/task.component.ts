@@ -80,7 +80,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   maxDate = new Date(Date.now());
   maxDate2 = new Date(Date.now());
   @ViewChild("certification") certification;
-
+  @ViewChild("inputAvatar") inputAvatar;
   dataService: DataService;
   isLoading = false;
   specialIsLoading = false;
@@ -273,12 +273,12 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
       certificationDate: [this._obj.certificationDate],
       academicId: [this._obj.academicId],
       degreeId: [this._obj.degreeId],
-      email: [this._obj.email, [Validators.email]],
+      email: [this._obj.email, [validationRule.email]],
       certificationCode: [this._obj.certificationCode],
       address: [this._obj.address],
       provinceCode: [this._obj.provinceCode],
       districtCode: [this._obj.districtCode],
-      phoneNumber: [this._obj.phoneNumber],
+      phoneNumber: [this._obj.phoneNumber,[validationRule.topPhoneNumber]],
       educationCountryCode: [this._obj.educationCountryCode],
       avatar: [null, [FileValidator.maxContentSize(20000000)]],
       description: this._obj.description,
@@ -415,8 +415,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   }
 
   getSpecialist() {
-    this._dataService.getAll("categorycommon", "CHUYENKHOA").subscribe(resp => this._specialist = resp.items);
-
+    this.dataService.get("catcommon", '','', null,null).subscribe(resp => this._specialist = resp.items);
   }
 
   @ViewChild("continueAdd") continueAdd: MatCheckbox;
@@ -495,10 +494,30 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   }
 
   selected(event: MatAutocompleteSelectedEvent): void {
-    this._healthfacilitiesChip.push(event.option.value);
+    var check;
+    if(this._healthfacilitiesChip.length==0){
+      this._healthfacilitiesChip.push(event.option.value);
+    }
+    else{
+      this._healthfacilitiesChip.forEach(h=>{
+        if(h.healthFacilitiesId==event.option.value.healthFacilitiesId){
+          check=false;
+        }
+      });
+      if(check!=false){
+        this._healthfacilitiesChip.push(event.option.value);
+      }
+      else{
+        swal({
+          title:'Thông báo',
+          text:'Đã chọn đơn vị này',
+          type:'warning',
+          timer:3000
+        })
+      }
+    }
     this.healthfacilitiesInput.nativeElement.value = '';
     this.healthfacilitiesControl.setValue(null);
-
   }
 
   healthInput() {
@@ -573,8 +592,31 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
 
   specialSelected(event: MatAutocompleteSelectedEvent): void {
     this.checkSpecial = true;
-    var s = new Specialist(event.option.value.code, event.option.value.name);
-    this._specialistChip.push(s);
+
+    var check;
+    if(this._specialistChip.length==0){
+      var s = new Specialist(event.option.value.code, event.option.value.name);
+      this._specialistChip.push(s);
+    }
+    else{
+      this._specialistChip.forEach(h=>{
+        if(h.specialistCode==event.option.value.code){
+          check=false;
+        }
+      });
+      if(check!=false){
+        var s = new Specialist(event.option.value.code, event.option.value.name);
+        this._specialistChip.push(s);
+      }
+      else{
+        swal({
+          title:'Thông báo',
+          text:'Đã chọn chuyên khoa này',
+          type:'warning',
+          timer:3000
+        })
+      }
+    }
     this.specialistInput.nativeElement.value = '';
     this.specialistCodeControl.setValue(null);
   }
@@ -600,7 +642,13 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
           this._frm.controls['avatar'].setValue(file);
           reader.readAsDataURL(file);
         } else {
-          this._avatarError = "File tải lên không phải file ảnh";
+          swal({
+            title:'Thông báo',
+            text:'File tải lên không phải ảnh',
+            type:'warning',
+            timer:3000
+          });
+          this._frm.controls['avatar'].setValue(null);
         }
       }
     }
@@ -644,6 +692,15 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
       control.setValue(control.value.replace(/[^0-9\+]/g, ""));
     }
   }
+
+  ruleEmail(event: any){
+    const pattern = /^[a-zA-Z0-9\.\-\_\@]*$/;
+    if (!pattern.test(event.target.value)) {
+      event.target.value = event.target.value.replace(/[^a-zA-Z0-9\.\-\_\@]/g, "");
+    }
+  }
+
+
 
   checkSpecial: boolean;
 

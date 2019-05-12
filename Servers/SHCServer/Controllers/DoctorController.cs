@@ -244,7 +244,14 @@ namespace SHCServer.Controllers
         [Route("api/doctor")]
         public IActionResult Create([FromForm] DoctorInputViewModel doctor)
         {
+            var checkCertification = _context.Query<Doctor>().Where(d => d.CertificationCode.Equals(doctor.CertificationCode)).FirstOrDefault();
+
             bool checkCertificationDate = true;
+
+            if (checkCertification != null)
+            {
+                return StatusCode(412, _excep.Throw("Mã giấy phép hành nghề đã tồn tại"));
+            }
 
             try
             {
@@ -400,6 +407,14 @@ namespace SHCServer.Controllers
         {
 
             bool checkCertificationDate = true;
+            
+            var checkCertification = _context.Query<Doctor>().Where(d => d.CertificationCode.Equals(doctor.CertificationCode)).FirstOrDefault();
+
+            if (checkCertification != null)
+            {
+                return StatusCode(412, _excep.Throw("Mã giấy phép hành nghề đã tồn tại"));
+            }
+
             try
             {
                 if (Convert.ToDateTime(doctor.CertificationDate).Year == 1)
