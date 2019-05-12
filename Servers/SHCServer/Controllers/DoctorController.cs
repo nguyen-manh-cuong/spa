@@ -104,7 +104,7 @@ namespace SHCServer.Controllers
                     }
                     if (string.Equals(key, "info") && !string.IsNullOrEmpty(value))
                     {
-                        objs = objs.Where(d => d.FullName.ToString().Contains(value.Trim()) || (d.PhoneNumber.ToString().Contains(value.Trim())));
+                        objs = objs.Where(d => d.FullName.ToString().Contains(value.Trim()) || (d.PhoneNumber.Equals(value.Trim())));
                     }
                 }
             }
@@ -244,13 +244,16 @@ namespace SHCServer.Controllers
         [Route("api/doctor")]
         public IActionResult Create([FromForm] DoctorInputViewModel doctor)
         {
-            var checkCertification = _context.Query<Doctor>().Where(d => d.CertificationCode.Equals(doctor.CertificationCode)).FirstOrDefault();
-
             bool checkCertificationDate = true;
 
-            if (checkCertification != null)
+            if (!string.IsNullOrEmpty(doctor.CertificationCode))
             {
-                return StatusCode(412, _excep.Throw("Mã giấy phép hành nghề đã tồn tại"));
+                var checkCertification = _context.Query<Doctor>().Where(d => d.CertificationCode.Equals(doctor.CertificationCode)).FirstOrDefault();
+
+                if (checkCertification != null)
+                {
+                    return StatusCode(412, _excep.Throw("Mã giấy phép hành nghề đã tồn tại"));
+                }
             }
 
             try
@@ -407,12 +410,15 @@ namespace SHCServer.Controllers
         {
 
             bool checkCertificationDate = true;
-            
-            var checkCertification = _context.Query<Doctor>().Where(d => d.CertificationCode.Equals(doctor.CertificationCode)).FirstOrDefault();
 
-            if (checkCertification != null)
+            if (!string.IsNullOrEmpty(doctor.CertificationCode))
             {
-                return StatusCode(412, _excep.Throw("Mã giấy phép hành nghề đã tồn tại"));
+                var checkCertification = _context.Query<Doctor>().Where(d => d.CertificationCode.Equals(doctor.CertificationCode)).FirstOrDefault();
+
+                if (checkCertification != null && checkCertification.DoctorId!=doctor.DoctorId)
+                {
+                    return StatusCode(412, _excep.Throw("Mã giấy phép hành nghề đã tồn tại"));
+                }
             }
 
             try

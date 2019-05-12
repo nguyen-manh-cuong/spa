@@ -191,7 +191,6 @@ export abstract class PagedListingComponentBase<EntityDto> extends AppComponentB
                     return of([]);
                 })
         ).subscribe(data => {
-            console.log(194,data);
             this.dataSources.data = data;
         });
         this.setTableHeight();

@@ -27,7 +27,7 @@ namespace SHCServer.Controllers
         #region location
         [HttpGet]
         [Route("api/provinces")]
-        public IActionResult GetAllProvinces() => Json(new ActionResultDto { Result = new { Items = _context.Query<Province>().ToList() } });
+        public IActionResult GetAllProvinces() => Json(new ActionResultDto { Result = new { Items = _context.Query<Province>().OrderBy(p=>p.Name).ToList() } });
 
         [HttpGet]
         [Route("api/districts")]
@@ -43,7 +43,7 @@ namespace SHCServer.Controllers
                 }
             }
 
-            return Json(new ActionResultDto { Result = new { Items = objs.ToList() } });
+            return Json(new ActionResultDto { Result = new { Items = objs.OrderBy(d=>d.Name).ToList() } });
         }
 
         [HttpGet]
@@ -60,7 +60,7 @@ namespace SHCServer.Controllers
                 }
             }
 
-            return Json(new ActionResultDto { Result = new { Items = objs.ToList() } });
+            return Json(new ActionResultDto { Result = new { Items = objs.OrderBy(w=>w.Name).ToList() } });
         }
         #endregion
 

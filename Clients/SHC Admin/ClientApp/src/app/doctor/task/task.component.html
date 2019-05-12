@@ -76,8 +76,7 @@
                     <div class="col-md-6">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("PhoneNumber")}}</mat-label>
-                            <input formControlName="phoneNumber" (input)="rulePhoneNumber()" matInput
-                                maxlength="12">
+                            <input formControlName="phoneNumber" (input)="rulePhoneNumber()" matInput maxlength="12">
                             <validation matSuffix [control]="_frm.controls['phoneNumber']"></validation>
                         </mat-form-field>
                     </div>
@@ -276,13 +275,19 @@
                     <div class="col-md-6">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("DoctorPriceFrom")}}</mat-label>
-                            <input mask="dot_separator" maxlength="12" formControlName="priceFrom" matInput>
+                            <input #priceFrom mask="dot_separator" maxlength="12" formControlName="priceFrom" matInput>
+                            <mat-icon *ngIf="checkPriceFrom"
+                                matSuffix [matTooltipPosition]="'before'" matTooltipClass="bg-danger text-light mr-1"
+                                matTooltip="Giá khám từ không được nhỏ hơn giá khám đến" color="warn">info</mat-icon>
                         </mat-form-field>
                     </div>
                     <div class="col-md-6">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("DoctorPriceTo")}}</mat-label>
-                            <input mask="dot_separator" maxlength="12" formControlName="priceTo" matInput>
+                            <input #priceFrom mask="dot_separator" maxlength="12" formControlName="priceTo" matInput>
+                            <mat-icon *ngIf="checkPriceTo"
+                                matSuffix [matTooltipPosition]="'before'" matTooltipClass="bg-danger text-light mr-1"
+                                matTooltip="Giá khám từ không được nhỏ hơn giá khám đến" color="warn">info</mat-icon>
                         </mat-form-field>
                     </div>
                 </div>

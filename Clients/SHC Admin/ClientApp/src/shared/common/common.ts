@@ -38,19 +38,19 @@ export class ValidationRule {
             '091', '094', '088', '083', '084', '085', '081', '082',
             '092', '056', '058', '099', '059'];
         const pattern = /^[0-9\+]*$/;
-
-        if (control.value && !pattern.test(control.value)) {
-            control.setValue(control.value.replace(/[^0-9\+]/g, ""));
-        }
-        console.log((arr.indexOf(control.value.substring(0, 3))));
-        if (control.value && control.value.charAt(0) != '+' && control.value.length >= 3 && (arr.indexOf(control.value.substring(0, 3)) < 0)) {
-            return { topnumber: true };
-        }
-        if (control.value && control.value.charAt(0) != '+' && control.value.indexOf("+") > 0) {
-            return { invalidphonenumber: true };
-        }
-        if (control.value && control.value.length < 10) {
-            return { minlength: true };
+        if(control.value && control.value!=""){
+            if (!pattern.test(control.value)) {
+                control.setValue(control.value.replace(/[^0-9\+]/g, ""));
+            }
+            if (control.value.charAt(0) != '+' && control.value.length >= 3 && (arr.indexOf(control.value.substring(0, 3)) < 0)) {
+                return { topnumber: true };
+            }
+            if (control.value.charAt(0) != '+' && control.value.indexOf("+") > 0) {
+                return { invalidphonenumber: true };
+            }
+            if (control.value.length < 10) {
+                return { minlength: true };
+            }
         }
         return null;
     }

@@ -370,7 +370,7 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
 
 
   getSpecialist() {
-    this.dataService.getAll("catcommon?maxResultCount=1000").subscribe(resp => this._specialist = resp.items);
+    this.dataService.get("catcommon",'',"{name:'asc'}",null,300).subscribe(resp => this._specialist = resp.items);
   }
 
 
