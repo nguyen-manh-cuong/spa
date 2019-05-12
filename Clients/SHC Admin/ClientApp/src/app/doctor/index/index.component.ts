@@ -61,6 +61,8 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
   _districtCode: string;
 
 
+  healthfacilitiesControl = new FormControl();
+
   displayedColumns = ['orderNumber', 'fullName', 'specialist', 'phoneNumber', 'address', 'priceFrom', 'allowBooking', 'allowFilter', 'allowSearch', 'task'];
 
   constructor(injector: Injector, private _dataService: DataService, public dialog: MatDialog, private _formBuilder: FormBuilder) { super(injector); }
@@ -131,20 +133,20 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
     this._dataService.getAll("districts", "{ProvinceCode:" + provinceCode + "}").subscribe(resp => this._districts = resp.items);
   }
 
-  // provinceChange($event) {
-  //   this.frmSearch.patchValue({ districtCode: null });
-  //   if ($event.value != undefined) {
-  //     this.getDistricts($event.value);
-  //     this.checkProvince = true;
-  //     this.getHealthfacilities($event.value);
-  //   }
-  //   else {
-  //     this.checkProvince = false;
-  //     this.districts = null;
-  //     if (!this.appSession.user.healthFacilitiesId)
-  //       this._healthfacilities = null;
-  //   }
-  // }
+  provinceChange($event) {
+    this.frmSearch.patchValue({ districtCode: null });
+    if ($event.value != undefined) {
+      this.getDistricts($event.value);
+      this.checkProvince = true;
+      this.getHealthfacilities($event.value);
+    }
+    else {
+      this.checkProvince = false;
+      this._districts = null;
+      if (!this.appSession.user.healthFacilitiesId)
+        this._healthfacilities = null;
+    }
+  }
 
   districtChange(province, $event) {
     this.getHealthfacilities(province.value, $event.value);
@@ -372,93 +374,97 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
   }
 
 
-  displayProvinceFn(h?: IProvince): string | undefined {
+  // displayProvinceFn(h?: IProvince): string | undefined {
+  //   return h ? h.name : undefined;
+  // }
+
+
+  // _filterProvince(name: any): IProvince[] {
+  //   const filterValue = name.toLowerCase();
+  //   var provinces = this._provinces.filter(c => c.name.toLowerCase().indexOf(filterValue) === 0);
+  //   return provinces;
+  // }
+
+  // clickProvinceCbo() {
+  //   !this.provinceCode.value ? this.filterProvinceOptions() : '';
+  // }
+
+
+
+  // filterProvinceOptions() {
+  //   this.filteredProvinceOptions = this.provinceCode.valueChanges
+  //     .pipe(
+  //       startWith<string | IProvince>(''),
+  //       map(name => name ? this._filterProvince(name.toString().trim()) : this._provinces.slice()),
+  //       map(data => data.slice())
+  //     );
+  // }
+
+  // @ViewChild('districtInput') districtInput;
+
+  // onInputProvince(obj: any) {
+  //   if (obj.data != " " || obj.inputType == "deleteContentBackward") {
+  //     this._districts = [];
+  //     this.districtInput.nativeElement.value = "";
+  //     this._provinceCode = null;
+  //     this._districtCode = null;
+  //   }
+  // }
+
+  // onSelectProvince(value: any) {
+  //   if (value.provinceCode) {
+  //     this._provinceCode = value.provinceCode;
+  //     this.dataService.get('districts', JSON.stringify({ ProvinceCode: value.provinceCode }), '', 0, 0)
+  //       .subscribe(resp => {
+  //         this._districts = resp.items;
+  //         this.districtCode.setValue(null);
+  //       });
+  //   }
+  // }
+
+  // //District
+
+  // displayDistrictFn(h?: IDistrict): string | undefined {
+  //   return h ? h.name : undefined;
+  // }
+
+
+  // _filterDistrict(name: any): IDistrict[] {
+  //   const filterValue = name.toLowerCase();
+  //   var districts = this._districts.filter(c => c.name.toLowerCase().indexOf(filterValue) === 0);
+  //   return districts;
+  // }
+
+  // clickDistrictCbo() {
+  //   !this.districtCode.value ? this.filterDistrictOptions() : '';
+  // }
+
+
+
+  // filterDistrictOptions() {
+  //   this.filteredDistrictOptions = this.districtCode.valueChanges
+  //     .pipe(
+  //       startWith<string | IDistrict>(''),
+  //       map(name => name ? this._filterDistrict(name.toString().trim()) : this._districts.slice()),
+  //       map(data => data.slice())
+  //     );
+  // }
+
+  // onInputDistrict(obj: any) {
+  //   if (obj.data != " " || obj.inputType == "deleteContentBackward") {
+  //     this._districtCode = null;
+  //   }
+  // }
+
+  // onSelectDistrict(value: any) {
+  //   if (value.districtCode) {
+  //     this._districtCode = value.districtCode;
+  //   }
+  // }
+
+  displayFn(h?: IHealthfacilities): string | undefined {
     return h ? h.name : undefined;
-}
-
-
-_filterProvince(name: any): IProvince[] {
-    const filterValue = name.toLowerCase();
-    var provinces = this._provinces.filter(c => c.name.toLowerCase().indexOf(filterValue) === 0);
-    return provinces;
-}
-
-clickProvinceCbo() {
-    !this.provinceCode.value ? this.filterProvinceOptions() : '';
-}
-
-
-
-filterProvinceOptions() {
-    this.filteredProvinceOptions = this.provinceCode.valueChanges
-        .pipe(
-            startWith<string | IProvince>(''),
-            map(name => name ? this._filterProvince(name.toString().trim()) : this._provinces.slice()),
-            map(data => data.slice())
-        );
-}
-
-@ViewChild('districtInput') districtInput;
-
-onInputProvince(obj: any) {
-    if (obj.data != " " || obj.inputType == "deleteContentBackward") {
-        this._districts = [];
-        this.districtInput.nativeElement.value = "";
-        this._provinceCode = null;
-        this._districtCode = null;
-    }
-}
-
-onSelectProvince(value: any) {
-    if (value.provinceCode) {
-        this._provinceCode = value.provinceCode;
-        this.dataService.get('districts', JSON.stringify({ ProvinceCode: value.provinceCode }), '', 0, 0)
-            .subscribe(resp => {
-                this._districts = resp.items;
-                this.districtCode.setValue(null);
-            });
-    }
-}
-
-//District
-
-displayDistrictFn(h?: IDistrict): string | undefined {
-    return h ? h.name : undefined;
-}
-
-
-_filterDistrict(name: any): IDistrict[] {
-    const filterValue = name.toLowerCase();
-    var districts = this._districts.filter(c => c.name.toLowerCase().indexOf(filterValue) === 0);
-    return districts;
-}
-
-clickDistrictCbo() {
-    !this.districtCode.value ? this.filterDistrictOptions() : '';
-}
-
-
-
-filterDistrictOptions() {
-    this.filteredDistrictOptions = this.districtCode.valueChanges
-        .pipe(
-            startWith<string | IDistrict>(''),
-            map(name => name ? this._filterDistrict(name.toString().trim()) : this._districts.slice()),
-            map(data => data.slice())
-        );
-}
-
-onInputDistrict(obj: any) {
-    if (obj.data != " " || obj.inputType == "deleteContentBackward") {
-        this._districtCode = null;
-    }
-}
-
-onSelectDistrict(value: any) {
-    if (value.districtCode) {
-        this._districtCode = value.districtCode;
-    }
-}
+  }
 
   filterOptions() {
     this.healthfacilities.valueChanges
@@ -499,9 +505,25 @@ onSelectDistrict(value: any) {
 
   _filterSpecialist(name: any): ICategoryCommon[] {
     const filterValue = name.toLowerCase();
-    var specialist = this._specialist.filter(c => c.name.toLowerCase().indexOf(filterValue) === 0);
+    var specialist = this._specialist.filter(c =>this.change_alias(c.name.toLowerCase()).indexOf(this.change_alias(filterValue)) >= 0);
     return specialist;
   }
+
+  change_alias(alias) {
+    var str = alias;
+    str = str.toLowerCase();
+    str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g,"a"); 
+    str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g,"e"); 
+    str = str.replace(/ì|í|ị|ỉ|ĩ/g,"i"); 
+    str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g,"o"); 
+    str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g,"u"); 
+    str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g,"y"); 
+    str = str.replace(/đ/g,"d");
+    str = str.replace(/!|@|%|\^|\*|\(|\)|\+|\=|\<|\>|\?|\/|,|\.|\:|\;|\'|\"|\&|\#|\[|\]|~|\$|_|`|-|{|}|\||\\/g," ");
+    str = str.replace(/ + /g," ");
+    str = str.trim(); 
+    return str;
+}
 
   clickSpecialistCbo() {
     !this.specialistCode.value ? this.filterSpecialistOptions() : '';
@@ -533,11 +555,12 @@ onSelectDistrict(value: any) {
     }
   }
 
-  
+
   //End auto complete specialist
   customSearch() {
-    this.frmSearch.controls['provinceCode'].setValue(this._provinceCode);
-    this.frmSearch.controls['districtCode'].setValue(this._districtCode);
+    // this.frmSearch.controls['provinceCode'].setValue(this._provinceCode);
+    // this.frmSearch.controls['districtCode'].setValue(this._districtCode);
+    this.healthfacilities.value ? this.frmSearch.controls['healthfacilitiesId'].setValue(this.healthfacilities.value.healthFacilitiesId) : (this.appSession.user.healthFacilitiesId == null ? this.frmSearch.controls['healthfacilitiesId'].setValue(null) : '');
     this.btnSearchClicks$.next();
   }
 
