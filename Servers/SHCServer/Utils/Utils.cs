@@ -28,7 +28,7 @@ namespace SHCServer
         public string Telco { set; get; }
 
         public int? PatientId { get; set; }
-        public string objectType { get; set; }
+        public int? ObjectType { get; set; }
     }
 
     public class SmsContent
@@ -42,7 +42,7 @@ namespace SHCServer
         public int SmsPackageUsedId { set; get; }
         public int? PatientHistoriesId { set; get; }
         public int? PatientId { get; set; }
-        public string objectType { get; set; }
+        public int? objectType { get; set; }
     }
 
     public class Utils
@@ -257,7 +257,7 @@ namespace SHCServer
                     PatientHistoriesId = content.PatientHistoriesId,
                     Telco = telco,
                     PatientId = content.PatientId,
-                    objectType = content.objectType
+                    ObjectType = content.objectType
                 };
             }
             catch(Exception e)

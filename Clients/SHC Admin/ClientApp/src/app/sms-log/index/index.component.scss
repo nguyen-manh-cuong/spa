@@ -1,0 +1,26 @@
+.lbl-time {
+    top: -15px;
+    z-index: 9;
+    left: 27px;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+    font-size: 14.5px;
+    font-weight: 600;
+    background-color: #fff;
+    padding: 1px 3px;
+}
+
+.col-time .wc-date-container {
+    height: 39px !important;
+    border: 1px solid #ddd !important;
+    margin-bottom: 1px;
+    line-height: 32px !important;
+}
+.col-time .wc-date-container > span {
+    color: #00695c !important;
+    font-weight: 600 !important;
+}
+.col-time .wc-date-container > i {
+    color: #a69696 !important;
+    margin-top: 5px;
+}
+

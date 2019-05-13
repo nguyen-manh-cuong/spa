@@ -7,14 +7,14 @@ import { Observable } from 'rxjs';
 import { map, startWith, finalize, switchMap, tap, debounceTime } from 'rxjs/operators';
 import swal from 'sweetalert2';
 import * as moment from 'moment';
-import { MaterialDateTimePicker } from 'material-datetime-picker';
+import { DatePicker } from 'angular2-datetimepicker';
 
 import {MomentDateAdapter} from '@angular/material-moment-adapter';
 import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
 
 export const MY_FORMATS = {
     parse: {
-      dateInput: 'DD/MM/YYYY',
+        dateInput: 'DD/MM/YYYY',
     },
     display: {
       dateInput: 'DD/MM/YYYY',
@@ -37,6 +37,13 @@ export const MY_FORMATS = {
 
 
 export class IndexComponent extends PagedListingComponentBase<ISmsLogs> implements OnInit, AfterViewInit {
+    date: Date = new Date();
+    settings = {
+        bigBanner: true,
+        timePicker: true,
+        format: 'dd/MM/yyyy HH:mm',
+        defaultOpen: false
+    }
 
     displayedColumns = ['orderNumber', 'healthfacilitiesName', 'phoneNumber', 'type', 'content', 'sentDate', 'status', 'messageError', 'telco'];
 
@@ -49,11 +56,25 @@ export class IndexComponent extends PagedListingComponentBase<ISmsLogs> implemen
     filteredOptions: Observable<IHealthfacilities[]>;
     healthfacilities = new FormControl();
 
-    @ViewChild("startTime") startTime;
-    @ViewChild("endTime") endTime;
+    //@ViewChild("startTime") startTime;
+    //@ViewChild("endTime") endTime;
+
+    _checkSession = false;
+
+    _startDate = moment(new Date()).format('DD/MM/YYYY HH:mm');
+    _endDate = moment(new Date()).format('DD/MM/YYYY HH:mm');
 
     constructor(injector: Injector, private _dataService: DataService /*, public dialog: MatDialog*/, private _formBuilder: FormBuilder) {
         super(injector);
+
+        DatePicker.prototype.ngOnInit = function () {
+            this.settings = Object.assign(this.defaultSettings, this.settings);
+            if (this.settings.defaultOpen) {
+                this.popover = true;
+            }
+            this.startDate = new Date();
+            this.endDate = new Date();
+        };
     }
 
     ngOnInit() {
@@ -67,20 +88,25 @@ export class IndexComponent extends PagedListingComponentBase<ISmsLogs> implemen
             type: [],
             telco: []
         });
-
+        
         setTimeout(() => {
-            this.startTime.nativeElement.value = moment(new Date()).format("DD/MM/YYYY");
-            this.endTime.nativeElement.value = moment(new Date()).format("DD/MM/YYYY");
-            this.startTime.nativeElement.focus();
-            this.endTime.nativeElement.focus();
+            //this.startTime.nativeElement.value = moment(new Date()).format("DD/MM/YYYY");
+            //this.endTime.nativeElement.value = moment(new Date()).format("DD/MM/YYYY");
+            //this.startTime.nativeElement.focus();
+            //this.endTime.nativeElement.focus();
+            console.log(this._startDate);
             this.customSearch();
         });
 
         this.dataService = this._dataService;
 
-        if(this.appSession.user.healthFacilitiesId){
-            this.dataService.get("healthfacilities", JSON.stringify({healthfacilitiesId : this.appSession.user.healthFacilitiesId}), '', null, null).subscribe(resp => {this._healthfacilities = resp.items;});
-    
+        if (this.appSession.user.healthFacilitiesId) {
+            this._checkSession = true;
+
+            this.dataService.get("healthfacilities", JSON.stringify({ healthfacilitiesId: this.appSession.user.healthFacilitiesId }), '', null, null).subscribe(resp => {
+                this._healthfacilities = resp.items;
+            });
+
             setTimeout(() => {
               this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId);
             }, 500);
@@ -121,58 +147,66 @@ export class IndexComponent extends PagedListingComponentBase<ISmsLogs> implemen
       }
 
     customSearch() {
-        if(!this.endTime.nativeElement.value || !this.startTime.nativeElement.value){
-            return swal({
-                title:'Thông báo', 
-                text:'Ngày gửi từ và Đến ngày không được để trống', 
-                type:'warning',
-                timer:3000});
-        }
+        //if(!this.endTime.nativeElement.value || !this.startTime.nativeElement.value){
+        //    return swal({
+        //        title:'Thông báo', 
+        //        text:'Ngày gửi từ và Đến ngày không được để trống', 
+        //        type:'warning',
+        //        timer:3000});
+        //}
         
-        if(!moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').isValid()){
-            return swal({
-                title:'Thông báo', 
-                text:'Ngày gửi không đúng định dạng', 
-                type:'warning',
-                timer:3000});
-        }
+        //if(!moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').isValid()){
+        //    return swal({
+        //        title:'Thông báo', 
+        //        text:'Ngày gửi không đúng định dạng', 
+        //        type:'warning',
+        //        timer:3000});
+        //}
 
-        if( !moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').isValid()){
-            return swal({
-                title:'Thông báo', 
-                text:'Đến ngày không đúng định dạng', 
-                type:'warning',
-                timer:3000});
-        }
+        //if( !moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').isValid()){
+        //    return swal({
+        //        title:'Thông báo', 
+        //        text:'Đến ngày không đúng định dạng', 
+        //        type:'warning',
+        //        timer:3000});
+        //}
 
-        if(((moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').valueOf() - moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').valueOf()) / (1000*60*60*24)) < 0){
-            swal(this.l('Notification'), this.l('FromDateMustBeGreaterThanOrEqualToDate'), 'warning');
-            return true;
-        }
+        //if(((moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').valueOf() - moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').valueOf()) / (1000*60*60*24)) < 0){
+        //    swal(this.l('Notification'), this.l('FromDateMustBeGreaterThanOrEqualToDate'), 'warning');
+        //    return true;
+        //}
 
-        var startTime = moment(this.startTime.nativeElement.value + '00:00:00', 'DD/MM/YYYY hh:mm:ss').add(7, 'hours').toDate();
-        var endTime = moment(this.endTime.nativeElement.value + '23:59:59:', 'DD/MM/YYYY hh:mm:ss').add(7, 'hours').toDate();
+        //var startTime = moment(this.startTime.nativeElement.value + '00:00:00', 'DD/MM/YYYY hh:mm:ss').add(7, 'hours').toDate();
+        //var endTime = moment(this.endTime.nativeElement.value + '23:59:59:', 'DD/MM/YYYY hh:mm:ss').add(7, 'hours').toDate();
 
-        if (endTime.getFullYear() - startTime.getFullYear() > 1) {
+        let yearStart = parseInt(this._startDate.slice(6, 10));
+        let yearEnd = parseInt(this._endDate.slice(6, 10));
 
+        console.log(yearEnd);
+        console.log(yearStart);
+        if (yearEnd - yearStart > 1 ) {
             return swal({
                 title:'Thông báo', 
                 text:'Dữ liệu không được lấy quá 1 năm',
                 type: 'warning',
                 timer:3000});
         }
-        if (endTime.getFullYear() - startTime.getFullYear() == 1) {
-            var monthStartTime = startTime.getMonth() + 1;
-            var monthEndTime = endTime.getMonth() + 1;
-            if (12 - monthStartTime + monthEndTime > 12) {
+        if (yearEnd - yearStart == 1) {
+            let monthStartTime = parseInt(this._startDate.slice(4, 6));
+            let monthEndTime = parseInt(this._endDate.slice(4, 6));
+            console.log(monthStartTime);
+            console.log(monthEndTime);
+            if (monthEndTime > monthStartTime) {
                 return swal({
                     title:'Thông báo', 
                     text:'Dữ liệu không được lấy quá 1 năm', 
                     type:'warning',
                     timer:3000});
             }
-            if (12 - monthStartTime + monthEndTime == 12) {
-                if (endTime.getDate() > startTime.getDate()) {
+            if (monthStartTime == monthEndTime) {
+                let dateStartTime = parseInt(this._startDate.slice(1, 3));
+                let dateEndTime = parseInt(this._endDate.slice(1, 3));
+                if (dateStartTime < dateEndTime) {
                     return swal({
                         title:'Thông báo', 
                         text:'Dữ liệu không được lấy quá 1 năm', 
@@ -182,9 +216,28 @@ export class IndexComponent extends PagedListingComponentBase<ISmsLogs> implemen
             }
         }
 
-        this.healthfacilities.value ? this.frmSearch.controls['healthfacilities'].setValue(this.healthfacilities.value.healthFacilitiesId) : '';
-        this.startTime.nativeElement.value ? this.frmSearch.controls['startTime'].setValue(startTime) : '';
-        this.endTime.nativeElement.value ? this.frmSearch.controls['endTime'].setValue(endTime) : '';
+        //if (this._endDate < this._startDate) {
+        //    return swal(this.l('Notification'), this.l('FromDateMustBeGreaterThanOrEqualToDate'), 'warning');
+        //}
+
+        if (this._checkSession) {
+            this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId);
+        }
+        else {
+            this.healthfacilities.value ? this.frmSearch.controls['healthfacilities'].setValue(this.healthfacilities.value.healthFacilitiesId) : '';
+        }
+        //this.startTime.nativeElement.value ? this.frmSearch.controls['startTime'].setValue(startTime) : '';
+        //this.endTime.nativeElement.value ? this.frmSearch.controls['endTime'].setValue(endTime) : '';
+        this.frmSearch.controls['startTime'].setValue(this._startDate);
+        this.frmSearch.controls['endTime'].setValue(this._endDate);
         this.btnSearchClicks$.next();
+    }
+
+    onDateSelectStartTime(event) {
+        this._startDate = moment(event).format('DD/MM/YYYY HH:mm');
+    }
+
+    onDateSelectEndTime(event) {
+        this._endDate = moment(event).format('DD/MM/YYYY HH:mm');
     }
 }

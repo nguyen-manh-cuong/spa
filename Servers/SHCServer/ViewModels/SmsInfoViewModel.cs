@@ -18,7 +18,7 @@ namespace SHCServer.ViewModels
         public int? smsTemplateId { set; get; }
         public int type { set; get; }
         public string content { set; get; }
-        public string objectType { get; set; }
+        public int? objectType { get; set; }
         public int? patientId { get; set; }
 
     }

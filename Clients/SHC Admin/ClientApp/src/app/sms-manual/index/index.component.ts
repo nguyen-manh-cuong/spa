@@ -360,8 +360,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     }
 
     openCustomDialog(): void {
-        console.log(this.selection);
-        const dialogRef = this.dialog.open(this.dialogComponent, { minWidth: 'calc(100vw/2)', maxWidth: 'calc(100vw - 300px)', disableClose: true, data: { selection: this.selection, type: 3, objectType: 1} });
+        const dialogRef = this.dialog.open(this.dialogComponent, { minWidth: 'calc(100vw/2)', maxWidth: 'calc(100vw - 300px)', disableClose: true, data: { selection: this.selection, type: 3, objectType: 1 } });
 
         dialogRef.afterClosed().subscribe(() => {
             this.paginator.pageIndex = 0;

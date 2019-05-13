@@ -31,7 +31,7 @@ namespace SHCServer
                 smsLog.LogType = 1;
                 smsLog.Telco = resp.Telco;
                 smsLog.ObjectId = resp.PatientId;
-                smsLog.ObjectType = int.Parse(resp.objectType);
+                smsLog.ObjectType = resp.ObjectType;
                 lstSmsLog.Add(smsLog);
 
                 result = resp.Result;
