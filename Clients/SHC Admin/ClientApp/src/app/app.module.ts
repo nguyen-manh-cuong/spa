@@ -9,7 +9,7 @@ import { SharedModule } from '@shared/shared.module';
 import { SideBarNavComponent } from './layout/side-bar-nav/side-bar-nav.component';
 import { DatePipe } from '@angular/common'; 
 import { ValidationModule } from './validation/validation.module';
-import {MatInputModule} from '@angular/material';
+import { MatInputModule } from '@angular/material';
 
 @NgModule({
     imports: [        
@@ -23,7 +23,7 @@ import {MatInputModule} from '@angular/material';
         MatButtonModule,
         MatSidenavModule,
         MatIconModule,
-        MatListModule ,
+        MatListModule,
         MatNativeDateModule
     ],
     providers: [{ provide: LOCALE_ID, useValue: 'vi' }, { provide: MAT_DATE_LOCALE, useValue: 'vi-VN' }, DatePipe],

@@ -455,6 +455,9 @@ namespace SHCServer.Controllers
                 scontent.SmsPackageUsedId = packages[indexUsed].SmsPackageUsed != null ? packages[indexUsed].SmsPackageUsed.SmsPackageUsedId : 0;
                 scontent.PatientHistoriesId = m.PatientHistoriesId;
 
+                scontent.PatientId = m.PatientId;
+                scontent.objectType = infoInput.objectType;
+
                 lstContent.Add(scontent);
             }
 

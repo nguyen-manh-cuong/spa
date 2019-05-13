@@ -9,6 +9,8 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Viettel;
 using Viettel.MySql;
+using System.Threading.Tasks;
+using System.Globalization;
 
 namespace SHCServer.Controllers
 {
@@ -28,10 +30,12 @@ namespace SHCServer.Controllers
         public IActionResult GetAll(int skipCount = 0, int maxResultCount = 10, string sorting = null, string filter = null)
         {
             var objs = _context.Query<SmsLogs>();
-            
             if (filter != null)
             {
                 var data = JsonConvert.DeserializeObject<Dictionary<string, string>>(filter);
+
+                
+
                 foreach (var (key, value) in data)
                 {
                     if (string.IsNullOrEmpty(value) || value == "false" || value == "0") continue;
@@ -40,8 +44,8 @@ namespace SHCServer.Controllers
                     if (string.Equals(key, "smsPackagesDistributeId")) objs = objs.Where(s => s.SmsPackagesDistributeId == int.Parse(value));
                     if (string.Equals(key, "phoneNumber")) objs = objs.Where(s => s.PhoneNumber == value);
                     if (string.Equals(key, "status")) objs = objs.Where(s => s.Status == (value != "2" ? int.Parse(value) : 0));
-                    if (string.Equals(key, "startTime")) objs = objs.Where(s => s.SentDate >= DateTime.Parse(value));
-                    if (string.Equals(key, "endTime")) objs = objs.Where(s => s.SentDate <= DateTime.Parse(value));
+                    if (string.Equals(key, "startTime")) objs = objs.Where(s => s.SentDate >= DateTime.ParseExact(value, "dd/MM/yyyy HH:mm", CultureInfo.InvariantCulture));
+                    if (string.Equals(key, "endTime")) objs = objs.Where(s => s.SentDate <= DateTime.ParseExact(value, "dd/MM/yyyy HH:mm", CultureInfo.InvariantCulture));
                     if (string.Equals(key, "type")) objs = objs.Where(s => s.LogType == int.Parse(value));
                     if (string.Equals(key, "telco") && value != "all") objs = objs.Where(s => s.Telco == value);
                 }
@@ -61,7 +65,6 @@ namespace SHCServer.Controllers
             //} 
 
             objs = objs.OrderByDesc(o => o.Id);
-
             var list = objs.TakePage(skipCount == 0 ? 1 : skipCount + 1, maxResultCount).Select(l => new SmsLogViewModel(l, _connectionString)).ToList();
             foreach (var item in list)
             {
@@ -70,7 +73,7 @@ namespace SHCServer.Controllers
                 item.SentYear = item.SentDate.Year.ToString();
             }
 
-            return Json(new ActionResultDto { Result = new { Items = list, TotalCount = objs.Count() } });
+            return Json(new ActionResultDto { Result = new { Items = list, TotalCount = list.Count } });
         }
     }
 }
