@@ -10,7 +10,7 @@ import { SmsLogRoutingModule } from './sms-log-routing.module';
 import { UtilsModule } from '@shared/utils/utils.module';
 import { ValidationModule } from '@app/validation/validation.module';
 import { NgxMaskModule } from 'ngx-mask';
-import { AngularDateTimePickerModule } from 'angular2-datetimepicker';
+
 
 @NgModule({
     imports: [
@@ -20,7 +20,6 @@ import { AngularDateTimePickerModule } from 'angular2-datetimepicker';
         SharedModule,
         UtilsModule,
         ValidationModule,
-        AngularDateTimePickerModule,
         NgxMaskModule.forRoot()
     ],
     declarations: [SmsLogComponent, IndexComponent],

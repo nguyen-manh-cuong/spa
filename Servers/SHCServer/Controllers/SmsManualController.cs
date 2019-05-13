@@ -199,9 +199,35 @@ namespace SHCServer.Controllers
                     param.Add(DbParam.Create("@ToDay", "32"));
                 }
 
-                if ((data.ContainsKey("fromMonth") && data["fromMonth"] != "13") || (data.ContainsKey("toMonth") && data["toMonth"] != "13") || (data.ContainsKey("fromDay") && data["fromDay"] != "32") || (data.ContainsKey("toDay") && data["toDay"] != "32"))
+                //if ((data.ContainsKey("fromMonth") && data["fromMonth"] != "13") || (data.ContainsKey("toMonth") && data["toMonth"] != "13") || (data.ContainsKey("fromDay") && data["fromDay"] != "32") || (data.ContainsKey("toDay") && data["toDay"] != "32"))
+                //{
+                //    clause.Add("WHERE (p.BirthMonth < @toMonth OR (p.BirthMonth = @toMonth AND p.BirthDate <= @ToDay)) AND (p.BirthMonth > @FromMonth OR (p.BirthMonth = @FromMonth AND p.BirthDate >= @FromDay))");
+                //    if ((data.ContainsKey("fromMonth") && data["fromMonth"] == "13") && (data.ContainsKey("fromDay") && data["fromDay"] != "32"))
+                //    {
+                //        clause.Add("AND p.BirthDate >= @FromDay");
+                //    }
+
+                //    if ((data.ContainsKey("toMonth") && data["toMonth"] == "13") && (data.ContainsKey("toDay") && data["toDay"] != "32"))
+                //    {
+                //        clause.Add("AND p.BirthDate <= @ToDay");
+                //    }
+                //}
+                if (int.Parse(data["fromMonth"].ToString()) <= int.Parse(data["toMonth"].ToString()))
                 {
                     clause.Add("WHERE (p.BirthMonth < @toMonth OR (p.BirthMonth = @toMonth AND p.BirthDate <= @ToDay)) AND (p.BirthMonth > @FromMonth OR (p.BirthMonth = @FromMonth AND p.BirthDate >= @FromDay))");
+                    if ((data.ContainsKey("fromMonth") && data["fromMonth"] == "13") && (data.ContainsKey("fromDay") && data["fromDay"] != "32"))
+                    {
+                        clause.Add("AND p.BirthDate >= @FromDay");
+                    }
+
+                    if ((data.ContainsKey("toMonth") && data["toMonth"] == "13") && (data.ContainsKey("toDay") && data["toDay"] != "32"))
+                    {
+                        clause.Add("AND p.BirthDate <= @ToDay");
+                    }
+                }
+                else
+                {
+                    clause.Add("WHERE (p.BirthMonth < @toMonth OR (p.BirthMonth = @toMonth AND p.BirthDate <= @ToDay)) OR (p.BirthMonth > @FromMonth OR (p.BirthMonth = @FromMonth AND p.BirthDate >= @FromDay))");                    
                 }
             }
 
