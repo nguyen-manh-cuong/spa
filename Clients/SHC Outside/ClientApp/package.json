@@ -25,7 +25,7 @@
         "@angular/platform-browser-dynamic": "^6.1.9",
         "@angular/router": "^6.1.9",
         "@aspnet/signalr": "^1.0.3",
-        "@ng-select/ng-select": "^2.16.0",
+        "@ng-select/ng-select": "^2.19.0",
         "abp-ng2-module": "^3.2.2",
         "abp-web-resources": "^3.8.4",
         "ansi-html": "^0.0.7",
