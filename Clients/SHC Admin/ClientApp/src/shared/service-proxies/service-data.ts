@@ -56,9 +56,7 @@ export class DataService {
         if (skipCount !== undefined) { url_ += 'SkipCount=' + encodeURIComponent('' + skipCount) + '&'; }
         if (maxResultCount !== undefined) { url_ += 'MaxResultCount=' + encodeURIComponent('' + maxResultCount) + '&'; }
         url_ = url_.replace(/[?&]$/, '');
-
         const options_: any = { observe: 'response', responseType: 'blob', headers: new HttpHeaders({ 'Content-Type': 'application/json', 'Accept': 'application/json' }) };
-
         abp.ui.setBusy('#main-container');
         return this.http.request('get', url_, options_).pipe(_observableMergeMap((response_: any) => this.processDataOk(response_)))
             .pipe(_observableCatch((response_: any) => {
@@ -200,7 +198,6 @@ export class DataService {
         url_ = url_.replace(/[?&]$/, '');
 
         const content_ = JSON.stringify(input);
-        console.log(input);
         const options_: any = {
             body: content_,
             observe: 'response',

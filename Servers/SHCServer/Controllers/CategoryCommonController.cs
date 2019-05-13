@@ -42,27 +42,29 @@ namespace SHCServer.Controllers
 
                     if (string.Equals(key, "id"))
                         objs = objs.Where(o => o.Id.ToString().Contains(value.Trim()));
-                    if (string.Equals(key, "max"))
-                    {
-                        maxResultCount = 300;
-                    }
+                    //if (string.Equals(key, "max"))
+                    //{
+                    //    maxResultCount = 300;
+                    //}
                 }
             }
 
-            //if (sorting != null)
-            //{
-            //    foreach (var (key, value) in JsonConvert.DeserializeObject<Dictionary<string, string>>(sorting))
-            //    {
-            //        if (!Utils.PropertyExists<SmsLogs>(key)) continue;
-            //        objs = value == "asc" ? objs.OrderBy(mhh => key) : objs.OrderByDesc(mhh => key);
-            //    }
-
-            //}
-            //else
-            //{
-            objs = objs.OrderByDesc(o => o.Code).OrderByDesc(o => o.CreateDate);
-            //}
-
+            if (sorting != null)
+            {
+                foreach (var (key, value) in  JsonConvert.DeserializeObject<Dictionary<string, string>>(sorting))
+                {
+                    if (!Utils.PropertyExists<CategoryCommon>(key))
+                        continue;
+                    if (string.Equals(key, "name"))
+                    {
+                        objs = objs.OrderBy(o => o.Name);
+                    }
+                }
+            }
+            else
+            {
+                objs = objs.OrderByDesc(o => o.Code).OrderByDesc(o => o.CreateDate);
+            }
             return Json(new ActionResultDto()
             {
                 Result = new

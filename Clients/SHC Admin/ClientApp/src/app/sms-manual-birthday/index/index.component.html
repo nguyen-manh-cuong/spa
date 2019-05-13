@@ -95,7 +95,7 @@
             </div>
             <div class="col-md-3"></div>
             <!-- 4 -->
-            <!-- <div class="col-md-4">
+            <div class="col-md-4">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('FilterByProvine')}}</mat-label>
                     <mat-select formControlName="provinceCode" (selectionChange)="onSelectProvince($event.value)">
@@ -121,9 +121,9 @@
                         <mat-option *ngFor="let o of _wards" [value]="o.wardCode">{{ o.name }}</mat-option>
                     </mat-select>
                 </mat-form-field>
-            </div> -->
+            </div>
 
-            <div class="col-md-4">
+            <!-- <div class="col-md-4">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('FilterByProvine')}}</mat-label>
                     <input #provinceInput value=" " matInput [formControl]="provinceCode" (click)="clickProvinceCbo()"
@@ -162,7 +162,7 @@
                         </mat-option>
                     </mat-autocomplete>
                 </mat-form-field>
-            </div>
+            </div> -->
 
 
 

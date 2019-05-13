@@ -151,163 +151,163 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
         this.dataService.getAll('doctors', obj.healthFacilitiesId).subscribe(resp => this._doctors = resp.items);
     }
 
-    // onSelectProvince(obj: any) {
-    //     this._districts = this._wards = [];
-    //     this.frmSearch.patchValue({ districtCode: null, wardCode: null });
-    //     const province = this._provinces.find((o: { provinceCode: string, name: string; }) => o.provinceCode === obj);
-    //     if (province) { this.dataService.get('districts', JSON.stringify({ ProvinceCode: province.provinceCode }), '', 0, 0).subscribe(resp => this._districts = resp.items); }
+    onSelectProvince(obj: any) {
+        this._districts = this._wards = [];
+        this.frmSearch.patchValue({ districtCode: null, wardCode: null });
+        const province = this._provinces.find((o: { provinceCode: string, name: string; }) => o.provinceCode === obj);
+        if (province) { this.dataService.get('districts', JSON.stringify({ ProvinceCode: province.provinceCode }), '', 0, 0).subscribe(resp => this._districts = resp.items); }
+    }
+
+
+
+
+
+    // displayProvinceFn(h?: IProvince): string | undefined {
+    //     return h ? h.name : undefined;
+    // }
+
+
+    // _filterProvince(name: any): IProvince[] {
+    //     const filterValue = name.toLowerCase();
+    //     var provinces = this._provinces.filter(c => c.name.toLowerCase().indexOf(filterValue) === 0);
+    //     return provinces;
+    // }
+
+    // clickProvinceCbo() {
+    //     !this.provinceCode.value ? this.filterProvinceOptions() : '';
     // }
 
 
 
-
-
-    displayProvinceFn(h?: IProvince): string | undefined {
-        return h ? h.name : undefined;
-    }
-
-
-    _filterProvince(name: any): IProvince[] {
-        const filterValue = name.toLowerCase();
-        var provinces = this._provinces.filter(c => c.name.toLowerCase().indexOf(filterValue) === 0);
-        return provinces;
-    }
-
-    clickProvinceCbo() {
-        !this.provinceCode.value ? this.filterProvinceOptions() : '';
-    }
-
-
-
-    filterProvinceOptions() {
-        this.filteredProvinceOptions = this.provinceCode.valueChanges
-            .pipe(
-                startWith<string | IProvince>(''),
-                map(name => name ? this._filterProvince(name.toString().trim()) : this._provinces.slice()),
-                map(data => data.slice())
-            );
-    }
-
-    @ViewChild('districtInput') districtInput;
-    @ViewChild('wardInput') wardInput;
-
-    onInputProvince(obj: any) {
-        if (obj.data != " " || obj.inputType == "deleteContentBackward") {
-            this._districts = [];
-            this._wards = [];
-            this.districtInput.nativeElement.value = "";
-            this.wardInput.nativeElement.value = "";
-            this._provinceCode = null;
-            this._districtCode = null;
-            this._wardCode = null;
-        }
-    }
-
-    onSelectProvince(value: any) {
-        if (value.provinceCode) {
-            this._provinceCode = value.provinceCode;
-            this.dataService.get('districts', JSON.stringify({ ProvinceCode: value.provinceCode }), '', 0, 0)
-                .subscribe(resp => {
-                    this._districts = resp.items;
-                    this.districtCode.setValue(null);
-                });
-        }
-    }
-
-    //District
-
-    displayDistrictFn(h?: IDistrict): string | undefined {
-        return h ? h.name : undefined;
-    }
-
-
-    _filterDistrict(name: any): IDistrict[] {
-        const filterValue = name.toLowerCase();
-        var districts = this._districts.filter(c => c.name.toLowerCase().indexOf(filterValue) === 0);
-        return districts;
-    }
-
-    clickDistrictCbo() {
-        !this.districtCode.value ? this.filterDistrictOptions() : '';
-    }
-
-
-
-    filterDistrictOptions() {
-        this.filteredDistrictOptions = this.districtCode.valueChanges
-            .pipe(
-                startWith<string | IDistrict>(''),
-                map(name => name ? this._filterDistrict(name.toString().trim()) : this._districts.slice()),
-                map(data => data.slice())
-            );
-    }
-
-    onInputDistrict(obj: any) {
-        if (obj.data != " " || obj.inputType == "deleteContentBackward") {
-            this._wards = [];
-            this.wardInput.nativeElement.value = "";
-            this._districtCode = null;
-            this._wardCode = null;
-        }
-    }
-
-    onSelectDistrict(value: any) {
-        if (value.districtCode) {
-            this._districtCode = value.districtCode;
-            this.dataService.get('wards', JSON.stringify({ DistrictCode: value.districtCode }), '', 0, 0)
-                .subscribe(resp => {
-                    this._wards = resp.items;
-                    this.wardCode.setValue(null);
-                });
-        }
-    }
-
-
-
-    // onSelectDistrict(obj: any) {
-    //     this._wards = [];
-    //     this.frmSearch.patchValue({ wardCode: null });
-    //     const district = this._districts.find((o: { districtCode: string, name: string; }) => o.districtCode === obj);
-    //     if (district) { this.dataService.get('wards', JSON.stringify({ DistrictCode: district.districtCode }), '', 0, 0).subscribe(resp => this._wards = resp.items); }
+    // filterProvinceOptions() {
+    //     this.filteredProvinceOptions = this.provinceCode.valueChanges
+    //         .pipe(
+    //             startWith<string | IProvince>(''),
+    //             map(name => name ? this._filterProvince(name.toString().trim()) : this._provinces.slice()),
+    //             map(data => data.slice())
+    //         );
     // }
 
-    displayWardFn(h?: IWard): string | undefined {
-        return h ? h.name : undefined;
+    // @ViewChild('districtInput') districtInput;
+    // @ViewChild('wardInput') wardInput;
+
+    // onInputProvince(obj: any) {
+    //     if (obj.data != " " || obj.inputType == "deleteContentBackward") {
+    //         this._districts = [];
+    //         this._wards = [];
+    //         this.districtInput.nativeElement.value = "";
+    //         this.wardInput.nativeElement.value = "";
+    //         this._provinceCode = null;
+    //         this._districtCode = null;
+    //         this._wardCode = null;
+    //     }
+    // }
+
+    // onSelectProvince(value: any) {
+    //     if (value.provinceCode) {
+    //         this._provinceCode = value.provinceCode;
+    //         this.dataService.get('districts', JSON.stringify({ ProvinceCode: value.provinceCode }), '', 0, 0)
+    //             .subscribe(resp => {
+    //                 this._districts = resp.items;
+    //                 this.districtCode.setValue(null);
+    //             });
+    //     }
+    // }
+
+    // //District
+
+    // displayDistrictFn(h?: IDistrict): string | undefined {
+    //     return h ? h.name : undefined;
+    // }
+
+
+    // _filterDistrict(name: any): IDistrict[] {
+    //     const filterValue = name.toLowerCase();
+    //     var districts = this._districts.filter(c => c.name.toLowerCase().indexOf(filterValue) === 0);
+    //     return districts;
+    // }
+
+    // clickDistrictCbo() {
+    //     !this.districtCode.value ? this.filterDistrictOptions() : '';
+    // }
+
+
+
+    // filterDistrictOptions() {
+    //     this.filteredDistrictOptions = this.districtCode.valueChanges
+    //         .pipe(
+    //             startWith<string | IDistrict>(''),
+    //             map(name => name ? this._filterDistrict(name.toString().trim()) : this._districts.slice()),
+    //             map(data => data.slice())
+    //         );
+    // }
+
+    // onInputDistrict(obj: any) {
+    //     if (obj.data != " " || obj.inputType == "deleteContentBackward") {
+    //         this._wards = [];
+    //         this.wardInput.nativeElement.value = "";
+    //         this._districtCode = null;
+    //         this._wardCode = null;
+    //     }
+    // }
+
+    // onSelectDistrict(value: any) {
+    //     if (value.districtCode) {
+    //         this._districtCode = value.districtCode;
+    //         this.dataService.get('wards', JSON.stringify({ DistrictCode: value.districtCode }), '', 0, 0)
+    //             .subscribe(resp => {
+    //                 this._wards = resp.items;
+    //                 this.wardCode.setValue(null);
+    //             });
+    //     }
+    // }
+
+
+
+    onSelectDistrict(obj: any) {
+        this._wards = [];
+        this.frmSearch.patchValue({ wardCode: null });
+        const district = this._districts.find((o: { districtCode: string, name: string; }) => o.districtCode === obj);
+        if (district) { this.dataService.get('wards', JSON.stringify({ DistrictCode: district.districtCode }), '', 0, 0).subscribe(resp => this._wards = resp.items); }
     }
 
-
-    _filterWard(name: any): IWard[] {
-        const filterValue = name.toLowerCase();
-        var wards = this._wards.filter(c => c.name.toLowerCase().indexOf(filterValue) === 0);
-        return wards;
-    }
-
-    clickWardCbo() {
-        !this.wardCode.value ? this.filterWardOptions() : '';
-    }
+    // displayWardFn(h?: IWard): string | undefined {
+    //     return h ? h.name : undefined;
+    // }
 
 
+    // _filterWard(name: any): IWard[] {
+    //     const filterValue = name.toLowerCase();
+    //     var wards = this._wards.filter(c => c.name.toLowerCase().indexOf(filterValue) === 0);
+    //     return wards;
+    // }
 
-    filterWardOptions() {
-        this.filteredWardOptions = this.wardCode.valueChanges
-            .pipe(
-                startWith<string | IWard>(''),
-                map(name => name ? this._filterWard(name.toString().trim()) : this._wards.slice()),
-                map(data => data.slice())
-            );
-    }
+    // clickWardCbo() {
+    //     !this.wardCode.value ? this.filterWardOptions() : '';
+    // }
 
-    onInputWard(obj: any) {
-        if (obj.data != " " || obj.inputType == "deleteContentBackward") {
-            this._wardCode = null;
-        }
-    }
 
-    onSelectWard(value: any) {
-        if (value.wardCode) {
-            this._wardCode = value.wardCode;
-        }
-    }
+
+    // filterWardOptions() {
+    //     this.filteredWardOptions = this.wardCode.valueChanges
+    //         .pipe(
+    //             startWith<string | IWard>(''),
+    //             map(name => name ? this._filterWard(name.toString().trim()) : this._wards.slice()),
+    //             map(data => data.slice())
+    //         );
+    // }
+
+    // onInputWard(obj: any) {
+    //     if (obj.data != " " || obj.inputType == "deleteContentBackward") {
+    //         this._wardCode = null;
+    //     }
+    // }
+
+    // onSelectWard(value: any) {
+    //     if (value.wardCode) {
+    //         this._wardCode = value.wardCode;
+    //     }
+    // }
 
 
     changeDate(value: any, type: number) {
@@ -402,9 +402,9 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
             });
         }
 
-        this.frmSearch.controls['provinceCode'].setValue(this._provinceCode);
-        this.frmSearch.controls['districtCode'].setValue(this._districtCode);
-        this.frmSearch.controls['wardCode'].setValue(this._wardCode);
+        // this.frmSearch.controls['provinceCode'].setValue(this._provinceCode);
+        // this.frmSearch.controls['districtCode'].setValue(this._districtCode);
+        // this.frmSearch.controls['wardCode'].setValue(this._wardCode);
 
 
         if (((moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').valueOf() - moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').valueOf()) / (1000 * 60 * 60 * 24)) < 0) {
@@ -453,6 +453,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
         this.birthday.nativeElement.value ? this.frmSearch.controls['birthdayMonth'].setValue(moment(this.birthday.nativeElement.value, 'DD/MM/YYYY').toDate().getMonth() + 1) : this.frmSearch.controls['birthdayMonth'].setValue('');
 
         this.startTime.nativeElement.value ? this.frmSearch.controls['startTime'].setValue(startTime) : '';
+
         this.endTime.nativeElement.value ? this.frmSearch.controls['endTime'].setValue(endTime) : '';
 
         this.btnSearchClicks$.next();

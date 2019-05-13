@@ -158,19 +158,19 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
         this.dataService.getAll('doctors', obj.healthFacilitiesId).subscribe(resp => this._doctors = resp.items);
     }
 
-    // onSelectProvince(obj: any) {
-    //     this._districts = this._wards = [];
-    //     this.frmSearch.patchValue({ districtCode: null, wardCode: null });
-    //     const province = this._provinces.find((o: { provinceCode: string, name: string; }) => o.provinceCode === obj);
-    //     if (province) { this.dataService.get('districts', JSON.stringify({ ProvinceCode: province.provinceCode }), '', 0, 0).subscribe(resp => this._districts = resp.items); }
-    // }
+    onSelectProvince(obj: any) {
+        this._districts = this._wards = [];
+        this.frmSearch.patchValue({ districtCode: null, wardCode: null });
+        const province = this._provinces.find((o: { provinceCode: string, name: string; }) => o.provinceCode === obj);
+        if (province) { this.dataService.get('districts', JSON.stringify({ ProvinceCode: province.provinceCode }), '', 0, 0).subscribe(resp => this._districts = resp.items); }
+    }
 
-    // onSelectDistrict(obj: any) {
-    //     this._wards = [];
-    //     this.frmSearch.patchValue({ wardCode: null });
-    //     const district = this._districts.find((o: { districtCode: string, name: string; }) => o.districtCode === obj);
-    //     if (district) { this.dataService.get('wards', JSON.stringify({ DistrictCode: district.districtCode }), '', 0, 0).subscribe(resp => this._wards = resp.items); }
-    // }
+    onSelectDistrict(obj: any) {
+        this._wards = [];
+        this.frmSearch.patchValue({ wardCode: null });
+        const district = this._districts.find((o: { districtCode: string, name: string; }) => o.districtCode === obj);
+        if (district) { this.dataService.get('wards', JSON.stringify({ DistrictCode: district.districtCode }), '', 0, 0).subscribe(resp => this._wards = resp.items); }
+    }
 
     displayFn(h?: IHealthfacilities): string | undefined {
         return h ? h.name : undefined;
@@ -203,105 +203,105 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     }
     
 
-    displayProvinceFn(h?: IProvince): string | undefined {
-        return h ? h.name : undefined;
-    }
+    // displayProvinceFn(h?: IProvince): string | undefined {
+    //     return h ? h.name : undefined;
+    // }
 
 
-    _filterProvince(name: any): IProvince[] {
-        const filterValue = name.toLowerCase();
-        var provinces = this._provinces.filter(c => c.name.toLowerCase().indexOf(filterValue) === 0);
-        return provinces;
-    }
+    // _filterProvince(name: any): IProvince[] {
+    //     const filterValue = name.toLowerCase();
+    //     var provinces = this._provinces.filter(c => c.name.toLowerCase().indexOf(filterValue) === 0);
+    //     return provinces;
+    // }
 
-    clickProvinceCbo() {
-        !this.provinceCode.value ? this.filterProvinceOptions() : '';
-    }
+    // clickProvinceCbo() {
+    //     !this.provinceCode.value ? this.filterProvinceOptions() : '';
+    // }
 
 
 
-    filterProvinceOptions() {
-        this.filteredProvinceOptions = this.provinceCode.valueChanges
-            .pipe(
-                startWith<string | IProvince>(''),
-                map(name => name ? this._filterProvince(name.toString().trim()) : this._provinces.slice()),
-                map(data => data.slice())
-            );
-    }
+    // filterProvinceOptions() {
+    //     this.filteredProvinceOptions = this.provinceCode.valueChanges
+    //         .pipe(
+    //             startWith<string | IProvince>(''),
+    //             map(name => name ? this._filterProvince(name.toString().trim()) : this._provinces.slice()),
+    //             map(data => data.slice())
+    //         );
+    // }
 
-    @ViewChild('districtInput') districtInput;
-    @ViewChild('wardInput') wardInput;
+    // @ViewChild('districtInput') districtInput;
+    // @ViewChild('wardInput') wardInput;
 
-    onInputProvince(obj: any) {
-        if (obj.data != " " || obj.inputType == "deleteContentBackward") {
-            this._districts = [];
-            this._wards = [];
-            this.districtInput.nativeElement.value = "";
-            this.wardInput.nativeElement.value = "";
-            this._provinceCode = null;
-            this._districtCode = null;
-            this._wardCode = null;
-        }
-    }
+    // onInputProvince(obj: any) {
+    //     if (obj.data != " " || obj.inputType == "deleteContentBackward") {
+    //         this._districts = [];
+    //         this._wards = [];
+    //         this.districtInput.nativeElement.value = "";
+    //         this.wardInput.nativeElement.value = "";
+    //         this._provinceCode = null;
+    //         this._districtCode = null;
+    //         this._wardCode = null;
+    //     }
+    // }
 
-    onSelectProvince(value: any) {
-        if (value.provinceCode) {
-            this._provinceCode = value.provinceCode;
-            this.dataService.get('districts', JSON.stringify({ ProvinceCode: value.provinceCode }), '', 0, 0)
-                .subscribe(resp => {
-                    this._districts = resp.items;
-                    this.districtCode.setValue(null);
-                });
-        }
-    }
+    // onSelectProvince(value: any) {
+    //     if (value.provinceCode) {
+    //         this._provinceCode = value.provinceCode;
+    //         this.dataService.get('districts', JSON.stringify({ ProvinceCode: value.provinceCode }), '', 0, 0)
+    //             .subscribe(resp => {
+    //                 this._districts = resp.items;
+    //                 this.districtCode.setValue(null);
+    //             });
+    //     }
+    // }
 
     //District
 
-    displayDistrictFn(h?: IDistrict): string | undefined {
-        return h ? h.name : undefined;
-    }
+    // displayDistrictFn(h?: IDistrict): string | undefined {
+    //     return h ? h.name : undefined;
+    // }
 
 
-    _filterDistrict(name: any): IDistrict[] {
-        const filterValue = name.toLowerCase();
-        var districts = this._districts.filter(c => c.name.toLowerCase().indexOf(filterValue) === 0);
-        return districts;
-    }
+    // _filterDistrict(name: any): IDistrict[] {
+    //     const filterValue = name.toLowerCase();
+    //     var districts = this._districts.filter(c => c.name.toLowerCase().indexOf(filterValue) === 0);
+    //     return districts;
+    // }
 
-    clickDistrictCbo() {
-        !this.districtCode.value ? this.filterDistrictOptions() : '';
-    }
+    // clickDistrictCbo() {
+    //     !this.districtCode.value ? this.filterDistrictOptions() : '';
+    // }
 
 
 
-    filterDistrictOptions() {
-        this.filteredDistrictOptions = this.districtCode.valueChanges
-            .pipe(
-                startWith<string | IDistrict>(''),
-                map(name => name ? this._filterDistrict(name.toString().trim()) : this._districts.slice()),
-                map(data => data.slice())
-            );
-    }
+    // filterDistrictOptions() {
+    //     this.filteredDistrictOptions = this.districtCode.valueChanges
+    //         .pipe(
+    //             startWith<string | IDistrict>(''),
+    //             map(name => name ? this._filterDistrict(name.toString().trim()) : this._districts.slice()),
+    //             map(data => data.slice())
+    //         );
+    // }
 
-    onInputDistrict(obj: any) {
-        if (obj.data != " " || obj.inputType == "deleteContentBackward") {
-            this._wards = [];
-            this.wardInput.nativeElement.value = "";
-            this._districtCode = null;
-            this._wardCode = null;
-        }
-    }
+    // onInputDistrict(obj: any) {
+    //     if (obj.data != " " || obj.inputType == "deleteContentBackward") {
+    //         this._wards = [];
+    //         this.wardInput.nativeElement.value = "";
+    //         this._districtCode = null;
+    //         this._wardCode = null;
+    //     }
+    // }
 
-    onSelectDistrict(value: any) {
-        if (value.districtCode) {
-            this._districtCode = value.districtCode;
-            this.dataService.get('wards', JSON.stringify({ DistrictCode: value.districtCode }), '', 0, 0)
-                .subscribe(resp => {
-                    this._wards = resp.items;
-                    this.wardCode.setValue(null);
-                });
-        }
-    }
+    // onSelectDistrict(value: any) {
+    //     if (value.districtCode) {
+    //         this._districtCode = value.districtCode;
+    //         this.dataService.get('wards', JSON.stringify({ DistrictCode: value.districtCode }), '', 0, 0)
+    //             .subscribe(resp => {
+    //                 this._wards = resp.items;
+    //                 this.wardCode.setValue(null);
+    //             });
+    //     }
+    // }
 
 
 
@@ -312,43 +312,43 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     //     if (district) { this.dataService.get('wards', JSON.stringify({ DistrictCode: district.districtCode }), '', 0, 0).subscribe(resp => this._wards = resp.items); }
     // }
 
-    displayWardFn(h?: IWard): string | undefined {
-        return h ? h.name : undefined;
-    }
+    // displayWardFn(h?: IWard): string | undefined {
+    //     return h ? h.name : undefined;
+    // }
 
 
-    _filterWard(name: any): IWard[] {
-        const filterValue = name.toLowerCase();
-        var wards = this._wards.filter(c => c.name.toLowerCase().indexOf(filterValue) === 0);
-        return wards;
-    }
+    // _filterWard(name: any): IWard[] {
+    //     const filterValue = name.toLowerCase();
+    //     var wards = this._wards.filter(c => c.name.toLowerCase().indexOf(filterValue) === 0);
+    //     return wards;
+    // }
 
-    clickWardCbo() {
-        !this.wardCode.value ? this.filterWardOptions() : '';
-    }
+    // clickWardCbo() {
+    //     !this.wardCode.value ? this.filterWardOptions() : '';
+    // }
 
 
 
-    filterWardOptions() {
-        this.filteredWardOptions = this.wardCode.valueChanges
-            .pipe(
-                startWith<string | IWard>(''),
-                map(name => name ? this._filterWard(name.toString().trim()) : this._wards.slice()),
-                map(data => data.slice())
-            );
-    }
+    // filterWardOptions() {
+    //     this.filteredWardOptions = this.wardCode.valueChanges
+    //         .pipe(
+    //             startWith<string | IWard>(''),
+    //             map(name => name ? this._filterWard(name.toString().trim()) : this._wards.slice()),
+    //             map(data => data.slice())
+    //         );
+    // }
 
-    onInputWard(obj: any) {
-        if (obj.data != " " || obj.inputType == "deleteContentBackward") {
-            this._wardCode = null;
-        }
-    }
+    // onInputWard(obj: any) {
+    //     if (obj.data != " " || obj.inputType == "deleteContentBackward") {
+    //         this._wardCode = null;
+    //     }
+    // }
 
-    onSelectWard(value: any) {
-        if (value.wardCode) {
-            this._wardCode = value.wardCode;
-        }
-    }
+    // onSelectWard(value: any) {
+    //     if (value.wardCode) {
+    //         this._wardCode = value.wardCode;
+    //     }
+    // }
 
 
 
@@ -356,9 +356,9 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
 
     customSearch() {
         this.healthfacilities.value ? this.frmSearch.controls['healthfacilities'].setValue(this.healthfacilities.value.healthFacilitiesId) : (this.appSession.user.healthFacilitiesId == null ? this.frmSearch.controls['healthfacilities'].setValue(null) : '');
-        this.frmSearch.controls['provinceCode'].setValue(this._provinceCode);
-        this.frmSearch.controls['districtCode'].setValue(this._districtCode);
-        this.frmSearch.controls['wardCode'].setValue(this._wardCode);
+        // this.frmSearch.controls['provinceCode'].setValue(this._provinceCode);
+        // this.frmSearch.controls['districtCode'].setValue(this._districtCode);
+        // this.frmSearch.controls['wardCode'].setValue(this._wardCode);
         this.btnSearchClicks$.next();
     }
 

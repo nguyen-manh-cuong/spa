@@ -3,7 +3,7 @@ import { IDoctor, IHealthfacilities, IHealthfacilitiesDoctor, IDoctorSpecialists
 import * as _ from 'lodash';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { Component, Inject, Injector, OnInit, ViewChild, AfterViewInit, ElementRef, HostListener, Directive, Output, EventEmitter } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormControl, ValidationErrors } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef, MatInput, MatCheckbox, MatAutocomplete, MatChipInputEvent, MatAutocompleteSelectedEvent, MatDialog, MatPaginator } from '@angular/material';
 import * as moment from 'moment';
 import { AppComponentBase } from '@shared/app-component-base';
@@ -21,6 +21,8 @@ import { Observable, fromEvent, merge, timer } from 'rxjs';
 import { standardized } from '@shared/helpers/utils';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { stringify } from '@angular/compiler/src/util';
+import { prepareSyntheticListenerFunctionName } from '@angular/compiler/src/render3/util';
+import { providerToFactory } from '@angular/core/src/di/r3_injector';
 export const MY_FORMATS = {
   parse: {
     dateInput: 'DD/MM/YYYY',
@@ -76,15 +78,19 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
       name: "Không xác định"
     }];
 
+
   flagDate = true;
   maxDate = new Date(Date.now());
   maxDate2 = new Date(Date.now());
   @ViewChild("certification") certification;
-
+  @ViewChild("inputAvatar") inputAvatar;
+  @ViewChild('priceFrom') priceFrom;
+  @ViewChild('priceTo') priceTo;
   dataService: DataService;
   isLoading = false;
   specialIsLoading = false;
-
+  checkPriceFrom=false;
+  checkPriceTo=false
   _certificationInputCheck: Boolean;
 
   _speciaList = [];
@@ -273,12 +279,12 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
       certificationDate: [this._obj.certificationDate],
       academicId: [this._obj.academicId],
       degreeId: [this._obj.degreeId],
-      email: [this._obj.email, [Validators.email]],
+      email: [this._obj.email, [validationRule.email]],
       certificationCode: [this._obj.certificationCode],
       address: [this._obj.address],
       provinceCode: [this._obj.provinceCode],
       districtCode: [this._obj.districtCode],
-      phoneNumber: [this._obj.phoneNumber],
+      phoneNumber: [this._obj.phoneNumber, [validationRule.topPhoneNumber]],
       educationCountryCode: [this._obj.educationCountryCode],
       avatar: [null, [FileValidator.maxContentSize(20000000)]],
       description: this._obj.description,
@@ -415,8 +421,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   }
 
   getSpecialist() {
-    this._dataService.getAll("categorycommon", "CHUYENKHOA").subscribe(resp => this._specialist = resp.items);
-
+    this.dataService.get("catcommon", '', "{name:'asc'}", null, 300).subscribe(resp => this._specialist = resp.items);
   }
 
   @ViewChild("continueAdd") continueAdd: MatCheckbox;
@@ -495,10 +500,30 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   }
 
   selected(event: MatAutocompleteSelectedEvent): void {
-    this._healthfacilitiesChip.push(event.option.value);
+    var check;
+    if (this._healthfacilitiesChip.length == 0) {
+      this._healthfacilitiesChip.push(event.option.value);
+    }
+    else {
+      this._healthfacilitiesChip.forEach(h => {
+        if (h.healthFacilitiesId == event.option.value.healthFacilitiesId) {
+          check = false;
+        }
+      });
+      if (check != false) {
+        this._healthfacilitiesChip.push(event.option.value);
+      }
+      else {
+        swal({
+          title: 'Thông báo',
+          text: 'Đã chọn đơn vị này',
+          type: 'warning',
+          timer: 3000
+        })
+      }
+    }
     this.healthfacilitiesInput.nativeElement.value = '';
     this.healthfacilitiesControl.setValue(null);
-
   }
 
   healthInput() {
@@ -533,7 +558,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
       .get("catcommon", JSON.stringify({
         name: isNaN(fValue) ? fValue : "",
         max: 300
-      }), '', null, null)
+      }), "{name:'asc'}", null, 300)
       .pipe(finalize(() => this.specialIsLoading = false));
   }
 
@@ -573,8 +598,31 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
 
   specialSelected(event: MatAutocompleteSelectedEvent): void {
     this.checkSpecial = true;
-    var s = new Specialist(event.option.value.code, event.option.value.name);
-    this._specialistChip.push(s);
+
+    var check;
+    if (this._specialistChip.length == 0) {
+      var s = new Specialist(event.option.value.code, event.option.value.name);
+      this._specialistChip.push(s);
+    }
+    else {
+      this._specialistChip.forEach(h => {
+        if (h.specialistCode == event.option.value.code) {
+          check = false;
+        }
+      });
+      if (check != false) {
+        var s = new Specialist(event.option.value.code, event.option.value.name);
+        this._specialistChip.push(s);
+      }
+      else {
+        swal({
+          title: 'Thông báo',
+          text: 'Đã chọn chuyên khoa này',
+          type: 'warning',
+          timer: 3000
+        })
+      }
+    }
     this.specialistInput.nativeElement.value = '';
     this.specialistCodeControl.setValue(null);
   }
@@ -600,7 +648,13 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
           this._frm.controls['avatar'].setValue(file);
           reader.readAsDataURL(file);
         } else {
-          this._avatarError = "File tải lên không phải file ảnh";
+          swal({
+            title: 'Thông báo',
+            text: 'File tải lên không phải ảnh',
+            type: 'warning',
+            timer: 3000
+          });
+          this._frm.controls['avatar'].setValue(null);
         }
       }
     }
@@ -645,6 +699,15 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     }
   }
 
+  ruleEmail(event: any) {
+    const pattern = /^[a-zA-Z0-9\.\-\_\@]*$/;
+    if (!pattern.test(event.target.value)) {
+      event.target.value = event.target.value.replace(/[^a-zA-Z0-9\.\-\_\@]/g, "");
+    }
+  }
+
+
+
   checkSpecial: boolean;
 
   fullNameInput($event) {
@@ -661,6 +724,21 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
 
   //SUBMIT
   submit() {
+    if(this._frm.controls['provinceCode'].value==undefined){
+      this._frm.controls['provinceCode'].setValue(null);
+    }
+    if(this._frm.controls['districtCode'].value==undefined){
+      this._frm.controls['districtCode'].setValue(null);
+    }
+    if(this._frm.controls['ethnicityCode'].value==undefined){
+      this._frm.controls['ethnicityCode'].setValue(null);
+    }
+    if(this._frm.controls['educationCountryCode'].value==undefined){
+      this._frm.controls['educationCountryCode'].setValue(null);
+    }
+    if(this._frm.controls['nationCode'].value==undefined){
+      this._frm.controls['nationCode'].setValue(null);
+    }
     var params = _.pick(this._frm.value, [
       'doctorId',
       'fullName',
@@ -669,7 +747,6 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
       'titleCode',
       'positionCode',
       'nationCode',
-      'ethnicityCode',
       'ethnicityCode',
       'certificationDate',
       'academicId',
@@ -751,7 +828,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
         timer: 3000
       });
     }
-    if (this._frm.controls['certificationCode'].value == "" && this.certificationDatePicker.nativeElement.value != "") {
+    if ((this._frm.controls['certificationCode'].value === "" || this._frm.controls['certificationCode'].value==null) && (this.certificationDatePicker.nativeElement.value != '' || this.certificationDatePicker.nativeElement.valueAsDate != null)) {
       return swal({
         title: 'Thông báo',
         text: 'Yêu cầu nhập mã giấy phép hành nghề trước khi nhập ngày cấp',
@@ -759,15 +836,69 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
         timer: 3000
       });
     }
-    console.log(priceFrom+" "+priceTo);
-    if (priceFrom >= priceTo && priceFrom != 0 && priceTo != 0 && priceTo!=null && priceTo!=null) {
+    if(priceFrom==0){
+      this.checkPriceFrom=true;
       return swal({
         title: 'Thông báo',
-        text: 'Giá khám từ phải nhỏ hơn giá khám đến',
+        text: 'Giá trị nhập vào phải lớn hơn 0',
         type: 'warning',
         timer: 3000
       });
     }
+    if(priceTo==0){
+      this.checkPriceTo=true;
+      return swal({
+        title: 'Thông báo',
+        text: 'Giá trị nhập vào phải lớn hơn 0',
+        type: 'warning',
+        timer: 3000
+      });
+    }
+    if (priceFrom == null || priceFrom == "") {
+      if (priceTo != null && priceTo != "") {
+        this.checkPriceTo=true;
+        return swal({
+          title: 'Thông báo',
+          text: 'Giá khám từ phải nhỏ hơn giá khám đến',
+          type: 'warning',
+          timer: 3000
+        });
+      }
+      else {
+        if (priceFrom >= priceTo) {
+          this.checkPriceTo=true;
+          return swal({
+            title: 'Thông báo',
+            text: 'Giá khám từ phải nhỏ hơn giá khám đến',
+            type: 'warning',
+            timer: 3000
+          });
+        }
+      }
+    }
+    if (priceTo == null || priceTo == "") {
+      if (priceFrom != null && priceFrom != "") {
+        this.checkPriceFrom=true;
+        return swal({
+          title: 'Thông báo',
+          text: 'Giá khám từ phải nhỏ hơn giá khám đến',
+          type: 'warning',
+          timer: 3000
+        });
+      }
+      else {
+        if (priceFrom >= priceTo) {
+          this.checkPriceFrom=true;
+          return swal({
+            title: 'Thông báo',
+            text: 'Giá khám từ phải nhỏ hơn giá khám đến',
+            type: 'warning',
+            timer: 3000
+          });
+        }
+      }
+    }
+
     if (this.obj) {
       params.doctorId = this.obj.doctorId;
     }
@@ -795,6 +926,8 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     if (this.appSession.userId && this._isNew == false) {
       params.updateUserId = this.appSession.userId;
     }
+
+
 
     if (this._specialistChip) {
       params.specialist = this._specialistChip;
@@ -827,7 +960,8 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
           swal({
             title: this.l('SaveSuccess'),
             text: '',
-            type: 'success'
+            type: 'success',
+            timer: 3000
           });
           if (this.continueAdd.checked == true) {
             this.openDialogDoctor();
@@ -839,14 +973,14 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
           swal({
             title: this.l('SaveSuccess'),
             text: '',
-            type: 'success'
+            type: 'success',
+            timer: 3000
           });
           this.dialogRef.close();
         }, err => { });
     }
-
-
   }
+
 
   openDialogDoctor(): void {
     const dialogRef = this.dialog.open(this.dialogComponent, { minWidth: 'calc(100vw/1.5)', maxWidth: 'calc(100vw - 100px)', disableClose: true });

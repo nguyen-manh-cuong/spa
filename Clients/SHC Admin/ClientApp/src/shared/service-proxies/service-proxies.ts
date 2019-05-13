@@ -2816,6 +2816,7 @@ export class AuthenticateModel implements IAuthenticateModel {
     userNameOrEmailAddress: string;
     password: string;
     rememberClient: boolean | undefined;
+    healthfacilities: number;
 
     constructor(data?: IAuthenticateModel) {
         if (data) {
@@ -2831,6 +2832,7 @@ export class AuthenticateModel implements IAuthenticateModel {
             this.userNameOrEmailAddress = data["userNameOrEmailAddress"];
             this.password = data["password"];
             this.rememberClient = data["rememberClient"];
+            this.healthfacilities = data["healthfacilities"];
         }
     }
 
@@ -2846,6 +2848,7 @@ export class AuthenticateModel implements IAuthenticateModel {
         data["userNameOrEmailAddress"] = this.userNameOrEmailAddress;
         data["password"] = this.password;
         data["rememberClient"] = this.rememberClient;
+        data["healthfacilities"] = this.healthfacilities;
         return data;
     }
 
@@ -2861,6 +2864,7 @@ export interface IAuthenticateModel {
     userNameOrEmailAddress: string;
     password: string;
     rememberClient: boolean | undefined;
+    healthfacilities: number;
 }
 
 export class AuthenticateResultModel implements IAuthenticateResultModel {

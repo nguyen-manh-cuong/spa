@@ -38,6 +38,8 @@ namespace SHCServer
         [Required]
         [StringLength(32)]
         public string Password { get; set; }
+        [Required]
+        public int Healthfacilities { get; set; }
         public bool RememberClient { get; set; }
     }
 

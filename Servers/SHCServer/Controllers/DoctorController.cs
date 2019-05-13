@@ -104,7 +104,7 @@ namespace SHCServer.Controllers
                     }
                     if (string.Equals(key, "info") && !string.IsNullOrEmpty(value))
                     {
-                        objs = objs.Where(d => d.FullName.ToString().Contains(value.Trim()) || (d.PhoneNumber.ToString().Contains(value.Trim())));
+                        objs = objs.Where(d => d.FullName.ToString().Contains(value.Trim()) || (d.PhoneNumber.Equals(value.Trim())));
                     }
                 }
             }
@@ -245,6 +245,16 @@ namespace SHCServer.Controllers
         public IActionResult Create([FromForm] DoctorInputViewModel doctor)
         {
             bool checkCertificationDate = true;
+
+            if (!string.IsNullOrEmpty(doctor.CertificationCode))
+            {
+                var checkCertification = _context.Query<Doctor>().Where(d => d.CertificationCode.Equals(doctor.CertificationCode)).FirstOrDefault();
+
+                if (checkCertification != null)
+                {
+                    return StatusCode(412, _excep.Throw("Mã giấy phép hành nghề đã tồn tại"));
+                }
+            }
 
             try
             {
@@ -400,6 +410,17 @@ namespace SHCServer.Controllers
         {
 
             bool checkCertificationDate = true;
+
+            if (!string.IsNullOrEmpty(doctor.CertificationCode))
+            {
+                var checkCertification = _context.Query<Doctor>().Where(d => d.CertificationCode.Equals(doctor.CertificationCode)).FirstOrDefault();
+
+                if (checkCertification != null && checkCertification.DoctorId!=doctor.DoctorId)
+                {
+                    return StatusCode(412, _excep.Throw("Mã giấy phép hành nghề đã tồn tại"));
+                }
+            }
+
             try
             {
                 if (Convert.ToDateTime(doctor.CertificationDate).Year == 1)
