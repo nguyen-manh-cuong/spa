@@ -83,7 +83,7 @@ namespace SHCServer.Controllers
         public IActionResult CreatePackageDistribute([FromBody] PackageDistributeInputViewModelArray obj)
         {
             var package = _context.Query<SmsPackage>().Where(g => g.Id == obj.SmsPackageId && g.IsDelete == false).FirstOrDefault();
-            if (package == null) return StatusCode(500, _excep.Throw("Gói SMS đã chọn không tồn tại."));
+            if (package == null) return StatusCode(406, _excep.Throw(406, "Gói SMS đã chọn không tồn tại."));
 
             List<SmsPackagesDistribute> lstPD = new List<SmsPackagesDistribute>();
             List<SmsPackageUsed> lstPU = new List<SmsPackageUsed>();

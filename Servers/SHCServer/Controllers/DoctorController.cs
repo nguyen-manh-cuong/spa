@@ -252,7 +252,7 @@ namespace SHCServer.Controllers
 
                 if (checkCertification != null)
                 {
-                    return StatusCode(412, _excep.Throw("Mã giấy phép hành nghề đã tồn tại"));
+                    return StatusCode(406, _excep.Throw(406, "Mã giấy phép hành nghề đã tồn tại"));
                 }
             }
 
@@ -417,7 +417,7 @@ namespace SHCServer.Controllers
 
                 if (checkCertification != null && checkCertification.DoctorId!=doctor.DoctorId)
                 {
-                    return StatusCode(412, _excep.Throw("Mã giấy phép hành nghề đã tồn tại"));
+                    return StatusCode(406, _excep.Throw(406, "Mã giấy phép hành nghề đã tồn tại"));
                 }
             }
 
@@ -642,7 +642,7 @@ namespace SHCServer.Controllers
 
             if (reader.Read() == true)
             {
-                return StatusCode(400, _excep.Throw("Xóa không thành công!", "Không thể xóa bác sĩ đang có lịch khám!"));
+                return StatusCode(406, _excep.Throw(406, "Xóa không thành công!", "Không thể xóa bác sĩ đang có lịch khám!"));
             }
             else
             {

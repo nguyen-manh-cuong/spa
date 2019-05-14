@@ -412,7 +412,7 @@ namespace SHCServer.Controllers
                 SaveInfoSmsError(_connectionString, infoInput, "Không thể gửi tin do không sử dụng gói sms nào");
 
                 if (infoInput.type == 4) return Json(new ActionResultDto { Result = "" });
-                else return StatusCode(422, _excep.Throw("Không thể gửi tin do số lượng tin nhắn vượt quá gói SMS hiện tại. Mời bạn mua thêm gói SMS"));
+                else return StatusCode(406, _excep.Throw(406, "Không thể gửi tin do số lượng tin nhắn vượt quá gói SMS hiện tại. Mời bạn mua thêm gói SMS"));
             } 
             
             long totalSms = 0;
@@ -430,7 +430,7 @@ namespace SHCServer.Controllers
                 SaveInfoSmsError(_connectionString, infoInput, "Không thể gửi tin do số lượng tin nhắn vượt quá gói SMS hiện tại");
 
                 if (infoInput.type == 4) return Json(new ActionResultDto { Result = "" });
-                else return StatusCode(422, _excep.Throw("Không thể gửi tin do số lượng tin nhắn vượt quá gói SMS hiện tại. Mời bạn mua thêm gói SMS"));
+                else return StatusCode(406, _excep.Throw(406, "Không thể gửi tin do số lượng tin nhắn vượt quá gói SMS hiện tại. Mời bạn mua thêm gói SMS"));
             }
 
             //Xu ly tin nhan
@@ -510,7 +510,7 @@ namespace SHCServer.Controllers
             {
                 SaveInfoSmsBookingError(_connectionString, infoInput, "Không thể gửi tin do không sử dụng gói sms nào");
                 if (infoInput.type == 4) return Json(new ActionResultDto { Result = "" });
-                else return StatusCode(422, _excep.Throw("Không thể gửi tin do số lượng tin nhắn vượt quá gói SMS hiện tại. Mời bạn mua thêm gói SMS"));
+                else return StatusCode(406, _excep.Throw(406, "Không thể gửi tin do số lượng tin nhắn vượt quá gói SMS hiện tại. Mời bạn mua thêm gói SMS"));
             }
 
             long totalSms = 0;
@@ -525,7 +525,7 @@ namespace SHCServer.Controllers
             {
                 SaveInfoSmsBookingError(_connectionString, infoInput, "Không thể gửi tin do số lượng tin nhắn vượt quá gói SMS hiện tại");
                 if (infoInput.type == 4) return Json(new ActionResultDto { Result = "" });
-                else return StatusCode(422, _excep.Throw("Không thể gửi tin do số lượng tin nhắn vượt quá gói SMS hiện tại. Mời bạn mua thêm gói SMS"));
+                else return StatusCode(406, _excep.Throw(406, "Không thể gửi tin do số lượng tin nhắn vượt quá gói SMS hiện tại. Mời bạn mua thêm gói SMS"));
             }
 
             //Xu ly tin nhan

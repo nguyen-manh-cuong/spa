@@ -87,7 +87,7 @@ namespace SHCServer.Controllers
                     // lay ma code của dơn vị hiện tại + admin
                     if(code != null)
                     {
-                        return StatusCode(422, _excep.Throw("Tạo khung giờ khám không thành công !", "Mã khung giờ khám đã tồn tại!"));
+                        return StatusCode(406,_excep.Throw( 406, "Tạo khung giờ khám không thành công !", "Mã khung giờ khám đã tồn tại!"));
                     }
                     else
                     {
@@ -137,7 +137,7 @@ namespace SHCServer.Controllers
                     }
                     else
                     {
-                        return StatusCode(422, _excep.Throw("Tạo khung giờ khám không thành công !", "Mã khung giờ khám đã tồn tại"));
+                        return StatusCode(406, _excep.Throw(406, "Tạo khung giờ khám không thành công !", "Mã khung giờ khám đã tồn tại!"));
                     }
                 }
                 #endregion

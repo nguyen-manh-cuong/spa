@@ -99,7 +99,7 @@ namespace SHCServer.Controllers
                 }
                 else
                 {
-                    return StatusCode(422, _excep.Throw("Tạo không thành công !", "Mã chuyên khoa đã tồn tại"));
+                    return StatusCode(406, _excep.Throw(406, "Tạo không thành công !", "Mã chuyên khoa đã tồn tại"));
                 }
 
                 _context.Session.CommitTransaction();
