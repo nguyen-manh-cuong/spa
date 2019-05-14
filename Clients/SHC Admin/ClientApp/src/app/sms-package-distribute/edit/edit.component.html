@@ -14,7 +14,7 @@
               <div class="col-md-6 disabled">
                   <mat-form-field appearance="outline" class="w-100">
                       <mat-label>{{l('PackageDistributeHealthFacilities')}}</mat-label>
-                      <mat-select formControlName="healthFacilitiesId" [required]="true">
+                      <mat-select formControlName="healthFacilitiesId" [required]="true" id="healthFacilitiesId">
                           <mat-option *ngFor="let o of _medicalFacility" [value]="o.healthFacilitiesId">{{ o.code + '-' + o.name }}</mat-option>
                       </mat-select>
                       <mat-icon matSuffix

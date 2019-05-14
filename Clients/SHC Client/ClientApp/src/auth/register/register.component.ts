@@ -82,8 +82,8 @@ export class RegisterComponent implements OnInit {
             healthFacilitiesName: [this._user.healthFacilitiesName],
             specialist: [this._user.specialist],
             codeCapcha: [''],
-            cmnd: [null, [FileValidator.maxContentSize(20000000)]],
-            gp: [null, [FileValidator.maxContentSize(20000000)]],
+            cmnd: [null],
+            gp: [null],
             isUsingdoctor: [this._obj.isUsingdoctor],
             isUsingCall: [this._obj.isUsingCall],
             isUsingUpload: [this._obj.isUsingUpload],
@@ -265,9 +265,19 @@ export class RegisterComponent implements OnInit {
         }
     }
 
-    removeFile(i: number) {
-        this._idCardUrls.splice(i, 1);
-        this.arrayIdCard.splice(i, 1);
+    removeFile(i: number, type: number) {
+        console.log(i);
+        if (type == 1) {
+            this.arrayIdCard.splice(i, 1);
+            this._idCardUrls.splice(i, 1);
+            this.frmUser.controls['cmnd'].setValue({ files: this.arrayIdCard });
+        }
+        else {
+            this._certificateUrls.splice(i, 1);
+            this.arrayCertificate.splice(i, 1);
+            this.frmUser.controls['gp'].setValue({ files: this.arrayCertificate });
+        }
+        
         //for (var i = 0; i < this._idCardUrls.length; i++) {
         //    if (storedFiles[i].name === file) {
         //        storedFiles.splice(i, 1);
@@ -284,6 +294,14 @@ export class RegisterComponent implements OnInit {
             for (let file of files) {
                 let reader = new FileReader();
                 reader.readAsDataURL(file);
+                console.log(file.size);
+                if (file.size > 5242880) {
+                    return swal({
+                        title: 'Thông báo',
+                        text: `'File ${file.name} vượt quá 5MB`,
+                        type: 'warning'
+                    });
+                }
                 if (file.type == 'image/jpeg' || file.type == 'image/png') {
                     if (type == 'idCard') {
                         reader.onload = (e: any) => {
@@ -310,7 +328,7 @@ export class RegisterComponent implements OnInit {
 
                     if (type == 'certificate') {
                         reader.onload = (e: any) => {
-                            this._certificateUrls.push({ url: "/assets/images/212328-200.png", name: file });
+                            this._certificateUrls.push({ url: "/assets/images/24-512.png", name: file });
                         }
                         this.arrayCertificate.push(file);
                     }

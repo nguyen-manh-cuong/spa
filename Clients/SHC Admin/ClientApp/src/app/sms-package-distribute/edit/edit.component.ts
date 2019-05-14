@@ -94,30 +94,33 @@ export class packagedistributeEditComponent extends AppComponentBase implements 
     }
 
     submit() {
-         const yearNow = new Date().getFullYear();
-        if(this._frmpackagedistributeedit.controls['yearStart'].value < yearNow){
-             this.yearStart.nativeElement.focus();
-             return swal({
-                 title:'Thông báo', 
-                 text:'Từ năm phải lớn hơn hoặc bằng năm hiện tại', 
-                 type:'warning',
-                 timer:3000});
-         }
-         if(this._frmpackagedistributeedit.controls['yearEnd'].value < yearNow){        
-             this.yearEnd.nativeElement.focus();
-             return swal({
-                 title:'Thông báo', 
-                 text:'Đến năm phải lớn hơn hoặc bằng năm hiện tại', 
-                 type:'warning',
-                 timer:3000});
-             }
-             if(this._frmpackagedistributeedit.controls['yearEnd'].value < this._frmpackagedistributeedit.controls['yearStart'].value){
-                 return swal({
-                     title:'Thông báo', 
-                     text:'Đến năm phải lớn hơn hoặc bằng Từ năm', 
-                     type:'warning',
-                     timer:3000});
-                 }   
+        const yearNow = new Date().getFullYear();
+        if (this._frmpackagedistributeedit.controls['yearStart'].value < yearNow) {
+            this.yearStart.nativeElement.focus();
+            return swal({
+                title: 'Thông báo',
+                text: 'Từ năm phải lớn hơn hoặc bằng năm hiện tại',
+                type: 'warning',
+                timer: 3000
+            });
+        }
+        if (this._frmpackagedistributeedit.controls['yearEnd'].value < yearNow) {
+            this.yearEnd.nativeElement.focus();
+            return swal({
+                title: 'Thông báo',
+                text: 'Đến năm phải lớn hơn hoặc bằng năm hiện tại',
+                type: 'warning',
+                timer: 3000
+            });
+        }
+        if (this._frmpackagedistributeedit.controls['yearEnd'].value < this._frmpackagedistributeedit.controls['yearStart'].value) {
+            return swal({
+                title: 'Thông báo',
+                text: 'Đến năm phải lớn hơn hoặc bằng Từ năm',
+                type: 'warning',
+                timer: 3000
+            });
+        }
 
         this._frmpackagedistributeedit.value.healthFacilitiesId = this.obj.healthFacilitiesId;
         this._frmpackagedistributeedit.value.month = this._frmpackagedistributeedit.value.month == null || this._frmpackagedistributeedit.value.month == "" ? 1 : this._frmpackagedistributeedit.value.month;

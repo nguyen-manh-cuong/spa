@@ -37,7 +37,6 @@ export const MY_FORMATS = {
 
 
 export class IndexComponent extends PagedListingComponentBase<ISmsLogs> implements OnInit, AfterViewInit {
-    date: Date = new Date();
     settings = {
         bigBanner: true,
         timePicker: true,

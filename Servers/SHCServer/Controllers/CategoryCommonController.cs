@@ -25,7 +25,7 @@ namespace SHCServer.Controllers
         [Route("api/catcommon")]
         public IActionResult GetAll(int skipCount = 0, int maxResultCount = 10, string sorting = null, string filter = null)
         {
-            var objs = _context.Query<CategoryCommon>().Where(o => o.Type == "CHUYENKHOA" && o.IsDelete == false);
+            var objs = _context.Query<CategoryCommon>().Where(o => o.Type == "CHUYENKHOA" && o.IsDelete == false && o.IsActive == true);
 
             if (filter != null)
             {
