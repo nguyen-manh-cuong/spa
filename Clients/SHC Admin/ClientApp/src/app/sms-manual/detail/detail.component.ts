@@ -7,6 +7,7 @@ import { ValidationRule } from '../../../shared/common/common';
 
 import * as _ from 'lodash';
 import { AppComponentBase } from '../../../shared/app-component-base';
+import { PagedListingComponentBase } from '../../../shared/paged-listing-component-base';
 
 @Component({
     selector: 'app-detail',
@@ -15,6 +16,10 @@ import { AppComponentBase } from '../../../shared/app-component-base';
     encapsulation: ViewEncapsulation.None
 })
 export class DetailComponent extends AppComponentBase implements OnInit {
+    public pageSize: number = 20;
+    public pageNumber: number = 1;
+    public pageSizeOptions: Array<number> = [5, 10, 20, 50];
+    public totalItems: number;
 
     _frm: FormGroup;
     displayedColumns = ['_message', '_sentSmsDate', '_status'];
@@ -48,7 +53,7 @@ export class DetailComponent extends AppComponentBase implements OnInit {
                     this.smsArr.push(obj);
                 }
                 this.dataSource.data = this.smsArr;
-                console.log(this.smsArr);
+                this.totalItems = smsData.totalCount;
             });
         }
 

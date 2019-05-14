@@ -120,7 +120,7 @@
                                     </div>
 
                                     <div class="col-xs-12 col-md-8">
-                                        <input #fullName type="text" formControlName="fullName" name="name" id="name"
+                                        <input #fullName type="text" formControlName="fullName" name="name" id="fullName"
                                             class="validate form-control" maxlength="255">
                                         <validation [control]="frmUser.controls['fullName']"></validation>
                                     </div>
@@ -148,7 +148,7 @@
                                     <div class="col-xs-12 col-md-8">
                                         <div class="row">
                                             <div class="col-xs-4">
-                                                <select id="birthD" class="form-control" placeholder="Ngày" (change)="onSelectBirthDay($event)">
+                                                <select id="birthDay" class="form-control" placeholder="Ngày" (change)="onSelectBirthDay($event)">
                                                     <option *ngFor="let o of _dates" [ngValue]="o">{{o}}</option>
                                                 </select>
                                             </div>
@@ -176,7 +176,7 @@
                                     </div>
 
                                     <div class="col-xs-12 col-md-8">
-                                        <input type="text"  formControlName="phoneNumber" name="mobile_phone" id="mobile_phone" 
+                                        <input type="text"  formControlName="phoneNumber" name="mobile_phone" id="phoneNumber" 
                                         class="form-control" (keyup)="rulePhoneNumber($event)" minlength="10" maxlength="20">
                                         <validation [control]="frmUser.controls['phoneNumber']"></validation>
                                     </div>
@@ -237,7 +237,7 @@
 
                                     <div class="col-xs-12 col-md-8">
                                         <input type="password" formControlName="confirmPassword" name="confirm_password"
-                                            id="confirm_password" title="Nhập lại mật khẩu"
+                                            id="confirmPassword" title="Nhập lại mật khẩu"
                                             placeholder="Nhập lại mật khẩu"
                                             class="validate form-control" minlength="8" maxlength="255">
                                         <validation [control]="frmUser.controls['confirmPassword']"></validation>
@@ -312,7 +312,7 @@
                                         </div>
 
                                         <div class="col-xs-12 col-md-8">
-                                            <input type="text" formControlName="identification" mask="0*" name="prof_spec"
+                                            <input type="text" id="identification" formControlName="identification" mask="0*" name="prof_spec"
                                                 class="form-control" minlength="9" maxlength="12">
                                             <validation [control]="frmUser.controls['identification']"></validation>
                                         </div>
@@ -403,7 +403,7 @@
                                                                     <p class="img-name">{{o.name.name}}</p>
                                                                 </div>
                                                                 <div style="padding: 15px" class="col-md-2">
-                                                                    <span class="btn btn-sm btn-default btn-delete" (click)="removeFile(i)">
+                                                                    <span class="btn btn-sm btn-default btn-delete" (click)="removeFile(i, 1)">
                                                                         <i aria-hidden="true"></i>Xóa file
                                                                     </span>
                                                                 </div>
@@ -440,7 +440,7 @@
                                                             <p class="img-name">{{o.name.name}}</p>
                                                         </div>
                                                         <div style="padding: 15px" class="col-md-2">
-                                                            <span class="btn btn-sm btn-default btn-delete" (click)="removeFile(i)">
+                                                            <span class="btn btn-sm btn-default btn-delete" (click)="removeFile(i, 2)">
                                                                 <i aria-hidden="true"></i>Xóa file
                                                             </span>
                                                         </div>
@@ -574,7 +574,7 @@
                                 <a> điều khoản sử dụng </a> của Mangyte.vn 
                             </label>
                             <div class="col-sm-12 text-center iq-mall-20">
-                                <button type="submit" class="btn btn-lg btn-aqua btn-curvy btn-longer-width" [disabled]="!frmUser.value['rules']" (click)="submit()"><i
+                                <button type="submit" class="btn btn-lg btn-aqua btn-curvy btn-longer-width" [disabled]="frmUser.invalid" (click)="submit()"><i
                                     class="fa fa-check-square-o" aria-hidden="true"></i> Đăng ký</button>
                             </div>
                         </form>
