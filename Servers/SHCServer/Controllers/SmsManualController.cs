@@ -508,6 +508,7 @@ namespace SHCServer.Controllers
             var packages = _context.Query<SmsPackagesDistribute>().Where(pd => pd.HealthFacilitiesId == infoInput.healthFacilitiesId && pd.YearEnd >= DateTime.Now.Year && pd.MonthEnd >= DateTime.Now.Month && pd.IsDelete == false && pd.IsActive == true).Select(u => new PackageDistributeViewModel(u, _connectionString)).ToList();
             if (packages.Count == 0)
             {
+                SaveInfoSmsBookingError(_connectionString, infoInput, "Không thể gửi tin do không sử dụng gói sms nào");
                 if (infoInput.type == 4) return Json(new ActionResultDto { Result = "" });
                 else return StatusCode(406, _excep.Throw(406, "Không thể gửi tin do số lượng tin nhắn vượt quá gói SMS hiện tại. Mời bạn mua thêm gói SMS"));
             }
@@ -522,6 +523,7 @@ namespace SHCServer.Controllers
 
             if (totalSms < totalSmsSend)
             {
+                SaveInfoSmsBookingError(_connectionString, infoInput, "Không thể gửi tin do số lượng tin nhắn vượt quá gói SMS hiện tại");
                 if (infoInput.type == 4) return Json(new ActionResultDto { Result = "" });
                 else return StatusCode(406, _excep.Throw(406, "Không thể gửi tin do số lượng tin nhắn vượt quá gói SMS hiện tại. Mời bạn mua thêm gói SMS"));
             }
@@ -612,6 +614,30 @@ namespace SHCServer.Controllers
         }
 
         public static void SaveInfoSmsError(string configuration, SmsInfoInputViewModel infoInput, string message)
+        {
+            DbContext _context = new MySqlContext(new MySqlConnectionFactory(configuration));
+            List<SmsLogs> lstSmsLog = new List<SmsLogs>();
+
+            foreach (var resp in infoInput.lstMedicalHealthcareHistories)
+            {
+                SmsLogs smsLog = new SmsLogs();
+                smsLog.PhoneNumber = resp.PhoneNumber;
+                smsLog.Message = "";
+                smsLog.ResultMessage = message;
+                smsLog.Status = 0;
+                smsLog.HealthFacilitiesId = infoInput.healthFacilitiesId.Value;
+                smsLog.SmsTemplateId = 0;
+                smsLog.SmsPackagesDistributeId = 0;
+                smsLog.SentDate = DateTime.Now;
+                smsLog.LogType = 1;
+
+                lstSmsLog.Add(smsLog);
+            }
+
+            _context.InsertRange(lstSmsLog);
+        }
+
+        public static void SaveInfoSmsBookingError(string configuration, SmsInfoBookingInputViewModel infoInput, string message)
         {
             DbContext _context = new MySqlContext(new MySqlConnectionFactory(configuration));
             List<SmsLogs> lstSmsLog = new List<SmsLogs>();
