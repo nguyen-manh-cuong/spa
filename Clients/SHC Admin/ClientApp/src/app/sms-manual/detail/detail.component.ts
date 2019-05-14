@@ -1,13 +1,11 @@
-import { Component, OnInit, Inject, Injector, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, Inject, Injector, ViewEncapsulation, AfterViewInit, ViewChild } from '@angular/core';
 import { IMedicalHealthcareHistories } from '../../../shared/Interfaces';
 import { DataService } from '../../../shared/service-proxies/service-data';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatTableDataSource } from '@angular/material';
-import { ValidationRule } from '../../../shared/common/common';
+import { MAT_DIALOG_DATA, MatTableDataSource, MatPaginator } from '@angular/material';
 
 import * as _ from 'lodash';
 import { AppComponentBase } from '../../../shared/app-component-base';
-import { PagedListingComponentBase } from '../../../shared/paged-listing-component-base';
 
 @Component({
     selector: 'app-detail',
@@ -15,7 +13,7 @@ import { PagedListingComponentBase } from '../../../shared/paged-listing-compone
     styleUrls: ['./detail.component.scss'],
     encapsulation: ViewEncapsulation.None
 })
-export class DetailComponent extends AppComponentBase implements OnInit {
+export class DetailComponent extends AppComponentBase implements OnInit, AfterViewInit {
     public pageSize: number = 20;
     public pageNumber: number = 1;
     public pageSizeOptions: Array<number> = [5, 10, 20, 50];
@@ -31,6 +29,8 @@ export class DetailComponent extends AppComponentBase implements OnInit {
     dataSource = new MatTableDataSource();
     smsArr = [];
 
+    @ViewChild(MatPaginator) paginator: MatPaginator;
+
     constructor(
         injector: Injector,
         private _dataService: DataService,
@@ -43,17 +43,20 @@ export class DetailComponent extends AppComponentBase implements OnInit {
     ngOnInit() {
         if (this.obj) {
             this._obj = _.clone(this.obj);
+            abp.ui.setBusy('#form-dialog');
             this._dataService.getAll(this.api, JSON.stringify({ 'patientId': this._obj.patientId, 'objectType': 1 }), null).subscribe(smsData => {
                 for (var item of smsData.items) {
                     let obj = {
                         message: item.message,
-                        sentSmsDate: (item.sentDay > 9 ? item.sentDay : ('0' + item.sentDay)) + '/' + (item.sentMonth > 9 ? item.sentMonth : ('0' + item.sentMonth)) + '/' + item.sentYear ,
+                        sentSmsDate: item.sentDate,
                         status: item.status == 1 ? 'Thành công' : 'Lỗi'
                     }
+                    console.log(item);
                     this.smsArr.push(obj);
                 }
                 this.dataSource.data = this.smsArr;
                 this.totalItems = smsData.totalCount;
+                abp.ui.clearBusy('#form-dialog');
             });
         }
 
@@ -68,5 +71,9 @@ export class DetailComponent extends AppComponentBase implements OnInit {
             birthDay: [this._birthDay]
         };
         this._frm = this._formBuilder.group(this._context);
+    }
+
+    ngAfterViewInit(): void {
+        this.dataSource.paginator = this.paginator;
     }
 }
