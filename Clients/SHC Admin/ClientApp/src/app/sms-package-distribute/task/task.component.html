@@ -84,7 +84,7 @@
           <button class="mr-3" mat-raised-button color="primary" mat-dialog-close>{{l("Close")}}</button>
           <button mat-raised-button color="primary"
                   (click)="submit()"
-                  [disabled]="((_frmpackagedistribute.controls['yearStart'].invalid) || (_frmpackagedistribute.controls['yearEnd'].invalid) || (_frmpackagedistribute.controls['monthStart'].value > _frmpackagedistribute.controls['monthEnd'].value))">
+                  [disabled]="_frmpackagedistribute.invalid">
 
               {{l("Save")}}
           </button>
