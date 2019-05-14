@@ -75,22 +75,6 @@ export class packagedistributeEditComponent extends AppComponentBase implements 
             userId: [],
         };
         this._frmpackagedistributeedit = this._formBuilder.group(this._context);
-
-        setTimeout(() => {
-            if (this._smsLogs.length > 0) {
-                this._frmpackagedistributeedit.controls['healthFacilitiesId'].disable();
-                this._frmpackagedistributeedit.controls['smsPackageId'].disable();
-                this._frmpackagedistributeedit.controls['monthStart'].disable();
-                this._frmpackagedistributeedit.controls['yearStart'].disable();
-                this._frmpackagedistributeedit.controls['monthEnd'].disable();
-                this._frmpackagedistributeedit.controls['yearEnd'].disable();
-                this._frmpackagedistributeedit.controls['smsBrandsId'].disable();
-                this._frmpackagedistributeedit.controls['isActive'].disable();
-            } else {
-                this._frmpackagedistributeedit.controls['smsPackageId'].disable();
-                this._frmpackagedistributeedit.controls['healthFacilitiesId'].disable();
-            }
-        }, 1000);
     }
 
     submit() {

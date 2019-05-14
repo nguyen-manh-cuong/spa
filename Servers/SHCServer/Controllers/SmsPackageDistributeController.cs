@@ -140,10 +140,10 @@ namespace SHCServer.Controllers
         {
             try
             {
-                if (_context.Query<SmsLogs>().Where(pd => pd.SmsPackagesDistributeId == obj.Id && pd.Status == 1).Count() > 0)
-                {
-                    return StatusCode(500, _excep.Throw("Sửa gói không thành công.", "Gói SMS đang được sử dụng!"));
-                }
+                //if (_context.Query<SmsLogs>().Where(pd => pd.SmsPackagesDistributeId == obj.Id && pd.Status == 1).Count() > 0)
+                //{
+                //    return StatusCode(500, _excep.Throw("Sửa gói không thành công.", "Gói SMS đang được sử dụng!"));
+                //}
 
                 _context.Session.BeginTransaction();
                 _context.Update<SmsPackagesDistribute>(g => g.Id == obj.Id, a => new SmsPackagesDistribute

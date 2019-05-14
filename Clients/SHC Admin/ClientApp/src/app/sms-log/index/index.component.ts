@@ -93,7 +93,6 @@ export class IndexComponent extends PagedListingComponentBase<ISmsLogs> implemen
             //this.endTime.nativeElement.value = moment(new Date()).format("DD/MM/YYYY");
             //this.startTime.nativeElement.focus();
             //this.endTime.nativeElement.focus();
-            console.log(this._startDate);
             this.customSearch();
         });
 
@@ -181,8 +180,6 @@ export class IndexComponent extends PagedListingComponentBase<ISmsLogs> implemen
         let yearStart = parseInt(this._startDate.slice(6, 10));
         let yearEnd = parseInt(this._endDate.slice(6, 10));
 
-        console.log(yearEnd);
-        console.log(yearStart);
         if (yearEnd - yearStart > 1 ) {
             return swal({
                 title:'Thông báo', 
@@ -193,8 +190,6 @@ export class IndexComponent extends PagedListingComponentBase<ISmsLogs> implemen
         if (yearEnd - yearStart == 1) {
             let monthStartTime = parseInt(this._startDate.slice(4, 6));
             let monthEndTime = parseInt(this._endDate.slice(4, 6));
-            console.log(monthStartTime);
-            console.log(monthEndTime);
             if (monthEndTime > monthStartTime) {
                 return swal({
                     title:'Thông báo', 

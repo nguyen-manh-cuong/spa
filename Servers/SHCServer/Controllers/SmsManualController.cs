@@ -199,10 +199,39 @@ namespace SHCServer.Controllers
                     param.Add(DbParam.Create("@ToDay", "32"));
                 }
 
-                if ((data.ContainsKey("fromMonth") && data["fromMonth"] != "13") || (data.ContainsKey("toMonth") && data["toMonth"] != "13") || (data.ContainsKey("fromDay") && data["fromDay"] != "32") || (data.ContainsKey("toDay") && data["toDay"] != "32"))
+                //if ((data.ContainsKey("fromMonth") && data["fromMonth"] != "13") || (data.ContainsKey("toMonth") && data["toMonth"] != "13") || (data.ContainsKey("fromDay") && data["fromDay"] != "32") || (data.ContainsKey("toDay") && data["toDay"] != "32"))
+                //{
+                //    clause.Add("WHERE (p.BirthMonth < @toMonth OR (p.BirthMonth = @toMonth AND p.BirthDate <= @ToDay)) AND (p.BirthMonth > @FromMonth OR (p.BirthMonth = @FromMonth AND p.BirthDate >= @FromDay))");
+                //    if ((data.ContainsKey("fromMonth") && data["fromMonth"] == "13") && (data.ContainsKey("fromDay") && data["fromDay"] != "32"))
+                //    {
+                //        clause.Add("AND p.BirthDate >= @FromDay");
+                //    }
+
+                //    if ((data.ContainsKey("toMonth") && data["toMonth"] == "13") && (data.ContainsKey("toDay") && data["toDay"] != "32"))
+                //    {
+                //        clause.Add("AND p.BirthDate <= @ToDay");
+                //    }
+                //}
+                if(data.ContainsKey("type") && (data["type"].ToString() == "cmsn"))
                 {
-                    clause.Add("WHERE (p.BirthMonth < @toMonth OR (p.BirthMonth = @toMonth AND p.BirthDate <= @ToDay)) AND (p.BirthMonth > @FromMonth OR (p.BirthMonth = @FromMonth AND p.BirthDate >= @FromDay))");
-                }
+                    if (data.ContainsKey("fromMonth") && int.Parse(data["fromMonth"].ToString()) <= int.Parse(data["toMonth"].ToString()))
+                    {
+                        clause.Add("WHERE (p.BirthMonth < @toMonth OR (p.BirthMonth = @toMonth AND p.BirthDate <= @ToDay)) AND (p.BirthMonth > @FromMonth OR (p.BirthMonth = @FromMonth AND p.BirthDate >= @FromDay))");
+                        if ((data.ContainsKey("fromMonth") && data["fromMonth"] == "13") && (data.ContainsKey("fromDay") && data["fromDay"] != "32"))
+                        {
+                            clause.Add("AND p.BirthDate >= @FromDay");
+                        }
+
+                        if ((data.ContainsKey("toMonth") && data["toMonth"] == "13") && (data.ContainsKey("toDay") && data["toDay"] != "32"))
+                        {
+                            clause.Add("AND p.BirthDate <= @ToDay");
+                        }
+                    }
+                    else
+                    {
+                        clause.Add("WHERE (p.BirthMonth < @toMonth OR (p.BirthMonth = @toMonth AND p.BirthDate <= @ToDay)) OR (p.BirthMonth > @FromMonth OR (p.BirthMonth = @FromMonth AND p.BirthDate >= @FromDay))");
+                    }
+                }                
             }
 
             clause.Add(" group by p.Code");
@@ -380,6 +409,8 @@ namespace SHCServer.Controllers
             //danh sach goi sms su dung
             var packages = _context.Query<SmsPackagesDistribute>().Where(pd => pd.HealthFacilitiesId == infoInput.healthFacilitiesId && pd.YearEnd >= DateTime.Now.Year && pd.MonthEnd >= DateTime.Now.Month && pd.IsDelete == false && pd.IsActive == true).Select(u => new PackageDistributeViewModel(u, _connectionString)).ToList();
             if (packages.Count == 0) {
+                SaveInfoSmsError(_connectionString, infoInput, "Không thể gửi tin do không sử dụng gói sms nào");
+
                 if (infoInput.type == 4) return Json(new ActionResultDto { Result = "" });
                 else return StatusCode(422, _excep.Throw("Không thể gửi tin do số lượng tin nhắn vượt quá gói SMS hiện tại. Mời bạn mua thêm gói SMS"));
             } 
@@ -396,6 +427,8 @@ namespace SHCServer.Controllers
             }
 
             if (totalSms < totalSmsSend) {
+                SaveInfoSmsError(_connectionString, infoInput, "Không thể gửi tin do số lượng tin nhắn vượt quá gói SMS hiện tại");
+
                 if (infoInput.type == 4) return Json(new ActionResultDto { Result = "" });
                 else return StatusCode(422, _excep.Throw("Không thể gửi tin do số lượng tin nhắn vượt quá gói SMS hiện tại. Mời bạn mua thêm gói SMS"));
             }
@@ -576,6 +609,30 @@ namespace SHCServer.Controllers
             }
 
             return _content;
+        }
+
+        public static void SaveInfoSmsError(string configuration, SmsInfoInputViewModel infoInput, string message)
+        {
+            DbContext _context = new MySqlContext(new MySqlConnectionFactory(configuration));
+            List<SmsLogs> lstSmsLog = new List<SmsLogs>();
+
+            foreach (var resp in infoInput.lstMedicalHealthcareHistories)
+            {
+                SmsLogs smsLog = new SmsLogs();
+                smsLog.PhoneNumber = resp.PhoneNumber;
+                smsLog.Message = "";
+                smsLog.ResultMessage = message;
+                smsLog.Status = 0;
+                smsLog.HealthFacilitiesId = infoInput.healthFacilitiesId.Value;
+                smsLog.SmsTemplateId = 0;
+                smsLog.SmsPackagesDistributeId = 0;
+                smsLog.SentDate = DateTime.Now;
+                smsLog.LogType = 1;
+
+                lstSmsLog.Add(smsLog);
+            }
+
+            _context.InsertRange(lstSmsLog);
         }
 
         public static string RepalaceContentSms(string content, MedicalHealthcareHistoriesViewModel mhh, string packageName)
