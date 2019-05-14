@@ -75,5 +75,4 @@ export class ValidationRule {
 
         return null;
     }
-
 }

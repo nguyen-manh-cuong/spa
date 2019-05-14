@@ -27,7 +27,7 @@ namespace SHCServer.Controllers
         #region location
         [HttpGet]
         [Route("api/provinces")]
-        public IActionResult GetAllProvinces() => Json(new ActionResultDto { Result = new { Items = _context.Query<Province>().OrderBy(p=>p.Name).ToList() } });
+        public IActionResult GetAllProvinces() => Json(new ActionResultDto { Result = new { Items = _context.Query<Province>().Where(o => o.IsActive == true && o.IsDelete == false).OrderBy(p=>p.Name).ToList() } });
 
         [HttpGet]
         [Route("api/districts")]
@@ -43,7 +43,7 @@ namespace SHCServer.Controllers
                 }
             }
 
-            return Json(new ActionResultDto { Result = new { Items = objs.OrderBy(d=>d.Name).ToList() } });
+            return Json(new ActionResultDto { Result = new { Items = objs.Where(o => o.IsActive == true && o.IsDelete == false).OrderBy(d=>d.Name).ToList() } });
         }
 
         [HttpGet]
@@ -60,7 +60,7 @@ namespace SHCServer.Controllers
                 }
             }
 
-            return Json(new ActionResultDto { Result = new { Items = objs.OrderBy(w=>w.Name).ToList() } });
+            return Json(new ActionResultDto { Result = new { Items = objs.Where(o => o.IsActive == true && o.IsDelete == false).OrderBy(w=>w.Name).ToList() } });
         }
         #endregion
 
@@ -69,7 +69,7 @@ namespace SHCServer.Controllers
         [Route("api/healthfacilitiesbooking")]
         public IActionResult GetHealthfacilitiesBooking(string filter)
         {
-            var objs = _context.Query<HealthFacilities>().Where(o => o.IsDelete == false && o.IsActive == true);
+            var objs = _context.Query<HealthFacilities>().Where(o => o.IsDelete == false && o.IsActive == true && o.AllowBooking == true);
             FilterHealthFacilities filterHf = JsonConvert.DeserializeObject<FilterHealthFacilities>(filter);
 
             if (filterHf.districtCode != null) objs = objs.Where((o) => o.DistrictCode == filterHf.districtCode);

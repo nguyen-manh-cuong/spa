@@ -243,12 +243,12 @@ namespace SHCServer
             try
             {
                 var response = requestMT.wsCpMtAsync(User, Password, CPCode, RequestID, UserID, ReceiverID, ServiceID, CommandCode, Content, ContentType);
-                var result = response.Result.@return;
+                var result = response != null ? response.Result.@return : null;
 
                 return new SmsRespone
                 {
-                    Code = result.result1,
-                    Result = result.message,
+                    Code = result != null ? result.result1 : 0,
+                    Result = result != null ? result.message : "Timed out",
                     Message = content.Message,
                     PhoneNumber = content.PhoneNumber,
                     HealthFacilitiesId = content.HealthFacilitiesId,
@@ -477,9 +477,9 @@ namespace SHCServer
         {
             return new ActionResultDto { Success = false, Error = new { Code = 500, Message = title, Details = detail } };
         }
-        internal object Throw(int code, string title, string detail)
+        internal object Throw(int code, string title, string detail="")
         {
-            return new ActionResultDto { Success = false, Error = new { Code = 401, Message = title, Details = detail } };
+            return new ActionResultDto { Success = false, Error = new { Code = code, Message = title, Details = detail } };
         } 
     }
 }

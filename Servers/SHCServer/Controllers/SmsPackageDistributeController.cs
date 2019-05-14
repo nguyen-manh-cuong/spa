@@ -83,7 +83,7 @@ namespace SHCServer.Controllers
         public IActionResult CreatePackageDistribute([FromBody] PackageDistributeInputViewModelArray obj)
         {
             var package = _context.Query<SmsPackage>().Where(g => g.Id == obj.SmsPackageId && g.IsDelete == false).FirstOrDefault();
-            if (package == null) return StatusCode(500, _excep.Throw("Gói SMS đã chọn không tồn tại."));
+            if (package == null) return StatusCode(406, _excep.Throw(406, "Gói SMS đã chọn không tồn tại."));
 
             List<SmsPackagesDistribute> lstPD = new List<SmsPackagesDistribute>();
             List<SmsPackageUsed> lstPU = new List<SmsPackageUsed>();
@@ -108,14 +108,14 @@ namespace SHCServer.Controllers
                 pu.SmsPackageId = obj.SmsPackageId;
                 pu.HealthFacilitiesId = obj.HealthFacilitiesId[i];
                 pu.Quantityused = package.Quantity;
-                pu.CreateDate = DateTime.Now;
+                pu.CreateDate = DateTime.Now; 
                 pu.CreateUserId = obj.UserId;
 
-                if (_context.Query<SmsPackagesDistribute>().Where(g => g.HealthFacilitiesId == pd.HealthFacilitiesId && g.SmsPackageId == obj.SmsPackageId && g.IsDelete == false).Count() > 0)
-                {
-                    var healthFacilities = _context.Query<HealthFacilities>().Where(h => h.HealthFacilitiesId == pd.HealthFacilitiesId).FirstOrDefault();
-                    return StatusCode(500, _excep.Throw("Đăng ký gói không thành công.", (healthFacilities != null ? healthFacilities.Name : "") + " đã đăng ký gói SMS."));
-                }
+                //if (_context.Query<SmsPackagesDistribute>().Where(g => g.HealthFacilitiesId == pd.HealthFacilitiesId && g.SmsPackageId == obj.SmsPackageId && g.IsDelete == false).Count() > 0)
+                //{
+                //    var healthFacilities = _context.Query<HealthFacilities>().Where(h => h.HealthFacilitiesId == pd.HealthFacilitiesId).FirstOrDefault();
+                //    return StatusCode(500, _excep.Throw("Đăng ký gói không thành công.", (healthFacilities != null ? healthFacilities.Name : "") + " đã đăng ký gói SMS."));
+                //}
 
                 //add
                 lstPU.Add(pu);
@@ -140,10 +140,10 @@ namespace SHCServer.Controllers
         {
             try
             {
-                if (_context.Query<SmsLogs>().Where(pd => pd.SmsPackagesDistributeId == obj.Id && pd.Status == 1).Count() > 0)
-                {
-                    return StatusCode(500, _excep.Throw("Sửa gói không thành công.", "Gói SMS đang được sử dụng!"));
-                }
+                //if (_context.Query<SmsLogs>().Where(pd => pd.SmsPackagesDistributeId == obj.Id && pd.Status == 1).Count() > 0)
+                //{
+                //    return StatusCode(500, _excep.Throw("Sửa gói không thành công.", "Gói SMS đang được sử dụng!"));
+                //}
 
                 _context.Session.BeginTransaction();
                 _context.Update<SmsPackagesDistribute>(g => g.Id == obj.Id, a => new SmsPackagesDistribute
