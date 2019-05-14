@@ -82,6 +82,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   flagDate = true;
   maxDate = new Date(Date.now());
   maxDate2 = new Date(Date.now());
+
   @ViewChild("certification") certification;
   @ViewChild("inputAvatar") inputAvatar;
   @ViewChild('priceFrom') priceFrom;
@@ -89,10 +90,10 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   dataService: DataService;
   isLoading = false;
   specialIsLoading = false;
-  checkPriceFrom=false;
-  checkPriceTo=false
-  _certificationInputCheck: Boolean;
-
+  checkPriceFrom = false;
+  checkPriceTo = false
+  _certificationInputCheck = true;
+  checkCertificationCode=true;
   _speciaList = [];
   _healthFacilities = [];
 
@@ -108,6 +109,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   _specialistCode: number;
 
   _avatars = new Array<string>();
+  _avatarss = [];
   _avatarError = "";
 
   filteredHealthFacilitiesOptions: Observable<IHealthfacilities[]>;
@@ -242,11 +244,12 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
 
       this._obj = _.clone(this.obj);
       this._isNew = false;
-    }
 
-    if (this.obj) {
-      //   if (this._obj.birthDate) {
       this._birthDay = new Date(this._obj.birthMonth + "/" + this._obj.birthDate + "/" + this._obj.birthYear);
+
+      if (this.obj.certificationCode) {
+        this._certificationInputCheck = false;
+      }
     }
 
 
@@ -367,12 +370,65 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
 
   //Base//
 
-  certificationCodeChange($event) {
-    if ($event.data != null) {
-      this.flagDate = false;
+  certificationInput($event) {
+    if ($event.target.value) {
+      this._certificationInputCheck = false;
     }
     else {
-      this.flagDate = true;
+      this._certificationInputCheck = true;
+      this.certificationDatePicker.nativeElement.value = "";
+    }
+    this.checkCertificationCode=false;
+  }
+
+  certificationKeypress($event) {
+    if ($event.key == "v") {
+      this._certificationInputCheck = false;
+    }
+    if ($event.key == "x" && this.certification.elementNative.value == "") {
+      this.certificationDatePicker.nativeElement.value = "";
+    }
+  }
+
+  replace_alias(str) {
+    str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "");
+    str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "");
+    str = str.replace(/ì|í|ị|ỉ|ĩ/g, "");
+    str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, "");
+    str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "");
+    str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "");
+    str = str.replace(/đ/g, "");
+    str = str.replace(/À|Á|Ạ|Ả|Ã|Â|Ầ|Ấ|Ậ|Ẩ|Ẫ|Ă|Ằ|Ắ|Ặ|Ẳ|Ẵ/g, "");
+    str = str.replace(/È|É|Ẹ|Ẻ|Ẽ|Ê|Ề|Ế|Ệ|Ể|Ễ/g, "");
+    str = str.replace(/Ì|Í|Ị|Ỉ|Ĩ/g, "");
+    str = str.replace(/Ò|Ó|Ọ|Ỏ|Õ|Ô|Ồ|Ố|Ộ|Ổ|Ỗ|Ơ|Ờ|Ớ|Ợ|Ở|Ỡ/g, "");
+    str = str.replace(/Ù|Ú|Ụ|Ủ|Ũ|Ư|Ừ|Ứ|Ự|Ử|Ữ/g, "");
+    str = str.replace(/Ỳ|Ý|Ỵ|Ỷ|Ỹ/g, "");
+    str = str.replace(/Đ/g, "");
+    return str;
+  }
+
+  priceFromInput($event) {
+    this.priceFrom.nativeElement.value = this.replace_alias(this.priceFrom.nativeElement.value);
+    if (this.priceFrom.nativeElement.value.length == 15) {
+      var last = this.priceFrom.nativeElement.value.slice(12, 13);
+      this.priceFrom.nativeElement.value = last + "." + this.priceFrom.nativeElement.value.slice(0, 11);
+    }
+    if ($event.target.value) {
+      this.checkPriceFrom = false;
+      this.checkPriceTo = false;
+    }
+  }
+
+  priceToInput($event) {
+    this.priceTo.nativeElement.value = this.replace_alias(this.priceTo.nativeElement.value);
+    if (this.priceTo.nativeElement.value.length == 15) {
+      var last = this.priceTo.nativeElement.value.slice(12, 13);
+      this.priceTo.nativeElement.value = last + "." + this.priceTo.nativeElement.value.slice(0, 11);
+    }
+    if ($event.target.value) {
+      this.checkPriceFrom = false;
+      this.checkPriceTo = false;
     }
   }
 
@@ -635,6 +691,15 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   //End auto complete specialist
 
   detectFiles(event) {
+    if(event.target.files[0].size>2097152){
+      this._frm.controls['avatar'].setValue(null);
+      return swal({
+        title:'Thông báo',
+        text:'File quá lớn. Chỉ được chọn file có dung lượng nhỏ hơn hoặc bằng 2MB',
+        type:'warning',
+        timer:3000
+      });
+    }
     this._avatarError = "";
     let files = event.target.files;
     if (files) {
@@ -646,6 +711,8 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
             this._avatars[0] = e.target.result;
           }
           this._frm.controls['avatar'].setValue(file);
+          var avatarName=event.target.files[0].name;
+          this._avatarss.push(avatarName);
           reader.readAsDataURL(file);
         } else {
           swal({
@@ -708,7 +775,16 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
 
 
 
-  checkSpecial: boolean;
+  checkSpecial = true;
+
+  specialistClick() {
+    if (this._specialistChip.length == 0) {
+      this.checkSpecial = false;
+    }
+    else {
+      this.checkSpecial = true;
+    }
+  }
 
   fullNameInput($event) {
     if ($event.data != null) {
@@ -724,19 +800,19 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
 
   //SUBMIT
   submit() {
-    if(this._frm.controls['provinceCode'].value==undefined){
+    if (this._frm.controls['provinceCode'].value == undefined) {
       this._frm.controls['provinceCode'].setValue(null);
     }
-    if(this._frm.controls['districtCode'].value==undefined){
+    if (this._frm.controls['districtCode'].value == undefined) {
       this._frm.controls['districtCode'].setValue(null);
     }
-    if(this._frm.controls['ethnicityCode'].value==undefined){
+    if (this._frm.controls['ethnicityCode'].value == undefined) {
       this._frm.controls['ethnicityCode'].setValue(null);
     }
-    if(this._frm.controls['educationCountryCode'].value==undefined){
+    if (this._frm.controls['educationCountryCode'].value == undefined) {
       this._frm.controls['educationCountryCode'].setValue(null);
     }
-    if(this._frm.controls['nationCode'].value==undefined){
+    if (this._frm.controls['nationCode'].value == undefined) {
       this._frm.controls['nationCode'].setValue(null);
     }
     var params = _.pick(this._frm.value, [
@@ -828,7 +904,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
         timer: 3000
       });
     }
-    if ((this._frm.controls['certificationCode'].value === "" || this._frm.controls['certificationCode'].value==null) && (this.certificationDatePicker.nativeElement.value != '' || this.certificationDatePicker.nativeElement.valueAsDate != null)) {
+    if ((this._frm.controls['certificationCode'].value === "" || this._frm.controls['certificationCode'].value == null) && (this.certificationDatePicker.nativeElement.value != '' || this.certificationDatePicker.nativeElement.valueAsDate != null)) {
       return swal({
         title: 'Thông báo',
         text: 'Yêu cầu nhập mã giấy phép hành nghề trước khi nhập ngày cấp',
@@ -836,68 +912,80 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
         timer: 3000
       });
     }
-    if(priceFrom==0){
-      this.checkPriceFrom=true;
+
+    if (typeof priceFrom === 'number' && typeof priceTo === 'number' && priceFrom >= priceTo) {
+      this.checkPriceTo = true;
+      this.checkPriceFrom = true;
       return swal({
         title: 'Thông báo',
-        text: 'Giá trị nhập vào phải lớn hơn 0',
+        text: 'Giá khám từ phải nhỏ hơn giá khám đến',
         type: 'warning',
         timer: 3000
       });
     }
-    if(priceTo==0){
-      this.checkPriceTo=true;
-      return swal({
-        title: 'Thông báo',
-        text: 'Giá trị nhập vào phải lớn hơn 0',
-        type: 'warning',
-        timer: 3000
-      });
-    }
-    if (priceFrom == null || priceFrom == "") {
-      if (priceTo != null && priceTo != "") {
-        this.checkPriceTo=true;
-        return swal({
-          title: 'Thông báo',
-          text: 'Giá khám từ phải nhỏ hơn giá khám đến',
-          type: 'warning',
-          timer: 3000
-        });
-      }
-      else {
-        if (priceFrom >= priceTo) {
-          this.checkPriceTo=true;
-          return swal({
-            title: 'Thông báo',
-            text: 'Giá khám từ phải nhỏ hơn giá khám đến',
-            type: 'warning',
-            timer: 3000
-          });
-        }
-      }
-    }
-    if (priceTo == null || priceTo == "") {
-      if (priceFrom != null && priceFrom != "") {
-        this.checkPriceFrom=true;
-        return swal({
-          title: 'Thông báo',
-          text: 'Giá khám từ phải nhỏ hơn giá khám đến',
-          type: 'warning',
-          timer: 3000
-        });
-      }
-      else {
-        if (priceFrom >= priceTo) {
-          this.checkPriceFrom=true;
-          return swal({
-            title: 'Thông báo',
-            text: 'Giá khám từ phải nhỏ hơn giá khám đến',
-            type: 'warning',
-            timer: 3000
-          });
-        }
-      }
-    }
+
+    // if (priceFrom == 0) {
+    //   this.checkPriceFrom = true;
+    //   return swal({
+    //     title: 'Thông báo',
+    //     text: 'Giá trị nhập vào phải lớn hơn 0',
+    //     type: 'warning',
+    //     timer: 3000
+    //   });
+    // }
+    // if (priceTo == 0) {
+    //   this.checkPriceTo = true;
+    //   return swal({
+    //     title: 'Thông báo',
+    //     text: 'Giá trị nhập vào phải lớn hơn 0',
+    //     type: 'warning',
+    //     timer: 3000
+    //   });
+    // }
+    // if (priceFrom == null || priceFrom == "") {
+    //   if (priceTo != null && priceTo != "") {
+    //     this.checkPriceTo = true;
+    //     return swal({
+    //       title: 'Thông báo',
+    //       text: 'Giá khám từ phải nhỏ hơn giá khám đến',
+    //       type: 'warning',
+    //       timer: 3000
+    //     });
+    //   }
+    //   else {
+    //     if (priceFrom >= priceTo) {
+    //       this.checkPriceTo = true;
+    //       return swal({
+    //         title: 'Thông báo',
+    //         text: 'Giá khám từ phải nhỏ hơn giá khám đến',
+    //         type: 'warning',
+    //         timer: 3000
+    //       });
+    //     }
+    //   }
+    // }
+    // if (priceTo == null || priceTo == "") {
+    //   if (priceFrom != null && priceFrom != "") {
+    //     this.checkPriceFrom = true;
+    //     return swal({
+    //       title: 'Thông báo',
+    //       text: 'Giá khám từ phải nhỏ hơn giá khám đến',
+    //       type: 'warning',
+    //       timer: 3000
+    //     });
+    //   }
+    //   else {
+    //     if (priceFrom >= priceTo) {
+    //       this.checkPriceFrom = true;
+    //       return swal({
+    //         title: 'Thông báo',
+    //         text: 'Giá khám từ phải nhỏ hơn giá khám đến',
+    //         type: 'warning',
+    //         timer: 3000
+    //       });
+    //     }
+    //   }
+    // }
 
     if (this.obj) {
       params.doctorId = this.obj.doctorId;
@@ -968,7 +1056,10 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
           } else {
             this.dialogRef.close();
           }
-        }, err => { }) :
+        }, err => {
+          this.checkCertificationCode=true;
+          console.log(this.checkCertificationCode);
+         }) :
         this._dataService.updateUpload(this.api, standardized(Object.assign(params, {}), {})).subscribe(() => {
           swal({
             title: this.l('SaveSuccess'),
@@ -977,7 +1068,9 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
             timer: 3000
           });
           this.dialogRef.close();
-        }, err => { });
+        }, err => { 
+          this.checkCertificationCode=true;
+        });
     }
   }
 
