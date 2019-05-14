@@ -65,7 +65,8 @@ export class BookingIPCCComponent extends AppComponentBase implements OnInit {
       provinceCode: [], districtCode: [], reason: ['', [Validators.required, this.validateRule.hasValue]],
       //3
       provinceCodeExamination: [, Validators.required], districtCodeExamination: [, Validators.required],
-      specialists: [], healthFacilitiesId: [, Validators.required],
+        specialists: [],
+        healthFacilitiesId: [,],
       //4
       examinationDate: [, [Validators.required, this.validateRule.dateInvalid]], examinationTime: [, Validators.required], doctorId: [], ticketId: []
     });

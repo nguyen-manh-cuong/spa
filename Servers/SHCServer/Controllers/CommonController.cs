@@ -69,7 +69,7 @@ namespace SHCServer.Controllers
         [Route("api/healthfacilitiesbooking")]
         public IActionResult GetHealthfacilitiesBooking(string filter)
         {
-            var objs = _context.Query<HealthFacilities>().Where(o => o.IsDelete == false && o.IsActive == true);
+            var objs = _context.Query<HealthFacilities>().Where(o => o.IsDelete == false && o.IsActive == true && o.AllowBooking == true);
             FilterHealthFacilities filterHf = JsonConvert.DeserializeObject<FilterHealthFacilities>(filter);
 
             if (filterHf.districtCode != null) objs = objs.Where((o) => o.DistrictCode == filterHf.districtCode);
