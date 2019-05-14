@@ -9,6 +9,8 @@ namespace SHCServer.Models
         public string ProvinceCode { get; set; }
         public string Name { get; set; }
         public string Type { get; set; }
+        public bool? IsDelete { get; set; }
+        public bool? IsActive { get; set; }
     }
 
     [Table("cats_districts")]
@@ -19,6 +21,8 @@ namespace SHCServer.Models
         public string Name { get; set; }
         public string Type { get; set; }
         public string ProvinceCode { get; set; }
+        public bool? IsDelete { get; set; }
+        public bool? IsActive { get; set; }
     }
 
     [Table("cats_wards")]
@@ -29,5 +33,7 @@ namespace SHCServer.Models
         public string Name { get; set; }
         public string Type { get; set; }
         public string DistrictCode { get; set; }
+        public bool? IsDelete { get; set; }
+        public bool? IsActive { get; set; }
     }
 }

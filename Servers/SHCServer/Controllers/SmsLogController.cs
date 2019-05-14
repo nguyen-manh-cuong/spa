@@ -34,8 +34,6 @@ namespace SHCServer.Controllers
             {
                 var data = JsonConvert.DeserializeObject<Dictionary<string, string>>(filter);
 
-                
-
                 foreach (var (key, value) in data)
                 {
                     if (string.IsNullOrEmpty(value) || value == "false" || value == "0") continue;
@@ -61,11 +59,11 @@ namespace SHCServer.Controllers
             //        if (!Utils.PropertyExists<SmsLogs>(key)) continue;
             //        objs = value == "asc" ? objs.OrderBy(mhh => key) : objs.OrderByDesc(mhh => key);
             //    }
-
             //} 
 
             objs = objs.OrderByDesc(o => o.Id);
             var list = objs.TakePage(skipCount == 0 ? 1 : skipCount + 1, maxResultCount).Select(l => new SmsLogViewModel(l, _connectionString)).ToList();
+
             foreach (var item in list)
             {
                 item.SentDay = item.SentDate.Day.ToString();
@@ -73,7 +71,7 @@ namespace SHCServer.Controllers
                 item.SentYear = item.SentDate.Year.ToString();
             }
 
-            return Json(new ActionResultDto { Result = new { Items = list, TotalCount = list.Count } });
+            return Json(new ActionResultDto { Result = new { Items = list, TotalCount = objs.Count() } });
         }
     }
 }
