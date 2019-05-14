@@ -187,7 +187,7 @@
             <div class="col-md-4">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('Tái khám từ')}}</mat-label>
-                    <input  matInput [matDatepicker]="picker1" #startTime mask="0*" maxlength="8"
+                    <input (click)="picker1.open()" matInput [matDatepicker]="picker1" #startTime mask="0*" maxlength="8"
                         (dateChange)="changeDate($event.value, 1)" required>
                     <mat-datepicker-toggle matSuffix [for]="picker1" class="t-2"></mat-datepicker-toggle>
                     <mat-datepicker #picker1></mat-datepicker>
@@ -196,7 +196,7 @@
             <div class="col-md-4">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('Đến ngày')}}</mat-label>
-                    <input matInput [min]="cDate" [matDatepicker]="picker2" #endTime mask="0*" maxlength="10"
+                    <input matInput (click)="picker2.open()" [min]="cDate" [matDatepicker]="picker2" #endTime mask="0*" maxlength="10"
                         (dateChange)="changeDate($event.value, 1)" required>
                     <mat-datepicker-toggle matSuffix [for]="picker2" class="t-2"></mat-datepicker-toggle>
                     <mat-datepicker #picker2></mat-datepicker>

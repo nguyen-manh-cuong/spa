@@ -1,3 +1,4 @@
+import { Router } from '@angular/router';
 import * as _ from 'lodash';
 import * as moment from 'moment';
 import swal from 'sweetalert2';
@@ -50,7 +51,7 @@ export class BookingIPCCComponent extends AppComponentBase implements OnInit {
   
   @ViewChild("examinationDate") examinationDate;
 
-  constructor(injector: Injector, private _dataService: DataService, private _formBuilder: FormBuilder, private _location: Location) {
+  constructor(injector: Injector, private _dataService: DataService, private _formBuilder: FormBuilder, private _location: Location, private router: Router) {
     super(injector);
   }
 
@@ -177,7 +178,7 @@ export class BookingIPCCComponent extends AppComponentBase implements OnInit {
           confirmButtonClass: 'mat-raised-button mat-primary bg-danger',
           confirmButtonText: 'OK',
         }).then(() => {
-          this._location.back();
+          this.router.navigateByUrl('/');
         });
       }, err => {})
   }

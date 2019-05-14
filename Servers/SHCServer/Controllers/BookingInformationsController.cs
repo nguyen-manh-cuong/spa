@@ -152,7 +152,7 @@ namespace SHCServer.Controllers
                 if (_context.Query<BookingInformations>().Where(g => g.BookingId == id && g.IsDelete == false && g.Status != 0 && g.Status != 1 ).Count() > 0)
                 {
                     //return Json(new ActionResultDto { Success = false, Error = new { Code = 401, Message = "Tạo gói không thành công.", Details = "Gói SMS đã tồn tại!" } });
-                    return StatusCode(500, _excep.Throw("Hủy đặt khám không thành công.", "Không thể xóa lịch đặt khám đã diễn ra/đã hủy!"));
+                    return StatusCode(406, _excep.Throw(406, "Hủy đặt khám không thành công.", "Không thể xóa lịch đặt khám đã diễn ra/đã hủy!"));
                 }
 
                 _context.Session.BeginTransaction();
