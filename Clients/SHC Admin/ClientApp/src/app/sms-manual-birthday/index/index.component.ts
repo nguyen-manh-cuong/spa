@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Injector, OnInit, ViewEncapsulation, ViewChild, ElementRef } from '@angular/core';
+import { AfterViewInit, Component, Injector, OnInit, ViewEncapsulation, ViewChild, ElementRef, Type } from '@angular/core';
 import { SelectionModel } from '@angular/cdk/collections';
 import { IHealthfacilities, IMedicalHealthcareHistories } from '@shared/Interfaces';
 import { DataService } from '@shared/service-proxies/service-data';
@@ -110,7 +110,8 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
             fromDay: [32],
             fromMonth: [13],
             sex: [],
-            about: 3
+            about: 3, 
+            type: 'cmsn'
         });
 
         for (var i = 1; i < 32; i++) {
