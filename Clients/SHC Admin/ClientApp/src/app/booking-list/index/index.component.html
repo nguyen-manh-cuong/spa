@@ -83,7 +83,7 @@
                         <mat-form-field appearance="outline" class="d-flex w"
                                         [ngClass]="{'mat-form-field-invalid': (frmSearch.get('time').value==10 && !startTime.value) || (frmSearch.get('time').value==10 && (startTime.value > endTime.value))}">
                             <mat-label>{{l('Từ ngày')}}</mat-label>
-                            <input [disabled]="_isDateTimeEnable" matInput #startTime [matDatepicker]="picker" mask="0*"
+                            <input (click)="picker.open()" [disabled]="_isDateTimeEnable" matInput #startTime [matDatepicker]="picker" mask="0*"
                                    required maxlength="10" [disabled]="type == 10"
                                    [required]="frmSearch.get('time').value==10 && !startTime.value">
                             <mat-datepicker-toggle matSuffix [for]="picker" class="t-2"></mat-datepicker-toggle>
@@ -103,7 +103,7 @@
                  [ngClass]="{'mat-form-field-invalid':(frmSearch.get('time').value==10 && !startTime.value) || (frmSearch.get('time').value==10 && (startTime.value > endTime.value))}">
                 <mat-form-field appearance="outline" class="icon-alert w-100">
                     <mat-label>{{l('Đến ngày')}}</mat-label>
-                    <input [disabled]="_isDateTimeEnable" matInput #endTime [matDatepicker]="picker1" mask="0*"
+                    <input (click)="picker1.open()" [disabled]="_isDateTimeEnable" matInput #endTime [matDatepicker]="picker1" mask="0*"
                            [required]="frmSearch.get('time').value==10 && !endTime.value" maxlength="10">
                     <mat-datepicker-toggle matSuffix [for]="picker1" class="t-2"></mat-datepicker-toggle>
                     <mat-datepicker #picker1></mat-datepicker>

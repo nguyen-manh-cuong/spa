@@ -63,7 +63,7 @@
             <div class="col-md-3" id="cbo-startTime">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('Từ ngày')}}</mat-label>
-                    <input [disabled]="_isDateTimeEnable" matInput [matDatepicker]="picker1" mask="0*" required #startTime maxlength="10">
+                    <input (click)="picker1.open()" [disabled]="_isDateTimeEnable" matInput [matDatepicker]="picker1" mask="0*" required #startTime maxlength="10">
                     <mat-datepicker-toggle matSuffix [for]="picker1" class="t-2"></mat-datepicker-toggle>
                     <mat-datepicker #picker1></mat-datepicker>
                 </mat-form-field>
@@ -71,7 +71,7 @@
             <div class="col-md-3" id="cbo-endTime">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('Đến ngày')}}</mat-label>
-                    <input [disabled]="_isDateTimeEnable" matInput [matDatepicker]="picker2" #endTime mask="0*"  maxlength="10" required>
+                    <input (click)="picker2.open()" [disabled]="_isDateTimeEnable" matInput [matDatepicker]="picker2" #endTime mask="0*"  maxlength="10" required>
                     <mat-datepicker-toggle matSuffix [for]="picker2" class="t-2"></mat-datepicker-toggle>
                     <mat-datepicker #picker2></mat-datepicker>
                 </mat-form-field>
