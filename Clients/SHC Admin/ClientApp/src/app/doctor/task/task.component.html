@@ -22,16 +22,15 @@
                     <div class="col-md-4 class-icon">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("DoctorBirthDay")}}</mat-label>
-                            <input matTooltip="Click để chọn ngày" readonly mask="0*" (click)="picker.open()"
-                                (dateChange)="birthDayChange($event)" [max]="maxDate" matInput [matDatepicker]="picker"
-                                #birthDayPicker maxlength="10">
+                            <input mask="0*" (dateChange)="birthDayChange($event)" [max]="maxDate" matInput
+                                [matDatepicker]="picker" #birthDayPicker maxlength="10">
                             <mat-datepicker-toggle matSuffix [for]="picker" class="t-2"></mat-datepicker-toggle>
                             <mat-datepicker #picker [startAt]="_birthDay"></mat-datepicker>
                         </mat-form-field>
                     </div>
                 </div>
 
-                <div class="row pb-2">
+                <div class="row">
                     <div class="col-md-6">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l('DoctorGender')}}</mat-label>
@@ -91,22 +90,26 @@
 
                 <div class="row">
                     <div class="col-md-6">
-                        <mat-form-field appearance="outline" class="w-100">
+                        <mat-form-field [ngClass]="{'mat-form-field-invalid':checkCertificationCode}"
+                            appearance="outline" class="w-100">
                             <mat-label>{{l("DoctorCertificationCode")}}</mat-label>
-                            <input ctrlKeys (ctrlV)="onCtrlV()" (ctrlC)="onCtrlC()" formControlName="certificationCode"
-                                matInput maxlength="45" (input)="certificationCodeChange($event)">
+                            <input #certification (keypress)="certificationKeypress($event)"
+                                (input)="certificationInput($event)" ctrlKeys (ctrlV)="onCtrlV()" (ctrlC)="onCtrlC()"
+                                formControlName="certificationCode" matInput maxlength="45">
                         </mat-form-field>
                     </div>
                     <div class="col-md-4">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("DoctorCertificationDate")}}</mat-label>
-                            <input matTooltip="Click để chọn ngày" readonly (click)="certificationDatePicker.open()"
+                            <input matTooltip="Nhập giấy phép hành nghề trước khi nhập ngày cấp"
+                                [matTooltipDisabled]="!_certificationInputCheck" [readonly]="_certificationInputCheck"
                                 #certificationDatePicker (dateChange)="certificationDateChange($event.value)" mask="0*"
                                 [max]="maxDate2" matInput [matDatepicker]="certificationDatePicker" matInput
                                 maxlength="10">
-                            <mat-datepicker-toggle matSuffix [for]="certificationDatePicker" class="t-2">
+                            <mat-datepicker-toggle [disabled]="_certificationInputCheck" matSuffix
+                                [for]="certificationDatePicker" class="t-2">
                             </mat-datepicker-toggle>
-                            <mat-datepicker #certificationDatePicker [startAt]="startDate">
+                            <mat-datepicker #certificationDatePicker [startAt]="_certificationDate">
                             </mat-datepicker>
                         </mat-form-field>
                     </div>
@@ -192,31 +195,33 @@
 
                         </mat-form-field> -->
 
-                        <mat-form-field appearance="outline" class="w-100">
+                        <mat-form-field appearance="outline" class="w-100" [ngClass]="{'mat-form-field-invalid':!checkSpecial}"> 
                             <mat-label>{{l('DoctorSpecialist')}}</mat-label>
                             <mat-chip-list #specialChipList [required]="true">
                                 <mat-chip *ngFor="let o of _specialistChip" [selectable]="specialSelectable"
-                                    [removable]="specialRemovable" (removed)="specialRemove(o.specialistCode)">
+                                    [removable]="specialRemovable" (removed)="specialRemove(o.specialistCode)"
+                                    title="{{o.specialistCode + ' - ' + o.name}}">
                                     <mat-icon class="chip" matChipRemove *ngIf="specialRemovable">cancel</mat-icon>
                                     {{o.specialistCode + ' - ' +o.name}}
                                 </mat-chip>
-                                <input matInput #specialistInput [formControl]="specialistCodeControl"
-                                    [matAutocomplete]="autoSpecialist" [matChipInputFor]="specialChipList"
+                                <input (click)="specialistClick()" matInput #specialistInput
+                                    [formControl]="specialistCodeControl" [matAutocomplete]="autoSpecialist"
+                                    [matChipInputFor]="specialChipList"
                                     [matChipInputSeparatorKeyCodes]="specialSeparatorKeysCodes"
                                     [matChipInputAddOnBlur]="specialAddOnBlur"
                                     (matChipInputTokenEnd)="specialAdd($event)" (input)="specialInput()"
                                     [required]="true">
                             </mat-chip-list>
-                            <mat-autocomplete matInput #autoSpecialist="matAutocomplete"
+                            <mat-autocomplete  matInput #autoSpecialist="matAutocomplete"
                                 (optionSelected)="specialSelected($event)">
-                                <mat-option *ngIf="specialIsLoading" class="is-loading">
+                                <mat-option class="w-100" *ngIf="specialIsLoading" class="is-loading">
                                     <mat-spinner diameter="30"></mat-spinner>
                                 </mat-option>
-                                <mat-option *ngFor="let o of _specialist" [value]="o">
+                                <mat-option class="w-100" *ngFor="let o of _specialist" [value]="o">
                                     {{o.code +' - '+o.name}}
                                 </mat-option>
                             </mat-autocomplete>
-                            <validation *ngIf="!checkSpecial" matSuffix [control]="specialistCodeControl"></validation>
+                            <validation class="mt-1" *ngIf="!checkSpecial" matSuffix [control]="specialistCodeControl"></validation>
                         </mat-form-field>
                     </div>
                 </div>
@@ -235,15 +240,15 @@
                 </div>
 
                 <div class="row pb-3">
-                    <div class="col-md-3 ml-3">
-                        <div class="ml-2">
-                            <mat-label>{{l('DoctorAvatar')}}</mat-label>
+                    <div class="col-md-3">
+                        <div>
+                            <mat-label class="label">{{l('DoctorAvatar')}}</mat-label>
                         </div>
                         <img style="padding: 5px"
                             [src]="_avatars[0] || 'https://cmkt-image-prd.global.ssl.fastly.net/0.1.0/ps/1441527/1160/772/m1/fpnw/wm0/businessman-avatar-icon-01-.jpg?1468234792&s=e3a468692e15e93a2056bd848193e97a'"
                             height="175px" width="200px">
                     </div>
-                    <div class="col-md-4">
+                    <!-- <div class="col-md-4 mt-3">
                         <div class="col-md-3 btn btn-primary">
                             <br>
                             <div class="upload-button">
@@ -252,19 +257,33 @@
                         </div>
                         <div class="pl-3">
                             {{_avatarError}}<span>&nbsp;</span>
-                            <!--<br>
+                            <br>
                             <mat-label>Ảnh định dạng png, jpg, jpeg</mat-label>
                             <br>
-                            <mat-label>Dung lượng ảnh không quá 2Mb</mat-label>-->
+                            <mat-label>Dung lượng ảnh không quá 2Mb</mat-label>
                         </div>
+                    </div> -->
+
+                    <div class="col-md-3 mt-4 image-uploader text-muted" data-name="first"
+                        data-description="Ảnh đại diện">
+                        <div class="upload-content">
+                            <span class="upload-description"></span>
+                            <span class="upload-button mt-3">
+                                <input #dataContainer type="file" accept="image/*"
+                                    (change)="detectFiles($event)"><span class="btn btn-sm btn-primary-inverted">
+                                    <i class="fa fa-paperclip" aria-hidden="true"></i>Tải ảnh lên
+                                </span>
+                            </span>
+                        </div>
+                        <div class="ml-1 upload-content avatar-name"><mat-label>{{avatarName}}</mat-label></div>
                     </div>
                 </div>
 
 
                 <div class="row">
                     <div class="col-md-12">
-                        <mat-label>{{l('DoctorSummary')}}</mat-label>
-                        <ckeditor max-length="4000"
+                        <mat-label class="label">{{l('DoctorSummary')}}</mat-label>
+                        <ckeditor class="ckeditor" max-length="4000"
                             [config]="{ toolbar: [ 'heading', '|', 'bold', 'italic','|','bulletedList','numberedList','|','blockQuote','link','undo','redo'] }"
                             formControlName="summary" [editor]="Editor" (ready)="onReady($event)">
                         </ckeditor>
@@ -273,21 +292,25 @@
 
                 <div class="row pt-4">
                     <div class="col-md-6">
-                        <mat-form-field appearance="outline" class="w-100">
+                        <mat-form-field [ngClass]="{'mat-form-field-invalid':checkPriceFrom}" appearance="outline"
+                            class="w-100">
                             <mat-label>{{l("DoctorPriceFrom")}}</mat-label>
-                            <input #priceFrom mask="dot_separator" maxlength="12" formControlName="priceFrom" matInput>
-                            <mat-icon *ngIf="checkPriceFrom"
-                                matSuffix [matTooltipPosition]="'before'" matTooltipClass="bg-danger text-light mr-1"
-                                matTooltip="Giá khám từ không được nhỏ hơn giá khám đến" color="warn">info</mat-icon>
+                            <input #priceFrom (input)="priceFromInput($event)" #priceFrom mask="dot_separator"
+                                maxlength="12" formControlName="priceFrom" matInput>
+                            <!-- <mat-icon *ngIf="checkPriceFrom" matSuffix [matTooltipPosition]="'before'"
+                                matTooltipClass="bg-danger text-light mr-1"
+                                matTooltip="Giá khám từ không được nhỏ hơn giá khám đến" color="warn">info</mat-icon> -->
                         </mat-form-field>
                     </div>
                     <div class="col-md-6">
-                        <mat-form-field appearance="outline" class="w-100">
+                        <mat-form-field [ngClass]="{'mat-form-field-invalid':checkPriceTo}" appearance="outline"
+                            class="w-100">
                             <mat-label>{{l("DoctorPriceTo")}}</mat-label>
-                            <input #priceFrom mask="dot_separator" maxlength="12" formControlName="priceTo" matInput>
-                            <mat-icon *ngIf="checkPriceTo"
-                                matSuffix [matTooltipPosition]="'before'" matTooltipClass="bg-danger text-light mr-1"
-                                matTooltip="Giá khám từ không được nhỏ hơn giá khám đến" color="warn">info</mat-icon>
+                            <input #priceTo (input)="priceToInput($event)" mask="dot_separator" maxlength="12"
+                                formControlName="priceTo" matInput>
+                            <!-- <mat-icon *ngIf="checkPriceTo" matSuffix [matTooltipPosition]="'before'"
+                                matTooltipClass="bg-danger text-light mr-1"
+                                matTooltip="Giá khám từ không được nhỏ hơn giá khám đến" color="warn">info</mat-icon> -->
                         </mat-form-field>
                     </div>
                 </div>
@@ -390,7 +413,7 @@
                             <b>{{l('DoctorContinueAdd')}}</b>
                         </mat-checkbox>
                     </div>
-                    <button class="mr-3" mat-button mat-dialog-close>{{l("Close")}}</button>
+                    <button class="mr-3" mat-raised-button mat-dialog-close color="primary">{{l("Close")}}</button>
                     <button [disabled]="_frm.invalid" mat-raised-button color="primary"
                         (click)="submit()">{{l("Save")}}</button>
                 </div>

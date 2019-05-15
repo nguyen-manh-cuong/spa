@@ -7,6 +7,9 @@ using SHCServer.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
 using Viettel;
 using Viettel.MySql;
 
@@ -695,11 +698,23 @@ namespace SHCServer.Controllers
 
         private string GetUniqueFileName(string fileName)
         {
-            fileName = Path.GetFileName(fileName);
+            fileName =convertToUnSign(Path.GetFileName(fileName));
             return Path.GetFileNameWithoutExtension(fileName)
                       + "_"
                       + Guid.NewGuid().ToString().Substring(0, 4)
                       + Path.GetExtension(fileName);
+        }
+
+        public string convertToUnSign(string s)
+        {
+            Regex regex = new Regex("\\p{IsCombiningDiacriticalMarks}+");
+            string first= regex.Replace(s.Normalize(NormalizationForm.FormD), String.Empty).Replace('\u0111', 'd').Replace('\u0110', 'D');
+            return replaceSpace(first);
+        }
+        public string replaceSpace(string s)
+        {
+            s=s.Replace(" ", "_");
+            return s;
         }
     }
 }

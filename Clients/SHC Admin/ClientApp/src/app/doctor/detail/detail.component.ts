@@ -2,8 +2,8 @@ import { forEach } from '@angular/router/src/utils/collection';
 import { IDoctor, IHealthfacilities, IHealthfacilitiesDoctor, IDoctorSpecialists } from './../../../../../../SHC Client/ClientApp/src/shared/Interfaces';
 import * as _ from 'lodash';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import { Component, Inject, Injector, OnInit, ViewChild, AfterViewInit, ElementRef, HostListener, Directive, Output, EventEmitter } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
+import { Component, Inject, Injector, OnInit, ViewChild, AfterViewInit, ElementRef, HostListener, Directive, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, FormControl, ValidationErrors } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef, MatInput, MatCheckbox, MatAutocomplete, MatChipInputEvent, MatAutocompleteSelectedEvent, MatDialog, MatPaginator } from '@angular/material';
 import * as moment from 'moment';
 import { AppComponentBase } from '@shared/app-component-base';
@@ -21,6 +21,8 @@ import { Observable, fromEvent, merge, timer } from 'rxjs';
 import { standardized } from '@shared/helpers/utils';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { stringify } from '@angular/compiler/src/util';
+import { prepareSyntheticListenerFunctionName } from '@angular/compiler/src/render3/util';
+import { providerToFactory } from '@angular/core/src/di/r3_injector';
 export const MY_FORMATS = {
   parse: {
     dateInput: 'DD/MM/YYYY',
@@ -55,6 +57,7 @@ export class Specialist {
   selector: 'app-detail',
   templateUrl: './detail.component.html',
   styleUrls: ['./detail.component.scss'],
+  encapsulation: ViewEncapsulation.None,
   providers: [
     { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
     { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
@@ -76,22 +79,28 @@ export class DetailComponent extends AppComponentBase implements OnInit, AfterVi
       name: "Không xác định"
     }];
 
+
   flagDate = true;
   maxDate = new Date(Date.now());
   maxDate2 = new Date(Date.now());
-  @ViewChild("certification") certification;
 
+  @ViewChild("certification") certification;
+  @ViewChild("inputAvatar") inputAvatar;
+  @ViewChild('priceFrom') priceFrom;
+  @ViewChild('priceTo') priceTo;
   dataService: DataService;
   isLoading = false;
   specialIsLoading = false;
-
-  _certificationInputCheck: Boolean;
-
+  checkPriceFrom = false;
+  checkPriceTo = false
+  _certificationInputCheck = true;
+  checkCertificationCode = true;
   _speciaList = [];
   _healthFacilities = [];
+  summary: string;
 
-  _birthDay: Date;
-  _certificationDate: Date;
+  _birthDay: string;
+  _certificationDate: string;
   api: string = 'doctor';
   _frm: FormGroup;
 
@@ -102,6 +111,7 @@ export class DetailComponent extends AppComponentBase implements OnInit, AfterVi
   _specialistCode: number;
 
   _avatars = new Array<string>();
+  avatarName = "Chưa chọn ảnh";
   _avatarError = "";
 
   filteredHealthFacilitiesOptions: Observable<IHealthfacilities[]>;
@@ -133,7 +143,7 @@ export class DetailComponent extends AppComponentBase implements OnInit, AfterVi
   specialVisible = true;
   specialSelectable = true;
   specialRemovable = true;
-  specialDddOnBlur = true;
+  specialAddOnBlur = true;
   specialSeparatorKeysCodes: number[] = [ENTER, COMMA];
 
 
@@ -169,8 +179,8 @@ export class DetailComponent extends AppComponentBase implements OnInit, AfterVi
     educationCountryCode: '',
     avatar: '',
     description: '',
-    priceFrom: 0,
-    priceTo: 0,
+    priceFrom: '',
+    priceTo: '',
     priceDescription: '',
     summary: '',
     isSync: true,
@@ -216,7 +226,10 @@ export class DetailComponent extends AppComponentBase implements OnInit, AfterVi
     this.getDegrees();
     this.getNations();
     this.getSpecialist();
-    this.getEthnicities();
+
+
+
+
     this.filterSpecialistOptions();
 
     this.dialogComponent = DetailComponent;
@@ -231,13 +244,29 @@ export class DetailComponent extends AppComponentBase implements OnInit, AfterVi
         this.getDistricts(this.obj.provinceCode);
       }
 
+      if (this.obj.birthDate && this.obj.birthMonth && this.obj.birthYear) {
+        var d, m, y = this.obj.birthYear;
+        if (this.obj.birthDate < 10)
+          d = "0" + this.obj.birthDate;
+        else
+          d = this._obj.birthDate;
+        if (this.obj.birthMonth < 10)
+          m = "0" + this.obj.birthMonth;
+        else
+          m = this.obj.birthMonth;
+        this._birthDay = d + "/" + m + "/" + y;
+      }
+
+      if(this.obj.summary){
+        this.summary=this.obj.summary;
+      }
+
       this._obj = _.clone(this.obj);
       this._isNew = false;
-    }
 
-    if (this.obj) {
-      //   if (this._obj.birthDate) {
-      this._birthDay = new Date(this._obj.birthMonth + "/" + this._obj.birthDate + "/" + this._obj.birthYear);
+      if (this.obj.certificationCode) {
+        this._certificationInputCheck = false;
+      }
     }
 
 
@@ -249,7 +278,22 @@ export class DetailComponent extends AppComponentBase implements OnInit, AfterVi
     //   this._birthDay = new Date("01/01/" + this._obj.birthYear);
     // }
     if (this.obj) {
-      this._certificationDate = this.obj.certificationDate;
+      if (this.obj.certificationDate) {
+        var day, month, year = moment(this.obj.certificationDate).year();;
+        if (moment(this.obj.certificationDate).date() < 10)
+          day = "0" + moment(this.obj.certificationDate).date();
+        else
+          day = moment(this.obj.certificationDate).date();
+        if ((moment(this.obj.certificationDate).month() + 1) < 10)
+          month = "0" + (moment(this.obj.certificationDate).month() + 1);
+        else
+          month = moment(this.obj.certificationDate).month();
+        this._certificationDate = day + "/" + month + "/" + year;
+      }
+
+      if (this.obj.avatar) {
+        this.avatarName = this.obj.avatar.slice(9, this.obj.avatar.length);
+      }
     }
     //   else {
     //     this._obj.certificationDate = new Date(Date.now());
@@ -257,26 +301,27 @@ export class DetailComponent extends AppComponentBase implements OnInit, AfterVi
     // }
 
 
+
     this._context = {
       doctorId: [this._obj.doctorId],
       fullName: [this._obj.fullName, [Validators.required, validationRule.hasValue]],
       specialist: [this._obj.specialist],
       //birthDay: [this._birthDay],
-      gender: this._obj.gender,
-      titleCode: this._obj.titleCode,
-      positionCode: [this._obj.positionCode],
-      nationCode: [this._obj.nationCode],
-      ethnicityCode: [this._obj.ethnicityCode],
+      gender: this._obj.gender == 1 ? this._obj.gender = "Nam" : (this._obj.gender == 2 ? this._obj.gender = "Nữ" : "Không xác định"),
+      titleCode: "",
+      positionCode: "",
+      nationCode: "",
+      ethnicityCode: "",
       certificationDate: [this._obj.certificationDate],
-      academicId: [this._obj.academicId],
-      degreeId: [this._obj.degreeId],
-      email: [this._obj.email, [Validators.email]],
+      academicId: "",
+      degreeId: "",
+      email: [this._obj.email, [validationRule.email]],
       certificationCode: [this._obj.certificationCode],
       address: [this._obj.address],
-      provinceCode: [this._obj.provinceCode],
-      districtCode: [this._obj.districtCode],
-      phoneNumber: [this._obj.phoneNumber],
-      educationCountryCode: [this._obj.educationCountryCode],
+      provinceCode: "",
+      districtCode: "",
+      phoneNumber: [this._obj.phoneNumber, [validationRule.topPhoneNumber]],
+      educationCountryCode: "",
       avatar: [null, [FileValidator.maxContentSize(20000000)]],
       description: this._obj.description,
       priceFrom: [this._obj.priceFrom],
@@ -328,48 +373,127 @@ export class DetailComponent extends AppComponentBase implements OnInit, AfterVi
       }
     }
     this._obj.certificationCode ? this.flagDate = false : this.flagDate = true;
+
+    setTimeout(() => {
+      this.getEthnicities();
+    }, 1000);
   }
 
 
   ngAfterViewInit(): void {
     setTimeout(() => {
-      if (this.obj) {
-        if (this.obj.birthDate) {
-          this.birthDayPicker.nativeElement.value = moment(this._birthDay).format("DD/MM/YYYY");
-        }
-        if (this.obj.certificationDate)
-          this.certificationDatePicker.nativeElement.value = moment(this._certificationDate).format("DD/MM/YYYY");
-      }
-      console.log("this._frm.ethnicityCode",this._frm.controls['ethnicityCode'].value)
+      // if (this.obj) {
+      //   if (this.obj.birthDate) {
+      //     this.birthDayPicker.nativeElement.value = moment(this._birthDay).format("DD/MM/YYYY");
+      //   }
+      //   if (this.obj.certificationDate)
+      //     this.certificationDatePicker.nativeElement.value = moment(this._certificationDate).format("DD/MM/YYYY");
+      // }
     });
   }
 
   //Add custom editor
   onReady(editor) {
     editor.ui.getEditableElement().parentElement.insertBefore(
-      editor.ui.view.toolbar.element,
-      editor.ui.getEditableElement()
+      editor.isReadOnly = true,
     );
   }
 
 
   //Base//
 
-  certificationCodeChange($event) {
-    if ($event.data != null) {
-      this.flagDate = false;
+  certificationInput($event) {
+    if ($event.target.value) {
+      this._certificationInputCheck = false;
     }
     else {
-      this.flagDate = true;
+      this._certificationInputCheck = true;
+      this.certificationDatePicker.nativeElement.value = "";
+    }
+    this.checkCertificationCode = false;
+  }
+
+  certificationKeypress($event) {
+    if ($event.key == "v") {
+      this._certificationInputCheck = false;
+    }
+    if ($event.key == "x" && this.certification.elementNative.value == "") {
+      this.certificationDatePicker.nativeElement.value = "";
+    }
+  }
+
+  replace_alias(str) {
+    str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
+    str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
+    str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i");
+    str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, "o");
+    str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u");
+    str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y");
+    str = str.replace(/đ/g, "d");
+    str = str.replace(/À|Á|Ạ|Ả|Ã|Â|Ầ|Ấ|Ậ|Ẩ|Ẫ|Ă|Ằ|Ắ|Ặ|Ẳ|Ẵ/g, "A");
+    str = str.replace(/È|É|Ẹ|Ẻ|Ẽ|Ê|Ề|Ế|Ệ|Ể|Ễ/g, "E");
+    str = str.replace(/Ì|Í|Ị|Ỉ|Ĩ/g, "I");
+    str = str.replace(/Ò|Ó|Ọ|Ỏ|Õ|Ô|Ồ|Ố|Ộ|Ổ|Ỗ|Ơ|Ờ|Ớ|Ợ|Ở|Ỡ/g, "O");
+    str = str.replace(/Ù|Ú|Ụ|Ủ|Ũ|Ư|Ừ|Ứ|Ự|Ử|Ữ/g, "U");
+    str = str.replace(/Ỳ|Ý|Ỵ|Ỷ|Ỹ/g, "Y");
+    str = str.replace(/Đ/g, "D");
+    return str;
+  }
+
+  replace_space(str) {
+    str = str.replace(/ /g, "_");
+    return str;
+  }
+
+  priceFromInput($event) {
+    this.priceFrom.nativeElement.value = this.replace_alias(this.priceFrom.nativeElement.value);
+    if (this.priceFrom.nativeElement.value.length == 15) {
+      var last = this.priceFrom.nativeElement.value.slice(12, 13);
+      this.priceFrom.nativeElement.value = last + "." + this.priceFrom.nativeElement.value.slice(0, 11);
+    }
+    if (this.priceFrom.nativeElement.value.length == 14) {
+      this.priceFrom.nativeElement.value = this.priceFrom.nativeElement.value.slice(1, 14);
+    }
+    if ($event.target.value) {
+      this.checkPriceFrom = false;
+      this.checkPriceTo = false;
+    }
+  }
+
+  priceToInput($event) {
+    this.priceTo.nativeElement.value = this.replace_alias(this.priceTo.nativeElement.value);
+    if (this.priceTo.nativeElement.value.length == 15) {
+      var last = this.priceTo.nativeElement.value.slice(12, 13);
+      this.priceTo.nativeElement.value = last + "." + this.priceTo.nativeElement.value.slice(0, 11);
+    }
+    if (this.priceTo.nativeElement.value.length == 14) {
+      var last = this.priceTo.nativeElement.value.slice(12, 13);
+      this.priceTo.nativeElement.value = this.priceTo.nativeElement.value.slice(1, 14);
+    }
+    if ($event.target.value) {
+      this.checkPriceFrom = false;
+      this.checkPriceTo = false;
     }
   }
 
   getProvinces() {
-    this._dataService.getAll("provinces").subscribe(resp => this.provinces = resp.items);
+    this._dataService.getAll("provinces").subscribe(resp => this.provinces = resp.items, err => { }, () => {
+      this.provinces.forEach(p => {
+        if (p.provinceCode == this.obj.provinceCode) {
+          this._frm.controls['provinceCode'].setValue(p.name);
+        }
+      });
+    });
   }
 
   getDistricts(provinceCode) {
-    this._dataService.getAll("districts", "{ProvinceCode:" + provinceCode + "}").subscribe(resp => this.districts = resp.items);
+    this._dataService.getAll("districts", "{ProvinceCode:" + provinceCode + "}").subscribe(resp => this.districts = resp.items, err => { }, () => {
+      this.districts.forEach(d => {
+        if (d.districtCode == this.obj.districtCode) {
+          this._frm.controls['districtCode'].setValue(d.name);
+        }
+      });
+    });
   }
 
   provinceChange($event) {
@@ -385,32 +509,70 @@ export class DetailComponent extends AppComponentBase implements OnInit, AfterVi
   }
 
   getTitles() {
-    this._dataService.getAll("categorycommon", "CHUCDANH").subscribe(resp => this.titles = resp.items);
+    this._dataService.getAll("categorycommon", "CHUCDANH").subscribe(resp => this.titles = resp.items, err => { }, () => {
+      this.titles.forEach(t => {
+        if (t.code == this.obj.titleCode) {
+          this._frm.controls['titleCode'].setValue(t.name);
+        }
+      });
+    });
   }
 
   getPositions() {
-    this._dataService.getAll("categorycommon", "CHUCVU").subscribe(resp => this.positions = resp.items);
+    this._dataService.getAll("categorycommon", "CHUCVU").subscribe(resp => this.positions = resp.items, err => { }, () => {
+      this.positions.forEach(p => {
+        if (p.code == this.obj.positionCode) {
+          this._frm.controls['positionCode'].setValue(p.name);
+        }
+      });
+    });
   }
 
   getAcademics() {
-    this._dataService.getAll("categorycommon", "HOCHAM").subscribe(resp => this.academics = resp.items);
+    this._dataService.getAll("categorycommon", "HOCHAM").subscribe(resp => this.academics = resp.items, err => { }, () => {
+      this.academics.forEach(a => {
+        if (a.id == this.obj.academicId) {
+          this._frm.controls['academicId'].setValue(a.name);
+        }
+      });
+    });
   }
 
   getDegrees() {
-    this._dataService.getAll("categorycommon", "HOCVI").subscribe(resp => this.degrees = resp.items);
+    this._dataService.getAll("categorycommon", "HOCVI").subscribe(resp => this.degrees = resp.items, err => { }, () => {
+      this.degrees.forEach(d => {
+        if (d.id == this.obj.degreeId) {
+          this._frm.controls['degreeId'].setValue(d.name);
+        }
+      });
+    });
   }
 
   getNations() {
-    this._dataService.getAll("nations").subscribe(resp => this.nations = resp.items);
+    this._dataService.getAll("nations").subscribe(resp => this.nations = resp.items, err => { }, () => {
+      this.nations.forEach(n => {
+        if (n.nationCode == this.obj.nationCode) {
+          this._frm.controls['nationCode'].setValue(n.nationName);
+        }
+        if (n.nationCode == this.obj.educationCountryCode) {
+          this._frm.controls['educationCountryCode'].setValue(n.nationName);
+        }
+      });
+    });
   }
 
   getEthnicities() {
-    this._dataService.getAll("ethnicity").subscribe(resp => {this.ethnicities = resp.items; console.log("ethnicityList",this.ethnicities);});
+    this._dataService.getAll("ethnicity").subscribe(resp => { this.ethnicities = resp.items; }, err => { }, () => {
+      this.ethnicities.forEach(e => {
+        if (e.ethnicityCode == this.obj.ethnicityCode) {
+          this._frm.controls['ethnicityCode'].setValue(e.name);
+        }
+      });
+    });
   }
 
   getSpecialist() {
-    this._dataService.getAll("categorycommon", "CHUYENKHOA").subscribe(resp => this._specialist = resp.items);
-
+    this.dataService.get("catcommon", '', "{name:'asc'}", null, 300).subscribe(resp => this._specialist = resp.items);
   }
 
   @ViewChild("continueAdd") continueAdd: MatCheckbox;
@@ -489,10 +651,30 @@ export class DetailComponent extends AppComponentBase implements OnInit, AfterVi
   }
 
   selected(event: MatAutocompleteSelectedEvent): void {
-    this._healthfacilitiesChip.push(event.option.value);
+    var check;
+    if (this._healthfacilitiesChip.length == 0) {
+      this._healthfacilitiesChip.push(event.option.value);
+    }
+    else {
+      this._healthfacilitiesChip.forEach(h => {
+        if (h.healthFacilitiesId == event.option.value.healthFacilitiesId) {
+          check = false;
+        }
+      });
+      if (check != false) {
+        this._healthfacilitiesChip.push(event.option.value);
+      }
+      else {
+        swal({
+          title: 'Thông báo',
+          text: 'Đã chọn đơn vị này',
+          type: 'warning',
+          timer: 3000
+        })
+      }
+    }
     this.healthfacilitiesInput.nativeElement.value = '';
     this.healthfacilitiesControl.setValue(null);
-
   }
 
   healthInput() {
@@ -527,7 +709,7 @@ export class DetailComponent extends AppComponentBase implements OnInit, AfterVi
       .get("catcommon", JSON.stringify({
         name: isNaN(fValue) ? fValue : "",
         max: 300
-      }), '', null, null)
+      }), "{name:'asc'}", null, 300)
       .pipe(finalize(() => this.specialIsLoading = false));
   }
 
@@ -567,8 +749,31 @@ export class DetailComponent extends AppComponentBase implements OnInit, AfterVi
 
   specialSelected(event: MatAutocompleteSelectedEvent): void {
     this.checkSpecial = true;
-    var s = new Specialist(event.option.value.code, event.option.value.name);
-    this._specialistChip.push(s);
+
+    var check;
+    if (this._specialistChip.length == 0) {
+      var s = new Specialist(event.option.value.code, event.option.value.name);
+      this._specialistChip.push(s);
+    }
+    else {
+      this._specialistChip.forEach(h => {
+        if (h.specialistCode == event.option.value.code) {
+          check = false;
+        }
+      });
+      if (check != false) {
+        var s = new Specialist(event.option.value.code, event.option.value.name);
+        this._specialistChip.push(s);
+      }
+      else {
+        swal({
+          title: 'Thông báo',
+          text: 'Đã chọn chuyên khoa này',
+          type: 'warning',
+          timer: 3000
+        })
+      }
+    }
     this.specialistInput.nativeElement.value = '';
     this.specialistCodeControl.setValue(null);
   }
@@ -581,6 +786,17 @@ export class DetailComponent extends AppComponentBase implements OnInit, AfterVi
   //End auto complete specialist
 
   detectFiles(event) {
+    if (event.target.files[0].size > 2097152) {
+      this._frm.controls['avatar'].setValue(null);
+      this.avatarName = "Chưa chọn ảnh";
+      return swal({
+        title: 'Thông báo',
+        text: 'File quá lớn. Chỉ được chọn file có dung lượng nhỏ hơn hoặc bằng 2MB',
+        type: 'warning',
+        timer: 3000
+      });
+    }
+    this.avatarName = this.replace_space(this.replace_alias(event.target.files[0].name));
     this._avatarError = "";
     let files = event.target.files;
     if (files) {
@@ -594,7 +810,14 @@ export class DetailComponent extends AppComponentBase implements OnInit, AfterVi
           this._frm.controls['avatar'].setValue(file);
           reader.readAsDataURL(file);
         } else {
-          this._avatarError = "File tải lên không phải file ảnh";
+          this.avatarName = "Chưa chọn ảnh";
+          swal({
+            title: 'Thông báo',
+            text: 'File tải lên không phải ảnh',
+            type: 'warning',
+            timer: 3000
+          });
+          this._frm.controls['avatar'].setValue(null);
         }
       }
     }
@@ -639,7 +862,25 @@ export class DetailComponent extends AppComponentBase implements OnInit, AfterVi
     }
   }
 
-  checkSpecial: boolean;
+  ruleEmail(event: any) {
+    const pattern = /^[a-zA-Z0-9\.\-\_\@]*$/;
+    if (!pattern.test(event.target.value)) {
+      event.target.value = event.target.value.replace(/[^a-zA-Z0-9\.\-\_\@]/g, "");
+    }
+  }
+
+
+
+  checkSpecial = true;
+
+  specialistClick() {
+    if (this._specialistChip.length == 0) {
+      this.checkSpecial = false;
+    }
+    else {
+      this.checkSpecial = true;
+    }
+  }
 
   fullNameInput($event) {
     if ($event.data != null) {
@@ -655,6 +896,21 @@ export class DetailComponent extends AppComponentBase implements OnInit, AfterVi
 
   //SUBMIT
   submit() {
+    if (this._frm.controls['provinceCode'].value == undefined) {
+      this._frm.controls['provinceCode'].setValue(null);
+    }
+    if (this._frm.controls['districtCode'].value == undefined) {
+      this._frm.controls['districtCode'].setValue(null);
+    }
+    if (this._frm.controls['ethnicityCode'].value == undefined) {
+      this._frm.controls['ethnicityCode'].setValue(null);
+    }
+    if (this._frm.controls['educationCountryCode'].value == undefined) {
+      this._frm.controls['educationCountryCode'].setValue(null);
+    }
+    if (this._frm.controls['nationCode'].value == undefined) {
+      this._frm.controls['nationCode'].setValue(null);
+    }
     var params = _.pick(this._frm.value, [
       'doctorId',
       'fullName',
@@ -663,7 +919,6 @@ export class DetailComponent extends AppComponentBase implements OnInit, AfterVi
       'titleCode',
       'positionCode',
       'nationCode',
-      'ethnicityCode',
       'ethnicityCode',
       'certificationDate',
       'academicId',
@@ -745,7 +1000,7 @@ export class DetailComponent extends AppComponentBase implements OnInit, AfterVi
         timer: 3000
       });
     }
-    if (this._frm.controls['certificationCode'].value == "" && this.certificationDatePicker.nativeElement.value != "") {
+    if ((this._frm.controls['certificationCode'].value === "" || this._frm.controls['certificationCode'].value == null) && (this.certificationDatePicker.nativeElement.value != '' || this.certificationDatePicker.nativeElement.valueAsDate != null)) {
       return swal({
         title: 'Thông báo',
         text: 'Yêu cầu nhập mã giấy phép hành nghề trước khi nhập ngày cấp',
@@ -753,7 +1008,10 @@ export class DetailComponent extends AppComponentBase implements OnInit, AfterVi
         timer: 3000
       });
     }
-    if (priceFrom >= priceTo && priceFrom != 0 && priceTo != 0) {
+
+    if (typeof priceFrom === 'number' && typeof priceTo === 'number' && priceFrom >= priceTo) {
+      this.checkPriceTo = true;
+      this.checkPriceFrom = true;
       return swal({
         title: 'Thông báo',
         text: 'Giá khám từ phải nhỏ hơn giá khám đến',
@@ -761,6 +1019,70 @@ export class DetailComponent extends AppComponentBase implements OnInit, AfterVi
         timer: 3000
       });
     }
+
+    // if (priceFrom == 0) {
+    //   this.checkPriceFrom = true;
+    //   return swal({
+    //     title: 'Thông báo',
+    //     text: 'Giá trị nhập vào phải lớn hơn 0',
+    //     type: 'warning',
+    //     timer: 3000
+    //   });
+    // }
+    // if (priceTo == 0) {
+    //   this.checkPriceTo = true;
+    //   return swal({
+    //     title: 'Thông báo',
+    //     text: 'Giá trị nhập vào phải lớn hơn 0',
+    //     type: 'warning',
+    //     timer: 3000
+    //   });
+    // }
+    // if (priceFrom == null || priceFrom == "") {
+    //   if (priceTo != null && priceTo != "") {
+    //     this.checkPriceTo = true;
+    //     return swal({
+    //       title: 'Thông báo',
+    //       text: 'Giá khám từ phải nhỏ hơn giá khám đến',
+    //       type: 'warning',
+    //       timer: 3000
+    //     });
+    //   }
+    //   else {
+    //     if (priceFrom >= priceTo) {
+    //       this.checkPriceTo = true;
+    //       return swal({
+    //         title: 'Thông báo',
+    //         text: 'Giá khám từ phải nhỏ hơn giá khám đến',
+    //         type: 'warning',
+    //         timer: 3000
+    //       });
+    //     }
+    //   }
+    // }
+    // if (priceTo == null || priceTo == "") {
+    //   if (priceFrom != null && priceFrom != "") {
+    //     this.checkPriceFrom = true;
+    //     return swal({
+    //       title: 'Thông báo',
+    //       text: 'Giá khám từ phải nhỏ hơn giá khám đến',
+    //       type: 'warning',
+    //       timer: 3000
+    //     });
+    //   }
+    //   else {
+    //     if (priceFrom >= priceTo) {
+    //       this.checkPriceFrom = true;
+    //       return swal({
+    //         title: 'Thông báo',
+    //         text: 'Giá khám từ phải nhỏ hơn giá khám đến',
+    //         type: 'warning',
+    //         timer: 3000
+    //       });
+    //     }
+    //   }
+    // }
+
     if (this.obj) {
       params.doctorId = this.obj.doctorId;
     }
@@ -788,6 +1110,8 @@ export class DetailComponent extends AppComponentBase implements OnInit, AfterVi
     if (this.appSession.userId && this._isNew == false) {
       params.updateUserId = this.appSession.userId;
     }
+
+
 
     if (this._specialistChip) {
       params.specialist = this._specialistChip;
@@ -820,26 +1144,32 @@ export class DetailComponent extends AppComponentBase implements OnInit, AfterVi
           swal({
             title: this.l('SaveSuccess'),
             text: '',
-            type: 'success'
+            type: 'success',
+            timer: 3000
           });
           if (this.continueAdd.checked == true) {
             this.openDialogDoctor();
           } else {
             this.dialogRef.close();
           }
-        }, err => { }) :
+        }, err => {
+          this.checkCertificationCode = true;
+          console.log(this.checkCertificationCode);
+        }) :
         this._dataService.updateUpload(this.api, standardized(Object.assign(params, {}), {})).subscribe(() => {
           swal({
             title: this.l('SaveSuccess'),
             text: '',
-            type: 'success'
+            type: 'success',
+            timer: 3000
           });
           this.dialogRef.close();
-        }, err => { });
+        }, err => {
+          this.checkCertificationCode = true;
+        });
     }
-
-
   }
+
 
   openDialogDoctor(): void {
     const dialogRef = this.dialog.open(this.dialogComponent, { minWidth: 'calc(100vw/1.5)', maxWidth: 'calc(100vw - 100px)', disableClose: true });
