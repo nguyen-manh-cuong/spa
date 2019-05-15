@@ -44,7 +44,7 @@ export class DetailComponent extends AppComponentBase implements OnInit, AfterVi
         if (this.obj) {
             this._obj = _.clone(this.obj);
             abp.ui.setBusy('#form-dialog');
-            this._dataService.getAll(this.api, JSON.stringify({ 'patientId': this._obj.patientId, 'objectType': 1 }), null).subscribe(smsData => {
+            this._dataService.getAll(this.api, JSON.stringify({ 'patientId': this._obj.patientId, 'objectType': 1, 'checkSmsLogDetail': 1 }), null).subscribe(smsData => {
                 for (var item of smsData.items) {
                     let obj = {
                         message: item.message,
