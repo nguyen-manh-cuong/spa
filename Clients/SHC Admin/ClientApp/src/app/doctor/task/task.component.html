@@ -195,7 +195,7 @@
 
                         </mat-form-field> -->
 
-                        <mat-form-field appearance="outline" class="w-100">
+                        <mat-form-field appearance="outline" class="w-100" [ngClass]="{'mat-form-field-invalid':!checkSpecial}"> 
                             <mat-label>{{l('DoctorSpecialist')}}</mat-label>
                             <mat-chip-list #specialChipList [required]="true">
                                 <mat-chip *ngFor="let o of _specialistChip" [selectable]="specialSelectable"
@@ -212,16 +212,16 @@
                                     (matChipInputTokenEnd)="specialAdd($event)" (input)="specialInput()"
                                     [required]="true">
                             </mat-chip-list>
-                            <mat-autocomplete matInput #autoSpecialist="matAutocomplete"
+                            <mat-autocomplete  matInput #autoSpecialist="matAutocomplete"
                                 (optionSelected)="specialSelected($event)">
-                                <mat-option *ngIf="specialIsLoading" class="is-loading">
+                                <mat-option class="w-100" *ngIf="specialIsLoading" class="is-loading">
                                     <mat-spinner diameter="30"></mat-spinner>
                                 </mat-option>
-                                <mat-option *ngFor="let o of _specialist" [value]="o">
+                                <mat-option class="w-100" *ngFor="let o of _specialist" [value]="o">
                                     {{o.code +' - '+o.name}}
                                 </mat-option>
                             </mat-autocomplete>
-                            <validation *ngIf="!checkSpecial" matSuffix [control]="specialistCodeControl"></validation>
+                            <validation class="mt-1" *ngIf="!checkSpecial" matSuffix [control]="specialistCodeControl"></validation>
                         </mat-form-field>
                     </div>
                 </div>
@@ -275,7 +275,7 @@
                                 </span>
                             </span>
                         </div>
-                        <div class="ml-2 upload-content avatar-name"><mat-label>{{avatarName}}</mat-label></div>
+                        <div class="ml-1 upload-content avatar-name"><mat-label>{{avatarName}}</mat-label></div>
                     </div>
                 </div>
 

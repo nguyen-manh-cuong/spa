@@ -93,7 +93,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   checkPriceFrom = false;
   checkPriceTo = false
   _certificationInputCheck = true;
-  checkCertificationCode=true;
+  checkCertificationCode = true;
   _speciaList = [];
   _healthFacilities = [];
 
@@ -109,7 +109,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   _specialistCode: number;
 
   _avatars = new Array<string>();
-  avatarName="Chưa chọn ảnh";
+  avatarName = "Chưa chọn ảnh";
   _avatarError = "";
 
   filteredHealthFacilitiesOptions: Observable<IHealthfacilities[]>;
@@ -262,7 +262,11 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     // }
     if (this.obj) {
       this._certificationDate = this.obj.certificationDate;
+      if(this.obj.avatar){
+        this.avatarName=this.obj.avatar.slice(9,this.obj.avatar.length);
+      }
     }
+    console.log(this.obj);
     //   else {
     //     this._obj.certificationDate = new Date(Date.now());
     //   }
@@ -378,7 +382,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
       this._certificationInputCheck = true;
       this.certificationDatePicker.nativeElement.value = "";
     }
-    this.checkCertificationCode=false;
+    this.checkCertificationCode = false;
   }
 
   certificationKeypress($event) {
@@ -391,20 +395,25 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   }
 
   replace_alias(str) {
-    str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "");
-    str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "");
-    str = str.replace(/ì|í|ị|ỉ|ĩ/g, "");
-    str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, "");
-    str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "");
-    str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "");
-    str = str.replace(/đ/g, "");
-    str = str.replace(/À|Á|Ạ|Ả|Ã|Â|Ầ|Ấ|Ậ|Ẩ|Ẫ|Ă|Ằ|Ắ|Ặ|Ẳ|Ẵ/g, "");
-    str = str.replace(/È|É|Ẹ|Ẻ|Ẽ|Ê|Ề|Ế|Ệ|Ể|Ễ/g, "");
-    str = str.replace(/Ì|Í|Ị|Ỉ|Ĩ/g, "");
-    str = str.replace(/Ò|Ó|Ọ|Ỏ|Õ|Ô|Ồ|Ố|Ộ|Ổ|Ỗ|Ơ|Ờ|Ớ|Ợ|Ở|Ỡ/g, "");
-    str = str.replace(/Ù|Ú|Ụ|Ủ|Ũ|Ư|Ừ|Ứ|Ự|Ử|Ữ/g, "");
-    str = str.replace(/Ỳ|Ý|Ỵ|Ỷ|Ỹ/g, "");
-    str = str.replace(/Đ/g, "");
+    str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
+    str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
+    str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i");
+    str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, "o");
+    str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u");
+    str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y");
+    str = str.replace(/đ/g, "d");
+    str = str.replace(/À|Á|Ạ|Ả|Ã|Â|Ầ|Ấ|Ậ|Ẩ|Ẫ|Ă|Ằ|Ắ|Ặ|Ẳ|Ẵ/g, "A");
+    str = str.replace(/È|É|Ẹ|Ẻ|Ẽ|Ê|Ề|Ế|Ệ|Ể|Ễ/g, "E");
+    str = str.replace(/Ì|Í|Ị|Ỉ|Ĩ/g, "I");
+    str = str.replace(/Ò|Ó|Ọ|Ỏ|Õ|Ô|Ồ|Ố|Ộ|Ổ|Ỗ|Ơ|Ờ|Ớ|Ợ|Ở|Ỡ/g, "O");
+    str = str.replace(/Ù|Ú|Ụ|Ủ|Ũ|Ư|Ừ|Ứ|Ự|Ử|Ữ/g, "U");
+    str = str.replace(/Ỳ|Ý|Ỵ|Ỷ|Ỹ/g, "Y");
+    str = str.replace(/Đ/g, "D");
+    return str;
+  }
+
+  replace_space(str) {
+    str = str.replace(/ /g, "_");
     return str;
   }
 
@@ -698,17 +707,17 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   //End auto complete specialist
 
   detectFiles(event) {
-    if(event.target.files[0].size>2097152){
+    if (event.target.files[0].size > 2097152) {
       this._frm.controls['avatar'].setValue(null);
-      this.avatarName="Chưa chọn ảnh";
+      this.avatarName = "Chưa chọn ảnh";
       return swal({
-        title:'Thông báo',
-        text:'File quá lớn. Chỉ được chọn file có dung lượng nhỏ hơn hoặc bằng 2MB',
-        type:'warning',
-        timer:3000
+        title: 'Thông báo',
+        text: 'File quá lớn. Chỉ được chọn file có dung lượng nhỏ hơn hoặc bằng 2MB',
+        type: 'warning',
+        timer: 3000
       });
     }
-    this.avatarName=event.target.files[0].name;
+    this.avatarName =this.replace_space(this.replace_alias(event.target.files[0].name));
     this._avatarError = "";
     let files = event.target.files;
     if (files) {
@@ -722,7 +731,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
           this._frm.controls['avatar'].setValue(file);
           reader.readAsDataURL(file);
         } else {
-          this.avatarName="Chưa chọn ảnh";
+          this.avatarName = "Chưa chọn ảnh";
           swal({
             title: 'Thông báo',
             text: 'File tải lên không phải ảnh',
@@ -1065,9 +1074,9 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
             this.dialogRef.close();
           }
         }, err => {
-          this.checkCertificationCode=true;
+          this.checkCertificationCode = true;
           console.log(this.checkCertificationCode);
-         }) :
+        }) :
         this._dataService.updateUpload(this.api, standardized(Object.assign(params, {}), {})).subscribe(() => {
           swal({
             title: this.l('SaveSuccess'),
@@ -1076,8 +1085,8 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
             timer: 3000
           });
           this.dialogRef.close();
-        }, err => { 
-          this.checkCertificationCode=true;
+        }, err => {
+          this.checkCertificationCode = true;
         });
     }
   }
