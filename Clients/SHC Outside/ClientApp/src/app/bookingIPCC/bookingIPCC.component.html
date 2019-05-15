@@ -158,10 +158,11 @@
               <div class="form-group" [ngClass]="{'has-error': frmBooking.get('healthFacilitiesId').invalid && (frmBooking.get('healthFacilitiesId').dirty || frmBooking.get('healthFacilitiesId').touched)}">
                 <label for="districtCode" class="col-sm-2 col-lg-4 control-label">Chọn phòng khám <span class="text-danger">*</span></label>
                 <div class="col-sm-10 col-lg-6">
-                  <ng-select [searchable]="true" placeholder="Chọn phòng khám" formControlName="healthFacilitiesId" id="healthFacilitiesId" (change)="onSelectHealthFacilities($event)">
-                    <ng-option *ngFor="let o of _healthfacilities" [value]="o.healthFacilitiesId">{{ o.name }}</ng-option>
-                  </ng-select>
-                  <validation [control]="frmBooking.controls['healthFacilitiesId']"></validation>
+                    <ng-select [searchable]="true" placeholder="Chọn phòng khám" formControlName="healthFacilitiesId" id="healthFacilitiesId" (change)="onSelectHealthFacilities($event)">
+                        <ng-option *ngFor="let o of _healthfacilities" [value]="o.healthFacilitiesId">{{ o.name }}</ng-option>
+                    </ng-select>
+                    <!--<validation [control]="frmBooking.controls['healthFacilitiesId']"></validation>-->
+                    <small *ngIf="frmBooking.controls['healthFacilitiesId'] && frmBooking.controls['healthFacilitiesId'].errors != null && (frmBooking.controls['healthFacilitiesId'].touched || frmBooking.controls['healthFacilitiesId'].dirty)" class="help-block" style="color: red;">Bạn cần chọn một cơ sở khám</small>
                 </div>
               </div>
             </ng-container>

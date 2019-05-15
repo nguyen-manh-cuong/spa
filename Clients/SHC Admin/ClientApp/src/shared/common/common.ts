@@ -48,6 +48,11 @@ export class ValidationRule {
             if (control.value.charAt(0) != '+' && control.value.indexOf("+") > 0) {
                 return { invalidphonenumber: true };
             }
+            var first=control.value.indexOf("+");
+            var second=control.value.lastIndexOf("+");
+            if(first != second){
+                return {invalidphonenumber:true};
+            }
             if (control.value.length < 10) {
                 return { minlength: true };
             }
