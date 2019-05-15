@@ -243,12 +243,12 @@ namespace SHCServer
             try
             {
                 var response = requestMT.wsCpMtAsync(User, Password, CPCode, RequestID, UserID, ReceiverID, ServiceID, CommandCode, Content, ContentType);
-                var result = response != null ? response.Result.@return : null;
+                var result = response.Result.@return;
 
                 return new SmsRespone
                 {
                     Code = result != null ? result.result1 : 0,
-                    Result = result != null ? result.message : "Timed out",
+                    Result = result.message != null ? result.message : "Timed out",
                     Message = content.Message,
                     PhoneNumber = content.PhoneNumber,
                     HealthFacilitiesId = content.HealthFacilitiesId,
