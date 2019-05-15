@@ -1,6 +1,4 @@
-:host ::ng-deep .ck-editor__editable {
-    min-height: 250px;
-}
+
 
 // .mat-chip .mat-chip-remove.mat-icon, .mat-chip .mat-chip-trailing-icon.mat-icon{
 //     margin-left: -5px!important;
@@ -18,6 +16,10 @@
 
 .ckeditor {
     font-size: 13px;
+}
+
+.ck-editor__editable{
+    min-height: 180px;
 }
 
 .image-uploader .upload-content .upload-description {
@@ -76,6 +78,13 @@
 
 .avatar-name {
     margin-top: -15px;
+}
+
+div#cdk-overlay-1 {
+    max-width: unset!important;
+}
+div#cdk-overlay-2 {
+    max-width: unset!important;
 }
 
 

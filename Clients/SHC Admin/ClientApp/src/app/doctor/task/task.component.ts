@@ -2,7 +2,7 @@ import { forEach } from '@angular/router/src/utils/collection';
 import { IDoctor, IHealthfacilities, IHealthfacilitiesDoctor, IDoctorSpecialists } from './../../../../../../SHC Client/ClientApp/src/shared/Interfaces';
 import * as _ from 'lodash';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import { Component, Inject, Injector, OnInit, ViewChild, AfterViewInit, ElementRef, HostListener, Directive, Output, EventEmitter } from '@angular/core';
+import { Component, Inject, Injector, OnInit, ViewChild, AfterViewInit, ElementRef, HostListener, Directive, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl, ValidationErrors } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef, MatInput, MatCheckbox, MatAutocomplete, MatChipInputEvent, MatAutocompleteSelectedEvent, MatDialog, MatPaginator } from '@angular/material';
 import * as moment from 'moment';
@@ -57,6 +57,7 @@ export class Specialist {
   selector: 'app-task',
   templateUrl: './task.component.html',
   styleUrls: ['./task.component.scss'],
+  encapsulation: ViewEncapsulation.None,
   providers: [
     { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
     { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
