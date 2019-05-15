@@ -266,8 +266,9 @@ namespace SHCServer
                 return new SmsRespone
                 {
                     Code = 0,
-                    Message = e.Message,
+                    Message = content.Message,
                     //Message = content.Message,
+                    Result = e.Message,
                     PhoneNumber = content.PhoneNumber,
                     HealthFacilitiesId = content.HealthFacilitiesId,
                     SmsTemplateId = content.SmsTemplateId,

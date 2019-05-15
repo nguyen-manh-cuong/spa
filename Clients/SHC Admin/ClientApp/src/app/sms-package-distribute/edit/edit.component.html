@@ -51,7 +51,7 @@
               <div class="col-md-6"  [ngClass]="{'disabled': _smsLogs.length > 0 }">
                   <mat-form-field appearance="outline" class="w-100">
                       <mat-label>{{l("Từ năm")}}</mat-label>
-                      <input min="0" max="9999" maxlength="4" formControlName="yearStart" readonly="_smsLogs.length > 0" mask="0*"
+                      <input min="0" max="9999" maxlength="4" formControlName="yearStart" mask="0*"
                              matInput autocomplete [required]="true" #yearStart>
                       <mat-icon matSuffix
                                 *ngIf="_frmpackagedistributeedit.controls['yearStart'].invalid && (_frmpackagedistributeedit.controls['yearStart'].dirty || _frmpackagedistributeedit.controls['yearStart'].touched)"
@@ -76,7 +76,7 @@
               <div class="col-md-6"  [ngClass]="{'disabled': _smsLogs.length > 0 }">
                   <mat-form-field appearance="outline" class="w-100">
                       <mat-label>{{l("Đến năm")}}</mat-label>
-                      <input min="0" max="9999" maxlength="4" formControlName="yearEnd" readonly="_smsLogs.length > 0" mask="0*"
+                      <input min="0" max="9999" maxlength="4" formControlName="yearEnd" mask="0*"
                              matInput autocomplete [required]="true" #yearEnd>
                       <mat-icon matSuffix
                                 *ngIf="_frmpackagedistributeedit.controls['yearEnd'].invalid && _smsLogs.length < 0 && (_frmpackagedistributeedit.controls['yearEnd'].dirty || _frmpackagedistributeedit.controls['yearEnd'].touched)"
