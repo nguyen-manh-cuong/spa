@@ -109,7 +109,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   _specialistCode: number;
 
   _avatars = new Array<string>();
-  _avatarss = [];
+  avatarName="Chưa chọn ảnh";
   _avatarError = "";
 
   filteredHealthFacilitiesOptions: Observable<IHealthfacilities[]>;
@@ -414,6 +414,9 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
       var last = this.priceFrom.nativeElement.value.slice(12, 13);
       this.priceFrom.nativeElement.value = last + "." + this.priceFrom.nativeElement.value.slice(0, 11);
     }
+    if (this.priceFrom.nativeElement.value.length == 14) {
+      this.priceFrom.nativeElement.value = this.priceFrom.nativeElement.value.slice(1, 14);
+    }
     if ($event.target.value) {
       this.checkPriceFrom = false;
       this.checkPriceTo = false;
@@ -425,6 +428,10 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     if (this.priceTo.nativeElement.value.length == 15) {
       var last = this.priceTo.nativeElement.value.slice(12, 13);
       this.priceTo.nativeElement.value = last + "." + this.priceTo.nativeElement.value.slice(0, 11);
+    }
+    if (this.priceTo.nativeElement.value.length == 14) {
+      var last = this.priceTo.nativeElement.value.slice(12, 13);
+      this.priceTo.nativeElement.value = this.priceTo.nativeElement.value.slice(1, 14);
     }
     if ($event.target.value) {
       this.checkPriceFrom = false;
@@ -693,6 +700,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   detectFiles(event) {
     if(event.target.files[0].size>2097152){
       this._frm.controls['avatar'].setValue(null);
+      this.avatarName="Chưa chọn ảnh";
       return swal({
         title:'Thông báo',
         text:'File quá lớn. Chỉ được chọn file có dung lượng nhỏ hơn hoặc bằng 2MB',
@@ -700,6 +708,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
         timer:3000
       });
     }
+    this.avatarName=event.target.files[0].name;
     this._avatarError = "";
     let files = event.target.files;
     if (files) {
@@ -711,10 +720,9 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
             this._avatars[0] = e.target.result;
           }
           this._frm.controls['avatar'].setValue(file);
-          var avatarName=event.target.files[0].name;
-          this._avatarss.push(avatarName);
           reader.readAsDataURL(file);
         } else {
+          this.avatarName="Chưa chọn ảnh";
           swal({
             title: 'Thông báo',
             text: 'File tải lên không phải ảnh',

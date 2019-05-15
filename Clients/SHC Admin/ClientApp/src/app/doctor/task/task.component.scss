@@ -10,25 +10,27 @@
     margin-right: 2px !important;
 }
 
-.label{
+.label {
     margin-left: 5px;
     font-weight: bold;
     font-size: 15px;
 }
 
-.ckeditor{
+.ckeditor {
     font-size: 13px;
 }
 
 .image-uploader .upload-content .upload-description {
     float: left;
-	font-size: 15px;
+    font-size: 15px;
 }
+
 .image-uploader .upload-content .upload-button {
     overflow: hidden;
     position: relative;
     display: inline-block;
 }
+
 .image-uploader .upload-content .upload-button input {
     bottom: 0;
     cursor: pointer;
@@ -39,24 +41,32 @@
     width: 100px;
     z-index: 1;
 }
+
 .btn-primary-inverted {
     background-color: #fff;
     border-color: #00a2a2;
     color: #00a2a2;
     transition: .4s all;
 }
+
 .upload-button:hover .btn-primary-inverted {
-    background: #00a2a2!important;
-    color: #fff!important;
+    background: #00a2a2 !important;
+    color: #fff !important;
     transition: .4s all;
 }
+
 .image-uploader .upload-content {
     float: left;
     margin-bottom: 16px;
     width: 100%;
 }
-.btn-sm{
-    font-size: 16px; 
-    padding: 3px 10px; 
-    border-radius: 5px; 
+
+.btn-sm {
+    font-size: 16px;
+    padding: 3px 10px;
+    border-radius: 5px;
+}
+
+.avatar-name {
+    margin-top: -15px;
 }
