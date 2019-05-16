@@ -7,7 +7,6 @@ import { Observable } from 'rxjs';
 import { map, startWith, finalize, switchMap, tap, debounceTime } from 'rxjs/operators';
 import swal from 'sweetalert2';
 import * as moment from 'moment';
-import { DatePicker } from 'angular2-datetimepicker';
 
 import {MomentDateAdapter} from '@angular/material-moment-adapter';
 import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
@@ -57,6 +56,8 @@ export class IndexComponent extends PagedListingComponentBase<ISmsLogs> implemen
 
     //@ViewChild("startTime") startTime;
     //@ViewChild("endTime") endTime;
+    startDate = new Date();
+    endDate = new Date();
 
     _checkSession = false;
 
@@ -65,15 +66,6 @@ export class IndexComponent extends PagedListingComponentBase<ISmsLogs> implemen
 
     constructor(injector: Injector, private _dataService: DataService /*, public dialog: MatDialog*/, private _formBuilder: FormBuilder) {
         super(injector);
-
-        DatePicker.prototype.ngOnInit = function () {
-            this.settings = Object.assign(this.defaultSettings, this.settings);
-            if (this.settings.defaultOpen) {
-                this.popover = true;
-            }
-            this.startDate = new Date();
-            this.endDate = new Date();
-        };
     }
 
     ngOnInit() {
@@ -176,6 +168,18 @@ export class IndexComponent extends PagedListingComponentBase<ISmsLogs> implemen
 
         //var startTime = moment(this.startTime.nativeElement.value + '00:00:00', 'DD/MM/YYYY hh:mm:ss').add(7, 'hours').toDate();
         //var endTime = moment(this.endTime.nativeElement.value + '23:59:59:', 'DD/MM/YYYY hh:mm:ss').add(7, 'hours').toDate();
+        console.log(1, this.startDate);
+        console.log(2, this.endDate);
+
+        this._startDate = moment(this.startDate).format('DD/MM/YYYY HH:mm');
+        this._endDate = moment(this.endDate).format('DD/MM/YYYY HH:mm');
+
+        console.log(1, this._startDate);
+        console.log(2, this._endDate);
+
+        if (this._endDate < this._startDate) {
+            return swal(this.l('Notification'), this.l('FromDateMustBeGreaterThanOrEqualToDate'), 'warning');
+        }
 
         let yearStart = parseInt(this._startDate.slice(6, 10));
         let yearEnd = parseInt(this._endDate.slice(6, 10));
@@ -210,10 +214,6 @@ export class IndexComponent extends PagedListingComponentBase<ISmsLogs> implemen
             }
         }
 
-        //if (this._endDate < this._startDate) {
-        //    return swal(this.l('Notification'), this.l('FromDateMustBeGreaterThanOrEqualToDate'), 'warning');
-        //}
-
         if (this._checkSession) {
             this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId);
         }
@@ -225,13 +225,5 @@ export class IndexComponent extends PagedListingComponentBase<ISmsLogs> implemen
         this.frmSearch.controls['startTime'].setValue(this._startDate);
         this.frmSearch.controls['endTime'].setValue(this._endDate);
         this.btnSearchClicks$.next();
-    }
-
-    onDateSelectStartTime(event) {
-        this._startDate = moment(event).format('DD/MM/YYYY HH:mm');
-    }
-
-    onDateSelectEndTime(event) {
-        this._endDate = moment(event).format('DD/MM/YYYY HH:mm');
     }
 }

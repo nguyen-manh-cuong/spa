@@ -169,11 +169,10 @@
 
             <!--  -->
             <div class="col-md-6">
-                <mat-label>{{l('Ngày sinh từ')}}</mat-label>
                 <div class="row m-0 pt-4">
                     <div class="col-md-6">
                         <mat-form-field appearance="outline" class="w-100">
-                            <mat-label>{{l('Ngày')}}</mat-label>
+                            <mat-label>{{l('Ngày sinh từ ngày')}}</mat-label>
                             <mat-select formControlName="fromDay">
                                 <mat-option *ngFor="let o of _days" [value]="o.id">{{ o.name }}</mat-option>
                             </mat-select>
@@ -191,11 +190,10 @@
             </div>
 
             <div class="col-md-6">
-                <mat-label>{{l('Ngày sinh đến')}}</mat-label>
                 <div class="row m-0 pt-4">
                     <div class="col-md-6">
                         <mat-form-field appearance="outline" class="w-100">
-                            <mat-label>{{l('Ngày')}}</mat-label>
+                            <mat-label>{{l('Ngày sinh đến ngày')}}</mat-label>
                             <mat-select formControlName="toDay">
                                 <mat-option *ngFor="let o of _days" [value]="o.id">{{ o.name }}</mat-option>
                             </mat-select>

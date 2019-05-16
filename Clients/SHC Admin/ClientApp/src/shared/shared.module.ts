@@ -1,4 +1,4 @@
-﻿import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
     // MAT_DIALOG_DEFAULT_OPTIONS,
     // MatAutocomplete,
