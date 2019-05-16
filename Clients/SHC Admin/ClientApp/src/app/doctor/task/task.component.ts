@@ -88,6 +88,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   @ViewChild("inputAvatar") inputAvatar;
   @ViewChild('priceFrom') priceFrom;
   @ViewChild('priceTo') priceTo;
+  @ViewChild('doctorSummary') doctorSummary;
   dataService: DataService;
   isLoading = false;
   specialIsLoading = false;
@@ -95,6 +96,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   checkPriceTo = false
   _certificationInputCheck = true;
   checkCertificationCode = true;
+  checkAvatar = false;
   _speciaList = [];
   _healthFacilities = [];
 
@@ -243,6 +245,10 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
         this.getDistricts(this.obj.provinceCode);
       }
 
+      if (this.obj.avatar) {
+        this.checkAvatar = true;
+      }
+
       this._obj = _.clone(this.obj);
       this._isNew = false;
 
@@ -263,11 +269,10 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     // }
     if (this.obj) {
       this._certificationDate = this.obj.certificationDate;
-      if(this.obj.avatar){
-        this.avatarName=this.obj.avatar.slice(9,this.obj.avatar.length);
+      if (this.obj.avatar) {
+        this.avatarName = this.obj.avatar.slice(9, this.obj.avatar.length);
       }
     }
-    console.log(this.obj);
     //   else {
     //     this._obj.certificationDate = new Date(Date.now());
     //   }
@@ -382,6 +387,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     else {
       this._certificationInputCheck = true;
       this.certificationDatePicker.nativeElement.value = "";
+      this._frm.controls['certificationDate'].setValue(null);
     }
     this.checkCertificationCode = false;
   }
@@ -392,6 +398,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     }
     if ($event.key == "x" && this.certification.elementNative.value == "") {
       this.certificationDatePicker.nativeElement.value = "";
+      this._frm.controls['certificationDate'].setValue(null);
     }
   }
 
@@ -413,13 +420,18 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     return str;
   }
 
+  replace_alias_number(str) {
+    str = str.replace(/a|e|i|o|u|y|d|A|E|I|O|U|Y|D/g, "");
+    return str;
+  }
+
   replace_space(str) {
     str = str.replace(/ /g, "_");
     return str;
   }
 
   priceFromInput($event) {
-    this.priceFrom.nativeElement.value = this.replace_alias(this.priceFrom.nativeElement.value);
+    this.priceFrom.nativeElement.value = this.replace_alias_number(this.replace_alias(this.priceFrom.nativeElement.value));
     if (this.priceFrom.nativeElement.value.length == 15) {
       var last = this.priceFrom.nativeElement.value.slice(12, 13);
       this.priceFrom.nativeElement.value = last + "." + this.priceFrom.nativeElement.value.slice(0, 11);
@@ -427,14 +439,13 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     if (this.priceFrom.nativeElement.value.length == 14) {
       this.priceFrom.nativeElement.value = this.priceFrom.nativeElement.value.slice(1, 14);
     }
-    if ($event.target.value) {
-      this.checkPriceFrom = false;
-      this.checkPriceTo = false;
-    }
+
+    this.checkPriceFrom = false;
+    this.checkPriceTo = false;
   }
 
   priceToInput($event) {
-    this.priceTo.nativeElement.value = this.replace_alias(this.priceTo.nativeElement.value);
+    this.priceTo.nativeElement.value = this.replace_alias_number(this.replace_alias(this.priceTo.nativeElement.value));
     if (this.priceTo.nativeElement.value.length == 15) {
       var last = this.priceTo.nativeElement.value.slice(12, 13);
       this.priceTo.nativeElement.value = last + "." + this.priceTo.nativeElement.value.slice(0, 11);
@@ -443,10 +454,8 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
       var last = this.priceTo.nativeElement.value.slice(12, 13);
       this.priceTo.nativeElement.value = this.priceTo.nativeElement.value.slice(1, 14);
     }
-    if ($event.target.value) {
-      this.checkPriceFrom = false;
-      this.checkPriceTo = false;
-    }
+    this.checkPriceFrom = false;
+    this.checkPriceTo = false;
   }
 
   getProvinces() {
@@ -718,7 +727,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
         timer: 3000
       });
     }
-    this.avatarName =this.replace_space(this.replace_alias(event.target.files[0].name));
+    this.avatarName = this.replace_space(this.replace_alias(event.target.files[0].name));
     this._avatarError = "";
     let files = event.target.files;
     if (files) {
@@ -727,6 +736,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
         reader.readAsDataURL(file);
         if (file.type == 'image/jpeg' || file.type == 'image/png') {
           reader.onload = (e: any) => {
+            this.checkAvatar = false;
             this._avatars[0] = e.target.result;
           }
           this._frm.controls['avatar'].setValue(file);
@@ -735,7 +745,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
           this.avatarName = "Chưa chọn ảnh";
           swal({
             title: 'Thông báo',
-            text: 'File tải lên không phải ảnh',
+            text: 'Chỉ được tải lên file jpg, png, jpeg, pdf',
             type: 'warning',
             timer: 3000
           });
@@ -802,6 +812,17 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     else {
       this.checkSpecial = true;
     }
+  }
+
+  doctorSummaryInput($event) {
+    // console.log($event);
+    // if($event.target.textContent.length>4000){
+    //   this._frm.controls['summary'].setValue(this._frm.controls['summary'].value.splice(0,4000));
+    // }
+  }
+
+  doctorSummaryKeypress($event) {
+
   }
 
   fullNameInput($event) {
@@ -930,16 +951,17 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
         timer: 3000
       });
     }
-
-    if (typeof priceFrom === 'number' && typeof priceTo === 'number' && priceFrom >= priceTo) {
-      this.checkPriceTo = true;
-      this.checkPriceFrom = true;
-      return swal({
-        title: 'Thông báo',
-        text: 'Giá khám từ phải nhỏ hơn giá khám đến',
-        type: 'warning',
-        timer: 3000
-      });
+    if (priceFrom != null && priceTo != null) {
+      if (priceFrom != "" && priceTo != "" && priceFrom >= priceTo) {
+        this.checkPriceTo = true;
+        this.checkPriceFrom = true;
+        return swal({
+          title: 'Thông báo',
+          text: 'Giá khám từ phải nhỏ hơn giá khám đến',
+          type: 'warning',
+          timer: 3000
+        });
+      }
     }
 
     // if (priceFrom == 0) {
@@ -1076,7 +1098,6 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
           }
         }, err => {
           this.checkCertificationCode = true;
-          console.log(this.checkCertificationCode);
         }) :
         this._dataService.updateUpload(this.api, standardized(Object.assign(params, {}), {})).subscribe(() => {
           swal({
