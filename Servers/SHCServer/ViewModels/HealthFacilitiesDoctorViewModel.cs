@@ -29,9 +29,11 @@ namespace SHCServer.ViewModels
 
             HealthFacilitiesId = obj.HealthFacilitiesId;
             DoctorId = obj.DoctorId;
+            Code = healthFacilities != null ? healthFacilities.Code : "";
         }
 
         public int? HealthFacilitiesId { set; get; }
+        public string Code { get; set; }
         public string Name { get; set; }
         public int DoctorId { get; set; }
     }

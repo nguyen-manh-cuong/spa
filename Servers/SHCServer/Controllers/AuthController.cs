@@ -118,7 +118,7 @@ namespace SHCServer.Controllers
                                          new MenuItem {Name = "ExamScheduleDoctor", Icon="", Route="/app/booking-doctor"},
                                          new MenuItem {Name = "Thống kê DS bệnh nhân đặt khám", Icon="", Route="/app/booking-informations"},
                                          new MenuItem {Name = "Danh sách bệnh nhân đặt khám", Icon="", Route="/app/booking-list"},
-                                         new MenuItem {Name = "Danh sách bác sĩ", Icon="", Route="/app/doctor"},
+                                         //new MenuItem {Name = "Danh sách bác sĩ", Icon="", Route="/app/doctor"},
                                     }}
                                 } 
                             }
@@ -166,7 +166,7 @@ namespace SHCServer.Controllers
             }
 
             //return Json(new ActionResultDto { Error = new { code = 0, message = "Login failed!", details = "Invalid user name or password" } });
-            return StatusCode(422, _excep.Throw("Đăng nhập không thành công!", "Tài khoản hoặc mật khẩu không đúng."));
+            return StatusCode(401, _excep.Throw(401, "Đăng nhập không thành công!", "Tài khoản hoặc mật khẩu không đúng."));
         }
 
         [HttpPost]
@@ -177,19 +177,19 @@ namespace SHCServer.Controllers
 
             if (User.Where(u => u.UserName == obj.UserName).Count() > 0)
             {
-                return StatusCode(409, _excep.Throw("Đăng ký không thành công.", "Tài khoản đã tồn tại!"));
+                return StatusCode(406, _excep.Throw("Đăng ký không thành công.", "Tài khoản đã tồn tại!"));
             }
             if (User.Where(u => u.Email == obj.Email).Count() > 0)
             {
-                return StatusCode(409, _excep.Throw("Đăng ký không thành công.", "Email đã tồn tại!"));
+                return StatusCode(406, _excep.Throw("Đăng ký không thành công.", "Email đã tồn tại!"));
             }
             if (User.Where(u => u.PhoneNumber == obj.PhoneNumber).Count() > 0)
             {
-                return StatusCode(409, _excep.Throw("Đăng ký không thành công.", "Số điện thoại đã tồn tại!"));
+                return StatusCode(406, _excep.Throw("Đăng ký không thành công.", "Số điện thoại đã tồn tại!"));
             }
             if (obj.Identification != "null" && !string.IsNullOrEmpty(obj.Identification) && User.Where(u => u.Identification == obj.Identification).Count() > 0)
             {
-                return StatusCode(409, _excep.Throw("Đăng ký không thành công.", "Số CMND đã tồn tại!"));
+                return StatusCode(406, _excep.Throw("Đăng ký không thành công.", "Số CMND đã tồn tại!"));
             }
 
             try

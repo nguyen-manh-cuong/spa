@@ -59,6 +59,10 @@ namespace SHCServer.Controllers
                     {
                         objs = objs.OrderBy(o => o.Name);
                     }
+                    if (string.Equals(key, "id"))
+                    {
+                        objs = objs.OrderByDesc(o => o.Code).OrderByDesc(o => o.CreateDate);
+                    }
                 }
             }
             else

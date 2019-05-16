@@ -214,7 +214,7 @@ namespace SHCServer.Controllers
                 //}
                 if(data.ContainsKey("type") && (data["type"].ToString() == "cmsn"))
                 {
-                    if (data.ContainsKey("fromMonth") && int.Parse(data["fromMonth"].ToString()) <= int.Parse(data["toMonth"].ToString()))
+                    if (data.ContainsKey("fromMonth") && data["fromMonth"].ToString() != "13" && int.Parse(data["fromMonth"].ToString()) <= int.Parse(data["toMonth"].ToString()) || data["fromMonth"].ToString() == "13")
                     {
                         clause.Add("WHERE (p.BirthMonth < @toMonth OR (p.BirthMonth = @toMonth AND p.BirthDate <= @ToDay)) AND (p.BirthMonth > @FromMonth OR (p.BirthMonth = @FromMonth AND p.BirthDate >= @FromDay))");
                         if ((data.ContainsKey("fromMonth") && data["fromMonth"] == "13") && (data.ContainsKey("fromDay") && data["fromDay"] != "32"))
@@ -625,7 +625,7 @@ namespace SHCServer.Controllers
                 smsLog.Message = "";
                 smsLog.ResultMessage = message;
                 smsLog.Status = 0;
-                smsLog.HealthFacilitiesId = infoInput.healthFacilitiesId.Value;
+                smsLog.HealthFacilitiesId = (infoInput.healthFacilitiesId != null ? infoInput.healthFacilitiesId.Value : 0);
                 smsLog.SmsTemplateId = 0;
                 smsLog.SmsPackagesDistributeId = 0;
                 smsLog.SentDate = DateTime.Now;
@@ -649,7 +649,7 @@ namespace SHCServer.Controllers
                 smsLog.Message = "";
                 smsLog.ResultMessage = message;
                 smsLog.Status = 0;
-                smsLog.HealthFacilitiesId = infoInput.healthFacilitiesId.Value;
+                smsLog.HealthFacilitiesId = (infoInput.healthFacilitiesId != null ? infoInput.healthFacilitiesId.Value : 0);
                 smsLog.SmsTemplateId = 0;
                 smsLog.SmsPackagesDistributeId = 0;
                 smsLog.SentDate = DateTime.Now;
