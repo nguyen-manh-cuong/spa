@@ -14,7 +14,7 @@
               <div class="col-md-6 disabled">
                   <mat-form-field appearance="outline" class="w-100">
                       <mat-label>{{l('PackageDistributeHealthFacilities')}}</mat-label>
-                      <mat-select formControlName="healthFacilitiesId" readonly [required]="true">
+                      <mat-select formControlName="healthFacilitiesId" [required]="true">
                           <mat-option *ngFor="let o of _medicalFacility" [value]="o.healthFacilitiesId">{{ o.code + '-' + o.name }}</mat-option>
                       </mat-select>
                       <mat-icon matSuffix
@@ -23,10 +23,10 @@
                                 matTooltip="{{l('NotBeEmpty')}}" color="warn">info</mat-icon>
                   </mat-form-field>
               </div>
-              <div class="col-md-6"  [ngClass]="{'disabled': _smsLogs.length > 0 }">
+              <div class="col-md-6">
                   <mat-form-field appearance="outline" class="w-100 disabled">
                       <mat-label>{{l('PackageDistributeSmsPackages')}}</mat-label>
-                      <mat-select formControlName="smsPackageId" readonly [required]="true">
+                      <mat-select formControlName="smsPackageId" [required]="true">
                           <mat-option *ngFor="let o of _package" [value]="o.id">{{ o.name }}</mat-option>
                       </mat-select>
                       <mat-icon matSuffix
@@ -35,10 +35,10 @@
                                 matTooltip="{{l('NotBeEmpty')}}" color="warn">info</mat-icon>
                   </mat-form-field>
               </div>
-              <div class="col-md-6"  [ngClass]="{'disabled': _smsLogs.length > 0 }">
+              <div class="col-md-6">
                   <mat-form-field appearance="outline" class="w-100">
                       <mat-label>{{l('PackageDistributeMonth')}}</mat-label>
-                      <mat-select formControlName="monthStart" readonly="_smsLogs.length > 0">
+                      <mat-select formControlName="monthStart">
                           <mat-option *ngFor="let o of _month" [value]="o.id">
                               {{ o.name }}
                           </mat-option>
@@ -48,10 +48,10 @@
                       </mat-select>
                   </mat-form-field>
               </div>
-              <div class="col-md-6"  [ngClass]="{'disabled': _smsLogs.length > 0 }">
+              <div class="col-md-6">
                   <mat-form-field appearance="outline" class="w-100">
                       <mat-label>{{l("Từ năm")}}</mat-label>
-                      <input min="0" max="9999" maxlength="4" formControlName="yearStart" readonly="_smsLogs.length > 0" mask="0*"
+                      <input min="0" max="9999" maxlength="4" formControlName="yearStart" mask="0*"
                              matInput autocomplete [required]="true" #yearStart>
                       <mat-icon matSuffix
                                 *ngIf="_frmpackagedistributeedit.controls['yearStart'].invalid && (_frmpackagedistributeedit.controls['yearStart'].dirty || _frmpackagedistributeedit.controls['yearStart'].touched)"
@@ -59,10 +59,10 @@
                                 matTooltip="{{l('NotBeEmpty')}}" color="warn">info</mat-icon>
                   </mat-form-field>
               </div>
-              <div class="col-md-6"  [ngClass]="{'disabled': _smsLogs.length > 0 }">
+              <div class="col-md-6">
                   <mat-form-field appearance="outline" class="w-100">
                       <mat-label>{{l('Đến tháng')}}</mat-label>
-                      <mat-select formControlName="monthEnd" readonly="_smsLogs.length > 0">
+                      <mat-select formControlName="monthEnd">
                           <mat-option *ngFor="let o of _month" [value]="o.id">
                               {{ o.name }}
                           </mat-option>
@@ -73,10 +73,10 @@
                                       
                   </mat-form-field>
               </div>
-              <div class="col-md-6"  [ngClass]="{'disabled': _smsLogs.length > 0 }">
+              <div class="col-md-6">
                   <mat-form-field appearance="outline" class="w-100">
                       <mat-label>{{l("Đến năm")}}</mat-label>
-                      <input min="0" max="9999" maxlength="4" formControlName="yearEnd" readonly="_smsLogs.length > 0" mask="0*"
+                      <input min="0" max="9999" maxlength="4" formControlName="yearEnd" mask="0*"
                              matInput autocomplete [required]="true" #yearEnd>
                       <mat-icon matSuffix
                                 *ngIf="_frmpackagedistributeedit.controls['yearEnd'].invalid && _smsLogs.length < 0 && (_frmpackagedistributeedit.controls['yearEnd'].dirty || _frmpackagedistributeedit.controls['yearEnd'].touched)"
@@ -84,10 +84,10 @@
                                 matTooltip="{{l('NotBeEmpty')}}" color="warn">info</mat-icon>
                   </mat-form-field>
               </div>
-              <div class="col-md-6"  [ngClass]="{'disabled': _smsLogs.length > 0 }">
+              <div class="col-md-6">
                   <mat-form-field appearance="outline" class="w-100">
                       <mat-label>{{l('Đầu số')}}</mat-label>
-                      <mat-select formControlName="smsBrandsId" readonly="_smsLogs.length > 0" required>
+                      <mat-select formControlName="smsBrandsId" required>
                           <mat-option *ngFor="let o of _brands" [value]="o.smsBrandId">{{ o.brandName }}</mat-option>
                       </mat-select>
                       <mat-icon matSuffix *ngIf="_frmpackagedistributeedit.controls['smsBrandsId'].invalid && _smsLogs.length < 0 && (_frmpackagedistributeedit.controls['smsBrandsId'].dirty || _frmpackagedistributeedit.controls['smsBrandsId'].touched)" [matTooltipPosition]="'before'" matTooltipClass="bg-danger text-light mr-1" matTooltip="{{l('NotBeEmpty')}}" color="warn">info</mat-icon>

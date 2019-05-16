@@ -19,3 +19,7 @@ form:not(.task-form) .mat-form-field:not(.mat-focused) .mat-form-field-label.mat
     position: relative;
     padding-bottom: 16px;
 }
+
+mat-tab-group.mat-tab-group.mat-primary {
+    margin-bottom: 10px;
+}

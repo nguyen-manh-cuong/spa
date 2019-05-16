@@ -625,7 +625,7 @@ namespace SHCServer.Controllers
                 smsLog.Message = "";
                 smsLog.ResultMessage = message;
                 smsLog.Status = 0;
-                smsLog.HealthFacilitiesId = infoInput.healthFacilitiesId.Value;
+                smsLog.HealthFacilitiesId = (infoInput.healthFacilitiesId != null ? infoInput.healthFacilitiesId.Value : 0);
                 smsLog.SmsTemplateId = 0;
                 smsLog.SmsPackagesDistributeId = 0;
                 smsLog.SentDate = DateTime.Now;
@@ -649,7 +649,7 @@ namespace SHCServer.Controllers
                 smsLog.Message = "";
                 smsLog.ResultMessage = message;
                 smsLog.Status = 0;
-                smsLog.HealthFacilitiesId = infoInput.healthFacilitiesId.Value;
+                smsLog.HealthFacilitiesId = (infoInput.healthFacilitiesId != null ? infoInput.healthFacilitiesId.Value : 0);
                 smsLog.SmsTemplateId = 0;
                 smsLog.SmsPackagesDistributeId = 0;
                 smsLog.SentDate = DateTime.Now;
