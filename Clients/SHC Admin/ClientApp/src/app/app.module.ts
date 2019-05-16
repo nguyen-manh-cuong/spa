@@ -10,10 +10,12 @@ import { SideBarNavComponent } from './layout/side-bar-nav/side-bar-nav.componen
 import { DatePipe } from '@angular/common'; 
 import { ValidationModule } from './validation/validation.module';
 import { MatInputModule } from '@angular/material';
+//import { AngularDateTimePickerModule } from './angular2-datetimepicker/datepicker.module';
 
 @NgModule({
     imports: [        
         ValidationModule,
+        //AngularDateTimePickerModule,
         MatInputModule,
         CommonModule,
         AppRoutingModule,
