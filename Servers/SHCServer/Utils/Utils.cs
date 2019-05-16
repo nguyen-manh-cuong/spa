@@ -193,7 +193,7 @@ namespace SHCServer
         public static SmsRespone SendSMS(SmsContent content, int type = 1)
         {
             tinnhanthuonghieu.CcApiClient requestMT = new tinnhanthuonghieu.CcApiClient();
-            requestMT.Endpoint.Binding.OpenTimeout = TimeSpan.FromSeconds(5);
+            requestMT.Endpoint.Binding.SendTimeout = TimeSpan.FromSeconds(5);
              
             string User = content.SmsBrand.UserName;
             string Password = content.SmsBrand.UserName;
@@ -208,6 +208,7 @@ namespace SHCServer
             string ContentType = "1";
 
             string telco = "";
+            string resultMessage = "";
 
             if (CheckTelcoViettel(content.PhoneNumber) != null)
             {
@@ -228,6 +229,24 @@ namespace SHCServer
             if (CheckTelcoVietnamobile(content.PhoneNumber) != null)
             {
                 telco = "Vietnamobile";
+            } 
+            if (telco == "")
+            {
+                return new SmsRespone
+                {
+                    Code = 0,
+                    Result ="Sai định dạng số điện thoại",
+                    Message = content.Message,
+                    PhoneNumber = content.PhoneNumber,
+                    HealthFacilitiesId = content.HealthFacilitiesId,
+                    SmsTemplateId = content.SmsTemplateId,
+                    SmsPackagesDistributeId = content.SmsPackagesDistributeId,
+                    SmsPackageUsedId = content.SmsPackageUsedId,
+                    PatientHistoriesId = content.PatientHistoriesId,
+                    Telco = telco,
+                    PatientId = content.PatientId,
+                    ObjectType = content.objectType
+                };
             }
 
 
@@ -242,45 +261,53 @@ namespace SHCServer
 
             try
             {
+                var newSms = new SmsRespone { };
                 var response = requestMT.wsCpMtAsync(User, Password, CPCode, RequestID, UserID, ReceiverID, ServiceID, CommandCode, Content, ContentType);
-                var result = response.Result.@return;
+                if (response != null)
+                {
+                    var result = response.Result.@return;
 
-                return new SmsRespone
-                {
-                    Code = result != null ? result.result1 : 0,
-                    Result = result.message != null ? result.message : "Timed out",
-                    Message = content.Message,
-                    PhoneNumber = content.PhoneNumber,
-                    HealthFacilitiesId = content.HealthFacilitiesId,
-                    SmsTemplateId = content.SmsTemplateId,
-                    SmsPackagesDistributeId = content.SmsPackagesDistributeId,
-                    SmsPackageUsedId = content.SmsPackageUsedId,
-                    PatientHistoriesId = content.PatientHistoriesId,
-                    Telco = telco,
-                    PatientId = content.PatientId,
-                    ObjectType = content.objectType
-                };
+                    return new SmsRespone
+                    {
+                        Code = result != null ? result.result1 : 0,
+                        Result = result != null ? result.message : "Timed out",
+                        Message = content.Message,
+                        PhoneNumber = content.PhoneNumber,
+                        HealthFacilitiesId = content.HealthFacilitiesId,
+                        SmsTemplateId = content.SmsTemplateId,
+                        SmsPackagesDistributeId = content.SmsPackagesDistributeId,
+                        SmsPackageUsedId = content.SmsPackageUsedId,
+                        PatientHistoriesId = content.PatientHistoriesId,
+                        Telco = telco,
+                        PatientId = content.PatientId,
+                        ObjectType = content.objectType
+                    };
+                }
+
             }
-            catch(Exception e)
+            catch(Exception)
             {
-                return new SmsRespone
-                {
-                    Code = 0,
-                    Message = e.Message,
-                    //Message = content.Message,
-                    PhoneNumber = content.PhoneNumber,
-                    HealthFacilitiesId = content.HealthFacilitiesId,
-                    SmsTemplateId = content.SmsTemplateId,
-                    SmsPackagesDistributeId = content.SmsPackagesDistributeId,
-                    SmsPackageUsedId = content.SmsPackageUsedId,
-                    PatientHistoriesId = content.PatientHistoriesId,
-                    Telco = telco,
-                };
+               
             }
             finally
             {
-
+                
             }
+            return new SmsRespone
+            {
+                Code = 0,
+                Message = content.Message,
+                Result = "Time out",
+                PhoneNumber = content.PhoneNumber,
+                HealthFacilitiesId = content.HealthFacilitiesId,
+                SmsTemplateId = content.SmsTemplateId,
+                SmsPackagesDistributeId = content.SmsPackagesDistributeId,
+                SmsPackageUsedId = content.SmsPackageUsedId,
+                PatientHistoriesId = content.PatientHistoriesId,
+                Telco = telco,
+                PatientId = content.PatientId,
+                ObjectType = content.objectType
+            };
         }
 
         public static List<SmsRespone> SendListSMS(List<SmsContent> lst, int type = 1)
