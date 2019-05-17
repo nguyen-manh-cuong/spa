@@ -507,6 +507,10 @@ namespace SHCServer
         internal object Throw(int code, string title, string detail="")
         {
             return new ActionResultDto { Success = false, Error = new { Code = code, Message = title, Details = detail } };
-        } 
+        }
+        internal object Throw(int code, string title, string message,string detail="")
+        {
+            return new ActionResultDto { Success = false, Error = new { Code = code, Message = message, Title = title } };
+        }
     }
 }

@@ -112,7 +112,6 @@ export class RootModule {
     constructor() {
         abp.message.error = (message, title) => {
             //swal({ type: 'error', title: title, text: message });
-            console.log(message);
             swal({
                 title: title,
                 text: message,
