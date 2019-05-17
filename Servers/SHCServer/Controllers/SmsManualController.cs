@@ -8,6 +8,7 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Viettel;
 using Viettel.MySql;
+using System.Globalization;
 
 namespace SHCServer.Controllers
 {
@@ -161,6 +162,15 @@ namespace SHCServer.Controllers
                         param.Add(DbParam.Create("@Gender", value));
                     }
 
+                    if (string.Equals(key, "birthday"))
+                    {
+                        var birthday = DateTime.ParseExact(value, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+
+                        clause.Add("and p.BirthDate = @BirthDate and p.BirthMonth = @BirthMonth and p.BirthYear = @BirthYear");
+                        param.Add(DbParam.Create("@BirthDate", birthday.Day));
+                        param.Add(DbParam.Create("@BirthMonth", birthday.Month));
+                        param.Add(DbParam.Create("@BirthYear", birthday.Year));
+                    }
                 }
 
                 if (data.ContainsKey("fromMonth") && data["fromMonth"] != "13")
@@ -231,7 +241,22 @@ namespace SHCServer.Controllers
                     {
                         clause.Add("WHERE (p.BirthMonth < @toMonth OR (p.BirthMonth = @toMonth AND p.BirthDate <= @ToDay)) OR (p.BirthMonth > @FromMonth OR (p.BirthMonth = @FromMonth AND p.BirthDate >= @FromDay))");
                     }
-                }                
+                }
+
+                int yearNow = DateTime.Now.Year;
+                string compareFisrt = data.ContainsKey("compareFist") ? data["compareFist"] : ">=";
+                string compareLast = data.ContainsKey("compareLast") ? data["compareLast"] : "<=";
+
+                if (data.ContainsKey("birthYear") && data["birthYear"] != "")
+                {
+                    clause.Add("AND p.BirthYear = @_birthYear");
+                    param.Add(DbParam.Create("@_birthYear", data["birthYear"].ToString()));
+                }
+                if ((data.ContainsKey("ageFist") && data["ageFist"] != "") && (data.ContainsKey("ageLast") && data["ageLast"] != ""))
+                {
+                    string _query = $"AND ({yearNow} - p.BirthYear {compareFisrt} {data["ageFist"]}  AND  {yearNow} - p.BirthYear {compareLast} {data["ageLast"]} )";
+                    clause.Add(_query);
+                }
             }
 
             clause.Add(" group by p.Code");

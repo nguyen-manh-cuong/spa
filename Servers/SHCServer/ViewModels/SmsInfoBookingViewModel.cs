@@ -19,6 +19,7 @@ namespace SHCServer.ViewModels
         public int type { set; get; }
         public string content { set; get; }
         public int? objectType { get; set; }
+
     }
 
     //public class SmsInfoInputPhoneNumberViewModel

@@ -27,6 +27,7 @@ namespace SHCServer.Controllers
         [Route("api/sms-templates")]
         public IActionResult Get(int skipCount = 0, int maxResultCount = 10, string sorting = null, string filter = null)
         {
+            int checkGetList = 0;
             var objs = _context.Query<SmsTemplate>()
                                .Where(g => g.IsDelete == false)
                                .Select(sms => new {
@@ -51,6 +52,7 @@ namespace SHCServer.Controllers
                     }
                     if (string.Equals(key, "healthFacilitiesId")) objs = objs.Where(o => o.HealthFacilitiesId == int.Parse(value) || o.ApplyAllSystem == true);
                     if (string.Equals(key, "status") && value != "2") objs = objs.Where(o => o.IsActive == bool.Parse(value));
+                    if (string.Equals(key, "checkGetList") && value == "1") checkGetList = 1;
                 }
             }
 
@@ -65,6 +67,10 @@ namespace SHCServer.Controllers
             //}
 
             objs = objs.OrderByDesc(u => u.Id);
+            if (checkGetList == 1)
+            {
+                return Json(new ActionResultDto { Result = new { Items = objs.ToList() } });
+            }
 
             return Json(new ActionResultDto { Result = new { Items = objs.TakePage(skipCount == 0 ? 1 : skipCount + 1, maxResultCount).ToList(), TotalCount = objs.Count() } });
         }

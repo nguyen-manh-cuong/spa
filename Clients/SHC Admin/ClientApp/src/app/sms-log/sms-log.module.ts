@@ -23,8 +23,8 @@ import { AngularDateTimePickerModule } from '../angular2-datetimepicker';
         SharedModule,
         UtilsModule,
         ValidationModule,
-        NgxMaskModule.forRoot(),
-        AngularDateTimePickerModule
+        AngularDateTimePickerModule,
+        NgxMaskModule.forRoot()
     ],
     declarations: [SmsLogComponent, IndexComponent],
     entryComponents: []

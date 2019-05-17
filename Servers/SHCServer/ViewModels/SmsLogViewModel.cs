@@ -38,6 +38,15 @@ namespace SHCServer.ViewModels
                 .Select((s, h) => h).FirstOrDefault();
 
             healthfacilitiesName = healthFacilities != null ? healthFacilities.Name : "";
+
+            var smsTemplate = context.JoinQuery<SmsLogs, SmsTemplate>((s, h) => new object[]
+                {
+                    JoinType.InnerJoin, s.SmsTemplateId == h.Id
+                })
+                .Where((s, h) => s.Id == obj.Id)
+                .Select((s, h) => h).FirstOrDefault();
+
+            SmsTemplateContent = smsTemplate != null ? smsTemplate.SmsContent : "";
         }
 
         public int Id { set; get; }
@@ -51,6 +60,7 @@ namespace SHCServer.ViewModels
         public string Telco { set; get; }
         public string ResultMessage { set; get; }
         public string healthfacilitiesName { set; get; }
+        public string SmsTemplateContent { get; set; }
 
         public string SentDay { get; set; }
         public string SentMonth { get; set; }
