@@ -2,7 +2,7 @@ import { forEach } from '@angular/router/src/utils/collection';
 import { IDoctor, IHealthfacilities, IHealthfacilitiesDoctor, IDoctorSpecialists } from './../../../../../../SHC Client/ClientApp/src/shared/Interfaces';
 import * as _ from 'lodash';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import { Component, Inject, Injector, OnInit, ViewChild, AfterViewInit, ElementRef, HostListener, Directive, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
+import { Component, Inject, Injector, OnInit, ViewChild, AfterViewInit, ElementRef, HostListener, Directive, Output, EventEmitter, ViewEncapsulation, NgZone } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl, ValidationErrors } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef, MatInput, MatCheckbox, MatAutocomplete, MatChipInputEvent, MatAutocompleteSelectedEvent, MatDialog, MatPaginator } from '@angular/material';
 import * as moment from 'moment';
@@ -10,7 +10,7 @@ import { AppComponentBase } from '@shared/app-component-base';
 import { DataService } from '@shared/service-proxies/service-data';
 import { ValidationRule } from '@shared/common/common';
 import swal from 'sweetalert2';
-import { publishBehavior, startWith, map, debounceTime, tap, switchMap, finalize, debounce } from 'rxjs/operators';
+import { publishBehavior, startWith, map, debounceTime, tap, switchMap, finalize, debounce, take } from 'rxjs/operators';
 import { element } from '@angular/core/src/render3/instructions';
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
@@ -23,6 +23,7 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { stringify } from '@angular/compiler/src/util';
 import { prepareSyntheticListenerFunctionName } from '@angular/compiler/src/render3/util';
 import { providerToFactory } from '@angular/core/src/di/r3_injector';
+import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 export const MY_FORMATS = {
   parse: {
     dateInput: 'DD/MM/YYYY',
@@ -88,6 +89,7 @@ export class DetailComponent extends AppComponentBase implements OnInit, AfterVi
   @ViewChild("inputAvatar") inputAvatar;
   @ViewChild('priceFrom') priceFrom;
   @ViewChild('priceTo') priceTo;
+  @ViewChild('autosize') autosize: CdkTextareaAutosize;
   dataService: DataService;
   isLoading = false;
   specialIsLoading = false;
@@ -95,12 +97,13 @@ export class DetailComponent extends AppComponentBase implements OnInit, AfterVi
   checkPriceTo = false
   _certificationInputCheck = true;
   checkCertificationCode = true;
+  checkAvatar = false;
   _speciaList = [];
   _healthFacilities = [];
   summary: string;
 
-  _birthDay: string;
-  _certificationDate: string;
+  _birthDay="";
+  _certificationDate= "";
   api: string = 'doctor';
   _frm: FormGroup;
 
@@ -208,7 +211,8 @@ export class DetailComponent extends AppComponentBase implements OnInit, AfterVi
     public dialogRef: MatDialogRef<DetailComponent>,
     @Inject(MAT_DIALOG_DATA)
     public obj: IDoctor,
-    public dialog: MatDialog) {
+    public dialog: MatDialog,
+    private ngZone: NgZone) {
     super(injector);
   }
 
@@ -236,12 +240,14 @@ export class DetailComponent extends AppComponentBase implements OnInit, AfterVi
 
     const validationRule = new ValidationRule();
 
-
-
     if (this.obj) {
 
       if (this.obj.provinceCode) {
         this.getDistricts(this.obj.provinceCode);
+      }
+
+      if (this.obj.avatar) {
+        this.checkAvatar = true;
       }
 
       if (this.obj.birthDate && this.obj.birthMonth && this.obj.birthYear) {
@@ -373,13 +379,16 @@ export class DetailComponent extends AppComponentBase implements OnInit, AfterVi
       }
     }
     this._obj.certificationCode ? this.flagDate = false : this.flagDate = true;
-
     setTimeout(() => {
       this.getEthnicities();
     }, 1000);
   }
 
-
+  triggerResize() {
+    // Wait for changes to be applied, then trigger textarea resize.
+    this.ngZone.onStable.pipe(take(1))
+        .subscribe(() => this.autosize.resizeToFitContent(true));
+  }
   ngAfterViewInit(): void {
     setTimeout(() => {
       // if (this.obj) {
@@ -395,7 +404,7 @@ export class DetailComponent extends AppComponentBase implements OnInit, AfterVi
   //Add custom editor
   onReady(editor) {
     editor.ui.getEditableElement().parentElement.insertBefore(
-      editor.isReadOnly = true,
+      editor.isReadOnly = true,null,null
     );
   }
 
@@ -805,6 +814,7 @@ export class DetailComponent extends AppComponentBase implements OnInit, AfterVi
         reader.readAsDataURL(file);
         if (file.type == 'image/jpeg' || file.type == 'image/png') {
           reader.onload = (e: any) => {
+            this.checkAvatar = false;
             this._avatars[0] = e.target.result;
           }
           this._frm.controls['avatar'].setValue(file);
@@ -813,7 +823,7 @@ export class DetailComponent extends AppComponentBase implements OnInit, AfterVi
           this.avatarName = "Chưa chọn ảnh";
           swal({
             title: 'Thông báo',
-            text: 'File tải lên không phải ảnh',
+            text: 'Chỉ được tải lên file jpg, png, jpeg, pdf',
             type: 'warning',
             timer: 3000
           });
@@ -1154,7 +1164,6 @@ export class DetailComponent extends AppComponentBase implements OnInit, AfterVi
           }
         }, err => {
           this.checkCertificationCode = true;
-          console.log(this.checkCertificationCode);
         }) :
         this._dataService.updateUpload(this.api, standardized(Object.assign(params, {}), {})).subscribe(() => {
           swal({

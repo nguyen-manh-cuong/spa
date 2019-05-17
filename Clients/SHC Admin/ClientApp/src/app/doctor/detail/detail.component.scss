@@ -12,7 +12,7 @@
 
 .label {
     margin-left: 5px;
-    font-weight: bold;
+    font-weight: 500;
     font-size: 15px;
 }
 
@@ -96,5 +96,21 @@
     border: unset!important;
 }
 
+.ck-editor__editable{
+    min-height: 10px;
+    border-bottom: 1px solid 000000!important;
+}
+
+.custom-readonly{
+    cursor: pointer!important;
+}
+
+.text-readonly{
+    color: #00695c!important;
+}
+
+.ck.ck-reset_all, .ck.ck-reset_all{
+    margin-left: 7px;
+}
 
 

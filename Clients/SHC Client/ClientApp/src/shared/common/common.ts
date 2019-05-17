@@ -99,4 +99,12 @@ export class ValidationRule {
         }
         return null;
     }
+
+    // Checkbox
+    checkBox(control: AbstractControl) {
+        if (!control.value) {
+            return { checkBox: true };
+        }
+        return null;
+    }
 }

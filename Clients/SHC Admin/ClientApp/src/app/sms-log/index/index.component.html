@@ -53,23 +53,26 @@
             <!-- 2 -->
             <div class="col-md-3 position-relative col-time">
                 <label class="position-absolute lbl-time">{{l('Ngày gửi từ')}}</label>
-                <angular2-date-picker [(ngModel)]="startDate" [settings]="settings" [ngModelOptions]="{standalone: true}" (onDateSelect)="onDateSelectStartTime($event)"></angular2-date-picker>
+                <angular2-date-picker [(ngModel)]="startDate"
+                                      [settings]="settings"
+                                      [ngModelOptions]="{standalone: true}">
+                </angular2-date-picker>
                 <!--<mat-form-field appearance="outline" class="w-100">
-                    <mat-label>{{l('Ngày gửi từ')}}</mat-label>
-                    <input matInput #startTime [matDatepicker]="picker"  required >
-                    <mat-datepicker-toggle matSuffix [for]="picker" class="t-2"></mat-datepicker-toggle>
-                    <mat-datepicker #picker></mat-datepicker>
-                </mat-form-field>-->
+            <mat-label>{{l('Ngày gửi từ')}}</mat-label>
+            <input matInput #startTime [matDatepicker]="picker"  required >
+            <mat-datepicker-toggle matSuffix [for]="picker" class="t-2"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>-->
             </div>
             <div class="col-md-3 position-relative col-time">
                 <label class="position-absolute lbl-time">{{l('Đến ngày')}}</label>
-                <angular2-date-picker [(ngModel)]="endDate" [settings]="settings" [ngModelOptions]="{standalone: true}" (onDateSelect)="onDateSelectEndTime($event)"></angular2-date-picker>
+                <angular2-date-picker [(ngModel)]="endDate" [settings]="settings" [ngModelOptions]="{standalone: true}"></angular2-date-picker>
                 <!--<mat-form-field appearance="outline" class="w-100">
-                    <mat-label>{{l('Đến ngày')}}</mat-label>
-                    <input matInput #endTime [matDatepicker]="picker1" mask="0*" required maxlength="10">
-                    <mat-datepicker-toggle matSuffix [for]="picker1" class="t-2"></mat-datepicker-toggle>
-                    <mat-datepicker #picker1></mat-datepicker>
-                </mat-form-field>-->
+            <mat-label>{{l('Đến ngày')}}</mat-label>
+            <input matInput #endTime [matDatepicker]="picker1" mask="0*" required maxlength="10">
+            <mat-datepicker-toggle matSuffix [for]="picker1" class="t-2"></mat-datepicker-toggle>
+            <mat-datepicker #picker1></mat-datepicker>
+        </mat-form-field>-->
             </div>
             <div class="col-md-3">
                 <mat-form-field appearance="outline" class="w-100">
@@ -87,18 +90,29 @@
                     </mat-select>
                 </mat-form-field>
             </div>
+
+            <div class="col-md-5">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Mẫu tin nhắn</mat-label>
+                    <mat-select formControlName="smsTemplate">
+                        <mat-option class="text-center">{{l('CancelSelect')}}</mat-option>
+                        <mat-option *ngFor="let o of _smsTemplate" [value]="o.id">{{ o.smsContent }}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            
             <div class="col-md-3 text-center d-flex align-self-center">
                 <button #btnSearch mat-stroked-button color="primary" (click)="customSearch()" class="w-100 mb-4">
                     <mat-icon class="mr-2">search</mat-icon>{{l("Search")}}
                 </button>
             </div>
             <!-- <div class="col-md-3 text-center d-flex align-self-center">
-            <mat-form-field>
-                <input matInput [matDatepicker]="dp" placeholder="Different locale">
-                <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
-                <mat-datepicker #dp></mat-datepicker>
-              </mat-form-field>
-        </div> -->
+        <mat-form-field>
+            <input matInput [matDatepicker]="dp" placeholder="Different locale">
+            <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
+            <mat-datepicker #dp></mat-datepicker>
+          </mat-form-field>
+    </div> -->
         </div>
     </form>
     <div class="table-content" style="height: calc(100vh - 245px);">
@@ -139,6 +153,11 @@
             <ng-container matColumnDef="telco">
                 <th mat-header-cell *matHeaderCellDef class="min-w-70 text-center"> {{l('Telco')}} </th>
                 <td mat-cell *matCellDef="let element" class="text-center"> {{element.telco}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="_smsTemplateContent">
+                <th mat-header-cell *matHeaderCellDef class="min-w-100 text-center"> Mẫu tin nhắn </th>
+                <td mat-cell *matCellDef="let element" class="text-center"> {{element.smsTemplateContent}} </td>
             </ng-container>
 
             <tr mat-header-row *matHeaderRowDef="displayedColumns;sticky:true"></tr>

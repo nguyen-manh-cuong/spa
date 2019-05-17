@@ -78,14 +78,7 @@
                     <input formControlName="phoneNumber" matInput mask="0*" maxlength="20">
                 </mat-form-field>
             </div>
-            <div class="col-md-3">
-                <mat-form-field appearance="outline" class="w-100">
-                    <mat-label>{{l('Ngày sinh')}}</mat-label>
-                    <input readonly style="cursor: inherit" (click)="picker.open()" matInput #birthday [matDatepicker]="picker" mask="0*" maxlength="8">
-                    <mat-datepicker-toggle matSuffix [for]="picker" class="t-2"></mat-datepicker-toggle>
-                    <mat-datepicker #picker></mat-datepicker>
-                </mat-form-field>
-            </div>
+
             <div class="col-md-3">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('Sex')}}</mat-label>
@@ -94,6 +87,56 @@
                     </mat-select>
                 </mat-form-field>
             </div>
+
+            <div class="col-md-12"></div>
+
+            <div class="col-md-3">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>{{l('Ngày sinh')}}</mat-label>
+                    <input matInput #birthday [matDatepicker]="picker" mask="0*" maxlength="8" readonly>
+                    <mat-datepicker-toggle matSuffix [for]="picker" class="t-2"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                </mat-form-field>
+            </div>
+
+            <div class="col-md-2">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Năm sinh</mat-label>
+                    <input formControlName="birthYear" #birthYear matInput mask="0*" maxlength="4">
+                </mat-form-field>
+            </div>
+
+            <div class="col-md-1">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Tuổi từ</mat-label>
+                    <mat-select formControlName="compareFist" #compareFist>
+                        <mat-option *ngFor="let o of _compareFist" [value]="o.id">{{ o.name }}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+
+            <div class="col-md-2">
+                <mat-form-field appearance="outline" class="w-100">
+                    <input formControlName="ageFist" #ageFist matInput mask="0*" maxlength="20">
+                </mat-form-field>
+            </div>
+
+            <div class="col-md-1">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Đến</mat-label>
+                    <mat-select formControlName="compareLast" #compareLast>
+                        <mat-option *ngFor="let o of _compareLast" [value]="o.id">{{ o.name }}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+
+            <div class="col-md-2">
+                <mat-form-field appearance="outline" class="w-100">
+                    <input formControlName="ageLast" #ageLast matInput mask="0*" maxlength="20">
+                </mat-form-field>
+            </div>
+
+            <div class="col-md-12"></div>
             <!-- 4 -->
             <div class="col-md-4">
                 <mat-form-field appearance="outline" class="w-100">
@@ -124,44 +167,44 @@
             </div>
 
             <!-- <div class="col-md-4">
-                <mat-form-field appearance="outline" class="w-100">
-                    <mat-label>{{l('FilterByProvine')}}</mat-label>
-                    <input #provinceInput value=" " matInput [formControl]="provinceCode" (click)="clickProvinceCbo()"
-                        (input)="onInputProvince($event)" [matAutocomplete]="autoProvince">
-                    <mat-autocomplete #autoProvince="matAutocomplete" [displayWith]="displayProvinceFn"
-                        (optionSelected)='onSelectProvince($event.option.value)'>
-                        <mat-option *ngFor="let o of filteredProvinceOptions | async" [value]="o">
-                            {{o.name}}
-                        </mat-option>
-                    </mat-autocomplete>
-                </mat-form-field>
-            </div>
-            <div class="col-md-4">
-                <mat-form-field appearance="outline" class="w-100">
-                    <mat-label>{{l('FilterByDistrict')}}</mat-label>
-                    <input #districtInput matInput [formControl]="districtCode" (click)="clickDistrictCbo()"
-                        (input)="onInputDistrict($event)" [matAutocomplete]="autoDistrict">
-                    <mat-autocomplete #autoDistrict="matAutocomplete" [displayWith]="displayDistrictFn"
-                        (optionSelected)='onSelectDistrict($event.option.value)'>
-                        <mat-option *ngFor="let o of filteredDistrictOptions | async" [value]="o">
-                            {{o.name}}
-                        </mat-option>
-                    </mat-autocomplete>
-                </mat-form-field>
-            </div> -->
+        <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{l('FilterByProvine')}}</mat-label>
+            <input #provinceInput value=" " matInput [formControl]="provinceCode" (click)="clickProvinceCbo()"
+                (input)="onInputProvince($event)" [matAutocomplete]="autoProvince">
+            <mat-autocomplete #autoProvince="matAutocomplete" [displayWith]="displayProvinceFn"
+                (optionSelected)='onSelectProvince($event.option.value)'>
+                <mat-option *ngFor="let o of filteredProvinceOptions | async" [value]="o">
+                    {{o.name}}
+                </mat-option>
+            </mat-autocomplete>
+        </mat-form-field>
+    </div>
+    <div class="col-md-4">
+        <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{l('FilterByDistrict')}}</mat-label>
+            <input #districtInput matInput [formControl]="districtCode" (click)="clickDistrictCbo()"
+                (input)="onInputDistrict($event)" [matAutocomplete]="autoDistrict">
+            <mat-autocomplete #autoDistrict="matAutocomplete" [displayWith]="displayDistrictFn"
+                (optionSelected)='onSelectDistrict($event.option.value)'>
+                <mat-option *ngFor="let o of filteredDistrictOptions | async" [value]="o">
+                    {{o.name}}
+                </mat-option>
+            </mat-autocomplete>
+        </mat-form-field>
+    </div> -->
             <!-- <div class="col-md-4">
-                <mat-form-field appearance="outline" class="w-100">
-                    <mat-label>{{l('FilterByWard')}}</mat-label>
-                    <input #wardInput matInput [formControl]="wardCode" (click)="clickWardCbo()"
-                        (input)="onInputWard($event)" [matAutocomplete]="autoWard">
-                    <mat-autocomplete #autoWard="matAutocomplete" [displayWith]="displayWardFn"
-                        (optionSelected)='onSelectWard($event.option.value)'>
-                        <mat-option *ngFor="let o of filteredWardOptions | async" [value]="o">
-                            {{o.name}}
-                        </mat-option>
-                    </mat-autocomplete>
-                </mat-form-field>
-            </div> -->
+        <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{l('FilterByWard')}}</mat-label>
+            <input #wardInput matInput [formControl]="wardCode" (click)="clickWardCbo()"
+                (input)="onInputWard($event)" [matAutocomplete]="autoWard">
+            <mat-autocomplete #autoWard="matAutocomplete" [displayWith]="displayWardFn"
+                (optionSelected)='onSelectWard($event.option.value)'>
+                <mat-option *ngFor="let o of filteredWardOptions | async" [value]="o">
+                    {{o.name}}
+                </mat-option>
+            </mat-autocomplete>
+        </mat-form-field>
+    </div> -->
             <div class="col-md-3"></div>
             <div class="col-md-3 text-center d-flex align-self-center">
                 <button #btnSearch mat-stroked-button color="primary" (click)="customSearch()" class="w-100 mb-4">
@@ -201,7 +244,7 @@
             </ng-container>
             <ng-container matColumnDef="fullName">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-center"> {{l('Tên bệnh nhân')}} </th>
-                <td mat-cell (click)="detail(element)" *matCellDef="let element" class="wrap-text"><a>{{element.fullName}}</a></td>
+                <td mat-cell *matCellDef="let element" class="wrap-text"><a>{{element.fullName}}</a></td>
             </ng-container>
             <ng-container matColumnDef="birthday">
                 <th mat-header-cell *matHeaderCellDef class="text-center"> {{l('Ngày sinh')}} </th>

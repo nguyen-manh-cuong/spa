@@ -7,7 +7,6 @@ using SHCServer.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using Viettel;
@@ -255,14 +254,14 @@ namespace SHCServer.Controllers
 
                 if (checkCertification != null)
                 {
-                    return StatusCode(406, _excep.Throw(406, "Mã giấy phép hành nghề đã tồn tại"));
+                    return StatusCode(406, _excep.Throw(406, "Lưu không thành công", "Số giấy phép hành nghề đã tồn tại", ""));
                 }
             }
 
             try
             {
                 if (Convert.ToDateTime(doctor.CertificationDate).Year == 1)
-                checkCertificationDate = false;
+                    checkCertificationDate = false;
             }
             catch
             {
@@ -411,29 +410,29 @@ namespace SHCServer.Controllers
         [Route("api/doctor")]
         public IActionResult Update([FromForm] DoctorInputViewModel doctor, int? allow)
         {
-
             bool checkCertificationDate = true;
+
 
             if (!string.IsNullOrEmpty(doctor.CertificationCode))
             {
                 var checkCertification = _context.Query<Doctor>().Where(d => d.CertificationCode.Equals(doctor.CertificationCode)).FirstOrDefault();
 
-                if (checkCertification != null && checkCertification.DoctorId!=doctor.DoctorId)
+                if (checkCertification != null && checkCertification.DoctorId != doctor.DoctorId)
                 {
-                    return StatusCode(406, _excep.Throw(406, "Mã giấy phép hành nghề đã tồn tại"));
+                    return StatusCode(406, _excep.Throw(406, "Lưu không thành công", "Số giấy phép hành nghề đã tồn tại", ""));
                 }
             }
+
 
             try
             {
                 if (Convert.ToDateTime(doctor.CertificationDate).Year == 1)
-                checkCertificationDate = false;
+                    checkCertificationDate = false;
             }
             catch
             {
                 checkCertificationDate = false;
             }
-
 
             if (!string.IsNullOrEmpty(doctor.EthnicityCode))
                 if (doctor.EthnicityCode.Equals("null"))
@@ -510,6 +509,8 @@ namespace SHCServer.Controllers
 
                 _context.BeginTransaction();
 
+
+
                 _context.Update<Doctor>(d => d.DoctorId == doctor.DoctorId, x => new Doctor()
                 {
                     AcademicId = doctor.AcademicId,
@@ -543,6 +544,14 @@ namespace SHCServer.Controllers
                     UpdateUserId = doctor.UpdateUserId,
                     TitleCode = doctor.TitleCode,
                 });
+
+                if (string.IsNullOrEmpty(doctor.CertificationCode))
+                {
+                    _context.Update<Doctor>(d => d.DoctorId == doctor.DoctorId, x => new Doctor()
+                    {
+                        CertificationDate = null
+                    }); ;
+                }
 
                 if (checkCertificationDate == true)
                 {
@@ -667,7 +676,7 @@ namespace SHCServer.Controllers
                         {
                             IsDelete = true,
                             IsActive = false
-                        }) ;
+                        });
                     }
 
                     var healthfacilities = _context.Query<HealthFacilitiesDoctors>().Where(hf => hf.IsDelete == false && hf.IsActive == true && hf.DoctorId == id);
@@ -676,7 +685,7 @@ namespace SHCServer.Controllers
                         _context.Update<HealthFacilitiesDoctors>(hf => hf.DoctorId == item.DoctorId, x => new HealthFacilitiesDoctors()
                         {
                             IsDelete = true,
-                            IsActive=false
+                            IsActive = false
                         });
                     }
 
@@ -698,7 +707,7 @@ namespace SHCServer.Controllers
 
         private string GetUniqueFileName(string fileName)
         {
-            fileName =convertToUnSign(Path.GetFileName(fileName));
+            fileName = convertToUnSign(Path.GetFileName(fileName));
             return Path.GetFileNameWithoutExtension(fileName)
                       + "_"
                       + Guid.NewGuid().ToString().Substring(0, 4)
@@ -708,12 +717,13 @@ namespace SHCServer.Controllers
         public string convertToUnSign(string s)
         {
             Regex regex = new Regex("\\p{IsCombiningDiacriticalMarks}+");
-            string first= regex.Replace(s.Normalize(NormalizationForm.FormD), String.Empty).Replace('\u0111', 'd').Replace('\u0110', 'D');
+            string first = regex.Replace(s.Normalize(NormalizationForm.FormD), String.Empty).Replace('\u0111', 'd').Replace('\u0110', 'D');
             return replaceSpace(first);
         }
+
         public string replaceSpace(string s)
         {
-            s=s.Replace(" ", "_");
+            s = s.Replace(" ", "_");
             return s;
         }
     }

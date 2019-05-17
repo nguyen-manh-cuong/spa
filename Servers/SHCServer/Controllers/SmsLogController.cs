@@ -30,6 +30,8 @@ namespace SHCServer.Controllers
         public IActionResult GetAll(int skipCount = 0, int maxResultCount = 10, string sorting = null, string filter = null)
         {
             var objs = _context.Query<SmsLogs>();
+            int objectType = 0;
+
             if (filter != null)
             {
                 var data = JsonConvert.DeserializeObject<Dictionary<string, string>>(filter);
@@ -48,8 +50,10 @@ namespace SHCServer.Controllers
                     if (string.Equals(key, "telco") && value != "all") objs = objs.Where(s => s.Telco == value);
                 }
 
+                if (data.ContainsKey("smsTemplate")) objs = objs.Where(s => s.SmsTemplateId == int.Parse(data["smsTemplate"]));
                 if (data.ContainsKey("patientId")) objs = objs.Where(s => s.ObjectId == int.Parse(data["patientId"]));
                 if (data.ContainsKey("objectType")) objs = objs.Where(s => s.ObjectType == int.Parse(data["objectType"]));
+                if (data.ContainsKey("checkSmsLogDetail") && data["checkSmsLogDetail"].ToString() == "1") objectType = 1;
             }
 
             //if (sorting != null)
@@ -62,7 +66,7 @@ namespace SHCServer.Controllers
             //} 
 
             objs = objs.OrderByDesc(o => o.Id);
-            var list = objs.TakePage(skipCount == 0 ? 1 : skipCount + 1, maxResultCount).Select(l => new SmsLogViewModel(l, _connectionString)).ToList();
+            List<SmsLogViewModel> list = objectType == 1 ? objs.Select(l => new SmsLogViewModel(l, _connectionString)).ToList() : objs.TakePage(skipCount == 0 ? 1 : skipCount + 1, maxResultCount).Select(l => new SmsLogViewModel(l, _connectionString)).ToList();
 
             foreach (var item in list)
             {
