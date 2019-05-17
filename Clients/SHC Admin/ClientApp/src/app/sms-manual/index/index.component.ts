@@ -50,11 +50,15 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     _healthfacilities = [];
     _currentYear = new Date().getFullYear();
     _sex = [{ id: 0, name: 'Tất cả' }, { id: 1, name: 'Nam' }, { id: 2, name: 'Nữ' }, { id: 3, name: 'Không xác định' }];
+    _compareFist = [{ id: 0, name: '>=' }, { id: 1, name: '>' }];
+    _compareLast = [{ id: 0, name: '<=' }, { id: 1, name: '<' }];
+
     selection = new SelectionModel<IMedicalHealthcareHistories>(true, []);
 
     isLoading = false;
     filteredOptions: Observable<IHealthfacilities[]>;
     healthfacilities = new FormControl();
+    
     cDate = new Date();
 
     filteredProvinceOptions: Observable<IProvince[]>;
@@ -70,6 +74,11 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     _wardCode: string;
 
     @ViewChild("birthday") birthday;
+    @ViewChild("ageFist") ageFist;
+    @ViewChild("ageLast") ageLast;
+    @ViewChild("compareFist") compareFist;
+    @ViewChild("compareLast") compareLast;
+    @ViewChild("birthYear") birthYear;
 
     dialogDetail: any;
 
@@ -80,7 +89,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     ngOnInit() {
         this.api = 'smsmanual';
         this.frmSearch = this._formBuilder.group({
-            healthfacilities: [],
+            healthfacilities: [this.appSession.user.healthFacilitiesId],
             doctor: [],
             patientCode: [],
             patientName: [],
@@ -94,6 +103,11 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
             birthdayMonth: [],
             birthday: [],
             sex: [],
+            ageFist: [],
+            ageLast: [],
+            compareFist: [],
+            compareLast: [],
+            birthYear: []
         });
 
         this.dialogComponent = TaskComponent;
@@ -341,12 +355,30 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
         // this.frmSearch.controls['districtCode'].setValue(this._districtCode);
         // this.frmSearch.controls['wardCode'].setValue(this._wardCode);
 
-        this.healthfacilities.value ? this.frmSearch.controls['healthfacilities'].setValue(this.healthfacilities.value.healthFacilitiesId) : (this.appSession.user.healthFacilitiesId == null ? this.frmSearch.controls['healthfacilities'].setValue(null) : '');
+        if (this.appSession.user.healthFacilitiesId) {
+            this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId)
+        }
+        else {
+            this.healthfacilities.value ? this.frmSearch.controls['healthfacilities'].setValue(this.healthfacilities.value.healthFacilitiesId) : (this.appSession.user.healthFacilitiesId == null ? this.frmSearch.controls['healthfacilities'].setValue(null) : '');
+        }
 
         this.birthday.nativeElement.value ? this.frmSearch.controls['birthdayDate'].setValue(moment(this.birthday.nativeElement.value, 'DD/MM/YYYY').toDate().getDate()) : this.frmSearch.controls['birthdayDate'].setValue('');
 
         this.birthday.nativeElement.value ? this.frmSearch.controls['birthdayMonth'].setValue(moment(this.birthday.nativeElement.value, 'DD/MM/YYYY').toDate().getMonth() + 1) : this.frmSearch.controls['birthdayMonth'].setValue('');
 
+        this.birthday.nativeElement.value ? this.frmSearch.controls['birthday'].setValue(this.birthday.nativeElement.value) : this.frmSearch.controls['birthday'].setValue('');
+
+        this.ageFist.nativeElement.value ? this.frmSearch.controls['ageFist'].setValue(this.ageFist.nativeElement.value) : this.frmSearch.controls['ageFist'].setValue('');
+        this.ageLast.nativeElement.value ? this.frmSearch.controls['ageLast'].setValue(this.ageLast.nativeElement.value) : this.frmSearch.controls['ageLast'].setValue('');
+
+        console.log(this.compareFist);
+
+        //this.compareFist.nativeElement.value ? this.frmSearch.controls['compareFist'].setValue(this.compareFist.nativeElement.value) : this.frmSearch.controls['compareFist'].setValue('');
+        //this.compareLast.nativeElement.value ? this.frmSearch.controls['compareLast'].setValue(this.compareLast.nativeElement.value) : this.frmSearch.controls['compareLast'].setValue('');
+        console.log(this.birthYear);
+
+       
+        this.birthYear.nativeElement.value ? this.frmSearch.controls['birthYear'].setValue(this.birthYear.nativeElement.value) : this.frmSearch.controls['birthYear'].setValue('');
         this.btnSearchClicks$.next();
     }
 

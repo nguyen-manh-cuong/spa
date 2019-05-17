@@ -90,8 +90,8 @@ export class RegisterComponent implements OnInit {
             isUsingRegister: [this._obj.isUsingRegister],
             isUsingVideo: [this._obj.isUsingVideo],
             isUsingExamination: [this._obj.isUsingExamination],
-            rules: [false]
-        };
+            rules: [false, [this.validateRule.checkBox]]
+        }; 
 
         this.frmUser = this._formBuilder.group(this._context);
         this._dataService.getAll('provinces').subscribe(resp => this._provinces = resp.items);
