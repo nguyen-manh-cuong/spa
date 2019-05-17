@@ -162,10 +162,10 @@ namespace SHCServer.Controllers
         {
             try
             {
-                if (_context.Query<SmsPackagesDistribute>().Where(pd => pd.SmsPackageId == id && pd.IsDelete == false).Count() > 0)
-                {
-                    return StatusCode(406, _excep.Throw(406, "Xóa gói không thành công.", "Gói SMS đang được sử dụng!"));
-                }
+                //if (_context.Query<SmsPackagesDistribute>().Where(pd => pd.SmsPackageId == id && pd.IsDelete == false).Count() > 0)
+                //{
+                //    return StatusCode(406, _excep.Throw(406, "Xóa gói không thành công.", "Gói SMS đang được sử dụng!"));
+                //}
 
                 _context.Session.BeginTransaction();
 
