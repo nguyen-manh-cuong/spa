@@ -420,6 +420,7 @@ export class DatePicker implements OnInit, ControlValueAccessor {
         }
 
         if (this.minValue.toString().length > 2) {
+            this.minValue = 0;
             this.hourValue = 0;
         }
     }
