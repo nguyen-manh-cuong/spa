@@ -50,11 +50,11 @@ namespace SHCServer.Controllers
                     if (string.Equals(key, "telco") && value != "all") objs = objs.Where(s => s.Telco == value);
                 }
 
+                if (data.ContainsKey("smsTemplate")) objs = objs.Where(s => s.SmsTemplateId == int.Parse(data["smsTemplate"]));
                 if (data.ContainsKey("patientId")) objs = objs.Where(s => s.ObjectId == int.Parse(data["patientId"]));
                 if (data.ContainsKey("objectType")) objs = objs.Where(s => s.ObjectType == int.Parse(data["objectType"]));
                 if (data.ContainsKey("checkSmsLogDetail") && data["checkSmsLogDetail"].ToString() == "1") objectType = 1;
             }
-
 
             //if (sorting != null)
             //{
