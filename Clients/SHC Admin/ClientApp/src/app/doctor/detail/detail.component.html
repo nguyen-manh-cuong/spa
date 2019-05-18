@@ -14,13 +14,13 @@
                     <div class="col-md-6">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("DoctorName")}}</mat-label>
-                            <input (keyup)="fullNameInput($event)" formControlName="fullName" matInput readonly>
+                            <input class="custom-readonly" (keyup)="fullNameInput($event)" formControlName="fullName" matInput readonly>
                         </mat-form-field>
                     </div>
                     <div class="col-md-4 class-icon">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("DoctorBirthDay")}}</mat-label>
-                            <input readonly [value]="_birthDay" matInput>
+                            <input class="custom-readonly" readonly [value]="_birthDay" matInput>
                         </mat-form-field>
                     </div>
                 </div>
@@ -29,7 +29,7 @@
                     <div class="col-md-6">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l('DoctorGender')}}</mat-label>
-                            <input formControlName="gender" matInput readonly>
+                            <input class="custom-readonly" formControlName="gender" matInput readonly>
                         </mat-form-field>
                     </div>
                 </div>
@@ -38,13 +38,13 @@
                     <div class="col-md-6">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("Province")}}</mat-label>
-                            <input formControlName="provinceCode" matInput readonly>
+                            <input class="custom-readonly" formControlName="provinceCode" matInput readonly>
                         </mat-form-field>
                     </div>
                     <div class="col-md-6">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("District")}}</mat-label>
-                            <input formControlName="districtCode" matInput readonly>
+                            <input class="custom-readonly" formControlName="districtCode" matInput readonly>
                         </mat-form-field>
                     </div>
                 </div>
@@ -53,7 +53,7 @@
                     <div class="col-md-12">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("Address")}}</mat-label>
-                            <input readonly formControlName="address" matInput maxlength="255">
+                            <input class="custom-readonly" readonly formControlName="address" matInput maxlength="255">
                         </mat-form-field>
                     </div>
                 </div>
@@ -62,13 +62,13 @@
                     <div class="col-md-6">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("PhoneNumber")}}</mat-label>
-                            <input readonly formControlName="phoneNumber" matInput>
+                            <input class="custom-readonly" readonly formControlName="phoneNumber" matInput>
                         </mat-form-field>
                     </div>
                     <div class="col-md-6">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("Email")}}</mat-label>
-                            <input readonly formControlName="email" matInput>
+                            <input class="custom-readonly" readonly formControlName="email" matInput>
                         </mat-form-field>
                     </div>
                 </div>
@@ -77,14 +77,14 @@
                     <div class="col-md-6">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("DoctorCertificationCode")}}</mat-label>
-                            <input readonly #certification ctrlKeys (ctrlV)="onCtrlV()" (ctrlC)="onCtrlC()"
+                            <input class="custom-readonly" readonly #certification ctrlKeys (ctrlV)="onCtrlV()" (ctrlC)="onCtrlC()"
                                 formControlName="certificationCode" matInput>
                         </mat-form-field>
                     </div>
                     <div class="col-md-4">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("DoctorCertificationDate")}}</mat-label>
-                            <input readonly [value]="_certificationDate" matInput>
+                            <input class="custom-readonly" readonly [value]="_certificationDate" matInput>
                         </mat-form-field>
                     </div>
                 </div>
@@ -92,13 +92,13 @@
                     <div class="col-md-6">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("DoctorTitleCode")}}</mat-label>
-                            <input formControlName="titleCode" matInput readonly>
+                            <input class="custom-readonly" formControlName="titleCode" matInput readonly>
                         </mat-form-field>
                     </div>
                     <div class="col-md-6">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("DoctorPosition")}}</mat-label>
-                            <input formControlName="positionCode" matInput readonly>
+                            <input class="custom-readonly" formControlName="positionCode" matInput readonly>
                         </mat-form-field>
                     </div>
                 </div>
@@ -107,13 +107,13 @@
                     <div class="col-md-6">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("DoctorAcademic")}}</mat-label>
-                            <input formControlName="academicId" matInput readonly>
+                            <input class="custom-readonly" formControlName="academicId" matInput readonly>
                         </mat-form-field>
                     </div>
                     <div class="col-md-6">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("DoctorDegree")}}</mat-label>
-                            <input formControlName="degreeId" matInput readonly>
+                            <input class="custom-readonly" formControlName="degreeId" matInput readonly>
                         </mat-form-field>
                     </div>
                 </div>
@@ -122,13 +122,13 @@
                     <div class="col-md-6">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("DoctorNation")}}</mat-label>
-                            <input formControlName="nationCode" matInput readonly>
+                            <input class="custom-readonly" formControlName="nationCode" matInput readonly>
                         </mat-form-field>
                     </div>
                     <div class="col-md-6">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("DoctorEthnicity")}}</mat-label>
-                            <input formControlName="ethnicityCode" matInput readonly>
+                            <input class="custom-readonly" formControlName="ethnicityCode" matInput readonly>
                         </mat-form-field>
                     </div>
                 </div>
@@ -156,7 +156,7 @@
                                     title="{{o.specialistCode + ' - ' + o.name}}">
                                     {{o.specialistCode + ' - ' +o.name}}
                                 </mat-chip>
-                                <input readonly (click)="specialistClick()" matInput #specialistInput
+                                <input class="custom-readonly" readonly (click)="specialistClick()" matInput #specialistInput
                                     [formControl]="specialistCodeControl" [matAutocomplete]="autoSpecialist"
                                     [matChipInputFor]="specialChipList"
                                     [matChipInputSeparatorKeyCodes]="specialSeparatorKeysCodes"
@@ -182,7 +182,7 @@
                     <div class="col-md-6">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("EducationCountryCode")}}</mat-label>
-                            <input formControlName="educationCountryCode" matInput readonly>
+                            <input class="custom-readonly" formControlName="educationCountryCode" matInput readonly>
                         </mat-form-field>
                     </div>
                 </div>
@@ -193,7 +193,7 @@
                             <mat-label class="label">{{l('DoctorAvatar')}}</mat-label>
                         </div>
                         <img style="padding: 5px"
-                            [src]="_avatars[0] || 'https://cmkt-image-prd.global.ssl.fastly.net/0.1.0/ps/1441527/1160/772/m1/fpnw/wm0/businessman-avatar-icon-01-.jpg?1468234792&s=e3a468692e15e93a2056bd848193e97a'"
+                        [src]="checkAvatar ? 'http://123.30.214.138:9008/wwwroot'+ (this._obj.avatar?this._obj.avatar:'') : _avatars[0] || 'https://cmkt-image-prd.global.ssl.fastly.net/0.1.0/ps/1441527/1160/772/m1/fpnw/wm0/businessman-avatar-icon-01-.jpg?1468234792&s=e3a468692e15e93a2056bd848193e97a'"
                             height="175px" width="200px">
                     </div>
                     <!-- <div class="col-md-4 mt-3">
@@ -224,7 +224,7 @@
                             </span>
                         </div> -->
                         <div class="mt-5 ml-1 upload-content avatar-name">
-                            <mat-label>{{avatarName}}</mat-label>
+                            <mat-label>{{checkAvatar==true?'':avatarName}}</mat-label>
                         </div>
                     </div>
                 </div>
@@ -244,7 +244,7 @@
                     <div class="col-md-6">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("DoctorPriceFrom")}}</mat-label>
-                            <input readonly #priceFrom (input)="priceFromInput($event)" #priceFrom mask="dot_separator"
+                            <input class="custom-readonly" readonly #priceFrom (input)="priceFromInput($event)" #priceFrom mask="dot_separator"
                                 maxlength="12" formControlName="priceFrom" matInput>
                             <!-- <mat-icon *ngIf="checkPriceFrom" matSuffix [matTooltipPosition]="'before'"
                                 matTooltipClass="bg-danger text-light mr-1"
@@ -254,7 +254,7 @@
                     <div class="col-md-6">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("DoctorPriceTo")}}</mat-label>
-                            <input readonly #priceTo (input)="priceToInput($event)" mask="dot_separator" maxlength="12"
+                            <input class="custom-readonly" readonly #priceTo (input)="priceToInput($event)" mask="dot_separator" maxlength="12"
                                 formControlName="priceTo" matInput>
                             <!-- <mat-icon *ngIf="checkPriceTo" matSuffix [matTooltipPosition]="'before'"
                                 matTooltipClass="bg-danger text-light mr-1"
@@ -267,7 +267,7 @@
                     <div class="col-md-12">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("DoctorPriceDescription")}}</mat-label>
-                            <input readonly formControlName="priceDescription" matInput>
+                            <input class="custom-readonly" readonly formControlName="priceDescription" matInput>
                         </mat-form-field>
                     </div>
                 </div>
@@ -276,7 +276,7 @@
                     <div class="col-md-12">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("DoctorDescription")}}</mat-label>
-                            <input readonly formControlName="description" matInput ngDefaultControl>
+                            <input class="custom-readonly" readonly formControlName="description" matInput ngDefaultControl>
                         </mat-form-field>
 
                     </div>
@@ -303,7 +303,7 @@
                                     [removable]="removable" (removed)="remove(o.code)">
                                     {{o.code +' - ' +o.name}}
                                 </mat-chip>
-                                <input readonly matInput #healthfacilitiesInput [formControl]="healthfacilitiesControl"
+                                <input class="custom-readonly" readonly matInput #healthfacilitiesInput [formControl]="healthfacilitiesControl"
                                     [matAutocomplete]="auto" [matChipInputFor]="chipList"
                                     [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                                     [matChipInputAddOnBlur]="addOnBlur" (matChipInputTokenEnd)="add($event)"

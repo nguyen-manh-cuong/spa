@@ -78,12 +78,10 @@
 
             </div>
             <div class="col-md-4">
-                <div class="group-calender d-flex">
-                    <div class="col pl-0">
-                        <mat-form-field appearance="outline" class="d-flex w"
+                        <mat-form-field appearance="outline" class="w-100"
                                         [ngClass]="{'mat-form-field-invalid': (frmSearch.get('time').value==10 && !startTime.value) || (frmSearch.get('time').value==10 && (startTime.value > endTime.value))}">
                             <mat-label>{{l('Từ ngày')}}</mat-label>
-                            <input (click)="picker.open()" [disabled]="_isDateTimeEnable" matInput #startTime [matDatepicker]="picker" mask="0*"
+                            <input readonly style="cursor: inherit" disabled (click)="picker.open()" [disabled]="_isDateTimeEnable" matInput #startTime [matDatepicker]="picker" mask="0*"
                                    required maxlength="10" [disabled]="type == 10"
                                    [required]="frmSearch.get('time').value==10 && !startTime.value">
                             <mat-datepicker-toggle matSuffix [for]="picker" class="t-2"></mat-datepicker-toggle>
@@ -95,15 +93,12 @@
                                       *ngIf="frmSearch.get('time').value==10 && (startTime.value > endTime.value)"
                                       class="text-danger" matTooltip="{{l('Từ ngày không được lớn hơn Đến ngày')}}">info</mat-icon>
                         </mat-form-field>
-                    </div>
-                </div>
-
             </div>
             <div class="col-md-4" id="cbo-endTime"
                  [ngClass]="{'mat-form-field-invalid':(frmSearch.get('time').value==10 && !startTime.value) || (frmSearch.get('time').value==10 && (startTime.value > endTime.value))}">
                 <mat-form-field appearance="outline" class="icon-alert w-100">
                     <mat-label>{{l('Đến ngày')}}</mat-label>
-                    <input (click)="picker1.open()" [disabled]="_isDateTimeEnable" matInput #endTime [matDatepicker]="picker1" mask="0*"
+                    <input readonly style="cursor: inherit" disabled (click)="picker1.open()" [disabled]="_isDateTimeEnable" matInput #endTime [matDatepicker]="picker1" mask="0*"
                            [required]="frmSearch.get('time').value==10 && !endTime.value" maxlength="10">
                     <mat-datepicker-toggle matSuffix [for]="picker1" class="t-2"></mat-datepicker-toggle>
                     <mat-datepicker #picker1></mat-datepicker>
@@ -114,19 +109,30 @@
                               class="text-danger" matTooltip="{{l('Đến ngày không được nhỏ hơn Từ ngày')}}">info</mat-icon>
                 </mat-form-field>
             </div>
-            <div class="col-md-3 text-center d-flex align-self-center fadeIn animated ml-auto">
-                <button #btnSearch mat-stroked-button color="primary" (click)="customSearch()" class="w-100 mb-4">
-                    <mat-icon class="mr-2">search</mat-icon>{{l("Search")}}
-                </button>
+                <div class="col-md-4">
+
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Gói khám</mat-label>
+                        <mat-select formControlName="bookingService" disabled>
+                            <mat-option [innerHTML]="'<div class=\'text-center border-bottom w-100\'>'+ l('Bỏ chọn') +'</div>'">
+                            </mat-option>
+                            <mat-option *ngFor="let o of _doctors" [value]="o.doctorId">{{ o.fullName }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                    <div class="col-md-4 text-center d-flex align-self-center fadeIn animated ml-auto">
+                        <button #btnSearch mat-stroked-button color="primary" (click)="customSearch()" class="w-100 mb-4">
+                            <mat-icon class="mr-2">search</mat-icon>{{l("Search")}}
+                        </button>
+                    </div>
+                    <div class="col-md-4 text-center d-flex align-self-center fadeIn animated mr-auto">
+                        <button mat-stroked-button color="primary"
+                                [disabled]="frmSearch.get('time').value==10 && !startTime.value || frmSearch.get('time').value==10 && !endTime.value || startTime.value > endTime.value"
+                                (click)="btnSearchClicks$.next($event)" class="w-100 mb-4">
+                            {{l("Xuất Excel")}}
+                        </button>
+                    </div>
             </div>
-            <div class="col-md-3 text-center d-flex align-self-center fadeIn animated mr-auto">
-                <button mat-stroked-button color="primary"
-                        [disabled]="frmSearch.get('time').value==10 && !startTime.value || frmSearch.get('time').value==10 && !endTime.value || startTime.value > endTime.value"
-                        (click)="btnSearchClicks$.next($event)" class="w-100 mb-4">
-                    {{l("Xuất Excel")}}
-                </button>
-            </div>
-        </div>
     </form>
 
     <div class="table-content" style="height: calc(100vh - 245px);">
@@ -178,6 +184,12 @@
                 <th mat-header-cell *matHeaderCellDef class="min-w-100 text-center pr-2"> {{l('Trạng thái khám')}} </th>
                 <td mat-cell *matCellDef="let element" class="text-left"> {{getStatus(element.status)}}</td>
             </ng-container>
+
+            <ng-container matColumnDef="_bookingServiceType">
+                <th mat-header-cell *matHeaderCellDef class="min-w-100 text-center pr-2"> Gói khám </th>
+                <td mat-cell *matCellDef="let element" class="text-left"> </td>
+            </ng-container>
+
             <ng-container matColumnDef="task">
                 <th mat-header-cell *matHeaderCellDef class="text-center">{{l('Task')}}</th>
                 <td mat-cell *matCellDef="let element" class="w-px-30 pr-0">

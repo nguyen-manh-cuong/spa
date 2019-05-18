@@ -115,8 +115,10 @@ export interface IHealthfacilities {
     address: string,
     avatar: string,
     specialist: IHealthfacilitiesSpecialists[];
+    specialistName: string,
     totalDoctor: NgMultiLabelTemplateDirective
 }
+
 
 export interface IHealthfacilitiesSpecialists {
     healthFacilitiesId: number;

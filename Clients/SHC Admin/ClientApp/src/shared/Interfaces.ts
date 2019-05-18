@@ -1,3 +1,5 @@
+
+
 export interface IUser {
     id?: number;
     userName: string;
@@ -24,6 +26,49 @@ export interface IUser {
     specialist?: string;
 
     groups: IGroup[];
+}
+
+export interface IDoctor {
+    doctorId: number;
+    academicId:number;
+    address:string;
+    birthDate:number;
+    birthMonth:number;
+    birthYear:number;
+    certificationCode:string;
+    certificationDate:Date;
+    gender:number;
+    titleCode:string;
+    positionCode:string;
+    nationCode:string;
+    ethnicityCode:string;
+    degreeId:number;
+    email:string;
+    provinceCode:string;
+    districtCode:string;
+    phoneNumber:string;
+    educationCountryCode:string;
+    priceFrom:number;
+    priceTo:number;
+    priceDescription:number;
+    summary:string;
+    fullName: string;
+    avatar: string;
+    academic: string;
+    degree: string;
+    description: string;
+    allowBooking:boolean;
+    allowFilter:boolean;
+    allowSearch:boolean;
+    specialist: IDoctorSpecialists[];
+    healthFacilities: IHealthfacilitiesDoctor[];
+    createUserId:number;
+    updateUserId:number;
+}
+
+export interface IHealthfacilitiesDoctor {
+    doctorId: string;
+    healthFacilitiesId: string;
 }
 
 export interface IProvince {
@@ -215,12 +260,21 @@ export interface IPatient {
     districtCode: string;
 }
 
+export interface IDoctorSpecialists {
+    doctorId: string;
+    specialistCode: string;
+    specialist: string;
+}
+ 
 export interface IHealthfacilities {
     healthFacilitiesId: number,
-    name?: string,
-    address?: string
+    name: string,
+    code: string
+    address: string,
+    avatar: string,
+    specialistName: string,
+    //totalDoctor: NgMultiLabelTemplateDirective
 }
-
 export interface ISmsLogs {
     id: number,
     message: string

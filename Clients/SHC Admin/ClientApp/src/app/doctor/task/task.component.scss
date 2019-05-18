@@ -10,7 +10,7 @@
 
 .label {
     margin-left: 5px;
-    font-weight: bold;
+    font-weight: 500;
     font-size: 15px;
 }
 
@@ -19,7 +19,10 @@
 }
 
 .ck-editor__editable{
-    min-height: 180px;
+    min-height: 150px;
+}
+.ck.ck-editor__editable_inline{
+    border: 1px solid 000000!important;
 }
 
 .image-uploader .upload-content .upload-description {
@@ -87,4 +90,17 @@ div#cdk-overlay-2 {
     max-width: unset!important;
 }
 
+.custom-readonly{
+    cursor: pointer!important;
+}
 
+.text-readonly{
+    color: #00695c!important;
+}
+.ck .ck-editor__main{
+    margin-left: 2px;
+}
+
+input:read-only{
+    color:#00695c!important;
+}

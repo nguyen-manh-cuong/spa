@@ -1,6 +1,4 @@
-import { IHealthfacilities } from './../../../../../../SHC Outside/ClientApp/src/shared/Interfaces';
-import { IDoctor } from './../../../../../../SHC Client/ClientApp/src/shared/Interfaces';
-import { ICategoryCommon, IProvince, IDistrict, IWard } from './../../../shared/Interfaces';
+import { ICategoryCommon, IProvince, IDistrict, IWard, IDoctor,IHealthfacilities } from './../../../shared/Interfaces';
 import { AfterViewInit, Component, Injector, OnInit, ViewChild, Input, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatButton, MatDialog, MatDialogRef, MatSort, MatCheckbox, MatInput, AUTOCOMPLETE_OPTION_HEIGHT, MatSelect } from '@angular/material';

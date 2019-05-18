@@ -140,7 +140,7 @@
             </ng-container>
             <ng-container matColumnDef="address">
                 <th mat-header-cell *matHeaderCellDef class="min-w-200 text-center"> {{l('Address')}}</th>
-                <td mat-cell *matCellDef="let element" class="min-w-200 td-left  wrap-text-word">
+                <td mat-cell *matCellDef="let element" class="min-w-200 td-left wrap-text-word">
                     {{element.address}}</td>
             </ng-container>
             <ng-container matColumnDef="priceFrom">
@@ -148,6 +148,11 @@
                 <td mat-cell *matCellDef="let element" class="min-w-40 text-right">
                     {{element.priceFrom | CustomCurrency}}</td>
             </ng-container>
+            <!-- <ng-container matColumnDef="priceTo">
+                <th mat-header-cell *matHeaderCellDef class="min-w-40 text-center"> {{l('DoctorPriceToo')}}</th>
+                <td mat-cell *matCellDef="let element" class="min-w-40 text-right">
+                    {{element.priceTo | CustomCurrency}}</td>
+            </ng-container> -->
             <ng-container matColumnDef="allowBooking">
                 <th mat-header-cell *matHeaderCellDef class="min-w-80 text-center"> {{l('DoctorAllowBooking')}}</th>
                 <td mat-cell *matCellDef="let element" class="min-w-80 text-center">

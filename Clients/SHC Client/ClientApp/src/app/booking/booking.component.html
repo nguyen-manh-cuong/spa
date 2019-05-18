@@ -178,7 +178,7 @@
                 <div class="form-group">
                   <label for="provinceCode" class="col-sm-2 col-lg-4 control-label">Tỉnh/ Thành phố</label>
                   <div class="col-sm-10 col-lg-6">
-                    <ng-select [searchable]="false" formControlName="provinceCode" id="provinceCode"
+                    <ng-select formControlName="provinceCode" id="provinceCode"
                       (ngModelChange)="onSelectProvince($event)">
                       <ng-option *ngFor="let o of _provinces" [value]="o.provinceCode">{{ o.name }}</ng-option>
                     </ng-select>

@@ -44,12 +44,14 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
     _healthfacilities = [];
     healthfacilities = new FormControl();
     filteredOptions: Observable<IHealthfacilities[]>;
-    displayedColumns = ['orderNumber', 'code', 'patient', 'gender', 'phone', 'year', 'description', 'doctor', 'examinationDate', 'status', 'task'];
+    displayedColumns = ['orderNumber', 'code', 'patient', 'gender', 'phone', 'year', 'description', 'doctor', 'examinationDate', 'status', '_bookingServiceType', 'task'];
+
     status = [{ id: 4, name: 'Tất cả' }, { id: 3, name: 'Hủy khám' }, { id: 2, name: 'Đã khám' }, { id: 1, name: 'Chờ khám' }, { id: 0, name: 'Mới đăng ký' }];
    
     times = [  
         { id: 0, name: 'Hôm nay' }, { id: 1, name: 'Hôm qua' }, { id: 2, name: 'Tuần này' }, { id: 3, name: 'Tuần trước' }, { id: 4, name: 'Tháng này' }, { id: 5, name: 'Tháng trước' },
-        { id: 6, name: 'Quý này' }, { id: 7, name: 'Quý trước' }, { id: 8, name: 'Năm nay' },  { id: 9, name: 'Năm trước' }, { id: 10, name: 'Theo khoảng thời gian' }, ];
+        { id: 6, name: 'Quý này' }, { id: 7, name: 'Quý trước' }, { id: 8, name: 'Năm nay' }, { id: 9, name: 'Năm trước' }, { id: 10, name: 'Theo khoảng thời gian' },];
+
     dialogDetail: any;
     dialogReasonReject: any;
     _medicalFacility = [];
@@ -66,14 +68,23 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
     @ViewChild("startTime") startTime;
     @ViewChild("endTime") endTime;
     @ViewChild("auto") auto;
-
+    @ViewChild('bookingService') bookingService;
     constructor(injector: Injector, private _dataService: DataService, public dialog: MatDialog, private _formBuilder: FormBuilder) {
         super(injector);
     }
 
     ngOnInit() {
         this.api = 'bookinginformations';              
-        this.frmSearch = this._formBuilder.group({ healthfacilities: [], doctor: [], packagesNameDescription: [], status: [4], startTime: [moment(new Date().setHours(7, 0, 0, 0)).toDate()], endTime: new Date(), time: [0], });
+        this.frmSearch = this._formBuilder.group({
+            healthfacilities: [],
+            doctor: [],
+            packagesNameDescription: [],
+            status: [4],
+            startTime: [moment(new Date().setHours(7, 0, 0, 0)).toDate()],
+            endTime: new Date(),
+            time: [0],
+            bookingService: []
+        });
         this.dataService = this._dataService;
         this.dialogComponent = EditComponent;
         this.dialogSendComponent = TaskComponent;
@@ -320,6 +331,9 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
     }
 
     customSearch() {
+        
+        this.bookingService.nativeElement.value ? this.frmSearch.controls['bookingService'].setValue('') : '';
+
         if (this.frmSearch.controls['packagesNameDescription'].value != null) {
             this.frmSearch.controls['packagesNameDescription'].setValue(this.frmSearch.controls['packagesNameDescription'].value.trim());
         }
@@ -374,5 +388,6 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
         this.endTime.nativeElement.value ? this.frmSearch.controls['endTime'].setValue(moment(this.endTime.nativeElement.value + '23:59:59', 'DD/MM/YYYY hh:mm:ss').add(7, 'hours').toDate()) : '';
         var req = omitBy(this.frmSearch.value, isNil);
         this.btnSearchClicks$.next();
+        
     }
 }

@@ -64,6 +64,8 @@ export class packagedistributeEditComponent extends AppComponentBase implements 
             this._smsLogs = resp.items
         });
 
+
+
         this._context = {
             healthFacilitiesId: [this._obj.healthFacilitiesId, Validators.required],
             smsBrandsId: [this._obj.smsBrandsId, Validators.required],
@@ -76,6 +78,11 @@ export class packagedistributeEditComponent extends AppComponentBase implements 
             userId: [],
         };
         this._frmpackagedistributeedit = this._formBuilder.group(this._context);
+
+        setTimeout(() => {
+            this._frmpackagedistributeedit.controls["healthFacilitiesId"].disable();
+            this._frmpackagedistributeedit.controls["smsPackageId"].disable();
+        });
     }
 
     submit() {
