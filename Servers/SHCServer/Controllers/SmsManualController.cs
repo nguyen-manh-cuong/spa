@@ -549,7 +549,8 @@ namespace SHCServer.Controllers
 
             foreach (var s in packages)
             {
-                totalSms += s.SmsPackageUsed.Quantityused;
+                
+                totalSms += s.SmsPackageUsed != null ? s.SmsPackageUsed.Quantityused : 0;
             }
 
             if (totalSms < totalSmsSend)
@@ -597,7 +598,7 @@ namespace SHCServer.Controllers
             foreach (var m in infoInput.lstMedicalHealthcareHistories)
             {
                 indexM++;
-                if (indexM > packages[indexUsed].SmsPackageUsed.Quantityused)
+                if (packages[indexUsed].SmsPackageUsed != null && indexM > packages[indexUsed].SmsPackageUsed.Quantityused)
                 {
                     indexM = 0;
                     indexUsed++;
@@ -611,7 +612,7 @@ namespace SHCServer.Controllers
                 scontent.HealthFacilitiesId = infoInput.healthFacilitiesId.Value;
                 scontent.SmsTemplateId = templateId;
                 scontent.SmsPackagesDistributeId = packages[indexUsed].Id;
-                scontent.SmsPackageUsedId = packages[indexUsed].SmsPackageUsed.SmsPackageUsedId;
+                scontent.SmsPackageUsedId = packages[indexUsed].SmsPackageUsed != null ? packages[indexUsed].SmsPackageUsed.SmsPackageUsedId : 0;
                 scontent.PatientHistoriesId = 0;
 
                 scontent.PatientId = m.PatientId;

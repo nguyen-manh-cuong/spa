@@ -257,16 +257,17 @@ namespace SHCServer.Controllers
                     return StatusCode(406, _excep.Throw(406, "Lưu không thành công", "Số giấy phép hành nghề đã tồn tại", ""));
                 }
             }
-
             try
             {
-                if (Convert.ToDateTime(doctor.CertificationDate).Year == 1)
+                DateTime.Parse(doctor.CertificationDate);
+                if (doctor.CertificationDate == null)
                     checkCertificationDate = false;
             }
             catch
             {
                 checkCertificationDate = false;
             }
+
 
             try
             {
@@ -376,9 +377,10 @@ namespace SHCServer.Controllers
 
                 if (checkCertificationDate == true)
                 {
+                    var date = DateTime.Parse(doctor.CertificationDate);
                     _context.Update<Doctor>(d => d.DoctorId == newDoctor.DoctorId, x => new Doctor()
                     {
-                        CertificationDate = Convert.ToDateTime(doctor.CertificationDate).AddMonths(1)
+                        CertificationDate = date
                     });
                 }
 
@@ -411,22 +413,23 @@ namespace SHCServer.Controllers
         public IActionResult Update([FromForm] DoctorInputViewModel doctor, int? allow)
         {
             bool checkCertificationDate = true;
-
-
-            if (!string.IsNullOrEmpty(doctor.CertificationCode))
+            if (allow != 1)
             {
-                var checkCertification = _context.Query<Doctor>().Where(d => d.CertificationCode.Equals(doctor.CertificationCode)).FirstOrDefault();
-
-                if (checkCertification != null && checkCertification.DoctorId != doctor.DoctorId)
+                if (!string.IsNullOrEmpty(doctor.CertificationCode))
                 {
-                    return StatusCode(406, _excep.Throw(406, "Lưu không thành công", "Số giấy phép hành nghề đã tồn tại", ""));
+                    var checkCertification = _context.Query<Doctor>().Where(d => d.CertificationCode.Equals(doctor.CertificationCode)).FirstOrDefault();
+
+                    if (checkCertification != null && checkCertification.DoctorId != doctor.DoctorId)
+                    {
+                        return StatusCode(406, _excep.Throw(406, "Lưu không thành công", "Số giấy phép hành nghề đã tồn tại", ""));
+                    }
                 }
             }
 
-
             try
             {
-                if (Convert.ToDateTime(doctor.CertificationDate).Year == 1)
+                DateTime.Parse(doctor.CertificationDate);
+                if (doctor.CertificationDate == null)
                     checkCertificationDate = false;
             }
             catch
@@ -509,8 +512,6 @@ namespace SHCServer.Controllers
 
                 _context.BeginTransaction();
 
-
-
                 _context.Update<Doctor>(d => d.DoctorId == doctor.DoctorId, x => new Doctor()
                 {
                     AcademicId = doctor.AcademicId,
@@ -550,14 +551,15 @@ namespace SHCServer.Controllers
                     _context.Update<Doctor>(d => d.DoctorId == doctor.DoctorId, x => new Doctor()
                     {
                         CertificationDate = null
-                    }); ;
+                    });
                 }
 
                 if (checkCertificationDate == true)
                 {
+                    var date = DateTime.Parse(doctor.CertificationDate);
                     _context.Update<Doctor>(d => d.DoctorId == doctor.DoctorId, x => new Doctor()
                     {
-                        CertificationDate = Convert.ToDateTime(doctor.CertificationDate).AddMonths(1)
+                        CertificationDate = date
                     });
                 }
 
