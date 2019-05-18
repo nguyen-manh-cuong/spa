@@ -381,16 +381,17 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
 
         this.ageFist.nativeElement.value ? this.frmSearch.controls['ageFist'].setValue(this.ageFist.nativeElement.value) : this.frmSearch.controls['ageFist'].setValue('');
         this.ageLast.nativeElement.value ? this.frmSearch.controls['ageLast'].setValue(this.ageLast.nativeElement.value) : this.frmSearch.controls['ageLast'].setValue('');
-
-        console.log(this.compareFist);
-
-        //this.compareFist.nativeElement.value ? this.frmSearch.controls['compareFist'].setValue(this.compareFist.nativeElement.value) : this.frmSearch.controls['compareFist'].setValue('');
-        //this.compareLast.nativeElement.value ? this.frmSearch.controls['compareLast'].setValue(this.compareLast.nativeElement.value) : this.frmSearch.controls['compareLast'].setValue('');
-        console.log(this.birthYear);
-
        
         this.birthYear.nativeElement.value ? this.frmSearch.controls['birthYear'].setValue(this.birthYear.nativeElement.value) : this.frmSearch.controls['birthYear'].setValue('');
         this.btnSearchClicks$.next();
+    }
+
+    onSelectCompareFist(value) {
+        value == '0' ? this.frmSearch.controls['compareFist'].setValue('>=') : this.frmSearch.controls['compareFist'].setValue('>');
+    }
+
+    onSelectCompareLast(value) {
+        value == '0' ? this.frmSearch.controls['compareLast'].setValue('<=') : this.frmSearch.controls['compareLast'].setValue('<');
     }
 
     showMess() {
