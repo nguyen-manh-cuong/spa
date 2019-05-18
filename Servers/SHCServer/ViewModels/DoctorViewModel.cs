@@ -55,6 +55,23 @@ namespace SHCServer.ViewModels
             UpdateUserId = obj.UpdateUserId;
             Description = obj.Description;
 
+            if(obj.PriceFrom!=null && obj.PriceTo != null)
+            {
+                Price = PriceFrom + " - " + PriceTo;
+            }
+            else if(obj.PriceFrom!=null && obj.PriceTo == null)
+            {
+                Price = PriceFrom.ToString();
+            }
+            else if(obj.PriceFrom==null && obj.PriceTo != null)
+            {
+                Price = PriceTo.ToString();
+            }
+            else
+            {
+                Price = "";
+            }
+
             var academic = context.JoinQuery<Doctor, CategoryCommon>((d, c) => new object[]
                 {
                     JoinType.InnerJoin, d.AcademicId == c.Id
@@ -112,6 +129,7 @@ namespace SHCServer.ViewModels
         public string Description { set; get; }
         public int? PriceFrom { get; set; }
         public int? PriceTo { get; set; }
+        public string Price { get; set; }
         public string PriceDescription { get; set; }
         public string Summary { get; set; }
         public bool? IsSync { get; set; }
