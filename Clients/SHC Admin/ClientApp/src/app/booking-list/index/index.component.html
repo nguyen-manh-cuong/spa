@@ -190,7 +190,7 @@
                 <td mat-cell *matCellDef="let element" class="text-left"> </td>
             </ng-container>
 
-            <ng-container matColumnDef="task">
+            <!-- <ng-container matColumnDef="task">
                 <th mat-header-cell *matHeaderCellDef class="text-center">{{l('Task')}}</th>
                 <td mat-cell *matCellDef="let element" class="w-px-30 pr-0">
                     <div class="d-flex">
@@ -211,7 +211,38 @@
                         </button>
                     </div>
                 </td>
-            </ng-container>
+            </ng-container> -->
+
+            <ng-container matColumnDef="task" class="col-task">
+                    <th mat-header-cell *matHeaderCellDef class="text-center">{{l('Task')}}</th>
+                    <td mat-cell *matCellDef="let element" class="mat-cell cdk-column vertical-separator mat-column w-px-30 text-center"
+                        role="gridcell" stickyEnd>
+                        <button mat-icon-button [matMenuTriggerFor]="menu" class="text-center">
+                            <mat-icon>more_vert</mat-icon>
+                        </button>
+                        <mat-menu #menu="matMenu" class="d-flex-column matmenu-booking-list">
+                                <button mat-icon-button *ngIf="element.status != 3 ? true : false"
+                                (click)="openCustomDialog(element)">
+                            <mat-icon class="text-muted">sms</mat-icon>
+                            SMS
+                        </button>
+                        <button mat-icon-button (click)="detail(element)">
+                            <mat-icon class="text-muted">dvr</mat-icon>
+                            Xem chi tiết
+                        </button>
+                        <button mat-icon-button *ngIf="element.status == 0 || element.status == 1 ? true : false"
+                                (click)="openDialog(element)">
+                            <mat-icon class="text-muted f-18">edit</mat-icon>
+                            Sửa
+                        </button>
+                        <button mat-icon-button *ngIf="element.status == 0 || element.status == 1 ? true : false"
+                                (click)="deleteDialogPackage(element)">
+                            <mat-icon class="text-muted f-18">cancel</mat-icon>
+                            Hủy đặt khám
+                        </button>
+                        </mat-menu>
+                    </td>
+                </ng-container>
             <tr mat-header-row *matHeaderRowDef="displayedColumns;sticky:true"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="fadeIn animated"></tr>
         </table>

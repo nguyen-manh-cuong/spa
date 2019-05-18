@@ -87,12 +87,12 @@ export class packagedistributeEditComponent extends AppComponentBase implements 
 
     submit() {
         const yearNow = new Date().getFullYear();
-        if(this._frmpackagedistributeedit.controls['yearEnd'].value == this._frmpackagedistributeedit.controls['yearEnd'].value){
+        if(this._frmpackagedistributeedit.controls['yearStart'].value == this._frmpackagedistributeedit.controls['yearEnd'].value){
             if(this._frmpackagedistributeedit.controls['monthStart'].value > this._frmpackagedistributeedit.controls['monthEnd'].value){
                 this.yearStart.nativeElement.focus();
                 return swal({
                     title: 'Thông báo',
-                    text: 'Từ năm phải lớn hơn hoặc bằng năm hiện tại',
+                    text: 'Đến tháng phải lớn hơn hoặc bằng Từ tháng',
                     type: 'warning',
                     timer: 3000
                 });
