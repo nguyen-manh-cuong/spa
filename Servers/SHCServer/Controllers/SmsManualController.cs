@@ -244,8 +244,8 @@ namespace SHCServer.Controllers
                 }
 
                 int yearNow = DateTime.Now.Year;
-                string compareFisrt = data.ContainsKey("compareFist") ? data["compareFist"] : ">=";
-                string compareLast = data.ContainsKey("compareLast") ? data["compareLast"] : "<=";
+                string compareFisrt = data.ContainsKey("compareFist") ? data["compareFist"].ToString() : ">=";
+                string compareLast = data.ContainsKey("compareLast") ? data["compareLast"].ToString() : "<=";
 
                 if (data.ContainsKey("birthYear") && data["birthYear"] != "")
                 {
