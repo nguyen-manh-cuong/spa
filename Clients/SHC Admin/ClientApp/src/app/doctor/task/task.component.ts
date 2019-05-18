@@ -717,12 +717,12 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   //End auto complete specialist
 
   detectFiles(event) {
-    if (event.target.files[0].size > 2097152) {
+    if (event.target.files[0].size > 5242880) {
       this._frm.controls['avatar'].setValue(null);
       this.avatarName = "Chưa chọn ảnh";
       return swal({
         title: 'Thông báo',
-        text: 'File quá lớn. Chỉ được chọn file có dung lượng nhỏ hơn hoặc bằng 2MB',
+        text: 'File quá lớn. Chỉ được chọn file có dung lượng nhỏ hơn hoặc bằng 5MB',
         type: 'warning',
         timer: 3000
       });
@@ -918,6 +918,16 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
         timer: 3000
       });
     }
+    
+    if (this.specialistInput.nativeElement.value != "") {
+      this.checkSpecial=false;
+      return swal({
+        title: 'Thông báo',
+        text: 'Chuyên khoa nhập vào không có trong danh sách',
+        type: 'warning',
+        timer: 3000
+      });
+    }
     if (this.birthDayPicker.nativeElement.value != "" && !moment(this.birthDayPicker.nativeElement.value, 'DD/MM/YYYY').isValid()) {
       return swal({
         title: 'Thông báo',
@@ -952,7 +962,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
       });
     }
     if (priceFrom != null && priceTo != null) {
-      if (priceFrom != "" && priceTo != "" && priceFrom >= priceTo) {
+      if (priceFrom != "" && priceTo != "" && Number(priceFrom) >= Number(priceTo)) {
         this.checkPriceTo = true;
         this.checkPriceFrom = true;
         return swal({

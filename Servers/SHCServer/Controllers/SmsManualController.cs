@@ -252,9 +252,15 @@ namespace SHCServer.Controllers
                     clause.Add("AND p.BirthYear = @_birthYear");
                     param.Add(DbParam.Create("@_birthYear", data["birthYear"].ToString()));
                 }
-                if ((data.ContainsKey("ageFist") && data["ageFist"] != "") && (data.ContainsKey("ageLast") && data["ageLast"] != ""))
+                if (data.ContainsKey("ageFist") && data["ageFist"] != "")
                 {
-                    string _query = $"AND ({yearNow} - p.BirthYear {compareFisrt} {data["ageFist"]}  AND  {yearNow} - p.BirthYear {compareLast} {data["ageLast"]} )";
+                    string _query = $"AND {yearNow} - p.BirthYear {compareFisrt} {data["ageFist"]}";
+                    clause.Add(_query);
+                }
+
+                if (data.ContainsKey("ageLast") && data["ageLast"] != "")
+                {
+                    string _query = $"AND  {yearNow} - p.BirthYear {compareLast} {data["ageLast"]}";
                     clause.Add(_query);
                 }
             }

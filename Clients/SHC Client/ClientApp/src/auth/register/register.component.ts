@@ -39,8 +39,8 @@ export class RegisterComponent implements OnInit {
 
     _specialist: any = [];
     _context: any;
-    _idCardUrls: Array<{ url: string, name: string }>;
-    _certificateUrls: Array<{ url: string, name: string }>;
+    _idCardUrls: Array<{ url: string, file: any, name: string }>;
+    _certificateUrls: Array<{ url: string, file: any, name: string }>;
     _user: CreateUserDto;
     _invaliBirthday = false;
 
@@ -157,8 +157,8 @@ export class RegisterComponent implements OnInit {
     }
 
     submit() {
-        this.frmUser.value.birthDay = new Date($('#birthY').val() + '-' + $('#birthM').val() + '-' + $('#birthD').val());
-
+        this.frmUser.value.birthDay = new Date($('#birthY').val() + '-' + $('#birthM').val() + '-' + $('#birthDay').val());
+        console.log($('#birthY').val() + '-' + $('#birthM').val() + '-' + $('#birthDay').val());
         if (this.frmUser.controls['password'].value != this.frmUser.controls['confirmPassword'].value) {
             this.frmUser.controls['confirmPassword'].setErrors({ password: true });
         }
@@ -244,7 +244,7 @@ export class RegisterComponent implements OnInit {
 
     //validate  
     checkBirthDate() {
-        if (!moment($('#birthD').val() + '/' + $('#birthM').val() + '/' + $('#birthY').val(), "DD/MM/YYYY").isValid()) {
+        if (!moment($('#birthDay').val() + '/' + $('#birthM').val() + '/' + $('#birthY').val(), "DD/MM/YYYY").isValid()) {
             this._invaliBirthday = true;
         } else {
             this._invaliBirthday = false;
@@ -286,33 +286,74 @@ export class RegisterComponent implements OnInit {
         //}
     }
 
+    replace_alias(str) {
+        str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
+        str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
+        str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i");
+        str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, "o");
+        str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u");
+        str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y");
+        str = str.replace(/đ/g, "d");
+        str = str.replace(/À|Á|Ạ|Ả|Ã|Â|Ầ|Ấ|Ậ|Ẩ|Ẫ|Ă|Ằ|Ắ|Ặ|Ẳ|Ẵ/g, "A");
+        str = str.replace(/È|É|Ẹ|Ẻ|Ẽ|Ê|Ề|Ế|Ệ|Ể|Ễ/g, "E");
+        str = str.replace(/Ì|Í|Ị|Ỉ|Ĩ/g, "I");
+        str = str.replace(/Ò|Ó|Ọ|Ỏ|Õ|Ô|Ồ|Ố|Ộ|Ổ|Ỗ|Ơ|Ờ|Ớ|Ợ|Ở|Ỡ/g, "O");
+        str = str.replace(/Ù|Ú|Ụ|Ủ|Ũ|Ư|Ừ|Ứ|Ự|Ử|Ữ/g, "U");
+        str = str.replace(/Ỳ|Ý|Ỵ|Ỷ|Ỹ/g, "Y");
+        str = str.replace(/Đ/g, "D");
+        str = str.replace(/ /g, "_");
+        return str;
+    }
+
+    replace_alias_number(str) {
+        str = str.replace(/a|e|i|o|u|y|d|A|E|I|O|U|Y|D/g, "");
+        return str;
+    }
+
+    replace_space(str) {
+        str = str.replace(/ /g, "_");
+        return str;
+    }
+
     arrayIdCard = [];
     arrayCertificate = [];
     detectFiles(event, type) {
         let files = event.target.files;
+        let fileFormat = ['image/jpeg', 'image/png', 'application/pdf'];
         if (files) {
             for (let file of files) {
                 let reader = new FileReader();
                 reader.readAsDataURL(file);
-                console.log(file.size);
                 if (file.size > 5242880) {
                     return swal({
                         title: 'Thông báo',
                         text: `'File ${file.name} vượt quá 5MB`,
-                        type: 'warning'
+                        type: 'warning',
+                        timer: 3000
                     });
                 }
+
+                if (fileFormat.indexOf(file.type.toString()) === -1) {
+                    return swal({
+                        title: 'Thông báo',
+                        text: `'File ${file.name} không đúng định dạng`,
+                        type: 'warning',
+                        timer: 3000
+                    });
+                }
+                
                 if (file.type == 'image/jpeg' || file.type == 'image/png') {
                     if (type == 'idCard') {
                         reader.onload = (e: any) => {
-                            this._idCardUrls.push({ url: "/assets/images/212328-200.png", name: file });
+                            this._idCardUrls.push({ url: "/assets/images/212328-200.png", file: file, name: this.replace_alias(file.name) });
+                            console.log(this._idCardUrls);
                         }
                         this.arrayIdCard.push(file);
                     }
 
                     if (type == 'certificate') {
                         reader.onload = (e: any) => {
-                            this._certificateUrls.push({ url: "/assets/images/212328-200.png", name: file });
+                            this._certificateUrls.push({ url: "/assets/images/212328-200.png", file: file, name: this.replace_alias(file.name) });
                         }
                         this.arrayCertificate.push(file);
                     }
@@ -321,14 +362,14 @@ export class RegisterComponent implements OnInit {
                 if (file.type == 'application/pdf') {
                     if (type == 'idCard') {
                         reader.onload = (e: any) => {
-                            this._idCardUrls.push({ url: "/assets/images/24-512.png", name: file });
+                            this._idCardUrls.push({ url: "/assets/images/24-512.png", file: file, name: this.replace_alias(file.name) });
                         }
                         this.arrayIdCard.push(file);
                     }
 
                     if (type == 'certificate') {
                         reader.onload = (e: any) => {
-                            this._certificateUrls.push({ url: "/assets/images/24-512.png", name: file });
+                            this._certificateUrls.push({ url: "/assets/images/24-512.png", file: file, name: this.replace_alias(file.name) });
                         }
                         this.arrayCertificate.push(file);
                     }
