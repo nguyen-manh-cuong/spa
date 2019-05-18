@@ -78,7 +78,7 @@
                     <button mat-icon-button [matMenuTriggerFor]="menu">
                         <mat-icon>more_vert</mat-icon>
                     </button>
-                    <mat-menu #menu="matMenu">
+                    <mat-menu #menu="matMenu" class="d-flex-column">
                         <button mat-menu-item (click)="openDialog(element)">
                             <mat-icon class="f-21">edit</mat-icon>{{l("Edit")}}
                         </button>

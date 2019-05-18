@@ -90,8 +90,18 @@
 .mat-form-field-suffix{display:flex!important;}
 .readonly {
     cursor: inherit;
+} 
+ .d-flex-column .mat-menu-content{
+    display: flex !important;
+    flex-direction: column!important;
 }
-
+.d-flex-column.mat-menu-panel.matmenu-booking-list {
+    min-width: 130px!important;
+    padding-left: 10px;
+}
+// .d-flex-column .mat-icon-button {
+//     width: unset;
+// }
 
 /*============= end  validate form ============= */
 

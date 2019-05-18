@@ -37,14 +37,21 @@
                       </mat-select>
                   </mat-form-field>
               </div>
-              <div class="col-md-6"  [ngClass]="{'mat-form-field-invalid':_frmpackagedistribute.controls['yearEnd'].value < _frmpackagedistribute.controls['yearStart'].value}">
-                  <mat-form-field appearance="outline" class="w-100">
+              <div class="col-md-6" >
+                  <mat-form-field appearance="outline" class="w-100" [ngClass]="{'mat-form-field-invalid':_frmpackagedistribute.controls['yearStart'].value < _yearNow}">
                       <mat-label>{{l("Từ năm")}}</mat-label>
                       <input type="text" maxlength="4" formControlName="yearStart" mask="0*" matInput autocomplete [required]="true" #yearStart>
                       <mat-icon matSuffix
                                 *ngIf="_frmpackagedistribute.controls['yearStart'].invalid && (_frmpackagedistribute.controls['yearStart'].dirty || _frmpackagedistribute.controls['yearStart'].touched)"
                                 [matTooltipPosition]="'before'" matTooltipClass="bg-danger text-light mr-1"
-                                matTooltip="{{l('NotBeEmpty')}}" color="warn">info</mat-icon>
+                                matTooltip="{{l('NotBeEmpty')}}" color="warn">info
+                                <!-- hien thi thong bao tu nam phai lon hon hoac bang nam hien tai -->
+                            </mat-icon>
+                            <mat-icon matSuffix
+                                *ngIf="(!_frmpackagedistribute.controls['yearStart'].invalid && _frmpackagedistribute.controls['yearStart'].value < _yearNow )"
+                                [matTooltipPosition]="'before'" matTooltipClass="bg-danger text-light mr-1"
+                                matTooltip="{{l('Từ năm phải lớn hơn hoặc bằng năm hiện tại')}}" color="warn">info
+                            </mat-icon>
                     </mat-form-field>
               </div>
               <div class="col-md-6">
@@ -53,17 +60,24 @@
                       <mat-select formControlName="monthEnd">
                           <mat-option *ngFor="let o of _month" [value]="o.id">{{ o.name }}</mat-option>
                       </mat-select>
-                      <mat-icon matSuffix *ngIf="(_frmpackagedistribute.controls['monthStart'].value > _frmpackagedistribute.controls['monthEnd'].value)" [matTooltipPosition]="'before'" matTooltipClass="bg-danger text-light mr-1" matTooltip="{{l('Đến tháng phải lớn hơn hoặc bằng Từ tháng')}}" color="warn">info</mat-icon>
+                      <!-- <mat-icon matSuffix *ngIf="(_frmpackagedistribute.controls['monthStart'].value > _frmpackagedistribute.controls['monthEnd'].value)" [matTooltipPosition]="'before'" matTooltipClass="bg-danger text-light mr-1" matTooltip="{{l('Đến tháng phải lớn hơn hoặc bằng Từ tháng')}}" color="warn">info</mat-icon> -->
                   </mat-form-field>
               </div>
               <div class="col-md-6">
-                  <mat-form-field appearance="outline" class="w-100">
+                  <mat-form-field appearance="outline" class="w-100" [ngClass]="{'mat-form-field-invalid':_frmpackagedistribute.controls['yearEnd'].value < _yearNow}">
                       <mat-label>{{l("Đến năm")}}</mat-label>
                       <input type="text" maxlength="4" formControlName="yearEnd" mask="0*" matInput autocomplete [required]="true" #yearEnd>
+                      <!-- hien thi thong bao khong duoc de trong -->
                       <mat-icon matSuffix
-                                *ngIf="_frmpackagedistribute.controls['yearEnd'].invalid && (_frmpackagedistribute.controls['yearEnd'].dirty || _frmpackagedistribute.controls['yearEnd'].touched)"
-                                [matTooltipPosition]="'before'" matTooltipClass="bg-danger text-light mr-1"
-                                matTooltip="{{l('NotBeEmpty')}}" color="warn">info</mat-icon>
+                      *ngIf="_frmpackagedistribute.controls['yearEnd'].invalid && (_frmpackagedistribute.controls['yearEnd'].dirty || _frmpackagedistribute.controls['yearEnd'].touched)"
+                      [matTooltipPosition]="'before'" matTooltipClass="bg-danger text-light mr-1"
+                      matTooltip="{{l('NotBeEmpty')}}" color="warn">info</mat-icon>
+                  <!-- hien thi thong bao tu nam phai lon hon hoac bang nam hien tai -->
+                  <mat-icon matSuffix
+                      *ngIf="(!_frmpackagedistribute.controls['yearEnd'].invalid && _frmpackagedistribute.controls['yearEnd'].value < _yearNow )"
+                      [matTooltipPosition]="'before'" matTooltipClass="bg-danger text-light mr-1"
+                      matTooltip="{{l('Đến năm phải lớn hơn hoặc bằng năm hiện tại')}}" color="warn">info
+                  </mat-icon>
                     </mat-form-field>
               </div>
 
@@ -82,12 +96,7 @@
           </div>
         <div class="text-right mb-3">
           <button class="mr-3" mat-raised-button color="primary" mat-dialog-close>{{l("Close")}}</button>
-          <button mat-raised-button color="primary"
-                  (click)="submit()"
-                  [disabled]="_frmpackagedistribute.invalid">
-
-              {{l("Save")}}
-          </button>
+          <button mat-raised-button color="primary" (click)="submit()">{{l("Save")}}</button>
 </div>
       </div>
     </mat-tab>
