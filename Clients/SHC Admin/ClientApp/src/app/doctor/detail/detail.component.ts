@@ -255,7 +255,7 @@ export class DetailComponent extends AppComponentBase implements OnInit, AfterVi
         if (this.obj.birthDate < 10)
           d = "0" + this.obj.birthDate;
         else
-          d = this._obj.birthDate;
+          d = this.obj.birthDate;
         if (this.obj.birthMonth < 10)
           m = "0" + this.obj.birthMonth;
         else
