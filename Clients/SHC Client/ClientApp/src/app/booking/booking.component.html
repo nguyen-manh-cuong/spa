@@ -293,7 +293,8 @@
                         
                       </div>
                     </div>
-                    <validation [control]="frmBooking.controls['healthFacilitiesId']"></validation>
+                    <!-- <validation [control]="frmBooking.controls['healthFacilitiesId']"></validation> -->
+                    <small *ngIf="frmBooking.controls['healthFacilitiesId'].value == null && (frmBooking.controls['healthFacilitiesId'].touched || frmBooking.controls['healthFacilitiesId'].dirty)" class="help-block" style="color: red;">Bạn cần chọn một cơ sở khám</small>
                   </div>
                 </div>
               </div>
@@ -394,8 +395,8 @@
 
                   </div>
                 </div>
-                <small *ngIf="frmBooking.controls.examinationDate.invalid" class="help-block" style="color: red;">Chưa
-                  chọn thời gian</small>
+                <small *ngIf="frmBooking.controls.examinationDate.invalid" class="help-block" style="color: red;">
+                  Bạn cần chọn thời gian khám</small>
               </div>
             </div>
             <!-- End tab 4 -->

@@ -51,12 +51,20 @@
               <div class="col-md-6"  [ngClass]="{'disabled': _smsLogs.length > 0 }">
                   <mat-form-field appearance="outline" class="w-100">
                       <mat-label>{{l("Từ năm")}}</mat-label>
-                      <input min="0" max="9999" maxlength="4" formControlName="yearStart" mask="0*"
+                      <input min="0" max="9999" maxlength="4" formControlName="yearStart"  mask="0*"
                              matInput autocomplete [required]="true" #yearStart>
-                      <mat-icon matSuffix
+                             <!-- hien thi thong bao khong duoc de trong -->
+                            <mat-icon matSuffix
                                 *ngIf="_frmpackagedistributeedit.controls['yearStart'].invalid && (_frmpackagedistributeedit.controls['yearStart'].dirty || _frmpackagedistributeedit.controls['yearStart'].touched)"
                                 [matTooltipPosition]="'before'" matTooltipClass="bg-danger text-light mr-1"
-                                matTooltip="{{l('NotBeEmpty')}}" color="warn">info</mat-icon>
+                                matTooltip="{{l('NotBeEmpty')}}" color="warn">info
+                            <!-- hien thi thong bao tu nam phai lon hon hoac bang nam hien tai -->
+                            </mat-icon>
+                            <mat-icon matSuffix
+                                *ngIf="(!_frmpackagedistributeedit.controls['yearStart'].invalid && _frmpackagedistributeedit.controls['yearStart'].value < _yearNow )"
+                                [matTooltipPosition]="'before'" matTooltipClass="bg-danger text-light mr-1"
+                                matTooltip="{{l('Từ năm phải lớn hơn hoặc bằng năm hiện tại')}}" color="warn">info
+                            </mat-icon>                                                    
                   </mat-form-field>
               </div>
               <div class="col-md-6"  [ngClass]="{'disabled': _smsLogs.length > 0 }">
@@ -78,10 +86,16 @@
                       <mat-label>{{l("Đến năm")}}</mat-label>
                       <input min="0" max="9999" maxlength="4" formControlName="yearEnd" mask="0*"
                              matInput autocomplete [required]="true" #yearEnd>
+                        <!-- hien thi thong bao khong duoc de trong -->
                       <mat-icon matSuffix
-                                *ngIf="_frmpackagedistributeedit.controls['yearEnd'].invalid && _smsLogs.length < 0 && (_frmpackagedistributeedit.controls['yearEnd'].dirty || _frmpackagedistributeedit.controls['yearEnd'].touched)"
+                                *ngIf="_frmpackagedistributeedit.controls['yearEnd'].invalid && (_frmpackagedistributeedit.controls['yearEnd'].dirty || _frmpackagedistributeedit.controls['yearEnd'].touched)"
                                 [matTooltipPosition]="'before'" matTooltipClass="bg-danger text-light mr-1"
                                 matTooltip="{{l('NotBeEmpty')}}" color="warn">info</mat-icon>
+                                <!-- hien thi thong bao tu nam phai lon hon hoac bang nam hien tai -->
+                                <mat-icon matSuffix
+                                *ngIf="((_frmpackagedistributeedit.controls['yearEnd'].value < _yearNow ) &&  (_frmpackagedistributeedit.controls['yearEnd'].value != ''))"
+                                [matTooltipPosition]="'before'" matTooltipClass="bg-danger text-light mr-1"
+                                matTooltip="{{l('Đến năm phải lớn hơn hoặc bằng năm hiện tại')}}" color="warn">info</mat-icon> 
                   </mat-form-field>
               </div>
               <div class="col-md-6"  [ngClass]="{'disabled': _smsLogs.length > 0 }">

@@ -22,7 +22,7 @@ export class packagedistributeEditComponent extends AppComponentBase implements 
 
     _frmpackagedistributeedit: FormGroup;
     _obj: IPachkageDistribute | any = {
-        id: 0, smsBrandsId: '', healthFacilitiesId: '', monthStart: '', monthEnd: '', yearStart: '', yearEnd: '', smsPackageId: '', isActive: false, quantity: 0, smsPackageUsed: {}
+        id: 0, smsBrandsId: '', healthFacilitiesId: '', monthStart: '', monthEnd: '', yearStart: null, yearEnd: null, smsPackageId: '', isActive: false, quantity: 0, smsPackageUsed: {}
     };
     _context: any;
     _isNew: boolean = true;
@@ -34,6 +34,7 @@ export class packagedistributeEditComponent extends AppComponentBase implements 
     _medicalFacility = [];
     _brands = [];
     _package: any = [];
+    _yearNow: number;
 
     @ViewChild("yearStart") yearStart;
     @ViewChild("yearEnd") yearEnd;
@@ -55,7 +56,7 @@ export class packagedistributeEditComponent extends AppComponentBase implements 
             this._obj.quantity = this.obj.quantity;
             this._obj.smsPackageUsed = this.obj.smsPackageUsed;
         }
-
+        this._yearNow = new Date().getFullYear();
         this._dataService.getAll('smsbrands-all').subscribe(resp => this._brands = resp.items);
         this._dataService.getAll('healthfacilities').subscribe(resp => this._medicalFacility = resp.items);
         this._dataService.getAll('smspackages-all').subscribe(resp => this._package = resp.items);
@@ -79,6 +80,18 @@ export class packagedistributeEditComponent extends AppComponentBase implements 
 
     submit() {
         const yearNow = new Date().getFullYear();
+        if(this._frmpackagedistributeedit.controls['yearEnd'].value == this._frmpackagedistributeedit.controls['yearEnd'].value){
+            if(this._frmpackagedistributeedit.controls['monthStart'].value > this._frmpackagedistributeedit.controls['monthEnd'].value){
+                this.yearStart.nativeElement.focus();
+                return swal({
+                    title: 'Thông báo',
+                    text: 'Từ năm phải lớn hơn hoặc bằng năm hiện tại',
+                    type: 'warning',
+                    timer: 3000
+                });
+            }
+        }
+
         if (this._frmpackagedistributeedit.controls['yearStart'].value < yearNow) {
             this.yearStart.nativeElement.focus();
             return swal({
