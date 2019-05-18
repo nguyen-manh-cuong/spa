@@ -19,6 +19,7 @@ import { packagedistributeEditComponent } from '../edit/edit.component';
 
 export class packagedistributeIndexComponent extends PagedListingComponentBase<IPachkageDistribute> implements OnInit {
 
+    frmSearch: FormGroup;
     displayedColumns = ['Stt', 'HealthFacilitiesId', 'StartTime', 'pk', 'sms', 'isActive', 'task'];
 
     _month = [{ id: 13, name: 'Tất cả' }, { id: 1, name: 'Tháng 1' }, { id: 2, name: 'Tháng 2' }, { id: 3, name: 'Tháng 3' }, { id: 4, name: 'Tháng 4' }, { id: 5, name: 'Tháng 5' }, { id: 6, name: 'Tháng 6' }, { id: 7, name: 'Tháng 7' }, { id: 8, name: 'Tháng 8' }, { id: 9, name: 'Tháng 9' }, { id: 10, name: 'Tháng 10' }, { id: 11, name: 'Tháng 11' }, { id: 12, name: 'Tháng 12' },];
@@ -30,6 +31,8 @@ export class packagedistributeIndexComponent extends PagedListingComponentBase<I
 
     ViewComponent: any;
     EditComponent: any;
+    @ViewChild("monthStart") monthStart;
+    @ViewChild("monthEnd") monthEnd;
 
     ngOnInit() {
         this.api = 'smspackagedistribute';
@@ -121,4 +124,37 @@ export class packagedistributeIndexComponent extends PagedListingComponentBase<I
             this.paginator._changePageSize(this.paginator.pageSize);
         });
     }
+
+
+
+    onSelectMonthStart(value) {
+        this.frmSearch.controls['monthStart'].setValue(value);
+    }
+    onSelectMonthEnd(value) {
+        this.frmSearch.controls['monthEnd'].setValue(value);
+    }
+
+    customSearch() {
+        console.log('vao ham search')
+        if (this.frmSearch.controls['fromYear'].value == this.frmSearch.controls['toYear'].value) {
+            if(this.frmSearch.controls['monthStart'].value > this.frmSearch.controls['monthEnd'].value){
+                return swal({
+                    title: 'Thông báo',
+                    text: 'Đến tháng phải lớn hơn hoặc bằng Từ tháng',
+                    type: 'warning',
+                    timer: 3000
+                });
+            }
+        }
+        if (this.frmSearch.controls['fromYear'].value > this.frmSearch.controls['toYear'].value) {
+                return swal({
+                    title: 'Thông báo',
+                    text: 'Đến năm phải lớn hơn hoặc bằng Từ năm',
+                    type: 'warning',
+                    timer: 3000
+                });
+        }
+        this.btnSearchClicks$.next();
+    }
+
 }
