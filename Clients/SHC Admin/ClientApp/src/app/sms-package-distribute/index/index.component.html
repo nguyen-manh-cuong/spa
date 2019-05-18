@@ -32,7 +32,7 @@
                     <input mask="0*" maxlength="4" formControlName="fromYear" matInput autocomplete>
                 </mat-form-field>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-6" *ngIf="appSession.user.accountType == 0">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('PackageDistributeHealthFacilities')}}</mat-label>
                     <mat-select formControlName="HealthFacilitiesId" multiple>
@@ -84,7 +84,7 @@
                 <th mat-header-cell *matHeaderCellDef class="min-w-30 text-center pl-0">{{l("OrderNumber")}}</th>
                 <td mat-cell *matCellDef="let element; let i = index;" class="min-w-30 text-center">{{(i + 1) + (paginator.pageIndex * paginator.pageSize)}}</td>
             </ng-container>
-            <ng-container matColumnDef="HealthFacilitiesId">
+            <ng-container *ngIf="appSession.user.accountType == 0" matColumnDef="HealthFacilitiesId">
                 <th mat-header-cell *matHeaderCellDef class="text-center"> {{l("PackageDistributeNameHealthFacilities")}} </th>
                 <td mat-cell (click)="openView(element)" *matCellDef="let element" title="{{element.healthFacilitiesCode + '-' + element.healthFacilitiesName}}">
                     <u><b>{{element.healthFacilitiesCode + '-' + element.healthFacilitiesName}}</b></u></td>

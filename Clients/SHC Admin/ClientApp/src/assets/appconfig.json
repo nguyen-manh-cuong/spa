@@ -1,5 +1,7 @@
 {
     "remoteServiceBaseUrl": "http://localhost:9008/api",
-    "gatewayServiceBaseUrl": "http://localhost:9008/api",
-    "appBaseUrl": "http://localhost:8300"
+    "serverBaseUrl": "http://123.30.214.138:9000",
+    "appBaseUrl": "http://localhost:8300",
+    "appId": 2,
+    "appName": "Smart Health Care System"
 }

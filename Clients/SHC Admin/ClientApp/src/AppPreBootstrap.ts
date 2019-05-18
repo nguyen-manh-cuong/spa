@@ -36,7 +36,9 @@ export class AppPreBootstrap {
             }
         }).done(result => {
             AppConsts.appBaseUrl = result.appBaseUrl;
-            AppConsts.gatewayServiceBaseUrl = result.gatewayServiceBaseUrl;
+            AppConsts.appName = result.appName;
+            AppConsts.appId = result.appId;
+            AppConsts.serverBaseUrl = result.serverBaseUrl;
             AppConsts.remoteServiceBaseUrl = result.remoteServiceBaseUrl;
             AppConsts.localeMappings = result.localeMappings;
 
@@ -48,16 +50,22 @@ export class AppPreBootstrap {
         const cookieLangValue = abp.utils.getCookieValue('Abp.Localization.CultureName');
         const token = abp.auth.getToken();
         return abp.ajax({
-            url: AppConsts.gatewayServiceBaseUrl + '/UserConfiguration',
+            url: AppConsts.serverBaseUrl + '/UserConfiguration',
             method: 'GET',
             headers: {
                 AppCulture: cookieLangValue ? cookieLangValue : 'vi',
-                Authorization: 'Bearer ' + abp.auth.getToken()
+                AppName: AppConsts.appName,
+                AppId: AppConsts.appId,
+                Authorization: 'Bearer ' + (token ? token : '')
             }
         }).done(result => {
 
             $.extend(true, abp, result);
 
+            if (result.nav) {
+                abp.nav.menus['mainMenu'].items = (JSON.parse(result.nav.menus.mainMenu.items).items);
+                (<any>abp.nav.menus['mainMenu'].items).unshift({ name: 'HomePage', value: { name: 'HomePage', routeId: 0, route: '' }, items: [], route: '/app/dashboard' })
+            }
             // moment.locale('vi');
             moment.locale(abp.localization.currentLanguage.name);
             (window as any).moment.locale(abp.localization.currentLanguage.name);

@@ -28,7 +28,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingTimeslots>
   filteredOptions: Observable<IHealthfacilities[]>;
   healthfacilities = new FormControl();
   isLoading = false;
-  displayedColumns = ['orderNumber', 'healthFacilitiesName', 'code', 'name', 'time', 'status', 'task'];
+  displayedColumns = this.appSession.user.accountType != 0 ? ['orderNumber', 'code', 'name', 'time', 'status', 'task'] : ['orderNumber', 'healthFacilitiesName', 'code', 'name', 'time', 'status', 'task'];
 
   constructor(injector: Injector, private _dataService: DataService, public dialog: MatDialog, private _formBuilder: FormBuilder) { super(injector); }
 
@@ -40,18 +40,9 @@ export class IndexComponent extends PagedListingComponentBase<IBookingTimeslots>
       keyFilter: [],
       healthfacilities: [this.appSession.user.healthFacilitiesId],
     });
-    //old
-    // this.dataService.getAll('healthfacilities', (this.appSession.user.healthFacilitiesId ? String(this.appSession.user.healthFacilitiesId) : '')).subscribe(resp => 
-    // {
-    //   this._healthfacilities = resp.items;      
-    // });
-    //new
-    if (this.appSession.user.healthFacilitiesId) {
-      this.dataService.get("healthfacilities", JSON.stringify({healthfacilitiesId : this.appSession.user.healthFacilitiesId}), '', null, null).subscribe(resp => {this._healthfacilities = resp.items;});
 
-      setTimeout(() => {
-        this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId);
-      }, 500);
+    if (this.appSession.user.healthFacilities) {
+      this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId);
     }
     else {
       this.filterOptions();

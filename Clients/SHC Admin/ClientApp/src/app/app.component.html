@@ -37,7 +37,8 @@
                     <img class="avatar rounded-circle mr-2" width="42px" height="42px" src="assets/images/user.png">
                     <div class="media-body">
                         <div class="h-px-24 d-flex align-items-center text-left text-primary">{{appSession.user.fullName}}</div>
-                        <div class="h-px-14 f-11 d-flex align-items-center text-left text-muted">{{appSession.user.accountType | accountType}}</div>
+                        <div class="h-px-14 f-11 d-flex align-items-center text-left text-muted">{{appSession.user.healthFacilities ? appSession.user.healthFacilities.name : (appSession.user.accountType == 0 ? "Quản trị viên" : "")}}</div>
+                        <!-- <div class="h-px-14 f-11 d-flex align-items-center text-left text-muted">{{appSession.user.accountType | accountType}}</div> -->
                     </div>
                 </div>
             </button>
@@ -52,6 +53,9 @@
                 </button>
             </mat-menu>
             <mat-menu #menu="matMenu" yPosition="above" [overlapTrigger]="false">
+                <button mat-menu-item (click)="getHealthfacility()" *ngIf="appSession.user.accountType != 0">
+                    <mat-icon>input</mat-icon> Chọn phòng khám
+                </button>
                 <button mat-menu-item (click)="logout()">
                     <mat-icon>input</mat-icon> Đăng xuất
                 </button>

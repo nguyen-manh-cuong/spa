@@ -16,7 +16,7 @@
 <div class="content fadeIn animated">
     <form [formGroup]="frmSearch" class="form-filter pl-2 pr-2" novalidate>
         <div class="row m-0 pt-4">
-            <div class="col-md-6" [hidden]="this.appSession.user.healthFacilitiesId">
+            <div class="col-md-6" *ngIf="appSession.user.accountType == 0">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('Unit')}}</mat-label>
                     <input matInput [formControl]="healthfacilities" [matAutocomplete]="auto">
@@ -27,17 +27,8 @@
                         </mat-option>
                     </mat-autocomplete>
                 </mat-form-field>
-            </div>              
-
-            <div class="col-md-6 disabled" [hidden]="!this.appSession.user.healthFacilitiesId">
-                <mat-form-field appearance="outline" class="w-100">
-                    <mat-label>{{l('Unit')}}</mat-label>
-                    <mat-select formControlName="healthfacilities">
-                        <mat-option *ngFor="let o of _healthfacilities" [value]="o.healthFacilitiesId">{{ o.name }}</mat-option>
-                    </mat-select>
-                </mat-form-field>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-{{appSession.user.accountType == 0 ? 6 : 3}}">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('Doctor')}}</mat-label>
                     <mat-select formControlName="doctor">
@@ -46,7 +37,7 @@
                     </mat-select>
                 </mat-form-field>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-{{appSession.user.accountType == 0 ? 4 : 3}}">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('FromDate')}}</mat-label>
                     <input readonly style="cursor: inherit" (click)="picker1.open()" matInput [matDatepicker]="picker1" #startTime mask="0*" maxlength="8" required>
@@ -54,7 +45,7 @@
                     <mat-datepicker #picker1></mat-datepicker>
                 </mat-form-field>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-{{appSession.user.accountType == 0 ? 4 : 3}}">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('ToDate')}}</mat-label>
                     <input readonly style="cursor: inherit" (click)="picker2.open()" matInput [matDatepicker]="picker2" #endTime mask="0*" maxlength="8" required>
@@ -62,7 +53,7 @@
                     <mat-datepicker #picker2></mat-datepicker>
                 </mat-form-field>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-{{appSession.user.accountType == 0 ? 4 : 3}}">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('CStatus')}}</mat-label>
                     <mat-select formControlName="status">

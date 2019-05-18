@@ -20,21 +20,6 @@
                 <mat-icon matSuffix *ngIf="frmLogin.controls['password'].valid || !frmLogin.controls['password'].touched" class="text-muted">lock</mat-icon>
                 <mat-icon matSuffix *ngIf="frmLogin.controls['password'].invalid && (frmLogin.controls['password'].dirty || frmLogin.controls['password'].touched)" matTooltipClass="bg-danger text-light" matTooltip="Không được để trống" color="warn">info</mat-icon>
             </mat-form-field>
-            <mat-form-field appearance="outline" class="w-100">
-                <mat-label>{{l('Unit')}}</mat-label>
-                <input matInput [formControl]="healthfacilities" [matAutocomplete]="auto" (focusout)="focusoutHealthfacilities()">
-                <mat-icon matSuffix *ngIf="healthfacilities.invalid && (healthfacilities.dirty || healthfacilities.touched)" matTooltipClass="bg-danger text-light" matTooltip="Không được để trống" color="warn">info</mat-icon>
-                <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn"
-                    (optionSelected)="onSelectHealthFacilities($event.option.value)">
-                    <mat-option *ngIf="isLoading" class="is-loading">
-                        <mat-spinner diameter="30"></mat-spinner>
-                    </mat-option>
-                    <mat-option *ngFor="let o of _healthfacilities" [value]="o" title="{{o.name}}">
-                        {{o.code + ' - ' + o.name}}
-                    </mat-option>
-                </mat-autocomplete>
-            </mat-form-field>
-
             <div class="row">
                 <div class="col-md-6">
                     <div class="pt-2 d-flex justify-content-start">

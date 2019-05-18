@@ -63,7 +63,7 @@ export class packagedistributeTaskComponent extends AppComponentBase implements 
         this._dataService.getAll('healthfacilities').subscribe(resp => this._medicalFacility = resp.items);
         this._dataService.getAll('smspackages-cbo').subscribe(resp => this._package = resp.items);
         this._context = {
-            healthFacilitiesId: [this._obj.healthFacilitiesId, Validators.required],
+            healthFacilitiesId: [this.appSession.user.healthFacilities ? this.appSession.user.healthFacilitiesId : this._obj.healthFacilitiesId, Validators.required],
             smsBrandsId: [this._obj.smsBrandsId, Validators.required],
             monthStart: [this._obj.monthStart,],
             monthEnd: [this._obj.monthEnd,],

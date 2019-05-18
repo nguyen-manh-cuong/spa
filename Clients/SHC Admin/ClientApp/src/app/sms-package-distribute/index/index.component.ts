@@ -19,7 +19,7 @@ import { packagedistributeEditComponent } from '../edit/edit.component';
 
 export class packagedistributeIndexComponent extends PagedListingComponentBase<IPachkageDistribute> implements OnInit {
 
-    displayedColumns = ['Stt', 'HealthFacilitiesId', 'StartTime', 'pk', 'sms', 'isActive', 'task'];
+    displayedColumns = this.appSession.user.accountType != 0 ? ['Stt', 'StartTime', 'pk', 'sms', 'isActive', 'task'] : ['Stt', 'HealthFacilitiesId', 'StartTime', 'pk', 'sms', 'isActive', 'task'];
 
     _month = [{ id: 13, name: 'Tất cả' }, { id: 1, name: 'Tháng 1' }, { id: 2, name: 'Tháng 2' }, { id: 3, name: 'Tháng 3' }, { id: 4, name: 'Tháng 4' }, { id: 5, name: 'Tháng 5' }, { id: 6, name: 'Tháng 6' }, { id: 7, name: 'Tháng 7' }, { id: 8, name: 'Tháng 8' }, { id: 9, name: 'Tháng 9' }, { id: 10, name: 'Tháng 10' }, { id: 11, name: 'Tháng 11' }, { id: 12, name: 'Tháng 12' },];
     _medicalFacility = [{ id: 1, name: 'Cơ sở y tế phường Đại Kim' }, { id: 2, name: 'Cơ sở y tế phường Định Công' }, { id: 3, name: 'Cơ sở y tế phường Hoàng Liệt' }, { id: 4, name: 'Cơ sở y tế phường Giáp Bát' }, { id: 5, name: 'Cơ sở y tế phường Lĩnh Nam' },];

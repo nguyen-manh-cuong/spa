@@ -11,7 +11,7 @@
       </ng-template>
       <div class="pt-4">
           <div class="row">
-              <div class="col-md-6 disabled">
+              <div class="col-md-6 disabled" *ngIf="appSession.user.accountType == 0">
                   <mat-form-field appearance="outline" class="w-100">
                       <mat-label>{{l('PackageDistributeHealthFacilities')}}</mat-label>
                       <mat-select formControlName="healthFacilitiesId" [required]="true">
@@ -23,6 +23,13 @@
                                 matTooltip="{{l('NotBeEmpty')}}" color="warn">info</mat-icon>
                   </mat-form-field>
               </div>
+              <div class="col-md-6 disabled" *ngIf="appSession.user.accountType != 0">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>{{l('PackageDistributeHealthFacilities')}}</mat-label>
+                        <input type="text" value="{{appSession.user.healthFacilities ? appSession.user.healthFacilities.name : ''}}" matInput [required]="true" tabindex="-1">
+                    </mat-form-field>
+               </div>
+
               <div class="col-md-6">
                   <mat-form-field appearance="outline" class="w-100 disabled">
                       <mat-label>{{l('PackageDistributeSmsPackages')}}</mat-label>
