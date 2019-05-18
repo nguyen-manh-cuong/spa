@@ -384,6 +384,7 @@ export class DetailComponent extends AppComponentBase implements OnInit, AfterVi
     }, 1000);
   }
 
+
   triggerResize() {
     // Wait for changes to be applied, then trigger textarea resize.
     this.ngZone.onStable.pipe(take(1))
