@@ -342,6 +342,17 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     // }
 
     customSearch() {
+        if (this.ageFist.nativeElement.value && this.ageLast.nativeElement.value) {
+            if (this.ageFist.nativeElement.value > this.ageLast.nativeElement.value) {
+                return swal({
+                    title: 'Thông báo',
+                    text: 'Tuổi từ phải nhỏ hơn tuổi đến',
+                    type: 'warning',
+                    timer: 3000
+                });
+            }
+        }
+
         if (this.birthday.nativeElement.value && !moment(this.birthday.nativeElement.value, 'DD/MM/YYYY').isValid()) {
             return swal({
                 title: 'Thông báo',

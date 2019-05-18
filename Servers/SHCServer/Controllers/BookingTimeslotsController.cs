@@ -77,6 +77,20 @@ namespace SHCServer.Controllers
         [Route("api/bookingtimeslots")]
         public IActionResult Create([FromBody] BookingTimeslots obj)
         {
+            var objs = _context.Query<BookingTimeslots>().Where(b => (b.HealthFacilitiesId == obj.HealthFacilitiesId || b.HealthFacilitiesId == null) && b.IsDelete == false).ToList();
+
+            double timeStartInput = double.Parse($"{obj.HoursStart},{obj.MinuteStart}");
+            double timeEndInput = double.Parse($"{obj.HoursEnd},{obj.MinuteEnd}");
+            foreach (var item in objs)
+            {
+                double timeStart = double.Parse($"{item.HoursStart},{item.MinuteStart}");
+                double timeEnd = double.Parse($"{item.HoursEnd},{item.MinuteEnd}");
+                if ((timeStartInput >= timeStart && timeStartInput < timeEnd) || (timeEndInput > timeStart && timeEndInput <= timeEnd) )
+                {
+                    return StatusCode(409, _excep.Throw("Thông báo", "Thêm mới khung giờ khám không thành công. Thời gian của khung giờ khám trùng với khung giờ khám đã có!"));
+                }
+            }
+
             try
             {
                 _context.Session.BeginTransaction();               
@@ -162,6 +176,20 @@ namespace SHCServer.Controllers
         [Route("api/bookingtimeslots")]
         public IActionResult Update([FromBody] BookingTimeslots obj)
         {
+            var objs = _context.Query<BookingTimeslots>().Where(b => (b.HealthFacilitiesId == obj.HealthFacilitiesId || b.HealthFacilitiesId == null) && b.IsDelete == false).ToList();
+
+            double timeStartInput = double.Parse($"{obj.HoursStart},{obj.MinuteStart}");
+            double timeEndInput = double.Parse($"{obj.HoursEnd},{obj.MinuteEnd}");
+            foreach (var item in objs)
+            {
+                double timeStart = double.Parse($"{item.HoursStart},{item.MinuteStart}");
+                double timeEnd = double.Parse($"{item.HoursEnd},{item.MinuteEnd}");
+                if ((timeStartInput >= timeStart && timeStartInput < timeEnd) || (timeEndInput > timeStart && timeEndInput <= timeEnd))
+                {
+                    return StatusCode(409, _excep.Throw("Thông báo", "Sửa khung giờ khám không thành công. Thời gian của khung giờ khám trùng với khung giờ khám đã có!"));
+                }
+            }
+
             var _obj = _context.Query<BookingTimeslots>().FirstOrDefault(b => b.TimeSlotId == obj.TimeSlotId);
 
             if (_obj == null)

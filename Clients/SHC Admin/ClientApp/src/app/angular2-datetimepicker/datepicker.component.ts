@@ -396,11 +396,19 @@ export class DatePicker implements OnInit, ControlValueAccessor {
         if (this.hourValue > 23) {
             this.hourValue = 0;
         }
+
+        if (this.hourValue.toString().length > 2) {
+            this.hourValue = 0;
+        }
     }
     
     changedMinutes() {
         if (this.minValue > 59) {
             this.minValue = 0;
+        }
+
+        if (this.minValue.toString().length > 2) {
+            this.hourValue = 0;
         }
     }
 }
