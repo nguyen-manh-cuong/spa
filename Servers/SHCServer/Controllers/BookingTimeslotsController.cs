@@ -176,7 +176,13 @@ namespace SHCServer.Controllers
         [Route("api/bookingtimeslots")]
         public IActionResult Update([FromBody] BookingTimeslots obj)
         {
-            var objs = _context.Query<BookingTimeslots>().Where(b => (b.HealthFacilitiesId == obj.HealthFacilitiesId || b.HealthFacilitiesId == null) && b.IsDelete == false).ToList();
+           
+            var _obj = _context.Query<BookingTimeslots>().FirstOrDefault(b => b.TimeSlotId == obj.TimeSlotId);
+
+            if (_obj == null)
+                return StatusCode(404, _excep.Throw("Not Found"));
+
+            var objs = _context.Query<BookingTimeslots>().Where(b => b.TimeSlotId != obj.TimeSlotId && (b.HealthFacilitiesId == obj.HealthFacilitiesId || b.HealthFacilitiesId == null) && b.IsDelete == false).ToList();
 
             double timeStartInput = double.Parse($"{obj.HoursStart},{obj.MinuteStart}");
             double timeEndInput = double.Parse($"{obj.HoursEnd},{obj.MinuteEnd}");
@@ -190,10 +196,6 @@ namespace SHCServer.Controllers
                 }
             }
 
-            var _obj = _context.Query<BookingTimeslots>().FirstOrDefault(b => b.TimeSlotId == obj.TimeSlotId);
-
-            if (_obj == null)
-                return StatusCode(404, _excep.Throw("Not Found"));
 
             try
             {
