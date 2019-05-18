@@ -200,6 +200,15 @@ export class DatePicker implements OnInit, ControlValueAccessor {
         this.timeViewMeridian = val;
     }
 
+    numberOnly(event): boolean {
+        const charCode = (event.which) ? event.which : event.keyCode;
+        if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+            return false;
+        }
+        return true;
+
+    }
+
     setTimeView() {
         this.date.setMinutes(this.minValue);
         this.date.setHours(this.hourValue);
@@ -237,7 +246,6 @@ export class DatePicker implements OnInit, ControlValueAccessor {
                 this.onDateSelect.emit(this.date);
             }
         }
-        console.log(this.date);
     }
     setStartDate(selectedDate: Date) {
         if (selectedDate < this.dateRange.endDate) {
