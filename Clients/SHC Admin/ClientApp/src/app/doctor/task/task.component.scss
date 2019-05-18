@@ -25,6 +25,10 @@
     border: 1px solid 000000!important;
 }
 
+.ck.ck-editor__main>.ck-editor__editable:not(.ck-focused){
+    border: 1px solid 000000!important;
+}
+
 .image-uploader .upload-content .upload-description {
     float: left;
     font-size: 15px;

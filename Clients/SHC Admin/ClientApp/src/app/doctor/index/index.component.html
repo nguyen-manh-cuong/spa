@@ -146,7 +146,7 @@
             <ng-container matColumnDef="priceFrom">
                 <th mat-header-cell *matHeaderCellDef class="min-w-40 text-center"> {{l('DoctorPrice')}}</th>
                 <td mat-cell *matCellDef="let element" class="min-w-40 text-right">
-                    {{element.priceFrom | CustomCurrency}}</td>
+                    {{element.price | CustomCurrency}}</td>
             </ng-container>
             <!-- <ng-container matColumnDef="priceTo">
                 <th mat-header-cell *matHeaderCellDef class="min-w-40 text-center"> {{l('DoctorPriceToo')}}</th>

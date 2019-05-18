@@ -1,4 +1,4 @@
-<form [formGroup]="_frm" class="container p-relative"  id="form-dialog" novalidate>
+<form [formGroup]="_frm" class="container p-relative" id="form-dialog" novalidate>
     <div class="p-absolute t-5 r-5">
         <button mat-icon-button mat-dialog-close style="z-index: 9;" [matTooltipPosition]="'left'" matTooltip="Đóng">
             <mat-icon>close</mat-icon>
@@ -23,10 +23,10 @@
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("DoctorBirthDay")}}</mat-label>
                             <input class="custom-readonly" readonly (click)="picker.open()"
-                                mask="0*" (dateChange)="birthDayChange($event)" [max]="maxDate" matInput
-                                [matDatepicker]="picker" #birthDayPicker maxlength="10">
+                                (dateChange)="birthDayChange($event)" [max]="maxDate" matInput [matDatepicker]="picker"
+                                #birthDayPicker formControlName="birthDay">
                             <mat-datepicker-toggle matSuffix [for]="picker" class="t-2"></mat-datepicker-toggle>
-                            <mat-datepicker #picker [startAt]="_birthDay"></mat-datepicker>
+                            <mat-datepicker #picker></mat-datepicker>
                         </mat-form-field>
                     </div>
                     <div class="col-md-3">
@@ -99,17 +99,17 @@
                     <div class="col-md-4">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("DoctorCertificationDate")}}</mat-label>
-                            <input class="custom-readonly text- readonly"
+                            <input class="custom-readonly text-readonly"
                                 (click)="!_certificationInputCheck ? certificationDatePicker.open():''"
                                 matTooltip="Nhập giấy phép hành nghề trước khi nhập ngày cấp"
                                 [matTooltipDisabled]="!_certificationInputCheck"
-                                [readonly]="_certificationInputCheck || true" #certificationDatePicker
-                                (dateChange)="certificationDateChange($event.value)" mask="0*" [max]="maxDate2" matInput
-                                [matDatepicker]="certificationDatePicker" matInput maxlength="10">
+                                [readonly]="_certificationInputCheck || true" #certificationDatePicker [max]="maxDate2"
+                                matInput formControlName="certificationDate" [matDatepicker]="certificationDatePicker"
+                                matInput>
                             <mat-datepicker-toggle [disabled]="_certificationInputCheck" matSuffix
                                 [for]="certificationDatePicker" class="t-2">
                             </mat-datepicker-toggle>
-                            <mat-datepicker #certificationDatePicker [startAt]="_certificationDate">
+                            <mat-datepicker #certificationDatePicker>
                             </mat-datepicker>
                         </mat-form-field>
                     </div>
@@ -355,7 +355,8 @@
                             </mat-autocomplete>
                         </mat-form-field> -->
                     <div class="col-md-12" [hidden]="this.appSession.user.healthFacilitiesId">
-                        <mat-form-field appearance="outline" class="w-100">
+                        <mat-form-field appearance="outline" class="w-100"
+                        [ngClass]="{'mat-form-field-invalid':!checkHealthFacilities}">
                             <mat-label>{{l('HealthFacilities')}}</mat-label>
                             <mat-chip-list #chipList>
                                 <mat-chip *ngFor="let o of _healthfacilitiesChip" [selectable]="selectable"
