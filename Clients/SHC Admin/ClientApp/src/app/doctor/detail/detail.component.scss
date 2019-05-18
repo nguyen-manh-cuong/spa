@@ -111,10 +111,15 @@
 
 .ck.ck-reset_all, .ck.ck-reset_all{
     margin-left: 7px;
+    margin-right: 15px;
 }
 
 input:read-only{
     color:#00695c!important;
+}
+
+textarea{
+    overflow: hidden!important;
 }
 
 

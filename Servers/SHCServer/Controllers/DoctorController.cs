@@ -257,16 +257,17 @@ namespace SHCServer.Controllers
                     return StatusCode(406, _excep.Throw(406, "Lưu không thành công", "Số giấy phép hành nghề đã tồn tại", ""));
                 }
             }
-
             try
             {
-                if (Convert.ToDateTime(doctor.CertificationDate).Year == 1)
+                DateTime.Parse(doctor.CertificationDate);
+                if (doctor.CertificationDate == null)
                     checkCertificationDate = false;
             }
             catch
             {
                 checkCertificationDate = false;
             }
+
 
             try
             {
@@ -376,9 +377,10 @@ namespace SHCServer.Controllers
 
                 if (checkCertificationDate == true)
                 {
+                    var date = DateTime.Parse(doctor.CertificationDate);
                     _context.Update<Doctor>(d => d.DoctorId == newDoctor.DoctorId, x => new Doctor()
                     {
-                        CertificationDate = Convert.ToDateTime(doctor.CertificationDate).AddMonths(1)
+                        CertificationDate = date
                     });
                 }
 
@@ -412,7 +414,6 @@ namespace SHCServer.Controllers
         {
             bool checkCertificationDate = true;
 
-
             if (!string.IsNullOrEmpty(doctor.CertificationCode))
             {
                 var checkCertification = _context.Query<Doctor>().Where(d => d.CertificationCode.Equals(doctor.CertificationCode)).FirstOrDefault();
@@ -423,10 +424,10 @@ namespace SHCServer.Controllers
                 }
             }
 
-
             try
             {
-                if (Convert.ToDateTime(doctor.CertificationDate).Year == 1)
+                DateTime.Parse(doctor.CertificationDate);
+                if (doctor.CertificationDate == null)
                     checkCertificationDate = false;
             }
             catch
@@ -509,8 +510,6 @@ namespace SHCServer.Controllers
 
                 _context.BeginTransaction();
 
-
-
                 _context.Update<Doctor>(d => d.DoctorId == doctor.DoctorId, x => new Doctor()
                 {
                     AcademicId = doctor.AcademicId,
@@ -550,14 +549,15 @@ namespace SHCServer.Controllers
                     _context.Update<Doctor>(d => d.DoctorId == doctor.DoctorId, x => new Doctor()
                     {
                         CertificationDate = null
-                    }); ;
+                    });
                 }
 
                 if (checkCertificationDate == true)
                 {
+                    var date = DateTime.Parse(doctor.CertificationDate);
                     _context.Update<Doctor>(d => d.DoctorId == doctor.DoctorId, x => new Doctor()
                     {
-                        CertificationDate = Convert.ToDateTime(doctor.CertificationDate).AddMonths(1)
+                        CertificationDate = date
                     });
                 }
 
