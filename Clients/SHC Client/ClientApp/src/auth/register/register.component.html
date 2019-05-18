@@ -42,30 +42,30 @@
                                             <div class="col-xs-12 col-sm-4 col-md-12">
                                                 <div class="radio">
                                                     <label>
-                                                        <input type="radio" (change)="onChangeAccountType(1)" value="1"
-                                                            formControlName="accountType" [checked]="true">
+                                                        <input type="radio"
+                                                            (change)="onChangeAccountType(1)" value="1" formControlName="accountType" [checked]="true">
                                                         Thành viên</label>
                                                 </div>
                                             </div>
                                             <div class="col-xs-12 col-sm-4 col-md-12">
                                                 <div class="radio">
                                                     <label>
-                                                        <input type="radio" (change)="onChangeAccountType(2)" value="2"
-                                                            formControlName="accountType">
+                                                        <input type="radio" 
+                                                            (change)="onChangeAccountType(2)" value="2" formControlName="accountType">
                                                         Bác sĩ / chuyên gia / điều dưỡng...</label>
                                                 </div>
                                             </div>
                                             <div class="col-xs-12 col-sm-4 col-md-12">
                                                 <div class="radio">
                                                     <label>
-                                                        <input type="radio" (change)="onChangeAccountType(3)" value="3"
-                                                            formControlName="accountType">
+                                                        <input type="radio" 
+                                                            (change)="onChangeAccountType(3)" value="3" formControlName="accountType">
                                                         Cơ sở y tế / doanh nghiệp</label>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </div>  
                             </div>
 
                             <div [ngClass]="{'hidden': _hideSpecialist}">
@@ -79,15 +79,14 @@
                                             <div class="col-xs-6 col-sm-6">
                                                 <div class="radio">
                                                     <label><input type="radio" value="1"
-                                                            [checked]="!_hideDoctor ? true : false"
-                                                            formControlName="register">Chính tôi</label>
+                                                        [checked]="!_hideDoctor ? true : false" formControlName="register">Chính tôi</label>
                                                 </div>
                                             </div>
 
                                             <div class="col-xs-6 col-sm-6">
                                                 <div class="radio">
-                                                    <label><input type="radio" value="2" formControlName="register">Bác
-                                                        sĩ tôi thay mặt</label>
+                                                    <label><input type="radio" value="2"
+                                                        formControlName="register">Bác sĩ tôi thay mặt</label>
                                                 </div>
                                             </div>
                                         </div>
@@ -98,15 +97,14 @@
                                             <div class="col-xs-12 col-sm-6">
                                                 <div class="radio">
                                                     <label><input type="radio" value="3"
-                                                            [checked]="!_hideMF ? true : false"
-                                                            formControlName="register">Cơ sở của tôi</label>
+                                                        [checked]="!_hideMF ? true : false" formControlName="register">Cơ sở của tôi</label>
                                                 </div>
                                             </div>
 
                                             <div class="col-xs-12 col-sm-6">
                                                 <div class="radio">
-                                                    <label><input type="radio" value="4" formControlName="register">Cơ
-                                                        sở tôi đại diện</label>
+                                                    <label><input type="radio" value="4"
+                                                        formControlName="register">Cơ sở tôi đại diện</label>
                                                 </div>
                                             </div>
                                         </div>
@@ -114,8 +112,7 @@
                                 </div>
                             </div>
 
-                            <div class="form-group"
-                                [ngClass]="{'has-error': frmUser.get('fullName').invalid && (frmUser.get('fullName').dirty || frmUser.get('fullName').touched)}">
+                            <div class="form-group" [ngClass]="{'has-error': frmUser.get('fullName').invalid && (frmUser.get('fullName').dirty || frmUser.get('fullName').touched)}">
                                 <div class="row">
                                     <div class="col-xs-12 col-md-4">
                                         <label class="primary-label control-label">Họ và tên<span
@@ -133,9 +130,8 @@
                             <div class="form-group">
                                 <div class="row">
                                     <div class="col-xs-12 col-md-4">
-                                        <label class="primary-label custom-label" style="padding-top: 0px;">Giới
-                                            tính</label>
-                                    </div>
+                                        <label class="primary-label custom-label" style="padding-top: 0px;">Giới tính</label>
+                                    </div>     
                                     <div class="col-sm-12 col-lg-8">
                                         <select formControlName="sex" class="form-control" id="sex">
                                             <option *ngFor="let o of _sex" [value]="o.id">{{o.name}}</option>
@@ -157,10 +153,8 @@
                                                 </select>
                                             </div>
                                             <div class="col-xs-4">
-                                                <select id="birthM" class="form-control" placeholder="Tháng"
-                                                    (change)="onSelectBirthMonth($event)">
-                                                    <option *ngFor="let o of _months" [ngValue]="o">{{'Tháng' }} {{o}}
-                                                    </option>
+                                                <select id="birthM" class="form-control" placeholder="Tháng" (change)="onSelectBirthMonth($event)">
+                                                    <option *ngFor="let o of _months" [ngValue]="o">{{'Tháng' }} {{o}}</option>
                                                 </select>
                                             </div>
                                             <div class="col-xs-4">
@@ -169,14 +163,12 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <small *ngIf="_invaliBirthday" class="help-block" style="color: red;">Ngày sinh
-                                            không đúng định dạng</small>
+                                        <small *ngIf="_invaliBirthday" class="help-block" style="color: red;">Ngày sinh không đúng định dạng</small>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="form-group"
-                                [ngClass]="{'has-error': frmUser.get('phoneNumber').invalid && (frmUser.get('phoneNumber').dirty || frmUser.get('phoneNumber').touched)}">
+                            <div class="form-group" [ngClass]="{'has-error': frmUser.get('phoneNumber').invalid && (frmUser.get('phoneNumber').dirty || frmUser.get('phoneNumber').touched)}">
                                 <div class="row">
                                     <div class="col-xs-12 col-md-4">
                                         <label class="primary-label control-label">Điện thoại<span
@@ -184,15 +176,14 @@
                                     </div>
 
                                     <div class="col-xs-12 col-md-8">
-                                        <input type="text"  formControlName="phoneNumber" name="mobile_phone" id="mobile_phone" 
+                                        <input type="text"  formControlName="phoneNumber" name="mobile_phone" id="phoneNumber" 
                                         class="form-control" (keyup)="rulePhoneNumber($event)" minlength="10" maxlength="20">
                                         <validation [control]="frmUser.controls['phoneNumber']"></validation>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="form-group"
-                                [ngClass]="{'has-error': frmUser.get('email').invalid && (frmUser.get('email').dirty || frmUser.get('email').touched)}">
+                            <div class="form-group" [ngClass]="{'has-error': frmUser.get('email').invalid && (frmUser.get('email').dirty || frmUser.get('email').touched)}">
                                 <div class="row">
                                     <div class="col-xs-12 col-md-4">
                                         <label class="primary-label control-label">Email<span
@@ -200,15 +191,14 @@
                                     </div>
 
                                     <div class="col-xs-12 col-md-8">
-                                        <input type="text" formControlName="email" name="email" id="email"
+                                        <input type="text" formControlName="email" name="email" id="email" 
                                             class="form-control" (keyup)="ruleEmail($event)" maxlength="320">
                                         <validation [control]="frmUser.controls['email']"></validation>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="form-group"
-                                [ngClass]="{'has-error': frmUser.get('userName').invalid && (frmUser.get('userName').dirty || frmUser.get('userName').touched)}">
+                            <div class="form-group" [ngClass]="{'has-error': frmUser.get('userName').invalid && (frmUser.get('userName').dirty || frmUser.get('userName').touched)}">
                                 <div class="row">
                                     <div class="col-xs-12 col-md-4">
                                         <label class="primary-label control-label">Tài khoản<span
@@ -216,16 +206,14 @@
                                     </div>
 
                                     <div class="col-xs-12 col-md-8">
-                                        <input #fullName type="text" formControlName="userName" name="userName"
-                                            id="userName" class="validate form-control" [patterns]="insurrancePatterns"
-                                            mask="0*" maxlength="255">
+                                        <input #fullName type="text" formControlName="userName" name="userName" id="userName"
+                                            class="validate form-control" [patterns]="insurrancePatterns" mask="0*" maxlength="255">
                                         <validation [control]="frmUser.controls['userName']"></validation>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="form-group"
-                                [ngClass]="{'has-error': frmUser.get('password').invalid && (frmUser.get('password').dirty || frmUser.get('password').touched)}">
+                            <div class="form-group" [ngClass]="{'has-error': frmUser.get('password').invalid && (frmUser.get('password').dirty || frmUser.get('password').touched)}">
                                 <div class="row">
                                     <div class="col-xs-12 col-md-4">
                                         <label class="primary-label control-label">Mật khẩu<span
@@ -235,24 +223,21 @@
                                     <div class="col-xs-12 col-md-8">
                                         <input type="password" formControlName="password" name="password" id="password"
                                             title="Mật khẩu cần có ít nhất 8 kí tự"
-                                            placeholder="Mật khẩu cần có ít nhất 8 ký tự" data-display="Mật khẩu"
-                                            class="validate form-control" minlength="8" maxlength="255">
+                                            placeholder="Mật khẩu cần có ít nhất 8 ký tự" data-display="Mật khẩu" class="validate form-control" minlength="8" maxlength="255">
                                         <validation [control]="frmUser.controls['password']"></validation>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="form-group"
-                                [ngClass]="{'has-error': frmUser.get('confirmPassword').invalid && (frmUser.get('confirmPassword').dirty || frmUser.get('confirmPassword').touched)}">
+                            <div class="form-group" [ngClass]="{'has-error': frmUser.get('confirmPassword').invalid && (frmUser.get('confirmPassword').dirty || frmUser.get('confirmPassword').touched)}">
                                 <div class="row">
                                     <div class="col-xs-12 col-md-4">
-                                        <label class="primary-label control-label">Xác nhận lại mật khẩu<span
-                                                class="text-danger">*</span></label>
+                                        <label class="primary-label control-label">Xác nhận lại mật khẩu<span class="text-danger">*</span></label>
                                     </div>
 
                                     <div class="col-xs-12 col-md-8">
                                         <input type="password" formControlName="confirmPassword" name="confirm_password"
-                                            id="confirm_password" title="Nhập lại mật khẩu"
+                                            id="confirmPassword" title="Nhập lại mật khẩu"
                                             placeholder="Nhập lại mật khẩu"
                                             class="validate form-control" minlength="8" maxlength="255">
                                         <validation [control]="frmUser.controls['confirmPassword']"></validation>
@@ -267,12 +252,11 @@
                                     </div>
 
                                     <div class="col-xs-12 col-md-8">
-                                        <input type="text" formControlName="address" name="address" id="address"
-                                            class="form-control" maxlength="255">
+                                        <input type="text" formControlName="address" name="address" id="address" class="form-control" maxlength="255">
                                     </div>
                                 </div>
                             </div>
-
+                            
                             <div class="form-group">
                                 <div class="row">
                                     <div class="col-xs-12 col-md-4">
@@ -321,15 +305,14 @@
                             </div>
 
                             <div class="for-account-type-professional no-margins">
-                                <div class="form-group {_hideMember ? 'hidden' : ''}"
-                                    [ngClass]="{'has-error': frmUser.get('identification').invalid && (frmUser.get('identification').dirty || frmUser.get('identification').touched)}">
+                                <div class="form-group {_hideMember ? 'hidden' : ''}" [ngClass]="{'has-error': frmUser.get('identification').invalid && (frmUser.get('identification').dirty || frmUser.get('identification').touched)}">
                                     <div class="row">
                                         <div class="col-xs-12 col-md-4">
                                             <label class="primary-label control-label">Số CMND/CCCD</label>
                                         </div>
 
                                         <div class="col-xs-12 col-md-8">
-                                            <input type="text" formControlName="identification" mask="0*" name="prof_spec"
+                                            <input type="text" id="identification" formControlName="identification" mask="0*" name="prof_spec"
                                                 class="form-control" minlength="9" maxlength="12">
                                             <validation [control]="frmUser.controls['identification']"></validation>
                                         </div>
@@ -343,8 +326,7 @@
                                         </div>
 
                                         <div class="col-xs-12 col-md-8">
-                                            <input type="text" formControlName="insurrance"
-                                                [patterns]="insurrancePatterns" mask="0*" name="prof_place" value=""
+                                            <input type="text" formControlName="insurrance" [patterns]="insurrancePatterns" mask="0*" name="prof_place" value=""
                                                 class="form-control" maxlength="15">
                                         </div>
                                     </div>
@@ -363,20 +345,17 @@
                                     </div>
                                 </div>
 
-                                <div class="form-group {{_hideMF ? 'hidden' : ''}}"
-                                    [ngClass]="{'has-error': frmUser.get('healthFacilitiesName').invalid && (frmUser.get('healthFacilitiesName').dirty || frmUser.get('healthFacilitiesName').touched)}">
+                                <div class="form-group {{_hideMF ? 'hidden' : ''}}" [ngClass]="{'has-error': frmUser.get('healthFacilitiesName').invalid && (frmUser.get('healthFacilitiesName').dirty || frmUser.get('healthFacilitiesName').touched)}">
                                     <div class="row">
                                         <div class="col-xs-12 col-md-4">
                                             <label class="primary-label control-label">Tên CSYT/DN<span
-                                                    class="text-danger">*</span></label>
+                                                class="text-danger">*</span></label>
                                         </div>
 
                                         <div class="col-xs-12 col-md-8">
                                             <input type="text" formControlName="healthFacilitiesName" name="prof_place"
-                                                class="form-control" (keyup)="ruleRequire($event.target.value)"
-                                                maxlength="255">
-                                            <validation [control]="frmUser.controls['healthFacilitiesName']">
-                                            </validation>
+                                                class="form-control" (keyup)="ruleRequire($event.target.value)" maxlength="255">
+                                            <validation [control]="frmUser.controls['healthFacilitiesName']"></validation>
                                         </div>
                                     </div>
                                 </div>
@@ -399,22 +378,17 @@
                                 <div class="form-group">
                                     <div class="row">
                                         <div class="col-xs-12 col-md-4">
-                                            <label class="primary-label">Gửi giấy tờ xác thực<span
-                                                    class="text-danger">*</span></label>
+                                            <label class="primary-label">Gửi giấy tờ xác thực<span class="text-danger">*</span></label>
                                         </div>
 
 
                                         <div class="col-xs-12 col-md-8">
                                             <div class="image-uploader text-muted" data-name="first"
-                                                data-description="Chứng minh thư nhân dân / thẻ căn cước">
+                                                 data-description="Chứng minh thư nhân dân / thẻ căn cước">
                                                 <div class="upload-content">
-                                                    <span class="upload-description"> Chứng minh thư nhân dân / thẻ căn
-                                                        cước </span>
+                                                    <span class="upload-description"> Chứng minh thư nhân dân / thẻ căn cước </span>
                                                     <div class="upload-button">
-                                                        <input #dataContainer type="file"
-                                                            accept="image/*, application/pdf" multiple
-                                                            (change)="detectFiles($event, 'idCard')"><span
-                                                            class="btn btn-sm btn-primary-inverted">
+                                                        <input #dataContainer type="file" accept="image/*, application/pdf" multiple (change)="detectFiles($event, 'idCard')"><span class="btn btn-sm btn-primary-inverted">
                                                             <i class="fa fa-paperclip" aria-hidden="true"></i>Tải
                                                             lên
                                                         </span>
@@ -423,13 +397,13 @@
                                                         <div class="upload-content">
                                                             <div class="row" *ngFor="let o of _idCardUrls; let i = index">
                                                                 <div class="col-md-2">
-                                                                    <img src="{{o.url}}" class="rounded mb-3 selFile" title={{o.name.name}} width="50">
+                                                                    <img src="{{o.url}}" class="rounded mb-3 selFile" title={{o.name}} width="50">
                                                                 </div>
                                                                 <div style="text-align: " class="col-md-7">
-                                                                    <p class="img-name">{{o.name.name}}</p>
+                                                                    <p class="img-name">{{o.name}}</p>
                                                                 </div>
                                                                 <div style="padding: 15px" class="col-md-2">
-                                                                    <span class="btn btn-sm btn-default btn-delete" (click)="removeFile(i)">
+                                                                    <span class="btn btn-sm btn-default btn-delete" (click)="removeFile(i, 1)">
                                                                         <i aria-hidden="true"></i>Xóa file
                                                                     </span>
                                                                 </div>
@@ -438,21 +412,19 @@
                                                         <!-- <div class="text-danger margin-bottom-thin my-mat-hint">
                 {{_idCardError}}<span>&nbsp;</span>
             </div> -->
-                                                <div class="upload-target">
-                                                    <div class="row"></div>
-                                                </div>
+                                                        <div class="upload-target">
+                                                            <div class="row"></div>
+                                                        </div>
                                             </div>
                                             <div class="image-uploader text-muted" data-name="second"
-                                                data-description="Giấy phép hành nghề hoặc bằng tốt nghiệp">
+                                                 data-description="Giấy phép hành nghề hoặc bằng tốt nghiệp">
                                                 <div class="upload-content">
                                                     <span class="upload-description">
                                                         Giấy phép
                                                         hành nghề hoặc bằng tốt nghiệp
                                                     </span>
                                                     <div class="upload-button">
-                                                        <input type="file" accept="image/*, application/pdf" multiple
-                                                            (change)="detectFiles($event, 'certificate')"><span
-                                                            class="btn btn-sm btn-primary-inverted">
+                                                        <input type="file" accept="image/*, application/pdf" multiple (change)="detectFiles($event, 'certificate')"><span class="btn btn-sm btn-primary-inverted">
                                                             <i class="fa fa-paperclip" aria-hidden="true"></i>Tải
                                                             lên
                                                         </span>
@@ -462,14 +434,13 @@
                                                 <div class="upload-content">
                                                     <div class="row" *ngFor="let o of _certificateUrls; let i = index">
                                                         <div class="col-md-2">
-                                                            <img src="{{o.url}}" class="rounded mb-3 selFile"
-                                                                title={{o.name.name}} width="50">
+                                                            <img src="{{o.url}}" class="rounded mb-3 selFile" title={{o.name}} width="50">
                                                         </div>
                                                         <div style="text-align: " class="col-md-7">
-                                                            <p class="img-name">{{o.name.name}}</p>
+                                                            <p class="img-name">{{o.name}}</p>
                                                         </div>
                                                         <div style="padding: 15px" class="col-md-2">
-                                                            <span class="btn btn-sm btn-default btn-delete" (click)="removeFile(i)">
+                                                            <span class="btn btn-sm btn-default btn-delete" (click)="removeFile(i, 2)">
                                                                 <i aria-hidden="true"></i>Xóa file
                                                             </span>
                                                         </div>
@@ -489,185 +460,121 @@
                             </div>
                             <hr>
                             <div class="select-service" *ngIf="frmUser.controls['accountType'].value != 1">
-                                <h6 class="text-center text-uppercase text-blue" style="margin-top: 10px;">Lựa chọn các
-                                    dịch vụ sử dụng</h6>
+                                <h6 class="text-center text-uppercase text-blue" style="margin-top: 10px;">Lựa chọn các dịch vụ sử dụng</h6>
                                 <div>
-                                    <div class="iq-accordion iq-mt-20">
-                                        <div class="iq-accordion iq-mt-20 accordion custom-accordion"
-                                            id="accordionExample">
+                                    <div class="iq-accordion iq-mt-20">                                      
+                                        <div class="iq-accordion iq-mt-20 accordion custom-accordion" id="accordionExample">
                                             <!-- Hỏi Bác sĩ / Cộng đồng-->
                                             <div class="iq-ad-block">
-                                                <input type="checkbox" class="pull-right"
-                                                    formControlName="isUsingdoctor" name="isUsingdoctor"
-                                                    id="isUsingdoctor">
-                                                <span href="" class="ad-title iq-tw-5 iq-font-grey"
-                                                    data-toggle="collapse" data-target="#doctor"><i
-                                                        class="fa fa-user-md" aria-hidden="true"></i> Hỏi Bác sĩ / Cộng
-                                                    đồng </span>
+                                                <input type="checkbox" class="pull-right" formControlName="isUsingdoctor" name="isUsingdoctor" id="isUsingdoctor">
+                                                <span href="" class="ad-title iq-tw-5 iq-font-grey" data-toggle="collapse" data-target="#doctor"><i class="fa fa-user-md"
+                                                        aria-hidden="true"></i> Hỏi Bác sĩ / Cộng đồng </span>
                                                 <div class="ad-details collapse" id="doctor">
                                                     <div class="row">
                                                         <div class="col-sm-12">
-                                                            <p>Chuyên mục Hỏi Bác sĩ / Cộng đồng là nơi trao đổi thông
-                                                                tin y tế
-                                                                giữa các bác sĩ, chuyên gia và người bệnh với hơn 2
-                                                                triệu lượt
-                                                                truy cập hàng tháng. Mỗi câu trả lời của bác sĩ hiện
-                                                                trên
-                                                                Mangyteviet.com là một lần danh tiếng bác sĩ đến gần
-                                                                người bệnh
-                                                                hơn, đồng thời cũng giúp hàng triệu người hỏi trong cộng
-                                                                đồng
-                                                                Mangyteviet có thêm kiến thức sức khỏe để bảo vệ bản
-                                                                thân.</p>
-                                                            <p>Tham gia vào chuyên mục này cũng mang lại cho bạn một
-                                                                nguồn thu nhập hàng tháng. Với những câu hỏi mà người
-                                                                hỏi có đặt tiền, khi trả lời thành công bạn sẽ được nhận
-                                                                từ 60% đến 80% số tiền mà người hỏi đã đặt</p>
-                                                            <p>Bạn có thể xem thêm thông tin về chương trình hợp tác này
-                                                                tại đây <a class="text-blue" href="#!">tại đây</a></p>
-
+                                                            <p>Chuyên mục Hỏi Bác sĩ / Cộng đồng là nơi trao đổi thông tin y tế
+                                                            giữa các bác sĩ, chuyên gia và người bệnh với hơn 2 triệu lượt
+                                                            truy cập hàng tháng. Mỗi câu trả lời của bác sĩ hiện trên
+                                                            Mangyteviet.com là một lần danh tiếng bác sĩ đến gần người bệnh
+                                                            hơn, đồng thời cũng giúp hàng triệu người hỏi trong cộng đồng
+                                                            Mangyteviet có thêm kiến thức sức khỏe để bảo vệ bản
+                                                            thân.</p>
+                                                            <p>Tham gia vào chuyên mục này cũng mang lại cho bạn một nguồn thu nhập hàng tháng. Với những câu hỏi mà người hỏi có đặt tiền, khi trả lời thành công bạn sẽ được nhận từ 60% đến 80% số tiền mà người hỏi đã đặt</p>
+                                                            <p>Bạn có thể xem thêm thông tin về chương trình hợp tác này tại đây <a
+                                                                class="text-blue" href="#!">tại đây</a></p>
+                                        
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </div>                                            
                                             <!-- Gọi Bác sỹ-->
                                             <div class="iq-ad-block">
-                                                <input type="checkbox" class="pull-right" formControlName="isUsingCall"
-                                                    name="isUsingCall" id="isUsingCall">
-                                                <span href="" class="ad-title iq-tw-5 iq-font-grey"
-                                                    data-toggle="collapse" data-target="#call"><i
-                                                        class="fa fa-phone fa-fw" aria-hidden="true"></i> Gọi Bác sỹ
-                                                </span>
+                                                <input type="checkbox" class="pull-right" formControlName="isUsingCall" name="isUsingCall" id="isUsingCall">
+                                                <span href="" class="ad-title iq-tw-5 iq-font-grey" data-toggle="collapse" data-target="#call"><i class="fa fa-phone fa-fw"
+                                                        aria-hidden="true"></i> Gọi Bác sỹ </span>
                                                 <div class="ad-details collapse" id="call">
                                                     <div class="row">
                                                         <div class="col-sm-12">
-                                                            <p>Đối thoại trực tiếp cùng bệnh nhân qua điện thoại hoặc
-                                                                app Mangytevn, giúp bệnh nhân hiểu chuyên sâu cũng như
-                                                                có hướng đi đúng đắn nhất trong việc khám chữa bệnh.
-                                                                Mangytevn.com cũng hỗ trợ tư vấn bệnh nhân đăng kí khám
-                                                                hoặc tiếp tục sử dụng dịch vụ cùng Bác sỹ sau tư vấn</p>
+                                                            <p>Đối thoại trực tiếp cùng bệnh nhân qua điện thoại hoặc app Mangytevn, giúp bệnh nhân hiểu chuyên sâu cũng như có hướng đi đúng đắn nhất trong việc khám chữa bệnh. Mangytevn.com cũng hỗ trợ tư vấn bệnh nhân đăng kí khám hoặc tiếp tục sử dụng dịch vụ cùng Bác sỹ sau tư vấn</p>                                                            
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <!-- Đăng tải thông tin ưu đãi, khuyến mãi, voucher giảm giá-->
-                                            <div class="iq-ad-block">
-                                                <input type="checkbox" class="pull-right"
-                                                    formControlName="isUsingUpload" name="isUsingUpload"
-                                                    id="isUsingUpload">
-                                                <span href="" class="ad-title iq-tw-5 iq-font-grey"
-                                                    data-toggle="collapse" data-target="#voucher "><i
-                                                        class="fa fa-gift fa-fw" aria-hidden="true"></i> Đăng tải thông
-                                                    tin ưu đãi, khuyến mãi, voucher giảm giá </span>
-                                                <div class="ad-details collapse" id="voucher"
-                                                    data-parent="#accordionExample">
+                                             <!-- Đăng tải thông tin ưu đãi, khuyến mãi, voucher giảm giá-->
+                                             <div class="iq-ad-block">
+                                                <input type="checkbox" class="pull-right" formControlName="isUsingUpload" name="isUsingUpload" id="isUsingUpload">
+                                                <span href="" class="ad-title iq-tw-5 iq-font-grey" data-toggle="collapse" data-target="#voucher "><i class="fa fa-gift fa-fw"
+                                                        aria-hidden="true"></i> Đăng tải thông tin ưu đãi, khuyến mãi, voucher giảm giá </span>
+                                                <div class="ad-details collapse" id="voucher" data-parent="#accordionExample">
                                                     <div class="row">
                                                         <div class="col-sm-12">
-                                                            <p>Chức năng này giúp bạn đăng tải các thông tin khuyến mãi,
-                                                                các sản phẩm ưu đãi của cơ sở y tế và doanh nghiệp của
-                                                                bạn trên Mangytevn.com</p>
+                                                            <p>Chức năng này giúp bạn đăng tải các thông tin khuyến mãi, các sản phẩm ưu đãi của cơ sở y tế và doanh nghiệp của bạn trên Mangytevn.com</p>                                                                                                                            
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <!-- Đăng ký khám, quản lý thông tin khung giờ khám bệnh Online-->
-                                            <div class="iq-ad-block">
-                                                <input type="checkbox" class="pull-right"
-                                                    formControlName="isUsingRegister" name="isUsingRegister"
-                                                    id="isUsingRegister">
-                                                <span href="" class="ad-title iq-tw-5 iq-font-grey"
-                                                    data-toggle="collapse" data-target="#register"><i
-                                                        class="fa fa-calendar-plus-o fa-fw" aria-hidden="true"></i> Đăng
-                                                    ký khám, quản lý thông tin khung giờ khám bệnh Online </span>
-                                                <div class="ad-details collapse" id="register"
-                                                    data-parent="#accordionExample">
+                                             <!-- Đăng ký khám, quản lý thông tin khung giờ khám bệnh Online-->
+                                             <div class="iq-ad-block">
+                                                <input type="checkbox" class="pull-right" formControlName="isUsingRegister" name="isUsingRegister" id="isUsingRegister">
+                                                <span href="" class="ad-title iq-tw-5 iq-font-grey" data-toggle="collapse" data-target="#register"><i class="fa fa-calendar-plus-o fa-fw"
+                                                        aria-hidden="true"></i> Đăng ký khám, quản lý thông tin khung giờ khám bệnh Online </span>
+                                                <div class="ad-details collapse" id="register" data-parent="#accordionExample">
                                                     <div class="row">
                                                         <div class="col-sm-12">
-                                                            <p>Quản lý lịch làm việc, tạo kênh bệnh nhân tra cứu đăng ký
-                                                                khung giờ khám Online trên hệ thống, giúp bạn nhận đặt
-                                                                hẹn trực tuyến, quản lý giờ làm việc, quản lý hồ sơ bệnh
-                                                                nhân, với nhiều chức năng tiện dụng như tự động nhắn tin
-                                                                SMS xác nhận, sắp xếp giờ khám..</p>
+                                                            <p>Quản lý lịch làm việc, tạo kênh bệnh nhân tra cứu đăng ký khung giờ khám Online trên hệ thống, giúp bạn nhận đặt hẹn trực tuyến, quản lý giờ làm việc, quản lý hồ sơ bệnh nhân, với nhiều chức năng tiện dụng như tự động nhắn tin SMS xác nhận, sắp xếp giờ khám..</p>                                                            
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <!-- Đăng tin bài, video-->
-                                            <div class="iq-ad-block">
-                                                <input type="checkbox" class="pull-right" formControlName="isUsingVideo"
-                                                    name="isUsingVideo" id="isUsingVideo">
-                                                <span href="" class="ad-title iq-tw-5 iq-font-grey"
-                                                    data-toggle="collapse" data-target="#file"><i
-                                                        class="fa fa-file-text-o fa-fw" aria-hidden="true"></i> Đăng tin
-                                                    bài, video </span>
-                                                <div class="ad-details collapse" id="file"
-                                                    data-parent="#accordionExample">
+                                            </div> 
+                                             <!-- Đăng tin bài, video-->
+                                             <div class="iq-ad-block">
+                                                <input type="checkbox" class="pull-right" formControlName="isUsingVideo" name="isUsingVideo" id ="isUsingVideo">
+                                                <span href="" class="ad-title iq-tw-5 iq-font-grey" data-toggle="collapse" data-target="#file"><i class="fa fa-file-text-o fa-fw"
+                                                        aria-hidden="true"></i> Đăng tin bài, video </span>
+                                                <div class="ad-details collapse" id="file" data-parent="#accordionExample">
                                                     <div class="row">
                                                         <div class="col-sm-12">
-                                                            <p>Chuyên mục là nơi chia sẻ kinh nghiệm của Bác sỹ, chuyên
-                                                                gia và người bệnh. Mỗi bài đăng là một lần danh tiếng
-                                                                Bác sỹ đến gần người bệnh hơn, đồng thời cũng giúp hàng
-                                                                triệu người hỏi trong cộng đồng Mangytevn.com có thêm
-                                                                kiến thức sức khỏe để bảo vệ bản thân</p>
+                                                            <p>Chuyên mục là nơi chia sẻ kinh nghiệm của Bác sỹ, chuyên gia và người bệnh. Mỗi bài đăng là một lần danh tiếng Bác sỹ đến gần người bệnh hơn, đồng thời cũng giúp hàng triệu người hỏi trong cộng đồng Mangytevn.com có thêm kiến thức sức khỏe để bảo vệ bản thân</p>                                                            
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <!-- Đăng kí quản lý khám chữa bệnh-->
-                                            <div class="iq-ad-block">
-                                                <input type="checkbox" class="pull-right"
-                                                    formControlName="isUsingExamination" name="isUsingExamination"
-                                                    id="isUsingExamination">
-                                                <span href="" class="ad-title iq-tw-5 iq-font-grey"
-                                                    data-toggle="collapse" data-target="#file-2"><i
-                                                        class="fa fa-pencil-square fa-fw" aria-hidden="true"></i> Đăng
-                                                    kí quản lý khám chữa bệnh </span>
-                                                <div class="ad-details collapse" id="file-2"
-                                                    data-parent="#accordionExample">
+                                             <!-- Đăng kí quản lý khám chữa bệnh-->
+                                             <div class="iq-ad-block">
+                                                <input type="checkbox" class="pull-right" formControlName="isUsingExamination" name="isUsingExamination" id="isUsingExamination">
+                                                <span href="" class="ad-title iq-tw-5 iq-font-grey" data-toggle="collapse" data-target="#file-2"><i class="fa fa-pencil-square fa-fw"
+                                                        aria-hidden="true"></i> Đăng kí quản lý khám chữa bệnh </span>
+                                                <div class="ad-details collapse" id="file-2" data-parent="#accordionExample">
                                                     <div class="row">
                                                         <div class="col-sm-12">
-                                                            <p>Chức năng đăng ký cho phép quản lý khám bệnh trực tuyến
-                                                                từ tiếp đón, khám bệnh, quản lý kho dược, quản lý kết
-                                                                quả xét nghiệm, báo cáo...</p>
-                                                            <p>(Chức năng này chúng tôi sẽ liên hệ theo số điện thoại
-                                                                đăng ký)</p>
+                                                            <p>Chức năng đăng ký cho phép quản lý khám bệnh trực tuyến từ tiếp đón, khám bệnh, quản lý kho dược, quản lý kết quả  xét nghiệm, báo cáo...</p>
+                                                            <p>(Chức năng này chúng tôi sẽ liên hệ theo số điện thoại đăng ký)</p>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </div>
+                                            </div>                                          
+                                        </div>    
                                     </div>
                                 </div>
                             </div>
-                            <div>
-                                <hr>
-                            </div>
-                            <label class="mt-10">Vui lòng cung cấp đầy đủ thông tin để chúng tôi có thể liên hệ và hỗ
-                                trợ bạn tốt nhất.</label>
+                            <div><hr></div>                            
+                            <label class="mt-10">Vui lòng cung cấp đầy đủ thông tin để chúng tôi có thể liên hệ và hỗ trợ bạn tốt nhất.</label>
                             <div class="row iq-mt-20">
-                                <div>
+                                <div>                                   
                                     <div class="col-md-6 d-flex" [ngClass]="{'has-error': this.capcha}">
-                                        <label
-                                            class="required min-width-100 mt-5 {{this.capcha ? 'text-danger' : ''}}">Mã
-                                            xác nhận<span class="text-danger">*</span></label>
-                                        <input type="text" name="prof_place" formControlName="codeCapcha" mask="A*"
-                                            maxlength="4" (change)="validateCapcha($event.target.value)"
-                                            class="form-control validate">
+                                        <label class="required min-width-100 mt-5 {{this.capcha ? 'text-danger' : ''}}">Mã xác nhận<span class="text-danger">*</span></label>
+                                        <input type="text" name="prof_place" formControlName="codeCapcha" mask="A*" maxlength="4" (change)="validateCapcha($event.target.value)" class="form-control validate">
                                     </div>
-                                    <div class="col-md-3" style="margin-left: -20px; margin-top: -3px;"><img
-                                            [src]="_capcha.data" width="162" height="39" alt="" /></div>
-                                    <span type="button" class="btn-refresh" (click)="getCapcha()"><i
-                                            class="fa fa-refresh" aria-hidden="true"></i></span>
-                                    <small *ngIf="this.capcha" class="help-block"
-                                        style="color: red;margin-left: 114px;">Mã xác nhận không khớp</small>
+                                    <div class="col-md-3" style="margin-left: -20px; margin-top: -3px;"><img [src]="_capcha.data" width="162" height="39" alt="" /></div>
+                                    <span type="button"  class="btn-refresh" (click)="getCapcha()"><i class="fa fa-refresh" aria-hidden="true"></i></span>
+                                    <small *ngIf="this.capcha" class="help-block" style="color: red;margin-left: 114px;">Mã xác nhận không khớp</small>
                                 </div>
                             </div>
-                            <label style="margin-top:10px;"><input type="checkbox" formControlName="rules"
-                                    class="mr-5">Tôi đã đồng ý với
-                                <a> điều khoản sử dụng </a> của Mangyte.vn
+                            <label style="margin-top:10px;"><input type="checkbox" formControlName="rules" class="mr-5">Tôi đã đồng ý với
+                                <a> điều khoản sử dụng </a> của Mangyte.vn 
                             </label>
                             <div class="col-sm-12 text-center iq-mall-20">
-                                <button type="submit" class="btn btn-lg btn-aqua btn-curvy btn-longer-width" [disabled]="!frmUser.value['rules']" (click)="submit()"><i
+                                <button type="submit" class="btn btn-lg btn-aqua btn-curvy btn-longer-width" [disabled]="frmUser.invalid" (click)="submit()"><i
                                     class="fa fa-check-square-o" aria-hidden="true"></i> Đăng ký</button>
                             </div>
                         </form>
