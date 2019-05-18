@@ -45,6 +45,9 @@ export class ValidationRule {
             if (control.value.charAt(0) != '+' && control.value.length >= 3 && (arr.indexOf(control.value.substring(0, 3)) < 0)) {
                 return { topnumber: true };
             }
+            if (control.value.charAt(0) == '+' && control.value.length >= 4 && (arr.indexOf(control.value.substring(1, 4)) < 0)) {
+                return { topnumber: true };
+            }
             if (control.value.charAt(0) != '+' && control.value.indexOf("+") > 0) {
                 return { invalidphonenumber: true };
             }

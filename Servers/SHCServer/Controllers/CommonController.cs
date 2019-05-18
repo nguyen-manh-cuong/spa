@@ -235,7 +235,7 @@ namespace SHCServer.Controllers
         [Route("api/ethnicity")]
         public IActionResult GetEthnicities()
         {
-            var objs = _context.Query<Ethnicity>().Where(o => o.IsActive == true && o.IsDelete == false).OrderBy(o => o.Name);
+            var objs = _context.Query<Ethnicity>().Where(o => o.IsActive == true && o.IsDelete == false).OrderBy(o => o.OrderNumber);
             return Json(new ActionResultDto() { Result = new { Items = objs.ToList() } });
         }
 
