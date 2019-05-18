@@ -14,7 +14,7 @@
                     <div class="col-md-6">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l('FromDate')}}</mat-label>
-                            <input matInput [matDatepicker]="picker1" #startTime mask="00/00/0000" maxlength="10" (dateChange)="changeDate($event.value, 1)" required>
+                            <input style="cursor: inherit" readonly (click)="picker1.open()" matInput [matDatepicker]="picker1" #startTime mask="00/00/0000" maxlength="10" (dateChange)="changeDate($event.value, 1)" required>
                             <mat-datepicker-toggle matSuffix [for]="picker1" class="t-2"></mat-datepicker-toggle>
                             <mat-datepicker #picker1></mat-datepicker>
 
@@ -23,7 +23,7 @@
                     <div class="col-md-6">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l('ToDate')}}</mat-label>
-                            <input matInput [matDatepicker]="picker2" #endTime mask="00/00/0000" maxlength="10" (dateChange)="changeDate($event.value, 2)" required>
+                            <input style="cursor: inherit" readonly (click)="picker2.open()" matInput [matDatepicker]="picker2" #endTime mask="00/00/0000" maxlength="10" (dateChange)="changeDate($event.value, 2)" required>
                             <mat-datepicker-toggle matSuffix [for]="picker2" class="t-2"></mat-datepicker-toggle>
                             <mat-datepicker #picker2></mat-datepicker>
                         </mat-form-field>
