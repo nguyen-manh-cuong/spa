@@ -918,7 +918,9 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
         timer: 3000
       });
     }
-    if (this.specialistInput.nativeElement.value != "" || this.specialistInput.nativeElement.value != null) {
+    
+    if (this.specialistInput.nativeElement.value != "") {
+      this.checkSpecial=false;
       return swal({
         title: 'Thông báo',
         text: 'Chuyên khoa nhập vào không có trong danh sách',
