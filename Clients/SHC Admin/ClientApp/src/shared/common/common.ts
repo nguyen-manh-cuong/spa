@@ -37,24 +37,38 @@ export class ValidationRule {
             '089', '090', '093', '070', '079', '077', '076', '078',
             '091', '094', '088', '083', '084', '085', '081', '082',
             '092', '056', '058', '099', '059'];
+        let arr84: string[] = ['8486', '8496', '8497', '8498', '8432', '8433', '8434', '8435', '8436', '8437', '8438', '8439',
+            '8489', '8490', '8493', '8470', '8479', '8477', '8476', '8478',
+            '8491', '8494', '8488', '8483', '8484', '8485', '8481', '8482',
+            '8492', '8456', '8458', '8499', '8459'];
         const pattern = /^[0-9\+]*$/;
-        if(control.value && control.value!=""){
+        if (control.value && control.value != "") {
             if (!pattern.test(control.value)) {
                 control.setValue(control.value.replace(/[^0-9\+]/g, ""));
             }
-            if (control.value.charAt(0) != '+' && control.value.length >= 3 && (arr.indexOf(control.value.substring(0, 3)) < 0)) {
-                return { topnumber: true };
+            if(control.value.indexOf("84")==0 || control.value.indexOf("84")==1){
+                if (control.value.charAt(0) != '+' && control.value.length >= 4 && control.value.indexOf("84") == 0 && (arr84.indexOf(control.value.substring(0, 4)) < 0)) {
+                    return { topnumber: true };
+                }
+                if (control.value.charAt(0) == '+' && control.value.length >= 5 && control.value.indexOf("84") == 1 && (arr84.indexOf(control.value.substring(1, 5)) < 0)) {
+                    return { topnumber: true };
+                }
             }
-            if (control.value.charAt(0) == '+' && control.value.length >= 4 && (arr.indexOf(control.value.substring(1, 4)) < 0)) {
-                return { topnumber: true };
+            else{
+                if (control.value.charAt(0) != '+' && control.value.length >= 3 && (arr.indexOf(control.value.substring(0, 3)) < 0)) {
+                    return { topnumber: true };
+                }
+                if (control.value.charAt(0) == '+' && control.value.length >= 4 && (arr.indexOf(control.value.substring(1, 4)) < 0)) {
+                    return { topnumber: true };
+                }
             }
             if (control.value.charAt(0) != '+' && control.value.indexOf("+") > 0) {
                 return { invalidphonenumber: true };
             }
-            var first=control.value.indexOf("+");
-            var second=control.value.lastIndexOf("+");
-            if(first != second){
-                return {invalidphonenumber:true};
+            var first = control.value.indexOf("+");
+            var second = control.value.lastIndexOf("+");
+            if (first != second) {
+                return { invalidphonenumber: true };
             }
             if (control.value.length < 10) {
                 return { minlength: true };
