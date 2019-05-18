@@ -413,14 +413,16 @@ namespace SHCServer.Controllers
         public IActionResult Update([FromForm] DoctorInputViewModel doctor, int? allow)
         {
             bool checkCertificationDate = true;
-
-            if (!string.IsNullOrEmpty(doctor.CertificationCode))
+            if (allow != 1)
             {
-                var checkCertification = _context.Query<Doctor>().Where(d => d.CertificationCode.Equals(doctor.CertificationCode)).FirstOrDefault();
-
-                if (checkCertification != null && checkCertification.DoctorId != doctor.DoctorId)
+                if (!string.IsNullOrEmpty(doctor.CertificationCode))
                 {
-                    return StatusCode(406, _excep.Throw(406, "Lưu không thành công", "Số giấy phép hành nghề đã tồn tại", ""));
+                    var checkCertification = _context.Query<Doctor>().Where(d => d.CertificationCode.Equals(doctor.CertificationCode)).FirstOrDefault();
+
+                    if (checkCertification != null && checkCertification.DoctorId != doctor.DoctorId)
+                    {
+                        return StatusCode(406, _excep.Throw(406, "Lưu không thành công", "Số giấy phép hành nghề đã tồn tại", ""));
+                    }
                 }
             }
 
