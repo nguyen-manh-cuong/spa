@@ -161,8 +161,8 @@
                     <ng-select [searchable]="true" placeholder="Chọn phòng khám" formControlName="healthFacilitiesId" id="healthFacilitiesId" (change)="onSelectHealthFacilities($event)">
                         <ng-option *ngFor="let o of _healthfacilities" [value]="o.healthFacilitiesId">{{ o.name }}</ng-option>
                     </ng-select>
-                    <!--<validation [control]="frmBooking.controls['healthFacilitiesId']"></validation>-->
-                    <small *ngIf="frmBooking.controls['healthFacilitiesId'] && frmBooking.controls['healthFacilitiesId'].errors != null && (frmBooking.controls['healthFacilitiesId'].touched || frmBooking.controls['healthFacilitiesId'].dirty)" class="help-block" style="color: red;">Bạn cần chọn một cơ sở khám</small>
+                   <span> {{frmBooking.controls['healthFacilitiesId'].value}}</span>                    
+                    <small *ngIf="frmBooking.controls['healthFacilitiesId'].value == null && (frmBooking.controls['healthFacilitiesId'].touched || frmBooking.controls['healthFacilitiesId'].dirty)" class="help-block" style="color: red;">Bạn cần chọn một cơ sở khám</small>
                 </div>
               </div>
             </ng-container>
@@ -197,7 +197,7 @@
                 <label for="examinationTime" class="col-sm-2 col-lg-4 control-label">Chọn giờ khám <span class="text-danger">*</span></label>
                 <div class="col-sm-10 col-lg-6">
                   <input style="font-size: 14px;" formControlName="examinationTime" mask="Hh:m0" type="text" class="form-control" id="examinationTime">
-                  <validation [control]="frmBooking.controls['examinationTime']"></validation>
+                  <small *ngIf="frmBooking.controls['examinationTime'].value == null && (frmBooking.controls['examinationTime'].touched || frmBooking.controls['examinationTime'].dirty)" class="help-block" style="color: red;">Bạn cần chọn thời gian khám</small>
                 </div>
               </div>
             </ng-container>          

@@ -86,7 +86,13 @@
             <div class="col-md-3">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('Ngày sinh')}}</mat-label>
-                    <input matInput #birthday (keyup)="setValueBD()" mask="0*" maxlength="8" [matDatepicker]="picker">
+                    <input matInput
+                           #birthday
+                           readonly
+                           style="cursor: pointer"
+                           (keyup)="setValueBD()"
+                           (click)="picker.open()"
+                           [matDatepicker]="picker">
                     <mat-datepicker-toggle matSuffix [for]="picker" class="t-2"></mat-datepicker-toggle>
                     <mat-datepicker #picker></mat-datepicker>
                 </mat-form-field>
@@ -179,7 +185,7 @@
             <div class="col-md-4">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('Tái khám từ')}}</mat-label>
-                    <input style="cursor: inherit" readonly (click)="picker1.open()" matInput [matDatepicker]="picker1" #startTime mask="0*" maxlength="8"
+                    <input style="cursor: pointer" readonly (click)="picker1.open()" matInput [matDatepicker]="picker1" #startTime mask="0*" maxlength="8"
                         (dateChange)="changeDate($event.value, 1)" required>
                     <mat-datepicker-toggle matSuffix [for]="picker1" class="t-2"></mat-datepicker-toggle>
                     <mat-datepicker #picker1></mat-datepicker>
@@ -188,7 +194,7 @@
             <div class="col-md-4">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('Đến ngày')}}</mat-label>
-                    <input style="cursor: inherit" readonly matInput (click)="picker2.open()" [min]="cDate" [matDatepicker]="picker2" #endTime mask="0*" maxlength="10"
+                    <input style="cursor: pointer" readonly matInput (click)="picker2.open()" [min]="cDate" [matDatepicker]="picker2" #endTime mask="0*" maxlength="10"
                         (dateChange)="changeDate($event.value, 1)" required>
                     <mat-datepicker-toggle matSuffix [for]="picker2" class="t-2"></mat-datepicker-toggle>
                     <mat-datepicker #picker2></mat-datepicker>

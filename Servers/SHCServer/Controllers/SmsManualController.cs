@@ -244,17 +244,23 @@ namespace SHCServer.Controllers
                 }
 
                 int yearNow = DateTime.Now.Year;
-                string compareFisrt = data.ContainsKey("compareFist") ? data["compareFist"] : ">=";
-                string compareLast = data.ContainsKey("compareLast") ? data["compareLast"] : "<=";
+                string compareFisrt = data.ContainsKey("compareFist") ? data["compareFist"].ToString() : ">=";
+                string compareLast = data.ContainsKey("compareLast") ? data["compareLast"].ToString() : "<=";
 
                 if (data.ContainsKey("birthYear") && data["birthYear"] != "")
                 {
                     clause.Add("AND p.BirthYear = @_birthYear");
                     param.Add(DbParam.Create("@_birthYear", data["birthYear"].ToString()));
                 }
-                if ((data.ContainsKey("ageFist") && data["ageFist"] != "") && (data.ContainsKey("ageLast") && data["ageLast"] != ""))
+                if (data.ContainsKey("ageFist") && data["ageFist"] != "")
                 {
-                    string _query = $"AND ({yearNow} - p.BirthYear {compareFisrt} {data["ageFist"]}  AND  {yearNow} - p.BirthYear {compareLast} {data["ageLast"]} )";
+                    string _query = $"AND {yearNow} - p.BirthYear {compareFisrt} {data["ageFist"]}";
+                    clause.Add(_query);
+                }
+
+                if (data.ContainsKey("ageLast") && data["ageLast"] != "")
+                {
+                    string _query = $"AND  {yearNow} - p.BirthYear {compareLast} {data["ageLast"]}";
                     clause.Add(_query);
                 }
             }
@@ -543,7 +549,8 @@ namespace SHCServer.Controllers
 
             foreach (var s in packages)
             {
-                totalSms += s.SmsPackageUsed.Quantityused;
+                
+                totalSms += s.SmsPackageUsed != null ? s.SmsPackageUsed.Quantityused : 0;
             }
 
             if (totalSms < totalSmsSend)
@@ -591,7 +598,7 @@ namespace SHCServer.Controllers
             foreach (var m in infoInput.lstMedicalHealthcareHistories)
             {
                 indexM++;
-                if (indexM > packages[indexUsed].SmsPackageUsed.Quantityused)
+                if (packages[indexUsed].SmsPackageUsed != null && indexM > packages[indexUsed].SmsPackageUsed.Quantityused)
                 {
                     indexM = 0;
                     indexUsed++;
@@ -605,7 +612,7 @@ namespace SHCServer.Controllers
                 scontent.HealthFacilitiesId = infoInput.healthFacilitiesId.Value;
                 scontent.SmsTemplateId = templateId;
                 scontent.SmsPackagesDistributeId = packages[indexUsed].Id;
-                scontent.SmsPackageUsedId = packages[indexUsed].SmsPackageUsed.SmsPackageUsedId;
+                scontent.SmsPackageUsedId = packages[indexUsed].SmsPackageUsed != null ? packages[indexUsed].SmsPackageUsed.SmsPackageUsedId : 0;
                 scontent.PatientHistoriesId = 0;
 
                 scontent.PatientId = m.PatientId;

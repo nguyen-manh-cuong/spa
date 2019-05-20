@@ -40,7 +40,7 @@
             <div class="col-md-{{appSession.user.accountType == 0 ? 4 : 3}}">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('FromDate')}}</mat-label>
-                    <input readonly style="cursor: inherit" (click)="picker1.open()" matInput [matDatepicker]="picker1" #startTime mask="0*" maxlength="8" required>
+                    <input readonly style="cursor: pointer" (click)="picker1.open()" matInput [matDatepicker]="picker1" #startTime required>
                     <mat-datepicker-toggle matSuffix [for]="picker1" class="t-2"></mat-datepicker-toggle>
                     <mat-datepicker #picker1></mat-datepicker>
                 </mat-form-field>
@@ -48,7 +48,7 @@
             <div class="col-md-{{appSession.user.accountType == 0 ? 4 : 3}}">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('ToDate')}}</mat-label>
-                    <input readonly style="cursor: inherit" (click)="picker2.open()" matInput [matDatepicker]="picker2" #endTime mask="0*" maxlength="8" required>
+                    <input readonly style="cursor: pointer" (click)="picker2.open()" matInput [matDatepicker]="picker2" #endTime required>
                     <mat-datepicker-toggle matSuffix [for]="picker2" class="t-2"></mat-datepicker-toggle>
                     <mat-datepicker #picker2></mat-datepicker>
                 </mat-form-field>

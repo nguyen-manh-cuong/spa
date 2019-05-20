@@ -23,6 +23,7 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { stringify } from '@angular/compiler/src/util';
 import { prepareSyntheticListenerFunctionName } from '@angular/compiler/src/render3/util';
 import { providerToFactory } from '@angular/core/src/di/r3_injector';
+import { AppConsts } from '@shared/AppConsts';
 export const MY_FORMATS = {
   parse: {
     dateInput: 'DD/MM/YYYY',
@@ -89,6 +90,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   @ViewChild('priceFrom') priceFrom;
   @ViewChild('priceTo') priceTo;
   @ViewChild('doctorSummary') doctorSummary;
+  @ViewChild('dataContainer') _avatar;
   dataService: DataService;
   isLoading = false;
   specialIsLoading = false;
@@ -97,8 +99,10 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   _certificationInputCheck = true;
   checkCertificationCode = true;
   checkAvatar = false;
+  checkSpecialistInput = true;
   _speciaList = [];
   _healthFacilities = [];
+
 
   _birthDay: Date;
   _certificationDate: Date;
@@ -154,6 +158,8 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   @ViewChild('specialistInput') specialistInput: ElementRef<HTMLInputElement>;
   @ViewChild('auto') matAutocomplete: MatAutocomplete;
   @ViewChild('autoSpecialist') autoSpecialist: MatAutocomplete;
+
+  uploadBaseUrl: string;
 
   _obj: IDoctor | any = {
     doctorId: 0,
@@ -217,6 +223,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   @ViewChild("certificationDatePicker") certificationDatePicker;
 
   ngOnInit() {
+    this.uploadBaseUrl = AppConsts.uploadBaseUrl;
 
     this.dataService = this._dataService;
 
@@ -252,7 +259,9 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
       this._obj = _.clone(this.obj);
       this._isNew = false;
 
-      this._birthDay = new Date(this._obj.birthMonth + "/" + this._obj.birthDate + "/" + this._obj.birthYear);
+      if (this._obj.birthDate) {
+        this._birthDay = new Date(this._obj.birthMonth + "/" + this._obj.birthDate + "/" + this._obj.birthYear);
+      }
 
       if (this.obj.certificationCode) {
         this._certificationInputCheck = false;
@@ -283,13 +292,13 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
       doctorId: [this._obj.doctorId],
       fullName: [this._obj.fullName, [Validators.required, validationRule.hasValue]],
       specialist: [this._obj.specialist],
-      //birthDay: [this._birthDay],
+      birthDay: [this._birthDay],
       gender: this._obj.gender,
       titleCode: this._obj.titleCode,
       positionCode: [this._obj.positionCode],
       nationCode: [this._obj.nationCode],
       ethnicityCode: [this._obj.ethnicityCode],
-      certificationDate: [this._obj.certificationDate],
+      certificationDate: [this._certificationDate],
       academicId: [this._obj.academicId],
       degreeId: [this._obj.degreeId],
       email: [this._obj.email, [validationRule.email]],
@@ -563,13 +572,13 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   //chips
   add(event: MatChipInputEvent): void {
     if (!this.matAutocomplete.isOpen) {
-      const input = event.input;
+      // const input = event.input;
 
-      if (input) {
-        input.value = '';
-      }
+      // if (input) {
+      //   input.value = '';
+      // }
 
-      this.healthfacilitiesControl.setValue(null);
+      //this.healthfacilitiesControl.setValue(null);
     }
   }
 
@@ -609,6 +618,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   }
 
   healthInput() {
+    this.checkHealthFacilities = true;
     this._healthfacilities = null;
     this.filterOptions();
   }
@@ -655,11 +665,11 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   //chips
   specialAdd(event: MatChipInputEvent): void {
     if (!this.autoSpecialist.isOpen) {
-      const input = event.input;
-      if (input) {
-        input.value = '';
-      }
-      this.specialistCodeControl.setValue(null);
+      // const input = event.input;
+      // if (input) {
+      //   input.value = '';
+      // }
+      //this.specialistCodeControl.setValue(null);
     }
   }
 
@@ -680,7 +690,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
 
   specialSelected(event: MatAutocompleteSelectedEvent): void {
     this.checkSpecial = true;
-
+    this.checkSpecialistInput = false;
     var check;
     if (this._specialistChip.length == 0) {
       var s = new Specialist(event.option.value.code, event.option.value.name);
@@ -710,6 +720,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   }
 
   specialInput() {
+    this.checkSpecialistInput = true;
     this._specialist = null;
     this.filterSpecialistOptions();
   }
@@ -718,6 +729,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
 
   detectFiles(event) {
     if (event.target.files[0].size > 5242880) {
+      this._avatar.nativeElement.value = null;
       this._frm.controls['avatar'].setValue(null);
       this.avatarName = "Chưa chọn ảnh";
       return swal({
@@ -804,6 +816,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
 
 
   checkSpecial = true;
+  checkHealthFacilities = true;
 
   specialistClick() {
     if (this._specialistChip.length == 0) {
@@ -918,12 +931,20 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
         timer: 3000
       });
     }
-    
-    if (this.specialistInput.nativeElement.value != "") {
-      this.checkSpecial=false;
+    if (this.specialistCodeControl.value != "" && typeof this.specialistCodeControl.value == "string") {
+      this.checkSpecial = false;
       return swal({
         title: 'Thông báo',
         text: 'Chuyên khoa nhập vào không có trong danh sách',
+        type: 'warning',
+        timer: 3000
+      });
+    }
+    if (this.healthfacilitiesControl.value != "" && typeof this.healthfacilitiesControl.value == "string") {
+      this.checkHealthFacilities = false;
+      return swal({
+        title: 'Thông báo',
+        text: 'Đơn vị nhập vào không có trong danh sách',
         type: 'warning',
         timer: 3000
       });
@@ -1041,19 +1062,24 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
       params.doctorId = this.obj.doctorId;
     }
 
-    if (this._certificationDate) {
-      var cerdate = moment(this._certificationDate, 'DD/MM/YYYY').date() + "/" + moment(this._certificationDate, 'DD/MM/YYYY').month() + "/" + moment(this._certificationDate, 'DD/MM/YYYY').year();
-      params.certificationDate = cerdate;
+    // if (this._certificationDate) {
+    //   var cerdate = moment(this._certificationDate, 'DD/MM/YYYY').date() + "/" + moment(this._certificationDate, 'DD/MM/YYYY').month() + "/" + moment(this._certificationDate, 'DD/MM/YYYY').year();
+    //   params.certificationDate = cerdate;
+    // }
+
+    if (params.certificationDate) {
+      params.certificationDate = moment(params.certificationDate).toISOString();
     }
 
-
-    params.avatar = this._frm.controls['avatar'].value;
+    if (!this.checkAvatar) {
+      params.avatar = this._frm.controls['avatar'].value;
+    }
 
     //Set birthDate
-    if (this._birthDay && this.birthDayPicker.nativeElement.value != "") {
-      params.birthDate = moment(this._birthDay, 'DD/MM/YYYY').date();
-      params.birthMonth = moment(this._birthDay, 'DD/MM/YYYY').month() + 1;
-      params.birthYear = moment(this._birthDay, 'DD/MM/YYYY').year();
+    if (this._frm.controls['birthDay'].value) {
+      params.birthDate = moment(this._frm.controls['birthDay'].value, 'DD/MM/YYYY').date();
+      params.birthMonth = moment(this._frm.controls['birthDay'].value, 'DD/MM/YYYY').month() + 1;
+      params.birthYear = moment(this._frm.controls['birthDay'].value, 'DD/MM/YYYY').year();
     }
 
     if (this.appSession.userId && this._isNew == true) {

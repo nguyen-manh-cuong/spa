@@ -257,15 +257,70 @@ namespace SHCServer.Controllers
                     return StatusCode(406, _excep.Throw(406, "Lưu không thành công", "Số giấy phép hành nghề đã tồn tại", ""));
                 }
             }
-
             try
             {
-                if (Convert.ToDateTime(doctor.CertificationDate).Year == 1)
+                DateTime.Parse(doctor.CertificationDate);
+                if (doctor.CertificationDate == null)
                     checkCertificationDate = false;
             }
             catch
             {
                 checkCertificationDate = false;
+            }
+
+            if (!string.IsNullOrEmpty(doctor.EthnicityCode))
+                if (doctor.EthnicityCode.Equals("null"))
+                {
+                    doctor.EthnicityCode = "";
+                }
+            if (!string.IsNullOrEmpty(doctor.EducationCountryCode))
+                if (doctor.EducationCountryCode.Equals("null"))
+                {
+                    doctor.EducationCountryCode = "";
+                }
+            if (!string.IsNullOrEmpty(doctor.NationCode))
+                if (doctor.NationCode.Equals("null"))
+                {
+                    doctor.NationCode = "";
+                }
+            if (!string.IsNullOrEmpty(doctor.Address))
+                if (doctor.Address.Equals("null"))
+                {
+                    doctor.Address = "";
+                }
+            if (!string.IsNullOrEmpty(doctor.PhoneNumber))
+                if (doctor.PhoneNumber.Equals("null"))
+                {
+                    doctor.PhoneNumber = "";
+                }
+            if (!string.IsNullOrEmpty(doctor.Email))
+                if (doctor.Email.Equals("null"))
+                {
+                    doctor.Email = "";
+                }
+            if (!string.IsNullOrEmpty(doctor.CertificationCode))
+                if (doctor.CertificationCode.Equals("null"))
+                {
+                    doctor.CertificationCode = "";
+                }
+            if (!string.IsNullOrEmpty(doctor.Summary))
+                if (doctor.Summary.Equals("null"))
+                {
+                    doctor.Summary = "";
+                }
+            if (!string.IsNullOrEmpty(doctor.PriceDescription))
+                if (doctor.PriceDescription.Equals("null"))
+                {
+                    doctor.PriceDescription = "";
+                }
+            if (!string.IsNullOrEmpty(doctor.Description))
+                if (doctor.Description.Equals("null"))
+                {
+                    doctor.Description = "";
+                }
+            if (doctor.Summary.Length > 4000)
+            {
+                doctor.Summary = doctor.Summary.Substring(0, 4000);
             }
 
             try
@@ -376,9 +431,10 @@ namespace SHCServer.Controllers
 
                 if (checkCertificationDate == true)
                 {
+                    var date = DateTime.Parse(doctor.CertificationDate);
                     _context.Update<Doctor>(d => d.DoctorId == newDoctor.DoctorId, x => new Doctor()
                     {
-                        CertificationDate = Convert.ToDateTime(doctor.CertificationDate).AddMonths(1)
+                        CertificationDate = date
                     });
                 }
 
@@ -411,22 +467,23 @@ namespace SHCServer.Controllers
         public IActionResult Update([FromForm] DoctorInputViewModel doctor, int? allow)
         {
             bool checkCertificationDate = true;
-
-
-            if (!string.IsNullOrEmpty(doctor.CertificationCode))
+            if (allow != 1)
             {
-                var checkCertification = _context.Query<Doctor>().Where(d => d.CertificationCode.Equals(doctor.CertificationCode)).FirstOrDefault();
-
-                if (checkCertification != null && checkCertification.DoctorId != doctor.DoctorId)
+                if (!string.IsNullOrEmpty(doctor.CertificationCode))
                 {
-                    return StatusCode(406, _excep.Throw(406, "Lưu không thành công", "Số giấy phép hành nghề đã tồn tại", ""));
+                    var checkCertification = _context.Query<Doctor>().Where(d => d.CertificationCode.Equals(doctor.CertificationCode)).FirstOrDefault();
+
+                    if (checkCertification != null && checkCertification.DoctorId != doctor.DoctorId)
+                    {
+                        return StatusCode(406, _excep.Throw(406, "Lưu không thành công", "Số giấy phép hành nghề đã tồn tại", ""));
+                    }
                 }
             }
 
-
             try
             {
-                if (Convert.ToDateTime(doctor.CertificationDate).Year == 1)
+                DateTime.Parse(doctor.CertificationDate);
+                if (doctor.CertificationDate == null)
                     checkCertificationDate = false;
             }
             catch
@@ -484,6 +541,10 @@ namespace SHCServer.Controllers
                 {
                     doctor.Description = "";
                 }
+            if (doctor.Summary.Length > 4000)
+            {
+                doctor.Summary = doctor.Summary.Substring(0, 4000);
+            }
 
             var checkDoctor = _context.Query<Doctor>().Where(d => d.DoctorId == doctor.DoctorId).FirstOrDefault();
 
@@ -509,8 +570,6 @@ namespace SHCServer.Controllers
 
                 _context.BeginTransaction();
 
-
-
                 _context.Update<Doctor>(d => d.DoctorId == doctor.DoctorId, x => new Doctor()
                 {
                     AcademicId = doctor.AcademicId,
@@ -518,7 +577,6 @@ namespace SHCServer.Controllers
                     AllowBooking = doctor.AllowBooking,
                     AllowFilter = doctor.AllowFilter,
                     AllowSearch = doctor.AllowSearch,
-                    Avatar = _fileUpload,
                     BirthDate = doctor.BirthDate,
                     BirthMonth = doctor.BirthMonth,
                     BirthYear = doctor.BirthYear,
@@ -550,14 +608,23 @@ namespace SHCServer.Controllers
                     _context.Update<Doctor>(d => d.DoctorId == doctor.DoctorId, x => new Doctor()
                     {
                         CertificationDate = null
-                    }); ;
+                    });
                 }
 
                 if (checkCertificationDate == true)
                 {
+                    var date = DateTime.Parse(doctor.CertificationDate);
                     _context.Update<Doctor>(d => d.DoctorId == doctor.DoctorId, x => new Doctor()
                     {
-                        CertificationDate = Convert.ToDateTime(doctor.CertificationDate).AddMonths(1)
+                        CertificationDate = date
+                    });
+                }
+
+                if (doctor.Avatar!="null")
+                {
+                    _context.Update<Doctor>(d => d.DoctorId == doctor.DoctorId, x => new Doctor()
+                    {
+                        Avatar = _fileUpload
                     });
                 }
 

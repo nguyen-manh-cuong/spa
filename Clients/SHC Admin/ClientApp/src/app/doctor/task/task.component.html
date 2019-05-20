@@ -1,4 +1,4 @@
-<form [formGroup]="_frm" class="container p-relative"  id="form-dialog" novalidate>
+<form [formGroup]="_frm" class="container p-relative" id="form-dialog" novalidate>
     <div class="p-absolute t-5 r-5">
         <button mat-icon-button mat-dialog-close style="z-index: 9;" [matTooltipPosition]="'left'" matTooltip="Đóng">
             <mat-icon>close</mat-icon>
@@ -23,10 +23,10 @@
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("DoctorBirthDay")}}</mat-label>
                             <input class="custom-readonly" readonly (click)="picker.open()"
-                                mask="0*" (dateChange)="birthDayChange($event)" [max]="maxDate" matInput
-                                [matDatepicker]="picker" #birthDayPicker maxlength="10">
+                                (dateChange)="birthDayChange($event)" [max]="maxDate" matInput [matDatepicker]="picker"
+                                #birthDayPicker formControlName="birthDay">
                             <mat-datepicker-toggle matSuffix [for]="picker" class="t-2"></mat-datepicker-toggle>
-                            <mat-datepicker #picker [startAt]="_birthDay"></mat-datepicker>
+                            <mat-datepicker #picker></mat-datepicker>
                         </mat-form-field>
                     </div>
                     <div class="col-md-3">
@@ -99,17 +99,17 @@
                     <div class="col-md-4">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("DoctorCertificationDate")}}</mat-label>
-                            <input class="custom-readonly text- readonly"
+                            <input class="custom-readonly text-readonly"
                                 (click)="!_certificationInputCheck ? certificationDatePicker.open():''"
                                 matTooltip="Nhập giấy phép hành nghề trước khi nhập ngày cấp"
                                 [matTooltipDisabled]="!_certificationInputCheck"
-                                [readonly]="_certificationInputCheck || true" #certificationDatePicker
-                                (dateChange)="certificationDateChange($event.value)" mask="0*" [max]="maxDate2" matInput
-                                [matDatepicker]="certificationDatePicker" matInput maxlength="10">
+                                [readonly]="_certificationInputCheck || true" #certificationDatePicker [max]="maxDate2"
+                                matInput formControlName="certificationDate" [matDatepicker]="certificationDatePicker"
+                                matInput>
                             <mat-datepicker-toggle [disabled]="_certificationInputCheck" matSuffix
                                 [for]="certificationDatePicker" class="t-2">
                             </mat-datepicker-toggle>
-                            <mat-datepicker #certificationDatePicker [startAt]="_certificationDate">
+                            <mat-datepicker #certificationDatePicker>
                             </mat-datepicker>
                         </mat-form-field>
                     </div>
@@ -247,7 +247,7 @@
                             <mat-label class="label">{{l('DoctorAvatar')}}</mat-label>
                         </div>
                         <img style="padding: 2px"
-                            [src]="checkAvatar ? 'http://123.30.214.138:9008/wwwroot'+ (this._obj.avatar?this._obj.avatar:'') : _avatars[0] || 'https://cmkt-image-prd.global.ssl.fastly.net/0.1.0/ps/1441527/1160/772/m1/fpnw/wm0/businessman-avatar-icon-01-.jpg?1468234792&s=e3a468692e15e93a2056bd848193e97a'"
+                            [src]="checkAvatar ? uploadBaseUrl+ (this._obj.avatar?this._obj.avatar:'') : _avatars[0] || 'https://cmkt-image-prd.global.ssl.fastly.net/0.1.0/ps/1441527/1160/772/m1/fpnw/wm0/businessman-avatar-icon-01-.jpg?1468234792&s=e3a468692e15e93a2056bd848193e97a'"
                             height="175px" width="200px">
                     </div>
                     <!-- <div class="col-md-4 mt-3">
@@ -335,9 +335,8 @@
                     <div class="col-md-12">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("DoctorDescription")}}</mat-label>
-                            <input formControlName="description" matInput maxlength="4000" ngDefaultControl>
+                            <input formControlName="description" matInput maxlength="4000">
                         </mat-form-field>
-
                     </div>
                 </div>
 
@@ -354,6 +353,9 @@
                                 </mat-option>
                             </mat-autocomplete>
                         </mat-form-field> -->
+                    <div class="col-md-12" [hidden]="this.appSession.user.healthFacilitiesId">
+                        <mat-form-field appearance="outline" class="w-100"
+                        [ngClass]="{'mat-form-field-invalid':!checkHealthFacilities}">
                     <div class="col-md-12" *ngIf="appSession.user.accountType == 0">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l('HealthFacilities')}}</mat-label>

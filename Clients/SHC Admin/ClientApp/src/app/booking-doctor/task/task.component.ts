@@ -224,37 +224,50 @@ export class TaskComponent extends AppComponentBase implements OnInit {
         } 
     }
 
+    private greaterThanCurrentDate = false;
+    private fromDateMustBeGreaterThanOrEqualToDate = false;
+    private withinSevenDay = false;
+
     checkDate(): boolean{
         var toDay = new Date();
 
         if(!this.startTime.nativeElement.value || !this.endTime.nativeElement.value){
-            swal({title: this.l('Notification'), text: this.l('FromDateToDateCannotBlank'), type: 'warning', timer: 3000});
+            //swal({title: this.l('Notification'), text: this.l('FromDateToDateCannotBlank'), type: 'warning', timer: 3000});
             return true;
         }
 
         if(!moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').isValid()){
-            swal({title: this.l('Notification'), text: this.l('FromDateIncorrectFormat'), type: 'warning', timer: 3000});
+            //swal({title: this.l('Notification'), text: this.l('FromDateIncorrectFormat'), type: 'warning', timer: 3000});
             return true;
         }
 
         if(!moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').isValid()){
-            swal({title: this.l('Notification'), text: this.l('ToDateIncorrectFormat'), type: 'warning', timer: 3000});
+            //swal({title: this.l('Notification'), text: this.l('ToDateIncorrectFormat'), type: 'warning', timer: 3000});
             return true;
         }
         
-        if(moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').toDate() < new Date(toDay.getFullYear(), toDay.getMonth(), toDay.getDate())){
-            swal({title: this.l('Notification'), text: this.l('GreaterThanCurrentDate'), type: 'warning', timer: 3000});
-            return true;
+        if (moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').toDate() < new Date(toDay.getFullYear(), toDay.getMonth(), toDay.getDate())) {
+            //swal({title: this.l('Notification'), text: this.l('GreaterThanCurrentDate'), type: 'warning', timer: 3000});
+            this.greaterThanCurrentDate = true;
+        }
+        else {
+            this.greaterThanCurrentDate = false;
         }
 
-        if(((moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').valueOf() - moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').valueOf()) / (1000*60*60*24)) < 0){
-            swal({title: this.l('Notification'), text: this.l('FromDateMustBeGreaterThanOrEqualToDate'), type: 'warning', timer: 3000});
-            return true;
+        if (((moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').valueOf() - moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').valueOf()) / (1000 * 60 * 60 * 24)) < 0) {
+            //swal({title: this.l('Notification'), text: this.l('FromDateMustBeGreaterThanOrEqualToDate'), type: 'warning', timer: 3000});
+            this.fromDateMustBeGreaterThanOrEqualToDate = true;
+        }
+        else {
+            this.fromDateMustBeGreaterThanOrEqualToDate = false;
         }
 
-        if(((moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').valueOf() - moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').valueOf()) / (1000*60*60*24)) > 6){
-            swal({title: this.l('Notification'), text: this.l('Within7Day'), type: 'warning', timer: 3000});
-            return true;
+        if (((moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').valueOf() - moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').valueOf()) / (1000 * 60 * 60 * 24)) > 6) {
+            //swal({title: this.l('Notification'), text: this.l('Within7Day'), type: 'warning', timer: 3000});
+            this.withinSevenDay = true;
+        }
+        else {
+            this.withinSevenDay = false;
         }
 
         return false;

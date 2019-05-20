@@ -110,11 +110,20 @@
 }
 
 .ck.ck-reset_all, .ck.ck-reset_all{
-    margin-left: 7px;
+    margin-left: 9px;
+    margin-right: 8px;
 }
 
 input:read-only{
     color:#00695c!important;
+}
+
+textarea{
+    overflow: hidden!important;
+}
+
+.ck .ck-editor__main{
+    margin-right: -6px;
 }
 
 

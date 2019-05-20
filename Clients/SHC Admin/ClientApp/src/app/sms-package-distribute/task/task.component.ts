@@ -34,6 +34,7 @@ export class packagedistributeTaskComponent extends AppComponentBase implements 
     _currentMonth = moment().month() + 1;
     @ViewChild("yearStart") yearStart;
     @ViewChild("yearEnd") yearEnd;
+    _yearNow: number;
 
     private rules = { month: 'noSpace,capitalize', year: 'singleSpace' };
 
@@ -58,7 +59,7 @@ export class packagedistributeTaskComponent extends AppComponentBase implements 
             this._obj.yearEnd = Number(this.datePipe.transform(Date.now(), "yyyy"));
             this._obj.isActive = true;
         }
-
+        this._yearNow = new Date().getFullYear();
         this._dataService.getAll('smsbrands-all').subscribe(resp => this._brands = resp.items);
         this._dataService.getAll('healthfacilities').subscribe(resp => this._medicalFacility = resp.items);
         this._dataService.getAll('smspackages-cbo').subscribe(resp => this._package = resp.items);
@@ -89,6 +90,18 @@ export class packagedistributeTaskComponent extends AppComponentBase implements 
 
     submit() {
         const yearNow = new Date().getFullYear();
+        if(this._frmpackagedistribute.controls['yearStart'].value == this._frmpackagedistribute.controls['yearEnd'].value){
+            if(this._frmpackagedistribute.controls['monthStart'].value > this._frmpackagedistribute.controls['monthEnd'].value){
+                this.yearStart.nativeElement.focus();
+                return swal({
+                    title: 'Thông báo',
+                    text: 'Đến tháng phải lớn hơn hoặc bằng Từ tháng',
+                    type: 'warning',
+                    timer: 3000
+                });
+            }
+        }
+
         if (this._frmpackagedistribute.controls['yearStart'].value < yearNow) {
             this.yearStart.nativeElement.focus();
             return swal({

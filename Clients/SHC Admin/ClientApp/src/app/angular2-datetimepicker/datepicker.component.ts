@@ -200,6 +200,15 @@ export class DatePicker implements OnInit, ControlValueAccessor {
         this.timeViewMeridian = val;
     }
 
+    numberOnly(event): boolean {
+        const charCode = (event.which) ? event.which : event.keyCode;
+        if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+            return false;
+        }
+        return true;
+
+    }
+
     setTimeView() {
         this.date.setMinutes(this.minValue);
         this.date.setHours(this.hourValue);
@@ -237,7 +246,6 @@ export class DatePicker implements OnInit, ControlValueAccessor {
                 this.onDateSelect.emit(this.date);
             }
         }
-        console.log(this.date);
     }
     setStartDate(selectedDate: Date) {
         if (selectedDate < this.dateRange.endDate) {
@@ -278,6 +286,7 @@ export class DatePicker implements OnInit, ControlValueAccessor {
         this.date = new Date(this.date.setFullYear(selectedYear));
         this.yearView = !this.yearView;
         this.monthDays = this.generateDays(this.date);
+        this.done();
     }
     setMonth(evt: any) {
         if (evt.target.getAttribute('id')) {
@@ -285,6 +294,7 @@ export class DatePicker implements OnInit, ControlValueAccessor {
             this.date = new Date(this.date.setMonth(selectedMonth));
             this.monthsView = !this.monthsView;
             this.monthDays = this.generateDays(this.date);
+            this.done();
         }
     }
     prevMonth(e: any) {
@@ -303,6 +313,7 @@ export class DatePicker implements OnInit, ControlValueAccessor {
         }
         this.date = new Date(this.date);
         this.monthDays = this.generateDays(this.date);
+        this.done();
     }
     nextMonth(e: any) {
         e.stopPropagation();
@@ -321,6 +332,7 @@ export class DatePicker implements OnInit, ControlValueAccessor {
         }
         this.date = new Date(this.date);
         this.monthDays = this.generateDays(this.date);
+        this.done();
     }
     onChange(evt: any) {
        
@@ -396,11 +408,20 @@ export class DatePicker implements OnInit, ControlValueAccessor {
         if (this.hourValue > 23) {
             this.hourValue = 0;
         }
+
+        if (this.hourValue.toString().length > 2) {
+            this.hourValue = 0;
+        }
     }
     
     changedMinutes() {
         if (this.minValue > 59) {
             this.minValue = 0;
+        }
+
+        if (this.minValue.toString().length > 2) {
+            this.minValue = 0;
+            this.hourValue = 0;
         }
     }
 }
