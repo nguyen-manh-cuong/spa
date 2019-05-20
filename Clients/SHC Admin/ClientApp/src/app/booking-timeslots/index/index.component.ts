@@ -12,6 +12,7 @@ import { PagedListingComponentBase } from '@shared/paged-listing-component-base'
 import { TaskComponent } from '../task/task.component';
 import swal from 'sweetalert2';
 
+
 export class EntityDto {
   id: number;
   isActive: boolean;

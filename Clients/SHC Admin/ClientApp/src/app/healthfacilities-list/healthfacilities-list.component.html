@@ -8,6 +8,10 @@
       </ng-template>
 
       <div class="pt-4" *ngIf="_checkLength > 1">
+        <div class="mat-cell pl-2 pr-2 disabled divdisabled" *ngIf="appSession.user.healthFacilities">
+          <input type="checkbox" class="mycheckbox" [checked]="true" tabindex="-1">
+          <span class="myspan">{{appSession.user.healthFacilities ? appSession.user.healthFacilities.name : ""}}</span> 
+        </div>
         <div *ngFor="let el of _usersHealthfacilities; index as i" class="mat-cell pl-2 pr-2" [hidden]="appSession.user.healthFacilities && (appSession.user.healthFacilities.healthFacilitiesId == el.healthFacilitiesId)">
           <input type="checkbox" class="mycheckbox" id="{{i}}" (change)="getHealthFacilities(el, i, $event)" [checked]="i == _checked">
           <span class="myspan">{{el.name}}</span> 
