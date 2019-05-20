@@ -344,7 +344,7 @@ export class DatePicker implements OnInit, ControlValueAccessor {
             this.hourValue = parseInt(this.hourValue.toString().slice(-1));
         }
         if (this.hourValue < 23) {
-            this.hourValue += 1;
+            this.hourValue = parseInt(this.hourValue.toString()) + 1;
         }
     }
     decHour() {
@@ -357,7 +357,7 @@ export class DatePicker implements OnInit, ControlValueAccessor {
             this.minValue = parseInt(this.minValue.toString().slice(-1));
         }
         if (this.minValue < 59) {
-            this.minValue += 1;
+            this.minValue = parseInt(this.minValue.toString()) + 1;
         }
     }
     decMinutes() {

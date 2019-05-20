@@ -81,7 +81,11 @@ namespace SHCServer.Controllers
         public IActionResult Create([FromBody] SmsTemplateInputViewModel sms)
         {
             string sql = $"SELECT COUNT(*) as SLL FROM smarthealthcare.sms_template where BINARY SmsTemplateName = '{sms.SmsTemplateName}' " +
-                $"and {sms.IsDelete} = false and (HealthFacilitiesId = '{sms.HealthFacilitiesId}' or {sms.HealthFacilitiesId} = null)";
+                $"and {sms.IsDelete} = false";
+            if (sms.HealthFacilitiesId != null)
+            {
+                sql = sql + $" HealthFacilitiesId = {sms.HealthFacilitiesId}";
+            }
 
             List<string> clause = new List<string>();
             List<DbParam> param = new List<DbParam>();
