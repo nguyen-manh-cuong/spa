@@ -42,7 +42,7 @@
                     </mat-select>
                 </mat-form-field>
             </div>
-            <div class="col-md-8 fadeIn animated">
+            <div class="col-md-{{appSession.user.accountType == 0 ? 8 : 4}} fadeIn animated">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l("Tìm kiếm")}}</mat-label>
                     <input maxlength="255" placeholder="Họ tên, Số điện thoại, Mã đặt khám"

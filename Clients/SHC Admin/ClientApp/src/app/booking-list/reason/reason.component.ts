@@ -18,7 +18,7 @@ import swal from 'sweetalert2';
     styleUrls: ['./reason.component.scss']
 })
 export class ReasonComponent extends AppComponentBase implements OnInit {
-    api: string = 'bookinginformations';
+    api: string = 'bookinglist';
     _context: any;
     _frm: FormGroup;
     

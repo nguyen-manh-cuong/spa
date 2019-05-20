@@ -92,7 +92,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     }
 
     ngOnInit() {
-        this.api = 'smsmanual';
+        this.api = 'smsmanualbirthday';
         this.frmSearch = this._formBuilder.group({
             healthfacilities: [],
             doctor: [],

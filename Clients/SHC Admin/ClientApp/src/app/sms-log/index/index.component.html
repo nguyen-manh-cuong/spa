@@ -19,7 +19,7 @@
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('Unit')}}</mat-label>
                     <input matInput [formControl]="healthfacilities" [matAutocomplete]="auto">
-                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="onSelectHealthFacilities($event.option.value)">
+                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
                         <mat-option *ngIf="isLoading" class="is-loading"><mat-spinner diameter="30"></mat-spinner></mat-option>
                         <mat-option *ngFor="let o of _healthfacilities" [value]="o">
                             {{o.code + ' - ' + o.name}}

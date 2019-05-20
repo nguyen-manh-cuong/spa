@@ -74,7 +74,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
     }
 
     ngOnInit() {
-        this.api = 'bookinginformations';              
+        this.api = 'bookinglist';              
         this.frmSearch = this._formBuilder.group({
             healthfacilities: [],
             doctor: [],
@@ -328,7 +328,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
 
     customSearch() {
         
-        this.bookingService.nativeElement.value ? this.frmSearch.controls['bookingService'].setValue('') : '';
+        // this.bookingService.nativeElement.value ? this.frmSearch.controls['bookingService'].setValue('') : '';
 
         if (this.frmSearch.controls['packagesNameDescription'].value != null) {
             this.frmSearch.controls['packagesNameDescription'].setValue(this.frmSearch.controls['packagesNameDescription'].value.trim());
