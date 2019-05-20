@@ -62,6 +62,13 @@ export class AppPreBootstrap {
 
             $.extend(true, abp, result);
 
+            abp.ajax({
+                url: AppConsts.remoteServiceBaseUrl + '/usershealthfacilities?filter=' + JSON.stringify({userId : abp.session.userId}),
+                method: 'GET'
+            }).done(resp => {
+                (abp.session as any).healthFacilities = resp.items;
+            })
+
             if (result.nav) {
                 abp.nav.menus['mainMenu'].items = (JSON.parse(result.nav.menus.mainMenu.items).items);
                 (<any>abp.nav.menus['mainMenu'].items).unshift({ name: 'HomePage', value: { name: 'HomePage', routeId: 0, route: '' }, items: [], route: '/app/dashboard' })

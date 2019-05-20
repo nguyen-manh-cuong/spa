@@ -1,10 +1,13 @@
 <form id="form-dialog" class="container p-relative" novalidate>
   <div class="p-absolute t-5 r-5">
+    <button *ngIf="appSession.user.healthFacilities" mat-icon-button mat-dialog-close style="z-index: 9;" [matTooltipPosition]="'left'" matTooltip="Đóng">
+        <mat-icon>close</mat-icon>
+    </button>
   </div>
   <mat-tab-group>
     <mat-tab>
       <ng-template mat-tab-label>
-        {{_checkLength > 1 ? "Chọn cơ sở y tế" : "Thông báo"}}
+        {{_checkLength > 1 ? "Chọn phòng khám" : "Thông báo"}}
       </ng-template>
 
       <div class="pt-4" *ngIf="_checkLength > 1">

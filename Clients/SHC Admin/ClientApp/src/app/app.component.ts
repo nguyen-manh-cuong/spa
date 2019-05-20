@@ -86,35 +86,33 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
     ngOnInit(): void {
         // SignalRAspNetCoreHelper.initSignalR();
         if(this.appSession.user.accountType != 0){
-            this._dataService
-            .get("usershealthfacilities", JSON.stringify({userId : abp.session.userId}), '', null, null)
-            .subscribe(resp => { 
-                var check = true;
-                if(resp && resp.items && resp.items.length){
-                    if(resp.items.length > 1){
-                        for (let index = 0; index < resp.items.length; index++) {
-                            if(resp.items[index].isDefault == true) {
-                                this.appSession.user.healthFacilitiesId = resp.items[index].healthFacilitiesId;
-                                this.appSession.user.healthFacilities = resp.items[index];
-                                check = false;
-                                break;
-                            }
+            var healthFacilities = (abp.session as any).healthFacilities;
+            var check = true;
+            console.log(92, healthFacilities, healthFacilities.length);
+            if(healthFacilities.length){
+                if(healthFacilities.length > 1){
+                    for (let index = 0; index < healthFacilities.length; index++) {
+                        if(healthFacilities[index].isDefault == true) {
+                            this.appSession.user.healthFacilitiesId = healthFacilities[index].healthFacilitiesId;
+                            this.appSession.user.healthFacilities = healthFacilities[index];
+                            check = false;
+                            break;
                         }
-                    } else{
-                        check = false;
-                        this.appSession.user.healthFacilitiesId = resp.items[0].healthFacilitiesId;
-                        this.appSession.user.healthFacilities = resp.items[0];
-                        this._dataService.update('usershealthfacilities', {
-                            userId: abp.session.userId,
-                            healthFacilitiesId: resp.items[0].healthFacilitiesId
-                        }).subscribe(resp => {}, err => {});
                     }
-
-                    if(check == true) this._dialog.open(HealthfacilitiesListComponent, { minWidth: 'calc(100vw/3)', maxWidth: 'calc(100vw - 300px)', disableClose: true, data: resp.items});
                 } else{
-                    this._dialog.open(HealthfacilitiesListComponent, { minWidth: 'calc(100vw/3)', maxWidth: 'calc(100vw - 300px)', disableClose: true, data: []});
+                    check = false;
+                    this.appSession.user.healthFacilitiesId = healthFacilities[0].healthFacilitiesId;
+                    this.appSession.user.healthFacilities = healthFacilities[0];
+                    this._dataService.update('usershealthfacilities', {
+                        userId: abp.session.userId,
+                        healthFacilitiesId: healthFacilities[0].healthFacilitiesId
+                    }).subscribe(resp => {}, err => {});
                 }
-            }); 
+
+                if(check == true) this._dialog.open(HealthfacilitiesListComponent, { minWidth: 'calc(100vw/3)', maxWidth: 'calc(100vw - 300px)', disableClose: true, data: healthFacilities});
+            } else{
+                this._dialog.open(HealthfacilitiesListComponent, { minWidth: 'calc(100vw/3)', maxWidth: 'calc(100vw - 300px)', disableClose: true, data: []});
+            }
         }
 
         this.languages = _.filter(this.localization.languages, l => (<any>l).isDisabled === false);
