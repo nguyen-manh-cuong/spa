@@ -9,65 +9,33 @@
             <ng-template mat-tab-label>
                 {{_isNew ? l("CreateNew") : l("Edit")}} {{ll("DoctorTitle")}}
             </ng-template>
-
             <div class="pt-4 mr-3">
-                <div class="row pb-3">
-                    <div class="col-md-3">
-                        <div style="margin-bottom:-4px" class="ml-1">
-                            <mat-label class="label">{{l('DoctorAvatar')}}</mat-label>
-                        </div>
-                        <img style="padding: 2px"
-                            [src]="checkAvatar ? 'http://123.30.214.138:9008/wwwroot'+ (this._obj.avatar?this._obj.avatar:'') : _avatars[0] || 'https://cmkt-image-prd.global.ssl.fastly.net/0.1.0/ps/1441527/1160/772/m1/fpnw/wm0/businessman-avatar-icon-01-.jpg?1468234792&s=e3a468692e15e93a2056bd848193e97a'"
-                            height="175px" width="200px">
-                    </div>
-                    
-                    <!-- <div class="col-md-4 mt-3">
-                                        <div class="col-md-3 btn btn-primary">
-                                            <br>
-                                            <div class="upload-button">
-                                                <input type="file" accept="image/*" (change)="detectFiles($event)">
-                                            </div>
-                                        </div>
-                                        <div class="pl-3">
-                                            {{_avatarError}}<span>&nbsp;</span>
-                                            <br>
-                                            <mat-label>Ảnh định dạng png, jpg, jpeg</mat-label>
-                                            <br>
-                                            <mat-label>Dung lượng ảnh không quá 2Mb</mat-label>
-                                        </div>
-                                    </div> -->
-
-                </div>
                 <div class="row">
-                    <div class="col-md-9">
-                        <div class="row">
-                            <div class="col-md-3">
-                                <mat-form-field appearance="outline" class="w-100">
-                                    <mat-label>{{l("DoctorName")}}</mat-label>
-                                    <input (keyup)="fullNameInput($event)" formControlName="fullName" matInput
-                                        [required]="true" maxlength="255">
-                                    <validation matSuffix [control]="_frm.controls['fullName']"></validation>
-                                </mat-form-field>
-                            </div>
-                            <div class="col-md-3 class-icon">
-                                <mat-form-field appearance="outline" class="w-100">
-                                    <mat-label>{{l("DoctorBirthDay")}}</mat-label>
-                                    <input class="custom-readonly" readonly (click)="picker.open()"
-                                        (dateChange)="birthDayChange($event)" [max]="maxDate" matInput
-                                        [matDatepicker]="picker" #birthDayPicker formControlName="birthDay">
-                                    <mat-datepicker-toggle matSuffix [for]="picker" class="t-2"></mat-datepicker-toggle>
-                                    <mat-datepicker #picker></mat-datepicker>
-                                </mat-form-field>
-                            </div>
-                            <div class="col-md-3">
-                                <mat-form-field appearance="outline" class="w-100">
-                                    <mat-label>{{l('DoctorGender')}}</mat-label>
-                                    <mat-select formControlName="gender">
-                                        <mat-option *ngFor="let g of genders" [value]="g.code">{{g.name}}</mat-option>
-                                    </mat-select>
-                                </mat-form-field>
-                            </div>
-                        </div>
+                    <div class="col-md-6">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l("DoctorName")}}</mat-label>
+                            <input (keyup)="fullNameInput($event)" formControlName="fullName" matInput [required]="true"
+                                maxlength="255">
+                            <validation matSuffix [control]="_frm.controls['fullName']"></validation>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-3 class-icon">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l("DoctorBirthDay")}}</mat-label>
+                            <input class="custom-readonly" readonly (click)="picker.open()"
+                                (dateChange)="birthDayChange($event)" [max]="maxDate" matInput [matDatepicker]="picker"
+                                #birthDayPicker formControlName="birthDay">
+                            <mat-datepicker-toggle matSuffix [for]="picker" class="t-2"></mat-datepicker-toggle>
+                            <mat-datepicker #picker></mat-datepicker>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-3">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l('DoctorGender')}}</mat-label>
+                            <mat-select formControlName="gender">
+                                <mat-option *ngFor="let g of genders" [value]="g.code">{{g.name}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
                     </div>
                 </div>
 
@@ -273,6 +241,47 @@
                     </div>
                 </div>
 
+                <div class="row pb-3">
+                    <div class="col-md-3">
+                        <div style="margin-bottom:-4px" class="ml-1">
+                            <mat-label class="label">{{l('DoctorAvatar')}}</mat-label>
+                        </div>
+                        <img style="padding: 2px"
+                            [src]="checkAvatar ? 'http://10.60.156.61:9008/wwwroot'+ (this._obj.avatar?this._obj.avatar:'') : _avatars[0] || 'https://cmkt-image-prd.global.ssl.fastly.net/0.1.0/ps/1441527/1160/772/m1/fpnw/wm0/businessman-avatar-icon-01-.jpg?1468234792&s=e3a468692e15e93a2056bd848193e97a'"
+                            height="175px" width="200px">
+                    </div>
+                    <!-- <div class="col-md-4 mt-3">
+                        <div class="col-md-3 btn btn-primary">
+                            <br>
+                            <div class="upload-button">
+                                <input type="file" accept="image/*" (change)="detectFiles($event)">
+                            </div>
+                        </div>
+                        <div class="pl-3">
+                            {{_avatarError}}<span>&nbsp;</span>
+                            <br>
+                            <mat-label>Ảnh định dạng png, jpg, jpeg</mat-label>
+                            <br>
+                            <mat-label>Dung lượng ảnh không quá 2Mb</mat-label>
+                        </div>
+                    </div> -->
+
+                    <div class="col-md-3 mt-4 image-uploader text-muted" data-name="first"
+                        data-description="Ảnh đại diện">
+                        <div class="upload-content">
+                            <span class="upload-description"></span>
+                            <span class="upload-button mt-3">
+                                <input #dataContainer type="file" accept="image/*" (change)="detectFiles($event)"><span
+                                    class="btn btn-sm btn-primary-inverted">
+                                    <i class="fa fa-paperclip" aria-hidden="true"></i>Tải ảnh lên
+                                </span>
+                            </span>
+                        </div>
+                        <div class="ml-1 upload-content avatar-name">
+                            <mat-label>{{checkAvatar==true?'':avatarName}}</mat-label>
+                        </div>
+                    </div>
+                </div>
 
 
                 <div class="row">
@@ -346,7 +355,7 @@
                         </mat-form-field> -->
                     <div class="col-md-12" [hidden]="this.appSession.user.healthFacilitiesId">
                         <mat-form-field appearance="outline" class="w-100"
-                            [ngClass]="{'mat-form-field-invalid':!checkHealthFacilities}">
+                        [ngClass]="{'mat-form-field-invalid':!checkHealthFacilities}">
                             <mat-label>{{l('HealthFacilities')}}</mat-label>
                             <mat-chip-list #chipList>
                                 <mat-chip *ngFor="let o of _healthfacilitiesChip" [selectable]="selectable"
