@@ -74,6 +74,13 @@
             <!-- 3 -->
             <div class="col-md-3">
                 <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Mã y tế cá nhân</mat-label>
+                    <input formControlName="healthInsuranceNumber" #healthInsuranceNumber matInput>
+                </mat-form-field>
+            </div>
+
+            <div class="col-md-3">
+                <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l("Số điện thoại")}}</mat-label>
                     <input formControlName="phoneNumber" matInput mask="0*" maxlength="20">
                 </mat-form-field>
@@ -114,7 +121,7 @@
                     </mat-select>
                 </mat-form-field>
             </div>
-
+          
             <div class="col-md-2">
                 <mat-form-field appearance="outline" class="w-100">
                     <input formControlName="ageFist" #ageFist matInput mask="0*" maxlength="3" min="0" max="999">

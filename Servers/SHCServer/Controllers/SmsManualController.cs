@@ -263,6 +263,12 @@ namespace SHCServer.Controllers
                     string _query = $"AND  {yearNow} - p.BirthYear {compareLast} {data["ageLast"]}";
                     clause.Add(_query);
                 }
+
+                if (data.ContainsKey("healthInsuranceNumber") && data["healthInsuranceNumber"] != "")
+                {
+                    clause.Add("AND h.HealthInsuranceNumber = @healthInsuranceNumber");
+                    param.Add(DbParam.Create("@healthInsuranceNumber", data["healthInsuranceNumber"].ToString()));
+                }
             }
 
             clause.Add(" group by p.Code");

@@ -50,8 +50,8 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     _healthfacilities = [];
     _currentYear = new Date().getFullYear();
     _sex = [{ id: 0, name: 'Tất cả' }, { id: 1, name: 'Nam' }, { id: 2, name: 'Nữ' }, { id: 3, name: 'Không xác định' }];
-    _compareFist = [{ id: 0, name: '>=' }, { id: 1, name: '>' }];
-    _compareLast = [{ id: 0, name: '<=' }, { id: 1, name: '<' }];
+    _compareFist = [{ id: '>=', name: '>=' }, { id: '>', name: '>' }];
+    _compareLast = [{ id: '<=', name: '<=' }, { id: '<', name: '<' }];
 
     selection = new SelectionModel<IMedicalHealthcareHistories>(true, []);
 
@@ -79,6 +79,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     @ViewChild("compareFist") compareFist;
     @ViewChild("compareLast") compareLast;
     @ViewChild("birthYear") birthYear;
+    @ViewChild("healthInsuranceNumber") healthInsuranceNumber;
 
     dialogDetail: any;
 
@@ -107,7 +108,8 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
             ageLast: [],
             compareFist: [],
             compareLast: [],
-            birthYear: []
+            birthYear: [],
+            healthInsuranceNumber: []
         });
 
         this.dialogComponent = TaskComponent;
@@ -128,7 +130,6 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
 
         this.dialogDetail = DetailComponent;
     }
-
 
     isAllSelected() {
         const numSelected = this.selection.selected.length;
@@ -371,7 +372,9 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
         }
         else {
             this.healthfacilities.value ? this.frmSearch.controls['healthfacilities'].setValue(this.healthfacilities.value.healthFacilitiesId) : (this.appSession.user.healthFacilitiesId == null ? this.frmSearch.controls['healthfacilities'].setValue(null) : '');
-        }
+        } 
+
+        this.healthInsuranceNumber.nativeElement.value ? this.frmSearch.controls['healthInsuranceNumber'].setValue(this.healthInsuranceNumber.nativeElement.value) : this.frmSearch.controls['healthInsuranceNumber'].setValue('');
 
         this.birthday.nativeElement.value ? this.frmSearch.controls['birthdayDate'].setValue(moment(this.birthday.nativeElement.value, 'DD/MM/YYYY').toDate().getDate()) : this.frmSearch.controls['birthdayDate'].setValue('');
 
@@ -387,11 +390,11 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     }
 
     onSelectCompareFist(value) {
-        value == '0' ? this.frmSearch.controls['compareFist'].setValue('>=') : this.frmSearch.controls['compareFist'].setValue('>');
+        this.frmSearch.controls['compareFist'].setValue(value);
     }
 
     onSelectCompareLast(value) {
-        value == '0' ? this.frmSearch.controls['compareLast'].setValue('<=') : this.frmSearch.controls['compareLast'].setValue('<');
+        this.frmSearch.controls['compareLast'].setValue(value);
     }
 
     showMess() {
