@@ -340,11 +340,13 @@ export class DatePicker implements OnInit, ControlValueAccessor {
 
 
     incHour() {
-        if (this.hourValue.toString().length > 1 && this.hourValue < 10) {
-            this.hourValue = parseInt(this.hourValue.toString().slice(-1));
-        }
-        if (this.hourValue < 23) {
-            this.hourValue = parseInt(this.hourValue.toString()) + 1;
+        if (this.hourValue.toString().length > 1) {
+            if (this.hourValue.toString().length > 1 && this.hourValue < 10) {
+                this.hourValue = parseInt(this.hourValue.toString().slice(-1));
+            }
+            if (this.hourValue < 23) {
+                this.hourValue = parseInt(this.hourValue.toString()) + 1;
+            }
         }
     }
     decHour() {
@@ -353,11 +355,13 @@ export class DatePicker implements OnInit, ControlValueAccessor {
         }
     }
     incMinutes() {
-        if (this.minValue.toString().length > 1 && this.minValue < 10) {
-            this.minValue = parseInt(this.minValue.toString().slice(-1));
-        }
-        if (this.minValue < 59) {
-            this.minValue = parseInt(this.minValue.toString()) + 1;
+        if (this.hourValue.toString().length > 1) {
+            if (this.minValue.toString().length > 1 && this.minValue < 10) {
+                this.minValue = parseInt(this.minValue.toString().slice(-1));
+            }
+            if (this.minValue < 59) {
+                this.minValue = parseInt(this.minValue.toString()) + 1;
+            }
         }
     }
     decMinutes() {
