@@ -50,7 +50,7 @@ export class packagedistributeIndexComponent extends PagedListingComponentBase<I
             monthEnd: [13,],
             toYear: ['', [Validators.maxLength(4), Validators.min(0), Validators.max(9999), Validators.pattern('[0-9]*')]],
             fromYear: ['', [Validators.maxLength(4), Validators.min(0), Validators.max(9999), Validators.pattern('[0-9]*')]],
-            HealthFacilitiesId: [[this.appSession.user.healthFacilitiesId],],
+            HealthFacilitiesId: [this.appSession.user.healthFacilities ? [this.appSession.user.healthFacilitiesId] : '',],
             Status: [2,],
         });
 
