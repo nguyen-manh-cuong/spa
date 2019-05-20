@@ -74,6 +74,13 @@
             <!-- 3 -->
             <div class="col-md-3">
                 <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Mã y tế cá nhân</mat-label>
+                    <input formControlName="healthInsuranceNumber" #healthInsuranceNumber matInput>
+                </mat-form-field>
+            </div>
+
+            <div class="col-md-3">
+                <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l("Số điện thoại")}}</mat-label>
                     <input formControlName="phoneNumber" matInput mask="0*" maxlength="20">
                 </mat-form-field>
@@ -90,7 +97,7 @@
 
             <div class="col-md-12"></div>
 
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('Ngày sinh')}}</mat-label>
                     <input matInput #birthday [matDatepicker]="picker" style="cursor: pointer" readonly (click)="picker.open()">
@@ -106,25 +113,25 @@
                 </mat-form-field>
             </div>
 
-            <div class="col-md-1">
+            <div class="col-md-2">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>Tuổi từ</mat-label>
-                    <mat-select formControlName="compareFist" #compareFist>
+                    <mat-select formControlName="compareFist" #compareFist (selectionChange)="onSelectCompareFist($event.value)">
                         <mat-option *ngFor="let o of _compareFist" [value]="o.id">{{ o.name }}</mat-option>
                     </mat-select>
                 </mat-form-field>
             </div>
-
+          
             <div class="col-md-2">
                 <mat-form-field appearance="outline" class="w-100">
                     <input formControlName="ageFist" #ageFist matInput mask="0*" maxlength="3" min="0" max="999">
                 </mat-form-field>
             </div>
 
-            <div class="col-md-1">
+            <div class="col-md-2">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>Đến</mat-label>
-                    <mat-select formControlName="compareLast" #compareLast>
+                    <mat-select formControlName="compareLast" #compareLast (selectionChange)="onSelectCompareLast($event.value)">
                         <mat-option *ngFor="let o of _compareLast" [value]="o.id">{{ o.name }}</mat-option>
                     </mat-select>
                 </mat-form-field>

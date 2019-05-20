@@ -244,8 +244,8 @@ namespace SHCServer.Controllers
                 }
 
                 int yearNow = DateTime.Now.Year;
-                string compareFisrt = data.ContainsKey("compareFist") ? data["compareFist"] : ">=";
-                string compareLast = data.ContainsKey("compareLast") ? data["compareLast"] : "<=";
+                string compareFisrt = data.ContainsKey("compareFist") ? data["compareFist"].ToString() : ">=";
+                string compareLast = data.ContainsKey("compareLast") ? data["compareLast"].ToString() : "<=";
 
                 if (data.ContainsKey("birthYear") && data["birthYear"] != "")
                 {
@@ -262,6 +262,12 @@ namespace SHCServer.Controllers
                 {
                     string _query = $"AND  {yearNow} - p.BirthYear {compareLast} {data["ageLast"]}";
                     clause.Add(_query);
+                }
+
+                if (data.ContainsKey("healthInsuranceNumber") && data["healthInsuranceNumber"] != "")
+                {
+                    clause.Add("AND h.HealthInsuranceNumber = @healthInsuranceNumber");
+                    param.Add(DbParam.Create("@healthInsuranceNumber", data["healthInsuranceNumber"].ToString()));
                 }
             }
 

@@ -110,8 +110,8 @@
 }
 
 .ck.ck-reset_all, .ck.ck-reset_all{
-    margin-left: 7px;
-    margin-right: 15px;
+    margin-left: 9px;
+    margin-right: 8px;
 }
 
 input:read-only{
@@ -120,6 +120,10 @@ input:read-only{
 
 textarea{
     overflow: hidden!important;
+}
+
+.ck .ck-editor__main{
+    margin-right: -6px;
 }
 
 

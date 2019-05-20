@@ -19,7 +19,7 @@
 <div class="content fadeIn animated">
     <form [formGroup]="frmSearch" class="form-filter pl-2 pr-2" novalidate>
         <div class="row m-0 pt-4">
-            <div class="col-md-3 fadeIn animated">
+            <div [hidden]="this.appSession.user.healthFacilitiesId" class="col-md-3 fadeIn animated">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l("Province")}}</mat-label>
                     <mat-select #province formControlName="provinceCode" (selectionChange)="provinceChange($event)">
@@ -28,10 +28,28 @@
                     </mat-select>
                 </mat-form-field>
             </div>
-            <div class="col-md-3 fadeIn animated">
+            <div [hidden]="!this.appSession.user.healthFacilitiesId" class="col-md-3 fadeIn animated disabled">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>{{l("Province")}}</mat-label>
+                    <mat-select #province formControlName="provinceCode" (selectionChange)="provinceChange($event)">
+                        <mat-option class="text-center">{{l('CancelSelect')}}</mat-option>
+                        <mat-option *ngFor="let p of _provinces" [value]="p.provinceCode">{{p.name}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div [hidden]="this.appSession.user.healthFacilitiesId" class="col-md-3 fadeIn animated">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l("District")}}</mat-label>
                     <mat-select formControlName="districtCode" (selectionChange)="districtChange(province,$event)">
+                        <mat-option *ngIf="checkProvince" class="text-center">{{l('CancelSelect')}}</mat-option>
+                        <mat-option *ngFor="let d of _districts" [value]="d.districtCode">{{d.name}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div [hidden]="!this.appSession.user.healthFacilitiesId" class="col-md-3 fadeIn animated disabled">
+                <mat-form-field [hidden]="!this.appSession.user.healthFacilitiesId" appearance="outline" class="w-100">
+                    <mat-label>{{l("District")}}</mat-label>
+                    <mat-select  formControlName="districtCode" (selectionChange)="districtChange(province,$event)">
                         <mat-option *ngIf="checkProvince" class="text-center">{{l('CancelSelect')}}</mat-option>
                         <mat-option *ngFor="let d of _districts" [value]="d.districtCode">{{d.name}}</mat-option>
                     </mat-select>

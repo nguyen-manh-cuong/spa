@@ -21,7 +21,7 @@
             <div class="col-md-3">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('PackageDistributeMonth')}}</mat-label>
-                    <mat-select formControlName="monthStart">
+                    <mat-select formControlName="monthStart" (selectionChange)="onSelectMonthStart($event.value)">
                         <mat-option *ngFor="let o of _month" [value]="o.id">{{ o.name }}</mat-option>
                     </mat-select>
                 </mat-form-field>
@@ -44,7 +44,7 @@
             <div class="col-md-3">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('Đến tháng')}}</mat-label>
-                    <mat-select formControlName="monthEnd">
+                    <mat-select formControlName="monthEnd" (selectionChange)="onSelectMonthEnd($event.value)">
                         <mat-option *ngFor="let o of _month" [value]="o.id">{{ o.name }}</mat-option>
                     </mat-select>
                 </mat-form-field>
@@ -71,7 +71,7 @@
                 </mat-form-field>
             </div>
             <div class="col-md-3 text-center d-flex align-self-center fadeIn animated">
-                <button #btnSearch mat-stroked-button color="primary" (click)="btnSearchClicks$.next($event)" class="w-100 mb-4">
+                <button #btnSearch mat-stroked-button color="primary" (click)="customSearch()" class="w-100 mb-4">
                     <mat-icon class="mr-2">search</mat-icon>{{l("Search")}}
                 </button>
             </div>
