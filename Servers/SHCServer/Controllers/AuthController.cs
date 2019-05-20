@@ -228,12 +228,12 @@ namespace SHCServer.Controllers
                     _context.Insert(() => new UsersServices
                     {
                         UserId = user.Id,
-                        isUsingCall = obj.isUsingCall != null ? obj.isUsingCall : false,
-                        isUsingdoctor = obj.isUsingdoctor != null ? obj.isUsingdoctor : false,
-                        isUsingExamination = obj.isUsingExamination != null ? obj.isUsingExamination : false,
-                        isUsingRegister = obj.isUsingRegister != null ? obj.isUsingRegister : false,
-                        isUsingUpload = obj.isUsingUpload != null ? obj.isUsingUpload : false,
-                        isUsingVideo = obj.isUsingVideo != null ? obj.isUsingVideo : false,
+                        IsUsingCall = obj.isUsingCall != null ? obj.isUsingCall : false,
+                        IsUsingdoctor = obj.isUsingdoctor != null ? obj.isUsingdoctor : false,
+                        IsUsingExamination = obj.isUsingExamination != null ? obj.isUsingExamination : false,
+                        IsUsingRegister = obj.isUsingRegister != null ? obj.isUsingRegister : false,
+                        IsUsingUpload = obj.isUsingUpload != null ? obj.isUsingUpload : false,
+                        IsUsingVideo = obj.isUsingVideo != null ? obj.isUsingVideo : false,
                     });
                 }
 
