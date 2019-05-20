@@ -94,8 +94,8 @@
             <div class="col-md-5" [hidden]="this.appSession.user.healthFacilitiesId">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('Unit')}}</mat-label>
-                    <input matInput [formControl]="healthfacilities" [matAutocomplete]="auto">
-                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                    <input (input)="inputHealthFacilitest($event)" matInput [formControl]="healthfacilities" [matAutocomplete]="auto">
+                    <mat-autocomplete (optionSelected)="onSelectHealthFacilities($event.option.value)" #auto="matAutocomplete" [displayWith]="displayFn">
                         <mat-option *ngIf="isLoading" class="is-loading"><mat-spinner diameter="30"></mat-spinner></mat-option>
                         <mat-option *ngFor="let o of _healthfacilities" [value]="o">
                             {{o.code + ' - ' + o.name}}
@@ -143,8 +143,8 @@
             </ng-container>
             <ng-container matColumnDef="fullName">
                 <th mat-header-cell *matHeaderCellDef class="min-w-150 text-center"> {{l('DoctorName')}} </th>
-                <td mat-cell *matCellDef="let element" class="min-w-150 td-left wrap-text-word"><b
-                        (click)="detailDialogDoctor(element)"><u class="cursor">{{element.fullName}}</u> </b></td>
+                <td mat-cell title="{{element.fullName}}" *matCellDef="let element" class="min-w-150 td-left wrap-text-word"><b
+                        (click)="detailDialogDoctor(element)"><u class="cursor">{{element.fullName}}</u></b></td>
             </ng-container>
             <ng-container matColumnDef="specialist">
                 <th mat-header-cell *matHeaderCellDef class="min-w-300 text-center"> {{l('DoctorSpecialist')}} </th>
@@ -158,8 +158,8 @@
             </ng-container>
             <ng-container matColumnDef="address">
                 <th mat-header-cell *matHeaderCellDef class="min-w-200 text-center"> {{l('Address')}}</th>
-                <td mat-cell *matCellDef="let element" class="min-w-200 td-left wrap-text-word">
-                    {{element.address}}</td>
+                <td mat-cell title="{{element.address}}" *matCellDef="let element" class="min-w-200 td-left wrap-text-word">
+                    {{cutstring(element.address)}}</td>
             </ng-container>
             <ng-container matColumnDef="priceFrom">
                 <th mat-header-cell *matHeaderCellDef class="min-w-40 text-center"> {{l('DoctorPrice')}}</th>
