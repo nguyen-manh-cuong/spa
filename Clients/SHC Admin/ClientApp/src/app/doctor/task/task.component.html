@@ -353,11 +353,9 @@
                                 </mat-option>
                             </mat-autocomplete>
                         </mat-form-field> -->
-                    <div class="col-md-12" [hidden]="this.appSession.user.healthFacilitiesId">
-                        <mat-form-field appearance="outline" class="w-100"
-                        [ngClass]="{'mat-form-field-invalid':!checkHealthFacilities}">
+                        
                     <div class="col-md-12" *ngIf="appSession.user.accountType == 0">
-                        <mat-form-field appearance="outline" class="w-100">
+                        <mat-form-field appearance="outline" class="w-100" [ngClass]="{'mat-form-field-invalid':!checkHealthFacilities}">
                             <mat-label>{{l('HealthFacilities')}}</mat-label>
                             <mat-chip-list #chipList>
                                 <mat-chip *ngFor="let o of _healthfacilitiesChip" [selectable]="selectable"

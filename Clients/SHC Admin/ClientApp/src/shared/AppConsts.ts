@@ -1,8 +1,7 @@
 export class AppConsts {
 
     static remoteServiceBaseUrl: string;
-
-    static gatewayServiceBaseUrl: string;
+    static serverBaseUrl: string; 
 
     static uploadBaseUrl: string;
 
