@@ -808,15 +808,6 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
 
 
   ruleEmail() {
-    var control = this._frm.controls['email'];
-
-    var f = control.value.substring(0, control.value.indexOf('@'));
-
-    var s = control.value.substring(control.value.indexOf('@'), control.value.length);
-
-    s = s.replace(/-/g, "");
-
-    control.setValue(f + s);
     
   }
 
