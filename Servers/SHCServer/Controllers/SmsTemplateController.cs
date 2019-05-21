@@ -84,7 +84,7 @@ namespace SHCServer.Controllers
                 $"and {sms.IsDelete} = false";
             if (sms.HealthFacilitiesId != null)
             {
-                sql = sql + $" and HealthFacilitiesId = {sms.HealthFacilitiesId}";
+                sql = sql + $" and (HealthFacilitiesId = {sms.HealthFacilitiesId} or HealthFacilitiesId = null)";
             }
 
             List<string> clause = new List<string>();
