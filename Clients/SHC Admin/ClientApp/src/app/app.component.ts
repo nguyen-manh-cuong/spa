@@ -89,7 +89,7 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
             var healthFacilities = (abp.session as any).healthFacilities;
             var check = true;
 
-            if(healthFacilities.length){
+            if(healthFacilities && healthFacilities.length){
                 if(healthFacilities.length > 1){
                     for (let index = 0; index < healthFacilities.length; index++) {
                         if(healthFacilities[index].isDefault == true) {
@@ -109,7 +109,7 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
                     }).subscribe(resp => {}, err => {});
                 }
 
-                if(check == true) this._dialog.open(HealthfacilitiesListComponent, { minWidth: 'calc(100vw/3)', maxWidth: 'calc(100vw - 300px)', disableClose: true, data: healthFacilities});
+                if(check == true) this._dialog.open(HealthfacilitiesListComponent, { minWidth: 'calc(100vw/3)', maxWidth: 'calc(100vw - 300px)', disableClose: true, data: healthFacilities ? healthFacilities : null});
             } else{
                 this._dialog.open(HealthfacilitiesListComponent, { minWidth: 'calc(100vw/3)', maxWidth: 'calc(100vw - 300px)', disableClose: true, data: []});
             }

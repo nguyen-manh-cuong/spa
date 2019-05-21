@@ -58,8 +58,7 @@ export class AppPreBootstrap {
                 AppId: AppConsts.appId,
                 Authorization: 'Bearer ' + (token ? token : '')
             }
-        }).done(result => {
-
+        }).done(result => {                        
             $.extend(true, abp, result);
 
             abp.ajax({
@@ -67,23 +66,23 @@ export class AppPreBootstrap {
                 method: 'GET'
             }).done(resp => {
                 (abp.session as any).healthFacilities = resp.items;
+
+                if (result.nav) {
+                    abp.nav.menus['mainMenu'].items = (JSON.parse(result.nav.menus.mainMenu.items).items);
+                    (<any>abp.nav.menus['mainMenu'].items).unshift({ name: 'HomePage', value: { name: 'HomePage', routeId: 0, route: '' }, items: [], route: '/app/dashboard' })
+                }
+                // moment.locale('vi');
+                moment.locale(abp.localization.currentLanguage.name);
+                (window as any).moment.locale(abp.localization.currentLanguage.name);
+    
+                abp.event.trigger('abp.dynamicScriptsInitialized');
+    
+                // if (abp.clock.provider.supportsMultipleTimezone) {
+                //     moment.tz.setDefault(abp.timing.timeZoneInfo.iana.timeZoneId);
+                // }
+                LocalizedResourcesHelper.loadResources(callback);
+                // callback();
             })
-
-            if (result.nav) {
-                abp.nav.menus['mainMenu'].items = (JSON.parse(result.nav.menus.mainMenu.items).items);
-                (<any>abp.nav.menus['mainMenu'].items).unshift({ name: 'HomePage', value: { name: 'HomePage', routeId: 0, route: '' }, items: [], route: '/app/dashboard' })
-            }
-            // moment.locale('vi');
-            moment.locale(abp.localization.currentLanguage.name);
-            (window as any).moment.locale(abp.localization.currentLanguage.name);
-
-            abp.event.trigger('abp.dynamicScriptsInitialized');
-
-            // if (abp.clock.provider.supportsMultipleTimezone) {
-            //     moment.tz.setDefault(abp.timing.timeZoneInfo.iana.timeZoneId);
-            // }
-            LocalizedResourcesHelper.loadResources(callback);
-            // callback();
         });
     }
 }
