@@ -563,8 +563,12 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
   }
 
   openDialogDoctor(obj?: EntityDto): void {
+    var element = document.getElementById("noscroll");
+    element.classList.add("noscroll");
     const dialogRef = this.dialog.open(this.dialogComponent, { minWidth: 'calc(100vw/1.5)', maxWidth: 'calc(100vw - 100px)', disableClose: true, data: obj ? obj : null });
     dialogRef.afterClosed().subscribe(() => {
+      var element = document.getElementById("noscroll");
+      element.classList.remove("noscroll");
       this.paginator.pageIndex = 0;
       this.paginator._changePageSize(this.paginator.pageSize);
     });
