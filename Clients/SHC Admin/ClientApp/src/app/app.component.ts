@@ -88,7 +88,7 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
         if(this.appSession.user.accountType != 0){
             var healthFacilities = (abp.session as any).healthFacilities;
             var check = true;
-            console.log(92, healthFacilities, healthFacilities.length);
+
             if(healthFacilities.length){
                 if(healthFacilities.length > 1){
                     for (let index = 0; index < healthFacilities.length; index++) {

@@ -40,6 +40,7 @@ export class HealthfacilitiesListComponent extends AppComponentBase implements O
             this.appSession.user.healthFacilitiesId = this._healthFacilities.healthFacilitiesId;
             this.appSession.user.healthFacilities = this._healthFacilities; 
             this.dialogRef.close();
+            window.location.reload();
         }, err => { this.dialogRef.close() });
     }
 
