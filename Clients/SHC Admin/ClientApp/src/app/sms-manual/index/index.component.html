@@ -109,7 +109,7 @@
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>Tuổi từ</mat-label>
                     <mat-select formControlName="compareFist" #compareFist (selectionChange)="onSelectCompareFist($event.value)">
-                        <mat-option *ngFor="let o of _compareFist" [value]="o.id">{{ o.name }}</mat-option>
+                        <mat-option *ngFor="let o of _compareFist" [value]="o">{{ o }}</mat-option>
                     </mat-select>
                 </mat-form-field>
             </div>
@@ -124,7 +124,7 @@
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>Đến</mat-label>
                     <mat-select formControlName="compareLast" #compareLast (selectionChange)="onSelectCompareLast($event.value)">
-                        <mat-option *ngFor="let o of _compareLast" [value]="o.id">{{ o.name }}</mat-option>
+                        <mat-option *ngFor="let o of _compareLast" [value]="o">{{ o }}</mat-option>
                     </mat-select>
                 </mat-form-field>
             </div>

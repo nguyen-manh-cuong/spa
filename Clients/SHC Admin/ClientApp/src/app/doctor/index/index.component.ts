@@ -44,6 +44,8 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
   _healthFacilitiesId: number;
   _specialistCode: number;
 
+  checkInputHealthFacilities=false;
+
   isLoading = false;
   filteredHealthFacilitiesOptions: Observable<IHealthfacilities[]>;
   filteredSpecialistOptions: Observable<ICategoryCommon[]>;
@@ -501,6 +503,12 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
         finalize(() => this.isLoading = false)
       )
   }
+
+  onSelectHealthFacilities(value){
+    if(value.healthFacilitiesId){
+      this.checkInputHealthFacilities=false;
+    }
+  }
   //End auto complete health facilities
 
   ///////////////////////////////////
@@ -565,18 +573,43 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
     }
   }
 
+  inputHealthFacilitest(event){
+    if(event.target.value!=""){
+      this.checkInputHealthFacilities=true;
+    }
+    else{
+      this.checkInputHealthFacilities=false;
+    }
+  }
+
+  cutstring(s:string){
+    if(s!=null && s.length>25){
+      return s.substring(0,25);
+    }
+  }
 
   //End auto complete specialist
   customSearch() {
     // this.frmSearch.controls['provinceCode'].setValue(this._provinceCode);
     // this.frmSearch.controls['districtCode'].setValue(this._districtCode);
-    this.healthfacilities.value ? this.frmSearch.controls['healthfacilitiesId'].setValue(this.healthfacilities.value.healthFacilitiesId) : (this.appSession.user.healthFacilitiesId == null ? this.frmSearch.controls['healthfacilitiesId'].setValue(null) : '');
+    this.healthfacilities.value ? 
+    this.frmSearch.controls['healthfacilitiesId'].setValue(this.healthfacilities.value.healthFacilitiesId) : 
+    (this.appSession.user.healthFacilitiesId == null ? this.frmSearch.controls['healthfacilitiesId'].setValue(null) :'');
+
+    if(this.checkInputHealthFacilities){
+      this.frmSearch.controls['healthfacilitiesId'].setValue(0);
+    }
+
     this.btnSearchClicks$.next();
   }
 
   openDialogDoctor(obj?: EntityDto): void {
+    var element = document.getElementById("noscroll");
+    element.classList.add("noscroll");
     const dialogRef = this.dialog.open(this.dialogComponent, { minWidth: 'calc(100vw/1.5)', maxWidth: 'calc(100vw - 100px)', disableClose: true, data: obj ? obj : null });
     dialogRef.afterClosed().subscribe(() => {
+      var element = document.getElementById("noscroll");
+      element.classList.remove("noscroll");
       this.paginator.pageIndex = 0;
       this.paginator._changePageSize(this.paginator.pageSize);
     });

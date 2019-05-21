@@ -50,8 +50,8 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     _healthfacilities = [];
     _currentYear = new Date().getFullYear();
     _sex = [{ id: 0, name: 'Tất cả' }, { id: 1, name: 'Nam' }, { id: 2, name: 'Nữ' }, { id: 3, name: 'Không xác định' }];
-    _compareFist = [{ id: '>=', name: '>=' }, { id: '>', name: '>' }];
-    _compareLast = [{ id: '<=', name: '<=' }, { id: '<', name: '<' }];
+    _compareFist = ['>=', '>' ];
+    _compareLast = ['<=', '<'];
 
     selection = new SelectionModel<IMedicalHealthcareHistories>(true, []);
 

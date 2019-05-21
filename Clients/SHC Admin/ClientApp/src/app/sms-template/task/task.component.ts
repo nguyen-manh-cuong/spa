@@ -13,97 +13,110 @@ import swal from 'sweetalert2';
 
 
 @Component({
-  selector: 'app-task',
-  templateUrl: './task.component.html',
-  styleUrls: ['./task.component.scss']
+    selector: 'app-task',
+    templateUrl: './task.component.html',
+    styleUrls: ['./task.component.scss']
 })
 export class TaskComponent extends AppComponentBase implements OnInit, AfterViewInit {
 
-  api: string = 'sms-templates';
+    api: string = 'sms-templates';
 
-  _frm: FormGroup;
-  _smstemplates: ISmsTemplate | any = { smsTemplateName: '', messageType: '',messageContent:'',isActive:'',applyAllSystem:'', id: 0 };
+    _frm: FormGroup;
+    _smstemplates: ISmsTemplate | any = { smsTemplateName: '', messageType: '', messageContent: '', isActive: '', applyAllSystem: '', id: 0 };
     _users: Array<IUser> = [];
-  _selection = new SelectionModel<IUser>(true, []);
-  _context: any;
+    _selection = new SelectionModel<IUser>(true, []);
+    _context: any;
     _isNew: boolean = true;
     _isUsedSuccess: boolean = false;
-  _messageType: Array<ICategoryCommon> = [];
-  dataService: DataService;
+    _messageType: Array<ICategoryCommon> = [];
+    dataService: DataService;
 
-  @ViewChild("txtName") txtName: MatInput;
+    @ViewChild("txtName") txtName: MatInput;
 
-  constructor(injector: Injector, private _dataService: DataService, private _formBuilder: FormBuilder, public dialogRef: MatDialogRef<TaskComponent>, @Inject(MAT_DIALOG_DATA) public smstemplate: ISmsTemplate) { super(injector); }
+    constructor(injector: Injector, private _dataService: DataService, private _formBuilder: FormBuilder, public dialogRef: MatDialogRef<TaskComponent>, @Inject(MAT_DIALOG_DATA) public smstemplate: ISmsTemplate) { super(injector); }
 
-  ngOnInit() {
-    const validationRule = new ValidationRule();
+    ngOnInit() {
+        const validationRule = new ValidationRule();
 
-    this.dataService = this._dataService;
-      this.dataService.getAll('categorycommon', 'LOAITINNHAN').subscribe(resp => this._messageType = resp.items);
-    this._smstemplates.isActive = true;
-      this._smstemplates.applyAllSystem = true;
+        this.dataService = this._dataService;
+        this.dataService.getAll('categorycommon', 'LOAITINNHAN').subscribe(resp => this._messageType = resp.items);
+        this._smstemplates.isActive = true;
+        this._smstemplates.applyAllSystem = true;
 
-    if (this.smstemplate) {
-        this._smstemplates = _.clone(this.smstemplate);
-        console.log(this._smstemplates);
-        this.dataService.getAll('smslog', JSON.stringify({ smsTemplateId: this._smstemplates.id, status: '1' })).subscribe(resp => resp.items.length > 0 ? this._isUsedSuccess = true : this._isUsedSuccess = false);
-      this._isNew = false;
+        if (this.smstemplate) {
+            this._smstemplates = _.clone(this.smstemplate);
+            console.log(this._smstemplates);
+            this.dataService.getAll('smslog', JSON.stringify({ smsTemplateId: this._smstemplates.id, status: '1' })).subscribe(resp => resp.items.length > 0 ? this._isUsedSuccess = true : this._isUsedSuccess = false);
+            this._isNew = false;
+        }
+
+        this._context = {
+            smsTemplateName: [this._smstemplates.smsTemplateName, [Validators.required, validationRule.hasValue]],
+            messageType: [this._smstemplates.messageType,],
+            smsContent: [this._smstemplates.smsContent, [Validators.required, validationRule.hasValue]],
+            isActive: [this._smstemplates.isActive],
+            applyAllSystem: [this._smstemplates.applyAllSystem],
+            organizationName: [this._smstemplates.organizationName],
+            healthFacilitiesId: [],
+            userId: []
+        };
+        this._frm = this._formBuilder.group(this._context);
     }
 
-    this._context = {
-      smsTemplateName: [this._smstemplates.smsTemplateName, [Validators.required, validationRule.hasValue]],
-      messageType: [this._smstemplates.messageType, ],
-      smsContent: [this._smstemplates.smsContent, [Validators.required, validationRule.hasValue]],
-      isActive: [this._smstemplates.isActive],
-      applyAllSystem: [this._smstemplates.applyAllSystem],
-      organizationName: [this._smstemplates.organizationName],
-      healthFacilitiesId: [],
-      userId: []
-    };
-      this._frm = this._formBuilder.group(this._context);
-  }
+    ngAfterViewInit(): void {
+        setTimeout(() => {
+            this.txtName.focus();
+        }, 500);
+    }
 
-  ngAfterViewInit(): void {
-    setTimeout(() => {
-        this.txtName.focus();
-    }, 500);
-  }
+    lengthSmsContent = 0;
+    inputSmsContent() {
+        this.lengthSmsContent = this._frm.value.smsContent.toString().length;
+    }
 
-  submit() {
-    this._frm.value.smsTemplateName = this._frm.value.smsTemplateName.trim();
-    this._frm.value.smsContent = this._frm.value.smsContent.trim();
-    this._frm.value.healthFacilitiesId = this.appSession.user.healthFacilitiesId;
-    this._frm.value.userId = this.appSession.userId;
-    this._frm.value.createUserId = this.appSession.user.userId;
-    this.appSession.user.healthFacilitiesId ? this._frm.value.applyAllSystem = false: '';
+    submit() {
+        this._frm.value.smsTemplateName = this._frm.value.smsTemplateName.trim();
+        this._frm.value.smsContent = this._frm.value.smsContent.trim();
+        this._frm.value.healthFacilitiesId = this.appSession.user.healthFacilitiesId;
+        this._frm.value.userId = this.appSession.userId;
+        this._frm.value.createUserId = this.appSession.user.id;
+        this.appSession.user.healthFacilitiesId ? this._frm.value.applyAllSystem = false : '';
 
-    this._isNew ?
-      this._dataService.create(this.api, this._frm.value).subscribe(() => {
-        swal({
-            title:this.l('SaveSuccess'),
-            text: '',
-            type: 'success',
-            timer:3000});
-        this.dialogRef.close();
-      }, err => console.log(err)) :
-      this._dataService.update(this.api, Object.assign(this._frm.value, { id: this.smstemplate.id})).subscribe(() => {
-        swal({
-            title:this.l('SaveSuccess'), 
-            text:'',
-            type: 'success',
-            timer:3000});
-        this.dialogRef.close();
-      }, err => console.log(err));
-  }
-  
-  mescontent : string = '';
+        this._isNew ?
+            this._dataService.create(this.api, this._frm.value).subscribe(() => {
+                swal({
+                    title: this.l('SaveSuccess'),
+                    text: '',
+                    type: 'success',
+                    timer: 3000
+                });
+                this.dialogRef.close();
+            }, err => console.log(err)) :
+            this._dataService.update(this.api, Object.assign(this._frm.value, { id: this.smstemplate.id })).subscribe(() => {
+                swal({
+                    title: this.l('SaveSuccess'),
+                    text: '',
+                    type: 'success',
+                    timer: 3000
+                });
+                this.dialogRef.close();
+            }, err => console.log(err));
+    }
+
+    mescontent: string = '';
     changeSelected(e) {
+        if (this.lengthSmsContent > 500) {
+            return;
+        }
         switch (e) {
             case 1:
                 this._context.mescontent = this._frm.controls['smsContent'].value;
                 if (this._context.mescontent == null) {
                     this._frm.controls['smsContent'].setValue(' <PHONGKHAM>');
                 } else {
+                    if ((this._context.mescontent + ' <PHONGKHAM>').length > 500) {
+                        return;
+                    }
                     this._frm.controls['smsContent'].setValue(this._context.mescontent + ' <PHONGKHAM>');
                 }
                 break;
@@ -112,6 +125,9 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
                 if (this._context.mescontent == null) {
                     this._frm.controls['smsContent'].setValue(' <PHONGKHAM>');
                 } else {
+                    if ((this._context.mescontent + ' <NGAYSINH>').length > 500) {
+                        return;
+                    }
                     this._frm.controls['smsContent'].setValue(this._context.mescontent + ' <NGAYSINH>');
                 }
                 break;
@@ -120,6 +136,9 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
                 if (this._context.mescontent == null) {
                     this._frm.controls['smsContent'].setValue(' <HOTEN>');
                 } else {
+                    if ((this._context.mescontent + ' <HOTEN>').length > 500) {
+                        return;
+                    }
                     this._frm.controls['smsContent'].setValue(this._context.mescontent + ' <HOTEN>');
                 }
                 break;
@@ -128,6 +147,9 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
                 if (this._context.mescontent == null) {
                     this._frm.controls['smsContent'].setValue(' <EMAIL>');
                 } else {
+                    if ((this._context.mescontent + ' <EMAIL>').length > 500) {
+                        return;
+                    }
                     this._frm.controls['smsContent'].setValue(this._context.mescontent + ' <EMAIL>');
                 }
                 break;
@@ -136,6 +158,9 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
                 if (this._context.mescontent == null) {
                     this._frm.controls['smsContent'].setValue(' <GIOITINH>');
                 } else {
+                    if ((this._context.mescontent + ' <GIOITINH>').length > 500) {
+                        return;
+                    }
                     this._frm.controls['smsContent'].setValue(this._context.mescontent + ' <GIOITINH>');
                 }
                 break;
@@ -144,6 +169,9 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
                 if (this._context.mescontent == null) {
                     this._frm.controls['smsContent'].setValue(' <NGAYHIENTAI>');
                 } else {
+                    if ((this._context.mescontent + ' <NGAYHIENTAI>').length > 500) {
+                        return;
+                    }
                     this._frm.controls['smsContent'].setValue(this._context.mescontent + ' <NGAYHIENTAI>');
                 }
                 break;
@@ -152,6 +180,9 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
                 if (this._context.mescontent == null) {
                     this._frm.controls['smsContent'].setValue(' <NGAYTAIKHAM>');
                 } else {
+                    if ((this._context.mescontent + ' <NGAYTAIKHAM>').length > 500) {
+                        return;
+                    }
                     this._frm.controls['smsContent'].setValue(this._context.mescontent + ' <NGAYTAIKHAM>');
                 }
                 break;
@@ -160,6 +191,9 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
                 if (this._context.mescontent == null) {
                     this._frm.controls['smsContent'].setValue(' <PHONGBAN>');
                 } else {
+                    if ((this._context.mescontent + ' <PHONGBAN>').length > 500) {
+                        return;
+                    }
                     this._frm.controls['smsContent'].setValue(this._context.mescontent + ' <PHONGBAN>');
                 }
                 break;
@@ -168,6 +202,9 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
                 if (this._context.mescontent == null) {
                     this._frm.controls['smsContent'].setValue(' <TENDICHVU>');
                 } else {
+                    if ((this._context.mescontent + ' <TENDICHVU>').length > 500) {
+                        return;
+                    }
                     this._frm.controls['smsContent'].setValue(this._context.mescontent + ' <TENDICHVU>');
                 }
                 break;
@@ -176,8 +213,12 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
                 if (this._context.mescontent == null) {
                     this._frm.controls['smsContent'].setValue(' <TENTHUOC>');
                 } else {
+                    if ((this._context.mescontent + ' <TENTHUOC>').length > 500) {
+                        return;
+                    }
                     this._frm.controls['smsContent'].setValue(this._context.mescontent + ' <TENTHUOC>');
                 }
                 break;
         }
-  }}
+    }
+}

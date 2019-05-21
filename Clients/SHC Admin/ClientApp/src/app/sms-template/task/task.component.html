@@ -30,15 +30,15 @@
           <div class="col-md-4 disabled" [ngClass]="{'disabled': _isUsedSuccess}">
             <mat-form-field appearance="outline" class="w-100">
               <mat-label>{{l("PackageTemplateHeadNumberType")}}</mat-label>
-              <input matInput autocomplete value="VTT_CSKH">
+              <input [readonly]="_isNew ? false : true" matInput autocomplete value="VTT_CSKH">
             </mat-form-field>
           </div>
           <div class="col-md-12" [ngClass]="{'disabled': _isUsedSuccess}">
-            <mat-form-field appearance="outline" class="w-100">
-              <mat-label>{{l("PackageTemplateMessageContent")}}</mat-label>
-              <textarea formControlName="smsContent" rows="5" matInput required required maxlength="500"></textarea>
-              <validation matSuffix [control]="_frm.controls['smsContent']"></validation>
-            </mat-form-field>
+              <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>{{l("PackageTemplateMessageContent")}}</mat-label>
+                  <textarea formControlName="smsContent" rows="5" matInput required maxlength="500" (keyup)="inputSmsContent($event)"></textarea>
+                  <validation matSuffix [control]="_frm.controls['smsContent']"></validation>
+              </mat-form-field>
           </div>
           <div class="col-md-12" [ngClass]="{'disabled': _isUsedSuccess}">
             <mat-form-field appearance="outline" class="w-100">

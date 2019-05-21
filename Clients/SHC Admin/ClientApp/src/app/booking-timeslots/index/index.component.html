@@ -90,7 +90,7 @@
                     <mat-menu #menu="matMenu" class="d-flex-column">
                         <button mat-icon-button (click)="openDialog(element)">
                             <mat-icon class="text-muted f-18">edit</mat-icon>
-                            Sửa
+                            {{l("Sửa")}}
                         </button>
                         <button mat-icon-button
                             (click)="element.isActive ?showMess() : deleteDialog(element, 'code', 'timeSlotId')">
