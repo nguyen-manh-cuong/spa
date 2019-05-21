@@ -318,10 +318,11 @@ namespace SHCServer.Controllers
                 {
                     doctor.Description = "";
                 }
-            if (doctor.Summary.Length > 4000)
-            {
-                doctor.Summary = doctor.Summary.Substring(0, 4000);
-            }
+            if (doctor.Summary != null)
+                if (doctor.Summary.Length > 4000)
+                {
+                    doctor.Summary = doctor.Summary.Substring(0, 4000);
+                }
 
             try
             {
@@ -541,10 +542,11 @@ namespace SHCServer.Controllers
                 {
                     doctor.Description = "";
                 }
-            if (doctor.Summary.Length > 4000)
-            {
-                doctor.Summary = doctor.Summary.Substring(0, 4000);
-            }
+            if (doctor.Summary != null)
+                if (doctor.Summary.Length > 4000)
+                {
+                    doctor.Summary = doctor.Summary.Substring(0, 4000);
+                }
 
             var checkDoctor = _context.Query<Doctor>().Where(d => d.DoctorId == doctor.DoctorId).FirstOrDefault();
 
@@ -620,7 +622,7 @@ namespace SHCServer.Controllers
                     });
                 }
 
-                if (doctor.Avatar!="null")
+                if (doctor.Avatar != "null")
                 {
                     _context.Update<Doctor>(d => d.DoctorId == doctor.DoctorId, x => new Doctor()
                     {

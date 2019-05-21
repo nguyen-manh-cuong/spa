@@ -30,7 +30,7 @@
           <div class="col-md-4 disabled" [ngClass]="{'disabled': _isUsedSuccess}">
             <mat-form-field appearance="outline" class="w-100">
               <mat-label>{{l("PackageTemplateHeadNumberType")}}</mat-label>
-              <input matInput autocomplete value="VTT_CSKH">
+              <input [readonly]="_isNew ? false : true" matInput autocomplete value="VTT_CSKH">
             </mat-form-field>
           </div>
           <div class="col-md-12" [ngClass]="{'disabled': _isUsedSuccess}">

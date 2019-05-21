@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using Viettel;
 using Viettel.MySql;
 
 namespace SHCServer.Controllers
@@ -79,7 +80,29 @@ namespace SHCServer.Controllers
         [Route("api/sms-templates")]
         public IActionResult Create([FromBody] SmsTemplateInputViewModel sms)
         {
-            if (_context.Query<SmsTemplate>().Where(g => g.SmsTemplateName == sms.SmsTemplateName && g.Id != sms.Id && sms.IsDelete == false && (g.HealthFacilitiesId.Equals(sms.HealthFacilitiesId) || sms.HealthFacilitiesId.ToString() == null)).Count() > 0)
+            string sql = $"SELECT COUNT(*) as SLL FROM smarthealthcare.sms_template where BINARY SmsTemplateName = '{sms.SmsTemplateName}' " +
+                $"and {sms.IsDelete} = false";
+            if (sms.HealthFacilitiesId != null)
+            {
+                sql = sql + $" and (HealthFacilitiesId = {sms.HealthFacilitiesId} or HealthFacilitiesId = null)";
+            }
+
+            List<string> clause = new List<string>();
+            List<DbParam> param = new List<DbParam>();
+            var str = $"{sql} {string.Join(" ", clause)}";
+            var reader = _context.Session.ExecuteReader($"{sql} {string.Join(" ", clause)}", param);
+
+            var total = 0;
+
+            List<SmsTemplate> lst = new List<SmsTemplate>();
+            while (reader.Read())
+            {
+                total = Convert.ToInt32(reader["SLL"]);
+            }
+
+            reader.Close();
+
+            if (total > 0)
                 return StatusCode(406, _excep.Throw(406, "Tạo mẫu tin nhắn không thành công.", "Tên mẫu tin nhắn đã tồn t" +
                     "" +
                     "" +
@@ -108,11 +131,11 @@ namespace SHCServer.Controllers
             {
                 _context.Session.BeginTransaction();
 
-                if (_context.Query<SmsTemplate>().Where(g => g.SmsTemplateName == sms.SmsTemplateName && g.Id != sms.Id && sms.IsDelete == false && (g.HealthFacilitiesId.Equals(sms.HealthFacilitiesId) || g.HealthFacilitiesId.ToString() == null) ).Count() > 0)
-                    return StatusCode(406, _excep.Throw(406, "Sửa mẫu tin nhắn không thành công.", "Tên mẫu tin nhắn đã tồn tại !"));
+                //if (_context.Query<SmsTemplate>().Where(g => g.SmsTemplateName == sms.SmsTemplateName && g.Id != sms.Id && sms.IsDelete == false && (g.HealthFacilitiesId.Equals(sms.HealthFacilitiesId) || g.HealthFacilitiesId.ToString() == null) ).Count() > 0)
+                //    return StatusCode(406, _excep.Throw(406, "Sửa mẫu tin nhắn không thành công.", "Tên mẫu tin nhắn đã tồn tại !"));
 
-                if (_context.Query<SmsTemplate>().Where(g => g.SmsContent == sms.SmsContent && g.Id != sms.Id && sms.IsDelete == false).Count() > 0)
-                    return StatusCode(406, _excep.Throw(406, "Sửa mẫu tin nhắn không thành công.", "Nội dung tin nhắn đã tồn tại !"));
+                //if (_context.Query<SmsTemplate>().Where(g => g.SmsContent == sms.SmsContent && g.Id != sms.Id && sms.IsDelete == false).Count() > 0)
+                //    return StatusCode(406, _excep.Throw(406, "Sửa mẫu tin nhắn không thành công.", "Nội dung tin nhắn đã tồn tại !"));
 
                 //if (_context.Query<SmsLogs>().Where(g => g.SmsTemplateId == sms.Id && g.Status == 1).Count() > 0)
                 //    return StatusCode(500, _excep.Throw("Sửa mẫu tin nhắn không thành công.", "Mẫu tin nhắn đã được sử dụng !"));

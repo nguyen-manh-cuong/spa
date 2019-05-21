@@ -88,12 +88,6 @@ export class ValidationRule {
             if (control.value.split('@')[0].length > 64 || control.value.split('@')[1].length > 255) {
                 return { email: true };
             }
-
-            var first = control.value.indexOf("-");
-            var last = control.value.lastIndexOf("-");
-            if (first != last) {
-                return { email: true };
-            }
         }
 
         return null;

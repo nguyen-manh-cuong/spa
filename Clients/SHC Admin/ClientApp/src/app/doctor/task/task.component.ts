@@ -806,11 +806,18 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     }
   }
 
-  ruleEmail(event: any) {
-    const pattern = /^[a-zA-Z0-9\.\-\_\@]*$/;
-    if (!pattern.test(event.target.value)) {
-      event.target.value = event.target.value.replace(/[^a-zA-Z0-9\.\-\_\@]/g, "");
-    }
+
+  ruleEmail() {
+    var control = this._frm.controls['email'];
+
+    var f = control.value.substring(0, control.value.indexOf('@'));
+
+    var s = control.value.substring(control.value.indexOf('@'), control.value.length);
+
+    s = s.replace(/-/g, "");
+
+    control.setValue(f + s);
+    
   }
 
 
