@@ -24,6 +24,7 @@ import { stringify } from '@angular/compiler/src/util';
 import { prepareSyntheticListenerFunctionName } from '@angular/compiler/src/render3/util';
 import { providerToFactory } from '@angular/core/src/di/r3_injector';
 import { CdkTextareaAutosize } from '@angular/cdk/text-field';
+import { AppConsts } from '@shared/AppConsts';
 export const MY_FORMATS = {
   parse: {
     dateInput: 'DD/MM/YYYY',
@@ -156,6 +157,8 @@ export class DetailComponent extends AppComponentBase implements OnInit, AfterVi
   @ViewChild('specialistInput') specialistInput: ElementRef<HTMLInputElement>;
   @ViewChild('auto') matAutocomplete: MatAutocomplete;
   @ViewChild('autoSpecialist') autoSpecialist: MatAutocomplete;
+  
+  uploadBaseUrl:string;
 
   _obj: IDoctor | any = {
     doctorId: 0,
@@ -220,9 +223,8 @@ export class DetailComponent extends AppComponentBase implements OnInit, AfterVi
   @ViewChild("certificationDatePicker") certificationDatePicker;
 
   ngOnInit() {
-
     this.dataService = this._dataService;
-
+    this.uploadBaseUrl=AppConsts.uploadBaseUrl;
     this.getProvinces();
     this.getTitles();
     this.getPositions();
@@ -230,9 +232,6 @@ export class DetailComponent extends AppComponentBase implements OnInit, AfterVi
     this.getDegrees();
     this.getNations();
     this.getSpecialist();
-
-
-
 
     this.filterSpecialistOptions();
 
@@ -255,7 +254,7 @@ export class DetailComponent extends AppComponentBase implements OnInit, AfterVi
         if (this.obj.birthDate < 10)
           d = "0" + this.obj.birthDate;
         else
-          d = this._obj.birthDate;
+          d = this.obj.birthDate;
         if (this.obj.birthMonth < 10)
           m = "0" + this.obj.birthMonth;
         else
@@ -405,7 +404,8 @@ export class DetailComponent extends AppComponentBase implements OnInit, AfterVi
   //Add custom editor
   onReady(editor) {
     editor.ui.getEditableElement().parentElement.insertBefore(
-      editor.isReadOnly = true,null,null
+      editor.ui.view.toolbar.element,
+      editor.isReadOnly = true
     );
   }
 

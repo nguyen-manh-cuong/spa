@@ -23,6 +23,7 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { stringify } from '@angular/compiler/src/util';
 import { prepareSyntheticListenerFunctionName } from '@angular/compiler/src/render3/util';
 import { providerToFactory } from '@angular/core/src/di/r3_injector';
+import { AppConsts } from '@shared/AppConsts';
 export const MY_FORMATS = {
   parse: {
     dateInput: 'DD/MM/YYYY',
@@ -158,6 +159,8 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   @ViewChild('auto') matAutocomplete: MatAutocomplete;
   @ViewChild('autoSpecialist') autoSpecialist: MatAutocomplete;
 
+  uploadBaseUrl: string;
+
   _obj: IDoctor | any = {
     doctorId: 0,
     fullName: '',
@@ -220,6 +223,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   @ViewChild("certificationDatePicker") certificationDatePicker;
 
   ngOnInit() {
+    this.uploadBaseUrl = AppConsts.uploadBaseUrl;
 
     this.dataService = this._dataService;
 
@@ -725,7 +729,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
 
   detectFiles(event) {
     if (event.target.files[0].size > 5242880) {
-      this._avatar.nativeElement.value=null;
+      this._avatar.nativeElement.value = null;
       this._frm.controls['avatar'].setValue(null);
       this.avatarName = "Chưa chọn ảnh";
       return swal({
@@ -802,11 +806,18 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     }
   }
 
-  ruleEmail(event: any) {
-    const pattern = /^[a-zA-Z0-9\.\-\_\@]*$/;
-    if (!pattern.test(event.target.value)) {
-      event.target.value = event.target.value.replace(/[^a-zA-Z0-9\.\-\_\@]/g, "");
-    }
+
+  ruleEmail() {
+    var control = this._frm.controls['email'];
+
+    var f = control.value.substring(0, control.value.indexOf('@'));
+
+    var s = control.value.substring(control.value.indexOf('@'), control.value.length);
+
+    s = s.replace(/-/g, "");
+
+    control.setValue(f + s);
+    
   }
 
 
@@ -1067,8 +1078,9 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
       params.certificationDate = moment(params.certificationDate).toISOString();
     }
 
-
-    params.avatar = this._frm.controls['avatar'].value;
+    if (!this.checkAvatar) {
+      params.avatar = this._frm.controls['avatar'].value;
+    }
 
     //Set birthDate
     if (this._frm.controls['birthDay'].value) {

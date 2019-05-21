@@ -20,6 +20,7 @@
 
 .ck-editor__editable{
     min-height: 150px;
+    border: 1px solid 000000!important;
 }
 .ck.ck-editor__editable_inline{
     border: 1px solid 000000!important;
@@ -87,10 +88,7 @@
     margin-top: -15px;
 }
 
-div#cdk-overlay-1 {
-    max-width: unset!important;
-}
-div#cdk-overlay-2 {
+.cdk-overlay-pane {
     max-width: unset!important;
 }
 

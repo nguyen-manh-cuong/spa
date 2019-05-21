@@ -80,7 +80,7 @@
                     <div class="col-md-6">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("Email")}}</mat-label>
-                            <input (keyup)="ruleEmail($event)" formControlName="email" matInput maxlength="320">
+                            <input (input)="ruleEmail()" formControlName="email" matInput maxlength="320">
                             <validation matSuffix [control]="_frm.controls['email']"></validation>
                         </mat-form-field>
                     </div>
@@ -247,7 +247,7 @@
                             <mat-label class="label">{{l('DoctorAvatar')}}</mat-label>
                         </div>
                         <img style="padding: 2px"
-                            [src]="checkAvatar ? 'http://123.30.214.138:9008/wwwroot'+ (this._obj.avatar?this._obj.avatar:'') : _avatars[0] || 'https://cmkt-image-prd.global.ssl.fastly.net/0.1.0/ps/1441527/1160/772/m1/fpnw/wm0/businessman-avatar-icon-01-.jpg?1468234792&s=e3a468692e15e93a2056bd848193e97a'"
+                            [src]="checkAvatar ? uploadBaseUrl+ (this._obj.avatar?this._obj.avatar:'') : _avatars[0] || 'https://cmkt-image-prd.global.ssl.fastly.net/0.1.0/ps/1441527/1160/772/m1/fpnw/wm0/businessman-avatar-icon-01-.jpg?1468234792&s=e3a468692e15e93a2056bd848193e97a'"
                             height="175px" width="200px">
                     </div>
                     <!-- <div class="col-md-4 mt-3">

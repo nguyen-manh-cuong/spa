@@ -1,4 +1,4 @@
-import { ICategoryCommon, IProvince, IDistrict, IWard, IDoctor,IHealthfacilities } from './../../../shared/Interfaces';
+import { ICategoryCommon, IProvince, IDistrict, IWard, IDoctor, IHealthfacilities } from './../../../shared/Interfaces';
 import { AfterViewInit, Component, Injector, OnInit, ViewChild, Input, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatButton, MatDialog, MatDialogRef, MatSort, MatCheckbox, MatInput, AUTOCOMPLETE_OPTION_HEIGHT, MatSelect } from '@angular/material';
@@ -44,6 +44,8 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
   _healthFacilitiesId: number;
   _specialistCode: number;
 
+  checkInputHealthFacilities=false;
+
   isLoading = false;
   filteredHealthFacilitiesOptions: Observable<IHealthfacilities[]>;
   filteredSpecialistOptions: Observable<ICategoryCommon[]>;
@@ -77,9 +79,18 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
     this.getProvinces();
     this.getSpecialist();
 
+    var provinceCode;
+    var districtCode;
 
     if (this.appSession.user.healthFacilitiesId) {
-      this.dataService.getAll('healthfacilities', "{healthfacilitiesId:" + String(this.appSession.user.healthFacilitiesId) + "}").subscribe(resp => this._healthfacilities = resp.items);
+      this.dataService.getAll('healthfacilities', "{healthfacilitiesId:" + String(this.appSession.user.healthFacilitiesId) + "}").subscribe(resp => {
+        this._healthfacilities = resp.items;
+        provinceCode = resp.items[0].provinceCode;
+        districtCode = resp.items[0].districtCode;
+      }, err => { }, () => {
+        this.frmSearch.controls['provinceCode'].setValue(provinceCode);
+        this.getDistricts(provinceCode, districtCode);
+      });
       this.frmSearch.controls['healthfacilitiesId'].setValue(this.appSession.user.healthFacilitiesId);
     }
     else {
@@ -127,8 +138,11 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
     this._dataService.getAll("provinces").subscribe(resp => this._provinces = resp.items);
   }
 
-  getDistricts(provinceCode) {
-    this._dataService.getAll("districts", "{ProvinceCode:" + provinceCode + "}").subscribe(resp => this._districts = resp.items);
+  getDistricts(provinceCode, districtCode?) {
+    if (districtCode) {
+      return this._dataService.getAll("districts", "{ProvinceCode:" + provinceCode + "}").subscribe(resp => this._districts = resp.items, err => { }, () => this.frmSearch.controls['districtCode'].setValue(districtCode));
+    }
+    return this._dataService.getAll("districts", "{ProvinceCode:" + provinceCode + "}").subscribe(resp => this._districts = resp.items);
   }
 
   provinceChange($event) {
@@ -368,7 +382,7 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
 
 
   getSpecialist() {
-    this.dataService.get("catcommon",'',"{name:'asc'}",null,300).subscribe(resp => this._specialist = resp.items);
+    this.dataService.get("catcommon", '', "{name:'asc'}", null, 300).subscribe(resp => this._specialist = resp.items);
   }
 
 
@@ -489,6 +503,12 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
         finalize(() => this.isLoading = false)
       )
   }
+
+  onSelectHealthFacilities(value){
+    if(value.healthFacilitiesId){
+      this.checkInputHealthFacilities=false;
+    }
+  }
   //End auto complete health facilities
 
   ///////////////////////////////////
@@ -503,25 +523,25 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
 
   _filterSpecialist(name: any): ICategoryCommon[] {
     const filterValue = name.toLowerCase();
-    var specialist = this._specialist.filter(c =>this.change_alias(c.name.toLowerCase()).indexOf(this.change_alias(filterValue)) >= 0);
+    var specialist = this._specialist.filter(c => this.change_alias(c.name.toLowerCase()).indexOf(this.change_alias(filterValue)) >= 0);
     return specialist;
   }
 
   change_alias(alias) {
     var str = alias;
     str = str.toLowerCase();
-    str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g,"a"); 
-    str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g,"e"); 
-    str = str.replace(/ì|í|ị|ỉ|ĩ/g,"i"); 
-    str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g,"o"); 
-    str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g,"u"); 
-    str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g,"y"); 
-    str = str.replace(/đ/g,"d");
-    str = str.replace(/!|@|%|\^|\*|\(|\)|\+|\=|\<|\>|\?|\/|,|\.|\:|\;|\'|\"|\&|\#|\[|\]|~|\$|_|`|-|{|}|\||\\/g," ");
-    str = str.replace(/ + /g," ");
-    str = str.trim(); 
+    str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
+    str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
+    str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i");
+    str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, "o");
+    str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u");
+    str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y");
+    str = str.replace(/đ/g, "d");
+    str = str.replace(/!|@|%|\^|\*|\(|\)|\+|\=|\<|\>|\?|\/|,|\.|\:|\;|\'|\"|\&|\#|\[|\]|~|\$|_|`|-|{|}|\||\\/g, " ");
+    str = str.replace(/ + /g, " ");
+    str = str.trim();
     return str;
-}
+  }
 
   clickSpecialistCbo() {
     !this.specialistCode.value ? this.filterSpecialistOptions() : '';
@@ -553,12 +573,33 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
     }
   }
 
+  inputHealthFacilitest(event){
+    if(event.target.value!=""){
+      this.checkInputHealthFacilities=true;
+    }
+    else{
+      this.checkInputHealthFacilities=false;
+    }
+  }
+
+  cutstring(s:string){
+    if(s!=null && s.length>25){
+      return s.substring(0,25);
+    }
+  }
 
   //End auto complete specialist
   customSearch() {
     // this.frmSearch.controls['provinceCode'].setValue(this._provinceCode);
     // this.frmSearch.controls['districtCode'].setValue(this._districtCode);
-    this.healthfacilities.value ? this.frmSearch.controls['healthfacilitiesId'].setValue(this.healthfacilities.value.healthFacilitiesId) : (this.appSession.user.healthFacilitiesId == null ? this.frmSearch.controls['healthfacilitiesId'].setValue(null) : '');
+    this.healthfacilities.value ? 
+    this.frmSearch.controls['healthfacilitiesId'].setValue(this.healthfacilities.value.healthFacilitiesId) : 
+    (this.appSession.user.healthFacilitiesId == null ? this.frmSearch.controls['healthfacilitiesId'].setValue(null) :'');
+
+    if(this.checkInputHealthFacilities){
+      this.frmSearch.controls['healthfacilitiesId'].setValue(0);
+    }
+
     this.btnSearchClicks$.next();
   }
 

@@ -46,7 +46,7 @@ export class ValidationRule {
             if (!pattern.test(control.value)) {
                 control.setValue(control.value.replace(/[^0-9\+]/g, ""));
             }
-            if(control.value.indexOf("84")==0 || control.value.indexOf("84")==1){
+            if (control.value.indexOf("84") == 0 || control.value.indexOf("84") == 1) {
                 if (control.value.charAt(0) != '+' && control.value.length >= 4 && control.value.indexOf("84") == 0 && (arr84.indexOf(control.value.substring(0, 4)) < 0)) {
                     return { topnumber: true };
                 }
@@ -54,7 +54,7 @@ export class ValidationRule {
                     return { topnumber: true };
                 }
             }
-            else{
+            else {
                 if (control.value.charAt(0) != '+' && control.value.length >= 3 && (arr.indexOf(control.value.substring(0, 3)) < 0)) {
                     return { topnumber: true };
                 }
