@@ -73,6 +73,26 @@ export class DataService {
             }));
     }
 
+    getAny(enpoint: string): Observable<any> {
+        let url_ = this.baseUrl + `/${enpoint}?`;
+        url_ = url_.replace(/[?&]$/, '');
+
+        const options_: any = { observe: 'response', responseType: 'blob', headers: new HttpHeaders({ 'Content-Type': 'application/json', 'Accept': 'application/json' }) };
+
+        return this.http.request('get', url_, options_).pipe(_observableMergeMap((response_: any) => this.processDataOk(response_)))
+            .pipe(_observableCatch((response_: any) => {
+                if (response_ instanceof HttpResponseBase) {
+                    try {
+                        return this.processDataOk(<any>response_);
+                    } catch (e) {
+                        return <Observable<any>><any>_observableThrow(e);
+                    }
+                } else {
+                    return <Observable<any>><any>_observableThrow(response_);
+                }
+            }));
+    }
+
     /**
      * @input (optional)
      * @return Success

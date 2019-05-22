@@ -25,7 +25,7 @@
                 <input matInput [formControl]="healthfacilities" [matAutocomplete]="auto" (focusout)="focusoutHealthfacilities()">
                 <mat-icon matSuffix *ngIf="healthfacilities.invalid && (healthfacilities.dirty || healthfacilities.touched)" matTooltipClass="bg-danger text-light" matTooltip="Không được để trống" color="warn">info</mat-icon>
                 <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn"
-                    (optionSelected)="onSelectHealthFacilities($event.option.value)">
+                                  (optionSelected)="onSelectHealthFacilities($event.option.value)">
                     <mat-option *ngIf="isLoading" class="is-loading">
                         <mat-spinner diameter="30"></mat-spinner>
                     </mat-option>
@@ -34,6 +34,19 @@
                     </mat-option>
                 </mat-autocomplete>
             </mat-form-field>
+
+            <div *ngIf="numberLoginFail > 5">
+                <div class="mb-4 d-flex">
+                    <div class="d-flex position-relative" [ngClass]="{'has-error': this.capcha}">
+                        <label class="col required min-width-100 lbl-capcha position-absolute {{this.capcha ? 'text-danger' : ''}}">Mã xác nhận<span class="text-danger">*</span></label>
+                        <input type="text" name="prof_place" formControlName="codeCapcha" mask="A*" maxlength="4" (change)="validateCapcha($event.target.value)" class="col form-control validate mr-2">
+                    </div>
+                    <div class="mr-2"><img [src]="_capcha.data" width="162" height="39" alt="" /></div>
+                    <div type="button" class="btn-refresh" (click)="getCapcha()"><i class="fa fa-refresh" aria-hidden="true"></i></div>
+                </div>
+                <small *ngIf="this.capcha" class="help-block" style="color: red;margin-left: 114px;">Mã xác nhận không khớp</small>
+                
+            </div>
 
             <div class="row">
                 <div class="col-md-6">
