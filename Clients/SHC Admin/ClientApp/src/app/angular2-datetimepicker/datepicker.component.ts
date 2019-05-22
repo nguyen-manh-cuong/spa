@@ -242,7 +242,7 @@ export class DatePicker implements OnInit, ControlValueAccessor {
 
             }
             if (this.settings.closeOnSelect) {
-                this.popover = false;
+                //this.popover = false;
                 this.onDateSelect.emit(this.date);
             }
         }
@@ -286,7 +286,7 @@ export class DatePicker implements OnInit, ControlValueAccessor {
         this.date = new Date(this.date.setFullYear(selectedYear));
         this.yearView = !this.yearView;
         this.monthDays = this.generateDays(this.date);
-        this.done();
+        //this.done();
     }
     setMonth(evt: any) {
         if (evt.target.getAttribute('id')) {
@@ -294,7 +294,7 @@ export class DatePicker implements OnInit, ControlValueAccessor {
             this.date = new Date(this.date.setMonth(selectedMonth));
             this.monthsView = !this.monthsView;
             this.monthDays = this.generateDays(this.date);
-            this.done();
+            //this.done();
         }
     }
     prevMonth(e: any) {
@@ -313,7 +313,7 @@ export class DatePicker implements OnInit, ControlValueAccessor {
         }
         this.date = new Date(this.date);
         this.monthDays = this.generateDays(this.date);
-        this.done();
+        //this.done();
     }
     nextMonth(e: any) {
         e.stopPropagation();
@@ -332,7 +332,7 @@ export class DatePicker implements OnInit, ControlValueAccessor {
         }
         this.date = new Date(this.date);
         this.monthDays = this.generateDays(this.date);
-        this.done();
+        //this.done();
     }
     onChange(evt: any) {
        
