@@ -80,7 +80,7 @@
                     <div class="col-md-6">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("Email")}}</mat-label>
-                            <input (input)="ruleEmail()" formControlName="email" matInput maxlength="320">
+                            <input (input)="ruleEmail($event)" formControlName="email" matInput maxlength="320">
                             <validation matSuffix [control]="_frm.controls['email']"></validation>
                         </mat-form-field>
                     </div>
@@ -205,7 +205,9 @@
                                     <mat-icon class="chip" matChipRemove *ngIf="specialRemovable">cancel</mat-icon>
                                     {{o.name}}
                                 </mat-chip>
-                                <input (click)="specialistClick()" matInput #specialistInput
+                                <input
+                                
+                                 (click)="specialistClick()" matInput #specialistInput
                                     [formControl]="specialistCodeControl" [matAutocomplete]="autoSpecialist"
                                     [matChipInputFor]="specialChipList"
                                     [matChipInputSeparatorKeyCodes]="specialSeparatorKeysCodes"
@@ -218,7 +220,7 @@
                                 <mat-option class="w-100" *ngIf="specialIsLoading" class="is-loading">
                                     <mat-spinner diameter="30"></mat-spinner>
                                 </mat-option>
-                                <mat-option class="w-100" *ngFor="let o of _specialist" [value]="o">
+                                <mat-option (click)="specialistClick()" class="w-100" *ngFor="let o of _specialist" [value]="o">
                                     {{o.code +' - '+o.name}}
                                 </mat-option>
                             </mat-autocomplete>
@@ -363,7 +365,9 @@
                                     <mat-icon class="chip" matChipRemove *ngIf="removable">cancel</mat-icon>
                                     {{o.code +' - ' +o.name}}
                                 </mat-chip>
-                                <input matInput #healthfacilitiesInput [formControl]="healthfacilitiesControl"
+                                <input 
+                                (click)="inputHealthFacilitiesClick()"
+                                    matInput #healthfacilitiesInput [formControl]="healthfacilitiesControl"
                                     [matAutocomplete]="auto" [matChipInputFor]="chipList"
                                     [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                                     [matChipInputAddOnBlur]="addOnBlur" (matChipInputTokenEnd)="add($event)"
@@ -373,7 +377,7 @@
                                 <mat-option *ngIf="isLoading" class="is-loading">
                                     <mat-spinner diameter="30"></mat-spinner>
                                 </mat-option>
-                                <mat-option *ngFor="let o of _healthfacilities" [value]="o">
+                                <mat-option (click)="inputHealthFacilitiesClick()" *ngFor="let o of _healthfacilities" [value]="o">
                                     {{o.code + ' - ' + o.name}}
                                 </mat-option>
                             </mat-autocomplete>

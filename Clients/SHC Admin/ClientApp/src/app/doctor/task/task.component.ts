@@ -91,6 +91,10 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   @ViewChild('priceTo') priceTo;
   @ViewChild('doctorSummary') doctorSummary;
   @ViewChild('dataContainer') _avatar;
+
+  @ViewChild('healthfacilitiesInput', { read: MatAutocompleteTrigger }) trigger: MatAutocompleteTrigger;
+  @ViewChild('specialistInput', { read: MatAutocompleteTrigger }) SpecialistTrigger: MatAutocompleteTrigger;
+
   dataService: DataService;
   isLoading = false;
   specialIsLoading = false;
@@ -350,7 +354,10 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
 
     if (this.obj) {
       if (this.obj.specialist) {
-        this.obj.specialist.forEach((e: any) => this._specialistChip.push(e));
+        this.obj.specialist.forEach((e: any) =>{ 
+          this._specialistChip.push(e);
+          this._speciaList.push(e.specialistCode);  
+        });
       }
       if (this.obj) {
         if (this.obj.healthFacilities) {
@@ -566,6 +573,10 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     this.healthfacilitiesControl.value ? this._frm.controls['healthfacilities'].setValue(this.healthfacilitiesControl.value.healthFacilitiesId) : (this.appSession.user.healthFacilitiesId == null ? this._frm.controls['healthfacilities'].setValue(null) : '');
   }
 
+  inputHealthFacilitiesClick() {
+    this.trigger.openPanel();
+  }
+
   closed(): void {
     if (this.healthfacilitiesControl.value && typeof this.healthfacilitiesControl.value == 'string' && !this.healthfacilitiesControl.value.trim()) this.healthfacilitiesControl.setErrors({ required: true })
   }
@@ -678,6 +689,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     for (let i = 0; i < this._specialistChip.length; i++) {
       if (this._specialistChip[i].specialistCode == code) {
         this._specialistChip.splice(i, 1);
+        this._speciaList.splice(i,1);
       }
     }
     if (this._specialistChip.length > 0) {
@@ -696,6 +708,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     if (this._specialistChip.length == 0) {
       var s = new Specialist(event.option.value.code, event.option.value.name);
       this._specialistChip.push(s);
+      this._speciaList.push(s.specialistCode);
     }
     else {
       this._specialistChip.forEach(h => {
@@ -706,6 +719,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
       if (check != false) {
         var s = new Specialist(event.option.value.code, event.option.value.name);
         this._specialistChip.push(s);
+        this._speciaList.push(s.specialistCode);
       }
       else {
         swal({
@@ -808,8 +822,11 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   }
 
 
-  ruleEmail() {
-
+  ruleEmail(event: any) {
+    const pattern = /^[a-zA-Z0-9\.\-\_\@]*$/;
+    if (!pattern.test(event.target.value)) {
+      event.target.value = event.target.value.replace(/[^a-zA-Z0-9\.\-\_\@]/g, "");
+    }
   }
 
 
@@ -824,6 +841,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     else {
       this.checkSpecial = true;
     }
+    this.SpecialistTrigger.openPanel();
   }
 
 
@@ -1097,8 +1115,6 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     if (this.appSession.userId && this._isNew == false) {
       params.updateUserId = this.appSession.userId;
     }
-
-
 
     if (this._specialistChip) {
       params.specialist = this._specialistChip;
