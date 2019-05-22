@@ -238,7 +238,7 @@ export class DatePicker implements OnInit, ControlValueAccessor {
             }
             else {
                 this.date = new Date(selectedDay);
-                //this.onChangeCallback(this.date.toString());
+                this.onChangeCallback(this.date.toString());
 
             }
             if (this.settings.closeOnSelect) {
