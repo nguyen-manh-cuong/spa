@@ -430,7 +430,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   }
 
   replace_alias_number(str) {
-    str = str.replace(/,/g,"");
+    str = str.replace(/,/g, "");
     str = str.replace(/a|e|i|o|u|y|d|A|E|I|O|U|Y|D/g, "");
     return str;
   }
@@ -809,7 +809,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
 
 
   ruleEmail() {
-    
+
   }
 
 
@@ -842,16 +842,16 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     }
   }
 
-  summaryInput(value){
-    if(value.length>4000){
-      this._frm.controls['summary'].setValue(value.substring(0,4000));
+  summaryInput(event) {
+    if (event.target.textContent.length > 4000) {
+      event.target.textContent = event.target.textContent.substring(0, 4000);
     }
   }
 
-  keyupSummary(obj){
-    if(obj.ctrlKey==true && obj.key=="v"){
-      if(obj.target.textContent.length>4000){
-        this._frm.controls['summary'].setValue(this._frm.controls['summary'].value.substring(0,4000));
+  keyupSummary(event) {
+    if (event.ctrlKey == true && event.key == "v") {
+      if (event.target.textContent.length > 4000) {
+        event.target.textContent = event.target.textContent.substring(0, 4000);
       }
     }
   }
