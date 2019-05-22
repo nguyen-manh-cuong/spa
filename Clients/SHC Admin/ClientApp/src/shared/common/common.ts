@@ -89,9 +89,14 @@ export class ValidationRule {
                 return { email: true };
             }
 
-            var s = control.value.split('@')[1];
-            s = s.split('.')[0];
-            if (s.indexOf('-') != s.lastIndexOf('-') || s.indexOf('-') + 1 == s.length) {
+            var local = control.value.split('@')[0];
+            if (local.indexOf('-') != local.lastIndexOf('-') || local.indexOf('-') + 1 == local.length || local.indexOf('-') == 0) {
+                return { email: true };
+            }
+
+            var domain = control.value.split('@')[1];
+            domain = domain.split('.')[0];
+            if (domain.indexOf('-') != domain.lastIndexOf('-') || domain.indexOf('-') + 1 == domain.length || domain.indexOf('-') == 0) {
                 return { email: true };
             }
         }

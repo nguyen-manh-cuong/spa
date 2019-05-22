@@ -85,11 +85,11 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
     if (this.appSession.user.healthFacilitiesId) {
       this.dataService.getAll('healthfacilities', "{healthfacilitiesId:" + String(this.appSession.user.healthFacilitiesId) + "}").subscribe(resp => {
         this._healthfacilities = resp.items;
-        provinceCode = resp.items[0].provinceCode;
-        districtCode = resp.items[0].districtCode;
+        // provinceCode = resp.items[0].provinceCode;
+        // districtCode = resp.items[0].districtCode;
       }, err => { }, () => {
-        this.frmSearch.controls['provinceCode'].setValue(provinceCode);
-        this.getDistricts(provinceCode, districtCode);
+        // this.frmSearch.controls['provinceCode'].setValue(provinceCode);
+        // this.getDistricts(provinceCode, districtCode);
       });
       this.frmSearch.controls['healthfacilitiesId'].setValue(this.appSession.user.healthFacilitiesId);
     }
@@ -139,9 +139,9 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
   }
 
   getDistricts(provinceCode, districtCode?) {
-    if (districtCode) {
-      return this._dataService.getAll("districts", "{ProvinceCode:" + provinceCode + "}").subscribe(resp => this._districts = resp.items, err => { }, () => this.frmSearch.controls['districtCode'].setValue(districtCode));
-    }
+    // if (districtCode) {
+    //   return this._dataService.getAll("districts", "{ProvinceCode:" + provinceCode + "}").subscribe(resp => this._districts = resp.items, err => { }, () => this.frmSearch.controls['districtCode'].setValue(districtCode));
+    // }
     return this._dataService.getAll("districts", "{ProvinceCode:" + provinceCode + "}").subscribe(resp => this._districts = resp.items);
   }
 
