@@ -10,6 +10,7 @@ import { DataService } from '@shared/service-proxies/service-data';
 import { SelectionModel } from '@angular/cdk/collections';
 import { ValidationRule } from '@shared/common/common';
 import swal from 'sweetalert2';
+import { log } from 'util';
 
 
 @Component({
@@ -102,7 +103,8 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
                 this.dialogRef.close();
             }, err => console.log(err));
     }
-
+    strFirts="";
+    strSecond="";
     mescontent: string = '';
     changeSelected(e) {
         if (this.lengthSmsContent > 500) {
@@ -111,35 +113,39 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
         switch (e) {
             case 1:
                 this._context.mescontent = this._frm.controls['smsContent'].value;
+                console.log('case 1', this._context.mescontent)
                 if (this._context.mescontent == null) {
                     this._frm.controls['smsContent'].setValue(' <PHONGKHAM>');
                 } else {
                     if ((this._context.mescontent + ' <PHONGKHAM>').length > 500) {
                         return;
                     }
-                    this._frm.controls['smsContent'].setValue(this._context.mescontent + ' <PHONGKHAM>');
+                    this._frm.controls['smsContent'].setValue(this.strFirts + ' <PHONGKHAM>'+ this.strSecond);
                 }
                 break;
             case 2:
                 this._context.mescontent = this._frm.controls['smsContent'].value;
+                console.log('case 2', this._context.mescontent)
                 if (this._context.mescontent == null) {
                     this._frm.controls['smsContent'].setValue(' <PHONGKHAM>');
                 } else {
                     if ((this._context.mescontent + ' <NGAYSINH>').length > 500) {
                         return;
                     }
-                    this._frm.controls['smsContent'].setValue(this._context.mescontent + ' <NGAYSINH>');
+                    this._frm.controls['smsContent'].setValue(this.strFirts + ' <NGAYSINH>'+ this.strSecond);
                 }
                 break;
             case 3:
+                console.log('case 3 truoc khi gan', this._context.mescontent)
                 this._context.mescontent = this._frm.controls['smsContent'].value;
+                console.log('case 3 sau khi gan', this._context.mescontent)
                 if (this._context.mescontent == null) {
                     this._frm.controls['smsContent'].setValue(' <HOTEN>');
                 } else {
                     if ((this._context.mescontent + ' <HOTEN>').length > 500) {
                         return;
                     }
-                    this._frm.controls['smsContent'].setValue(this._context.mescontent + ' <HOTEN>');
+                    this._frm.controls['smsContent'].setValue(this.strFirts + ' <HOTEN>'+ this.strSecond);
                 }
                 break;
             case 4:
@@ -150,7 +156,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
                     if ((this._context.mescontent + ' <EMAIL>').length > 500) {
                         return;
                     }
-                    this._frm.controls['smsContent'].setValue(this._context.mescontent + ' <EMAIL>');
+                    this._frm.controls['smsContent'].setValue(this.strFirts + ' <EMAIL>'+ this.strSecond);
                 }
                 break;
             case 5:
@@ -161,7 +167,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
                     if ((this._context.mescontent + ' <GIOITINH>').length > 500) {
                         return;
                     }
-                    this._frm.controls['smsContent'].setValue(this._context.mescontent + ' <GIOITINH>');
+                    this._frm.controls['smsContent'].setValue(this.strFirts + ' <GIOITINH>'+ this.strSecond);
                 }
                 break;
             case 6:
@@ -172,7 +178,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
                     if ((this._context.mescontent + ' <NGAYHIENTAI>').length > 500) {
                         return;
                     }
-                    this._frm.controls['smsContent'].setValue(this._context.mescontent + ' <NGAYHIENTAI>');
+                    this._frm.controls['smsContent'].setValue(this.strFirts + ' <NGAYHIENTAI>'+ this.strSecond);
                 }
                 break;
             case 7:
@@ -183,7 +189,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
                     if ((this._context.mescontent + ' <NGAYTAIKHAM>').length > 500) {
                         return;
                     }
-                    this._frm.controls['smsContent'].setValue(this._context.mescontent + ' <NGAYTAIKHAM>');
+                    this._frm.controls['smsContent'].setValue(this.strFirts + ' <NGAYTAIKHAM>'+ this.strSecond);
                 }
                 break;
             case 8:
@@ -194,7 +200,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
                     if ((this._context.mescontent + ' <PHONGBAN>').length > 500) {
                         return;
                     }
-                    this._frm.controls['smsContent'].setValue(this._context.mescontent + ' <PHONGBAN>');
+                    this._frm.controls['smsContent'].setValue(this.strFirts + ' <PHONGBAN>'+ this.strSecond);
                 }
                 break;
             case 9:
@@ -205,7 +211,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
                     if ((this._context.mescontent + ' <TENDICHVU>').length > 500) {
                         return;
                     }
-                    this._frm.controls['smsContent'].setValue(this._context.mescontent + ' <TENDICHVU>');
+                    this._frm.controls['smsContent'].setValue(this.strFirts + ' <TENDICHVU>'+ this.strSecond);
                 }
                 break;
             case 10:
@@ -216,9 +222,15 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
                     if ((this._context.mescontent + ' <TENTHUOC>').length > 500) {
                         return;
                     }
-                    this._frm.controls['smsContent'].setValue(this._context.mescontent + ' <TENTHUOC>');
-                }
+                    this._frm.controls['smsContent'].setValue(this.strFirts + ' <TENTHUOC>'+ this.strSecond);
+                }                
                 break;
         }
+    }
+    cussorPointer(e, value){
+        console.log(e);
+        // string 
+        this.strFirts = value.substring(0, e);
+        this.strSecond = value.substring(e, value.lenght);
     }
 }
