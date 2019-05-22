@@ -85,7 +85,7 @@ namespace SHCServer.Controllers
             {
                 foreach (var (key, value) in JsonConvert.DeserializeObject<Dictionary<string, string>>(filter))
                 {
-                    if (string.IsNullOrEmpty(value))
+                    if (string.IsNullOrEmpty(value.Trim()))
                         continue;
 
                     if (string.Equals(key, "provinceCode"))

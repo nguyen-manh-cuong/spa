@@ -44,7 +44,7 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
   _healthFacilitiesId: number;
   _specialistCode: number;
 
-  checkInputHealthFacilities=false;
+  checkInputHealthFacilities = false;
 
   isLoading = false;
   filteredHealthFacilitiesOptions: Observable<IHealthfacilities[]>;
@@ -504,9 +504,9 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
       )
   }
 
-  onSelectHealthFacilities(value){
-    if(value.healthFacilitiesId){
-      this.checkInputHealthFacilities=false;
+  onSelectHealthFacilities(value) {
+    if (value.healthFacilitiesId) {
+      this.checkInputHealthFacilities = false;
     }
   }
   //End auto complete health facilities
@@ -573,18 +573,18 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
     }
   }
 
-  inputHealthFacilitest(event){
-    if(event.target.value!=""){
-      this.checkInputHealthFacilities=true;
+  inputHealthFacilitest(event) {
+    if (event.target.value != "") {
+      this.checkInputHealthFacilities = true;
     }
-    else{
-      this.checkInputHealthFacilities=false;
+    else {
+      this.checkInputHealthFacilities = false;
     }
   }
 
-  cutstring(s:string){
-    if(s!=null && s.length>25){
-      return s.substring(0,25);
+  cutstring(s: string) {
+    if (s != null && s.length > 25) {
+      return s.substring(0, 25);
     }
   }
 
@@ -592,14 +592,22 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
   customSearch() {
     // this.frmSearch.controls['provinceCode'].setValue(this._provinceCode);
     // this.frmSearch.controls['districtCode'].setValue(this._districtCode);
-    this.healthfacilities.value ? 
-    this.frmSearch.controls['healthfacilitiesId'].setValue(this.healthfacilities.value.healthFacilitiesId) : 
-    (this.appSession.user.healthFacilitiesId == null ? this.frmSearch.controls['healthfacilitiesId'].setValue(null) :'');
 
-    if(this.checkInputHealthFacilities){
+    this.healthfacilities.value ?
+      this.frmSearch.controls['healthfacilitiesId'].setValue(this.healthfacilities.value.healthFacilitiesId) :
+      (this.appSession.user.healthFacilitiesId == null ? this.frmSearch.controls['healthfacilitiesId'].setValue(null) : '');
+
+    if (this.checkInputHealthFacilities) {
       this.frmSearch.controls['healthfacilitiesId'].setValue(0);
     }
 
+    if (this.healthfacilities.value && typeof this.healthfacilities.value==="string"  && this.healthfacilities.value.trim() == "") {
+      this.frmSearch.controls['healthfacilitiesId'].setValue(null);
+    }
+
+    if (this.specialistCode.value && typeof this.specialistCode.value==="string" && this.specialistCode.value.trim() == "") {
+      this.frmSearch.controls['specialistCode'].setValue(null);
+    }
     this.btnSearchClicks$.next();
   }
 
