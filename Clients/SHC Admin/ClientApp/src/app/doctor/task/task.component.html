@@ -220,7 +220,7 @@
                                 <mat-option class="w-100" *ngIf="specialIsLoading" class="is-loading">
                                     <mat-spinner diameter="30"></mat-spinner>
                                 </mat-option>
-                                <mat-option [style.background-color]="_speciaList.indexOf(o.code)>=0 ? 'green': ''" (click)="specialistClick()" class="w-100" *ngFor="let o of _specialist" [value]="o">
+                                <mat-option (click)="specialistClick()" class="w-100" *ngFor="let o of _specialist" [value]="o">
                                     {{o.code +' - '+o.name}}
                                 </mat-option>
                             </mat-autocomplete>

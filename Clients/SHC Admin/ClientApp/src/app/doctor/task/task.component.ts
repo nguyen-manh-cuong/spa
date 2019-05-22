@@ -689,7 +689,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     for (let i = 0; i < this._specialistChip.length; i++) {
       if (this._specialistChip[i].specialistCode == code) {
         this._specialistChip.splice(i, 1);
-        //this._speciaList.splice(i,1);
+        this._speciaList.splice(i,1);
       }
     }
     if (this._specialistChip.length > 0) {
@@ -708,7 +708,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     if (this._specialistChip.length == 0) {
       var s = new Specialist(event.option.value.code, event.option.value.name);
       this._specialistChip.push(s);
-      //this._speciaList.push(s.specialistCode);
+      this._speciaList.push(s.specialistCode);
     }
     else {
       this._specialistChip.forEach(h => {
@@ -719,7 +719,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
       if (check != false) {
         var s = new Specialist(event.option.value.code, event.option.value.name);
         this._specialistChip.push(s);
-        //this._speciaList.push(s.specialistCode);
+        this._speciaList.push(s.specialistCode);
       }
       else {
         swal({
