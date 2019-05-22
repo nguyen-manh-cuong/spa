@@ -289,7 +289,7 @@
                         <div>
                             <mat-label class="label">{{l('DoctorSummary')}}</mat-label>
                         </div>
-                        <ckeditor (change)="doctorSummaryInput($event)" #doctorSummary class="ckeditor w-100"
+                        <ckeditor (input)="summaryInput($event.target.textContent)" (keyup)="keyupSummary($event)" #doctorSummary class="ckeditor w-100"
                             max-length="4000"
                             [config]="{ toolbar: [ 'heading', '|', 'bold', 'italic','|','bulletedList','numberedList','|','blockQuote','link','undo','redo'] }"
                             formControlName="summary" [editor]="Editor" (ready)="onReady($event)">
