@@ -430,6 +430,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   }
 
   replace_alias_number(str) {
+    str = str.replace(/,/g, "");
     str = str.replace(/a|e|i|o|u|y|d|A|E|I|O|U|Y|D/g, "");
     return str;
   }
@@ -648,7 +649,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     this._specialist = [];
     return this.dataService
       .get("catcommon", JSON.stringify({
-        name: isNaN(fValue) ? fValue : "",
+        name: fValue,
         max: 300
       }), "{name:'asc'}", null, 300)
       .pipe(finalize(() => this.specialIsLoading = false));
@@ -808,16 +809,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
 
 
   ruleEmail() {
-    var control = this._frm.controls['email'];
 
-    var f = control.value.substring(0, control.value.indexOf('@'));
-
-    var s = control.value.substring(control.value.indexOf('@'), control.value.length);
-
-    s = s.replace(/-/g, "");
-
-    control.setValue(f + s);
-    
   }
 
 
@@ -834,12 +826,6 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     }
   }
 
-  doctorSummaryInput($event) {
-    // console.log($event);
-    // if($event.target.textContent.length>4000){
-    //   this._frm.controls['summary'].setValue(this._frm.controls['summary'].value.splice(0,4000));
-    // }
-  }
 
   doctorSummaryKeypress($event) {
 
@@ -852,6 +838,20 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
       }
       else {
         this.checkSpecial = true;
+      }
+    }
+  }
+
+  summaryInput(event) {
+    if (event.target.textContent.length > 4000) {
+      event.target.textContent = event.target.textContent.substring(0, 4000);
+    }
+  }
+
+  keyupSummary(event) {
+    if (event.ctrlKey == true && event.key == "v") {
+      if (event.target.textContent.length > 4000) {
+        event.target.textContent = event.target.textContent.substring(0, 4000);
       }
     }
   }

@@ -55,12 +55,14 @@
     transition: .4s all;
     cursor: pointer;
 }
-.upload-button{
+
+.upload-button {
     border-radius: 4px;
-    border: 1px solid #00a2a2; 
+    border: 1px solid #00a2a2;
 }
-.upload-button .btn-primary-inverted { 
-    cursor: pointer;    
+
+.upload-button .btn-primary-inverted {
+    cursor: pointer;
 }
 
 .image-uploader .upload-content {
@@ -89,41 +91,48 @@
 .disabled .mat-form-field-outline {
     background-color: transparent !important;
 }
+
 .ckeditor {
     font-size: 13px;
 }
-.ck.ck-editor__editable_inline{
-    border: unset!important;
+
+.ck.ck-editor__editable_inline {
+    border: unset !important;
 }
 
-.ck-editor__editable{
+.ck-editor__editable {
     min-height: 10px;
-    border-bottom: 1px solid 000000!important;
+    border-bottom: 1px solid 000000 !important;
 }
 
-.custom-readonly{
-    cursor: pointer!important;
+.ck-editor__main{
+    max-width: 850px;
 }
 
-.text-readonly{
-    color: #00695c!important;
+.custom-readonly {
+    cursor: pointer !important;
 }
 
-.ck.ck-reset_all, .ck.ck-reset_all{
+.text-readonly {
+    color: #00695c !important;
+}
+
+.ck.ck-reset_all,
+.ck.ck-reset_all {
     margin-left: 9px;
     margin-right: 8px;
 }
 
-input:read-only{
-    color:#00695c!important;
+input:read-only {
+    color: #00695c !important;
 }
 
-textarea{
-    overflow: hidden!important;
+textarea {
+    overflow: hidden !important;
+    color: #00695c !important;
+    font-weight: 500 !important;
 }
 
-.ck .ck-editor__main{
+.ck .ck-editor__main {
     margin-right: -6px;
 }
-
-

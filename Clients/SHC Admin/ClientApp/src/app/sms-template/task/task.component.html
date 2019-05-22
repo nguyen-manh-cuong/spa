@@ -34,17 +34,17 @@
             </mat-form-field>
           </div>
           <div class="col-md-12" [ngClass]="{'disabled': _isUsedSuccess}">
-            <mat-form-field appearance="outline" class="w-100">
-              <mat-label>{{l("PackageTemplateMessageContent")}}</mat-label>
-              <textarea formControlName="smsContent" rows="5" matInput required required maxlength="500"></textarea>
-              <validation matSuffix [control]="_frm.controls['smsContent']"></validation>
-            </mat-form-field>
+              <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>{{l("PackageTemplateMessageContent")}}</mat-label>
+                  <textarea formControlName="smsContent" rows="5" matInput required maxlength="500" (keyup)="inputSmsContent($event)" (click)="cussorPointer($event.target.selectionStart, $event.target.value)"></textarea>
+                  <validation matSuffix [control]="_frm.controls['smsContent']"></validation>
+              </mat-form-field>
           </div>
           <div class="col-md-12" [ngClass]="{'disabled': _isUsedSuccess}">
             <mat-form-field appearance="outline" class="w-100">
               <mat-label>{{l("PackageTemplateParameterValues")}}</mat-label>
               <mat-chip-list>
-                  <mat-chip (click)="changeSelected(1)">Phòng khám</mat-chip>
+                  <mat-chip (click)="changeSelected(1), cussorPointer($event.target.selectionStart, $event.target.value)">Phòng khám</mat-chip>
                   <mat-chip (click)="changeSelected(2)">Ngày sinh</mat-chip>
                   <mat-chip (click)="changeSelected(3)">Họ tên</mat-chip>
                   <mat-chip (click)="changeSelected(4)">Email</mat-chip>

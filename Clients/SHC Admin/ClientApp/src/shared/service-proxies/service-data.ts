@@ -115,10 +115,11 @@ export class DataService {
         };
 
 
-
+        abp.ui.setBusy('#form-dialog');
         return this.http.request('post', url_, options_).pipe(_observableMergeMap((response_: any) => {
             return this.processDataOk(response_);
         })).pipe(_observableCatch((response_: any) => {
+            abp.ui.clearBusy('#form-dialog');
             if (response_ instanceof HttpResponseBase) {
                 try {
                     return this.processDataOk(<any>response_);
@@ -177,10 +178,11 @@ export class DataService {
             responseType: 'blob',
             headers: new HttpHeaders({ 'Accept': 'application/json' })
         };
-
+        abp.ui.setBusy('#form-dialog');
         return this.http.request('put', url_, options_).pipe(_observableMergeMap((response_: any) => {
             return this.processDataOk(response_);
         })).pipe(_observableCatch((response_: any) => {
+            abp.ui.clearBusy('#form-dialog');
             if (response_ instanceof HttpResponseBase) {
                 try {
                     return this.processDataOk(<any>response_);
