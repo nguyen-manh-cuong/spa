@@ -808,8 +808,11 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   }
 
 
-  ruleEmail() {
-
+  ruleEmail(event: any) {
+    const pattern = /^[a-zA-Z0-9\.\-\_\@]*$/;
+    if (!pattern.test(event.target.value)) {
+      event.target.value = event.target.value.replace(/[^a-zA-Z0-9\.\-\_\@]/g, "");
+    }
   }
 
 

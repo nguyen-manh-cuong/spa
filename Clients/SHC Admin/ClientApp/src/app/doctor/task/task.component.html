@@ -80,7 +80,7 @@
                     <div class="col-md-6">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("Email")}}</mat-label>
-                            <input (input)="ruleEmail()" formControlName="email" matInput maxlength="320">
+                            <input (input)="ruleEmail($event)" formControlName="email" matInput maxlength="320">
                             <validation matSuffix [control]="_frm.controls['email']"></validation>
                         </mat-form-field>
                     </div>
