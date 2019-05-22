@@ -44,13 +44,14 @@ export class LoginService {
 
         if (authenticateResult.accessToken) {
             // Successfully logged in
+            console.log(111, authenticateResult.accessToken);
             this.login(authenticateResult.accessToken, authenticateResult.encryptedAccessToken, authenticateResult.expireInSeconds, this.rememberMe);
 
         } else {
             // Unexpected result!
-
-            this._logService.warn('Unexpected authenticateResult!');
-            this._router.navigate(['auth/login']);
+            console.log(119, this.authenticateResult);
+            //this._logService.warn('Unexpected authenticateResult!');
+            //this._router.navigate(['auth/login']);
         }
     }
 
