@@ -20,14 +20,11 @@
 
 .ck-editor__editable{
     min-height: 150px;
-    border: 1px solid 000000!important;
-}
-.ck.ck-editor__editable_inline{
-    border: 1px solid 000000!important;
+    border: 1px solid #c4c4c4!important;
 }
 
-.ck.ck-editor__main>.ck-editor__editable:not(.ck-focused){
-    border: 1px solid 000000!important;
+.ck-editor__main{
+    max-width: 850px;
 }
 
 .image-uploader .upload-content .upload-description {
@@ -106,3 +103,16 @@
 input:read-only{
     color:#00695c!important;
 }
+
+// .noscroll .cdk-global-overlay-wrapper > .cdk-overlay-pane{
+//     width: calc(100vw - 250px)!important;
+//     pointer-events: auto;
+//     position: absolute!important;
+//     right: 0;
+//     top: 0;
+//     bottom: 0;
+//     max-width: unset!important;
+// }
+// .noscroll{
+//     overflow: hidden!important;
+// }

@@ -11,6 +11,7 @@ namespace SHCServer.Models
         public int Id { set; get; }
         public int SmsPackageId { set; get; }
         public int HealthFacilitiesId { set; get; }
+
         public int SmsBrandsId { set; get; }
         public int YearStart { set; get; }
         public int YearEnd { set; get; }

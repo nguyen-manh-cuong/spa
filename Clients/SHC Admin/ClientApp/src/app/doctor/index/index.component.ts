@@ -85,11 +85,11 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
     if (this.appSession.user.healthFacilitiesId) {
       this.dataService.getAll('healthfacilities', "{healthfacilitiesId:" + String(this.appSession.user.healthFacilitiesId) + "}").subscribe(resp => {
         this._healthfacilities = resp.items;
-        provinceCode = resp.items[0].provinceCode;
-        districtCode = resp.items[0].districtCode;
+        // provinceCode = resp.items[0].provinceCode;
+        // districtCode = resp.items[0].districtCode;
       }, err => { }, () => {
-        this.frmSearch.controls['provinceCode'].setValue(provinceCode);
-        this.getDistricts(provinceCode, districtCode);
+        // this.frmSearch.controls['provinceCode'].setValue(provinceCode);
+        // this.getDistricts(provinceCode, districtCode);
       });
       this.frmSearch.controls['healthfacilitiesId'].setValue(this.appSession.user.healthFacilitiesId);
     }
@@ -139,9 +139,9 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
   }
 
   getDistricts(provinceCode, districtCode?) {
-    if (districtCode) {
-      return this._dataService.getAll("districts", "{ProvinceCode:" + provinceCode + "}").subscribe(resp => this._districts = resp.items, err => { }, () => this.frmSearch.controls['districtCode'].setValue(districtCode));
-    }
+    // if (districtCode) {
+    //   return this._dataService.getAll("districts", "{ProvinceCode:" + provinceCode + "}").subscribe(resp => this._districts = resp.items, err => { }, () => this.frmSearch.controls['districtCode'].setValue(districtCode));
+    // }
     return this._dataService.getAll("districts", "{ProvinceCode:" + provinceCode + "}").subscribe(resp => this._districts = resp.items);
   }
 
@@ -604,8 +604,12 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
   }
 
   openDialogDoctor(obj?: EntityDto): void {
+    var element = document.getElementById("noscroll");
+    element.classList.add("noscroll");
     const dialogRef = this.dialog.open(this.dialogComponent, { minWidth: 'calc(100vw/1.5)', maxWidth: 'calc(100vw - 100px)', disableClose: true, data: obj ? obj : null });
     dialogRef.afterClosed().subscribe(() => {
+      var element = document.getElementById("noscroll");
+      element.classList.remove("noscroll");
       this.paginator.pageIndex = 0;
       this.paginator._changePageSize(this.paginator.pageSize);
     });
