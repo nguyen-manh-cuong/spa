@@ -354,9 +354,9 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
 
     if (this.obj) {
       if (this.obj.specialist) {
-        this.obj.specialist.forEach((e: any) =>{ 
+        this.obj.specialist.forEach((e: any) => {
           this._specialistChip.push(e);
-          this._speciaList.push(e.specialistCode);  
+          this._speciaList.push(e.specialistCode);
         });
       }
       if (this.obj) {
@@ -438,6 +438,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
 
   replace_alias_number(str) {
     str = str.replace(/,/g, "");
+    str = str.replace(/\\/g, "");
     str = str.replace(/a|e|i|o|u|y|d|A|E|I|O|U|Y|D/g, "");
     return str;
   }
@@ -644,6 +645,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     return h ? h.name : undefined;
   }
 
+  check = 0;
 
   filterSpecialistOptions() {
     this.specialistCodeControl.valueChanges
@@ -689,7 +691,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     for (let i = 0; i < this._specialistChip.length; i++) {
       if (this._specialistChip[i].specialistCode == code) {
         this._specialistChip.splice(i, 1);
-        this._speciaList.splice(i,1);
+        this._speciaList.splice(i, 1);
       }
     }
     if (this._specialistChip.length > 0) {
@@ -834,7 +836,10 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   checkSpecial = true;
   checkHealthFacilities = true;
 
-  specialistClick() {
+  specialistClick(check?) {
+    if (check) {
+      this.check = check;
+    }
     if (this._specialistChip.length == 0) {
       this.checkSpecial = false;
     }

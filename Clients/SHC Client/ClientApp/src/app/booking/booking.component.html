@@ -284,7 +284,7 @@
                       <div class="col-md-6" *ngFor="let item of _healthfacilities; index as i">
                         <div class="article" [ngClass]="{'clickedH': isClickedH == i}" (click)="onSelectHealthFacilities(item, i)">
                           <div class="thumbnail-img mb-5">
-                            <img src="{{ item && item.avatar ? item.avatar : defaulth }}"
+                            <img src="{{ item && item.avatar ? uploadBaseUrl + item.avatar : defaulth }}"
                               alt="Generic placeholder image">
                           </div>                            
                           <h4 class="mb-10 f18 bold">{{item.name}}</h4>
@@ -313,7 +313,7 @@
                 <div class="row border">
                   <div class="col-md-3 text-center border-r" style="height: 213px;">
                     <img class="img-slick"
-                      src="{{ _healthfacility && _healthfacility.avatar ? _healthfacility.avatar : defaulth }}" alt=""
+                      src="{{ _healthfacility && _healthfacility.avatar ? uploadBaseUrl + _healthfacility.avatar : defaulth }}" alt=""
                       (click)="onClickHealthFacilities()">
                     <p title="{{_healthfacility ? _healthfacility.name : ''}}">
                       {{_healthfacility ? hashLength(_healthfacility.name) : ''}}</p>
@@ -322,7 +322,7 @@
                     <ngx-slick-carousel class="carousel text-center border-r" style="margin-left: -8px;height: 213px;"
                       #slickModal="slick-carousel" [config]="slideConfig">
                       <div ngxSlickItem *ngFor="let doctor of _doctors" class="slide">
-                        <img class="img-slick" src="{{ doctor.avatar ? doctor.avatar : defaultd }}"
+                        <img class="img-slick" src="{{ doctor.avatar ? uploadBaseUrl + doctor.avatar : defaultd }}"
                           (click)="onClickDoctor(doctor)">
                         <p>{{doctor.fullName}}</p>
                       </div>
