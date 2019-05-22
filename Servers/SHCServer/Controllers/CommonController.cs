@@ -171,7 +171,8 @@ namespace SHCServer.Controllers
                     }
                     if (string.Equals(key, "name"))
                     {
-                        objs = objs.Where(o => o.Name.Contains(value.Trim()));
+                        var s = value.Replace(@"%", "\\%").Replace(@"_", "\\_").Trim();
+                        objs = objs.Where(o => o.Name.Contains(s));
                     }
                     if (string.Equals(key, "code"))
                     {
