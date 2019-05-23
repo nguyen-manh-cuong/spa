@@ -135,7 +135,6 @@ export class packagedistributeIndexComponent extends PagedListingComponentBase<I
     }
 
     customSearch() {
-        console.log('vao ham search')
         if (this.frmSearch.controls['fromYear'].value == this.frmSearch.controls['toYear'].value) {
             if(this.frmSearch.controls['monthStart'].value > this.frmSearch.controls['monthEnd'].value){
                 return swal({
