@@ -849,11 +849,6 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     this.SpecialistTrigger.openPanel();
   }
 
-
-  doctorSummaryKeypress($event) {
-
-  }
-
   fullNameInput($event) {
     if ($event.data != null) {
       if (this._specialistChip.length == 0) {
@@ -874,7 +869,8 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   keyupSummary(event) {
     if (event.ctrlKey == true && event.key == "v") {
       if (event.target.textContent.length > 4000) {
-        event.target.textContent = event.target.textContent.substring(0, 4000);
+        var s=event.target.textContent.substring(0,4000)
+        this._frm.controls['summary'].patchValue(s);
       }
     }
   }

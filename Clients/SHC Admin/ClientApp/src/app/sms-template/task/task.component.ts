@@ -46,7 +46,6 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
 
         if (this.smstemplate) {
             this._smstemplates = _.clone(this.smstemplate);
-            console.log(this._smstemplates);
             this.dataService.getAll('smslog', JSON.stringify({ smsTemplateId: this._smstemplates.id, status: '1' })).subscribe(resp => resp.items.length > 0 ? this._isUsedSuccess = true : this._isUsedSuccess = false);
             this._isNew = false;
         }
@@ -73,6 +72,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     lengthSmsContent = 0;
     inputSmsContent() {
         this.lengthSmsContent = this._frm.value.smsContent.toString().length;
+        //this.cursorIndex=this.lengthSmsContent;
     }
 
     submit() {
