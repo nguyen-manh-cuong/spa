@@ -36,14 +36,14 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     @ViewChild("detailCost") detailCost;
 
     constructor(
-        injector: Injector, 
-        private _dataService: DataService, 
-        private _formBuilder: FormBuilder, 
-        public dialogRef: MatDialogRef<TaskComponent>, 
-        @Inject(MAT_DIALOG_DATA) 
-        public packageData: IPackage) { 
-            super(injector); 
-        }
+        injector: Injector,
+        private _dataService: DataService,
+        private _formBuilder: FormBuilder,
+        public dialogRef: MatDialogRef<TaskComponent>,
+        @Inject(MAT_DIALOG_DATA)
+        public packageData: IPackage) {
+        super(injector);
+    }
 
     ngOnInit() {
         const validationRule = new ValidationRule();
@@ -130,12 +130,12 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     }
 
     addDetail() {
-        if(this._frm.controls['cost'].value && this._frm.controls['cost'].value > 2000000000) return swal('Thông báo', 'Thành tiền không được quá 2.000.000.000', 'warning');
+        if (this._frm.controls['cost'].value && this._frm.controls['cost'].value > 2000000000) return swal('Thông báo', 'Thành tiền không được quá 2.000.000.000', 'warning');
 
         var length: number = this._details.length;
         var smsTo: number = length == 0 ? Number(this._frm.value.smsTo) + 1 : Number(this._details[length - 1].smsTo) + 1;
 
-        while(this._frm.get(this._smsFrom + length) != null){
+        while (this._frm.get(this._smsFrom + length) != null) {
             length++;
         }
 
@@ -167,7 +167,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
 
         if (type == 1) {
             var valueSmsTo = Number(this.getNumber(this.smsTo.nativeElement.value));
-            
+
             var length = this._details.length;
             var totalQuantity = !length ? valueSmsTo : (length ? this._frm.controls['quantity'].value : valueSmsTo);
             index > -1 ? this._details[index].smsTo = value : "";
@@ -193,7 +193,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
                 }
             }
         } else {
-            var totalCost: number = type == 1 ? Number(this.getNumber(this.detailCost.nativeElement.value)) + Number(value) : Number(this.getNumber(this.detailCost.nativeElement.value));            
+            var totalCost: number = type == 1 ? Number(this.getNumber(this.detailCost.nativeElement.value)) + Number(value) : Number(this.getNumber(this.detailCost.nativeElement.value));
             index > -1 ? this._details[index].cost = value : "";
 
             this._details.forEach(el => {
@@ -207,13 +207,14 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     }
 
     submit() {
-        if(this._frm.controls['cost'].value && this._frm.controls['cost'].value > 2000000000) 
+        if (this._frm.controls['cost'].value && this._frm.controls['cost'].value > 2000000000)
             return swal({
-                title:'Thông báo', 
-                text:'Thành tiền không được quá 2.000.000.000', 
-                type:'warning',
-                timer:3000});
-  
+                title: 'Thông báo',
+                text: 'Thành tiền không được quá 2.000.000.000',
+                type: 'warning',
+                timer: 3000
+            });
+
         var params = _.pick(this._frm.value, ['id', 'name', 'description', 'cost', 'quantity', 'isActive', 'details', 'userId']);
         var detail: Array<IPackageDetail> = [{
             smsFrom: this._frm.value.smsFrom,
@@ -224,7 +225,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
         params.name = _.trim(params.name);//temp
         params.details = this._details.concat(detail);
         params.userId = this.appSession.userId;
-        
+
         if (this.packageData) {
             params.id = this.packageData.id;
         }
@@ -232,32 +233,34 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
         this._isNew ?
             this._dataService.create(this.api, params).subscribe(() => {
                 swal({
-                    title:this.l('SaveSuccess'), 
-                    text:'', 
-                    type:'success'});
+                    title: this.l('SaveSuccess'),
+                    text: '',
+                    type: 'success'
+                });
                 this.dialogRef.close();
-            }, err => {}) :
+            }, err => { }) :
             this._dataService.update(this.api, params).subscribe(() => {
                 swal({
-                    title:this.l('SaveSuccess'), 
-                    text:'', 
-                    type:'success',
-                    timer:3000});
+                    title: this.l('SaveSuccess'),
+                    text: '',
+                    type: 'success',
+                    timer: 3000
+                });
                 this.dialogRef.close()
-            }, err => {});
+            }, err => { });
     }
 
-    compare(from: string, to: string){
-        if(this._frm.controls[to].value <= this._frm.controls[from].value){
+    compare(from: string, to: string) {
+        if (this._frm.controls[to].value <= this._frm.controls[from].value) {
             this._frm.controls[to].value != 0 ? this._frm.controls[to].setValue(this._frm.controls[to].value) : "";
-            this._frm.controls[to].setErrors({compare: true});
-        } else{
+            this._frm.controls[to].setErrors({ compare: true });
+        } else {
             this._frm.controls[to].setErrors(null);
         }
     }
-    
-    getNumber(num: string){
-        if(num && num.trim().length) return Number(num.replace(/[^0-9]/g, ""));
+
+    getNumber(num: string) {
+        if (num && num.trim().length) return Number(num.replace(/[^0-9]/g, ""));
         return 0;
     }
 
@@ -271,14 +274,27 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     //         this._frm.controls[control].setValue(null);
     //     }
     // }
-    inputOnlyNumber(event: any, control: string) {
+    inputOnlyNumber(event: any, control: string, check?) {
         const pattern = /[à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ|è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ|ì|í|ị|ỉ|ĩ|ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ|ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ|ỳ|ý|ỵ|ỷ|ỹ|đ|À|Á|Ạ|Ả|Ã|Â|Ầ|Ấ|Ậ|Ẩ|Ẫ|Ă|Ằ|Ắ|Ặ|Ẳ|Ẵ|È|É|Ẹ|Ẻ|Ẽ|Ê|Ề|Ế|Ệ|Ể|Ễ|Ì|Í|Ị|Ỉ|Ĩ|Ò|Ó|Ọ|Ỏ|Õ|Ô|Ồ|Ố|Ộ|Ổ|Ỗ|Ơ|Ờ|Ớ|Ợ|Ở|Ỡ|Ù|Ú|Ụ|Ủ|Ũ|Ư|Ừ|Ứ|Ự|Ử|Ữ|Ỳ|Ý|Ỵ|Ỷ|Ỹ|Đ|,|]/g;
         if (pattern.test(event.target.value)) {
             event.target.value = event.target.value.replace(/[à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ|è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ|ì|í|ị|ỉ|ĩ|ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ|ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ|ỳ|ý|ỵ|ỷ|ỹ|đ|À|Á|Ạ|Ả|Ã|Â|Ầ|Ấ|Ậ|Ẩ|Ẫ|Ă|Ằ|Ắ|Ặ|Ẳ|Ẵ|È|É|Ẹ|Ẻ|Ẽ|Ê|Ề|Ế|Ệ|Ể|Ễ|Ì|Í|Ị|Ỉ|Ĩ|Ò|Ó|Ọ|Ỏ|Õ|Ô|Ồ|Ố|Ộ|Ổ|Ỗ|Ơ|Ờ|Ớ|Ợ|Ở|Ỡ|Ù|Ú|Ụ|Ủ|Ũ|Ư|Ừ|Ứ|Ự|Ử|Ữ|Ỳ|Ý|Ỵ|Ỷ|Ỹ|Đ|,|]/g, "");
-        } 
-        if(!event.target.value){
+        }
+        if (!event.target.value) {
             this._frm.controls[control].setValue(null);
         }
+        if (check) {
+            if (check == 1) {
+                if (this.smsTo.nativeElement.value.length >= 13) {
+                    this.smsTo.nativeElement.value = this.smsTo.nativeElement.value.substring(this.smsTo.nativeElement.value.indexOf('.') + 1, this.smsTo.nativeElement.value.length);
+                }
+            }
+
+            if (check == 2) {
+                if (this.detailCost.nativeElement.value.length >= 13) {
+                    this.detailCost.nativeElement.value = this.detailCost.nativeElement.value.substring(this.detailCost.nativeElement.value.indexOf('.') + 1, this.detailCost.nativeElement.value.length);
+                }
+            }
+        }
     }
-     
+
 }
