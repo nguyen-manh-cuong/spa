@@ -98,7 +98,7 @@ export class BookingComponent extends AppComponentBase implements OnInit, AfterV
             this.frmBooking.controls['phoneNumber'].setValue(this.appSession.user.phoneNumber);
         }
 
-        this.uploadBaseUrl=AppConsts.remoteServiceBaseUrl.replace("api","wwwroot");
+        this.uploadBaseUrl = AppConsts.uploadBaseUrl;
         this._dataService.getAll('provinces').subscribe(resp => this._provinces = this._provincesExamination = resp.items);
         this.getDate();
         this.getCapcha();

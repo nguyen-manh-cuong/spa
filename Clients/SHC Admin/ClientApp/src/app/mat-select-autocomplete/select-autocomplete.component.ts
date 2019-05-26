@@ -152,7 +152,7 @@ export class SelectAutocompleteComponent implements OnChanges, DoCheck {
     );
     this.selectAllChecked = true;
     this.filteredOptions.forEach(item => {
-      if (!this.selectedValue.includes(item[this.value])) {
+        if (this.selectedValue.indexOf(item[this.value]) > -1) {
         this.selectAllChecked = false;
       }
     });
@@ -204,8 +204,8 @@ export class SelectAutocompleteComponent implements OnChanges, DoCheck {
     const filteredValues = this.getFilteredOptionsValues();
     let count = 0;
     if (this.multiple) {
-      this.selectedValue.filter(item => {
-        if (filteredValues.includes(item)) {
+        this.selectedValue.filter(item => {
+            if (filteredValues.indexOf(item) > -1) {
           count++;
         }
       });

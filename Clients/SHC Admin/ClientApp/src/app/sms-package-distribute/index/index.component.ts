@@ -140,11 +140,11 @@ export class packagedistributeIndexComponent extends PagedListingComponentBase<I
     }
     
       getSelectedOptions(selected) {
-        this.selectedOptions = [{code: "", name: ""}]; 
+        this.selectedOptions = []; 
         this.selected = selected;
         if (this.selected.length) {
             for (var i = 0; i < this.selected.length; i++) {
-                this.selectedOptions.push(this._medicalFacility.find(x => x.healthFacilitiesId === this.selected[this.selected.length - 1]).code, this._medicalFacility.find(x => x.healthFacilitiesId === this.selected[this.selected.length - 1]).name);
+                this.selectedOptions.push(this._medicalFacility.find(x => x.healthFacilitiesId === this.selected[this.selected.length - 1]).code + " - " + this._medicalFacility.find(x => x.healthFacilitiesId === this.selected[this.selected.length - 1]).name);
             }
         }
         this.frmSearch.controls['HealthFacilitiesId'].setValue(this.selected);
