@@ -166,7 +166,7 @@ namespace SHCServer.Controllers
             }
 
             //return Json(new ActionResultDto { Error = new { code = 0, message = "Login failed!", details = "Invalid user name or password" } });
-            return StatusCode(401, _excep.Throw(401, "Đăng nhập không thành công!", "Tài khoản hoặc mật khẩu không đúng."));
+            return StatusCode(406, _excep.Throw(401,"Đăng nhập không thành công!", "Tài khoản hoặc mật khẩu không đúng."));
         }
 
         [HttpPost]

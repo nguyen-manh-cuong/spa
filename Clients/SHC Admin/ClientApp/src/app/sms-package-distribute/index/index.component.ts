@@ -29,8 +29,6 @@ export class packagedistributeIndexComponent extends PagedListingComponentBase<I
     _medicalFacilityFind = [];
     _Status = [{ id: 2, name: 'Tất cả' }, { id: 1, name: 'Hiệu lực' }, { id: 0, name: 'Không hiệu lực' }];
 
-    selectedOptions = [];
-    selected = this.selectedOptions;
     showError = false;
     errorMessage = '';
 
@@ -131,7 +129,6 @@ export class packagedistributeIndexComponent extends PagedListingComponentBase<I
     }
 
 
-
     onSelectMonthStart(value) {
         this.frmSearch.controls['monthStart'].setValue(value);
     }
@@ -140,14 +137,7 @@ export class packagedistributeIndexComponent extends PagedListingComponentBase<I
     }
     
       getSelectedOptions(selected) {
-        this.selectedOptions = []; 
-        this.selected = selected;
-        if (this.selected.length) {
-            for (var i = 0; i < this.selected.length; i++) {
-                this.selectedOptions.push(this._medicalFacility.find(x => x.healthFacilitiesId === this.selected[this.selected.length - 1]).code + " - " + this._medicalFacility.find(x => x.healthFacilitiesId === this.selected[this.selected.length - 1]).name);
-            }
-        }
-        this.frmSearch.controls['HealthFacilitiesId'].setValue(this.selected);
+        this.frmSearch.controls['HealthFacilitiesId'].setValue(selected);
       }
 
     customSearch() {
