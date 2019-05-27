@@ -37,6 +37,7 @@ namespace SHCServer.ViewModels
                        })
                         .Where((d, p) => d.Id == PackagesDistribute.Id)
                         .Select((d, p) => p).FirstOrDefault();
+                        
 
             var HealthFacilities = context.JoinQuery<SmsPackagesDistribute, HealthFacilities>((d, h) => new object[]
                        {
@@ -72,6 +73,8 @@ namespace SHCServer.ViewModels
         public string Locality { set; get; }
 
         public long Quantity { get; set; }
+
+        public long Amount { get; set; }
 
         public string PackageName { get; set; }
 

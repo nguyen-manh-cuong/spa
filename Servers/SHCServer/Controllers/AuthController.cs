@@ -105,7 +105,7 @@ namespace SHCServer.Controllers
                                          new MenuItem {Name = "PackagesDistributeSmsPackage", Icon = "", Route = "/app/sms-package-distribute"},
                                          new MenuItem {Name = "TemplatesSms", Icon = "", Route = "/app/sms-template"}
                                     }},
-                                    new MenuItem {Name = "SmsManual", Icon = "sms", Items = new List<MenuItem>{
+                                    new MenuItem {Name = "SmsManualMenu", Icon = "sms", Items = new List<MenuItem>{
                                          new MenuItem {Name = "SmsManualReExamination", Icon = "", Route = "/app/sms-manual-re-examination"},
                                          new MenuItem {Name = "SmsManualBirthday", Icon = "", Route = "/app/sms-manual-birthday"},
                                          new MenuItem {Name = "SmsUserManual", Icon = "", Route = "/app/sms-manual"},
@@ -286,6 +286,63 @@ namespace SHCServer.Controllers
             CaptchaResult result = Captcha.GenerateCaptchaImage(width, height, captchaCode);
 
             return Json(new { Code = result.CaptchaCode, Data = result.CaptchBase64Data });
+        }
+
+        [HttpPost]
+        [Route("api/send-mail")]
+        public IActionResult SendMailResetPassword([FromBody] string email)
+        {
+            User currentUser = _context.Query<User>().Where(u => u.Email == email).FirstOrDefault();
+
+            if (currentUser != null)
+            {
+                //SHCServer.SendMail.SendMailResetPassword("trungngoc@dichthuatvantin.com", email, "NgocLong90", "smtp.googlemail.com", 587);
+                return Json(new ActionResultDto());
+            }
+
+            return StatusCode(406, _excep.Throw(406, "Thông báo", "Email không tồn tại."));
+        }
+
+        [HttpPut]
+        [Route("api/reset-password-user")]
+        public IActionResult ResetPasswordUser([FromBody] UserResetPasswordViewModel obj)
+        {
+
+            User currentUser = _context.Query<User>().Where(u => u.UserName == obj.UserName).FirstOrDefault();
+
+            string currenPassword = currentUser.Password;
+            string logPassword = currentUser.PasswordLog;
+
+            if (Utils.VerifyHashedPassword(currenPassword, obj.OldPassword))
+            {
+                return StatusCode(406, _excep.Throw(406, "Thông báo", "Mật khẩu không không đúng"));
+            }
+
+            if (Utils.VerifyHashedPassword(currenPassword, obj.NewPassword) || Utils.VerifyHashedPassword(logPassword, obj.NewPassword))
+            {
+                return StatusCode(406, _excep.Throw(406, "Thông báo", "Mật khẩu không được trùng với 2 lần mật khẩu trước. Đổi mật khẩu thất bại."));
+            }
+            
+            try
+            {
+                _context.Session.BeginTransaction();
+                _context.Update<User>(b => b.UserName == obj.UserName, a => new User()
+                {
+                    PasswordLog = currenPassword,
+                    Password = Utils.HashPassword(obj.NewPassword),
+                    UpdateDate = DateTime.Now
+                });
+
+                _context.Session.CommitTransaction();
+
+                return Json(new ActionResultDto());
+            }
+            catch (Exception e)
+            {
+                if (_context.Session.IsInTransaction)
+                    _context.Session.RollbackTransaction();
+                return StatusCode(500, _excep.Throw("Có lỗi xảy ra !", e.Message));
+            }
         }
 
         public string convertToUnSign(string s)

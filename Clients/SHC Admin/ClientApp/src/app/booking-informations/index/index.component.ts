@@ -5,7 +5,7 @@ import { MAT_DIALOG_DATA, MatButton, MatDialog, MatDialogRef, MatTableDataSource
 import { Subject, merge, of } from 'rxjs';
 import { Observable } from 'rxjs';
 import { catchError, map, startWith, switchMap, filter, debounceTime, tap, finalize } from 'rxjs/operators';
-import { standardized } from '../../../shared/helpers/Utils';
+import { standardized } from '../../../shared/helpers/utils';
 import { isEmpty, isNil, isNull, omitBy, zipObject } from 'lodash';
 import { SelectionModel } from '@angular/cdk/collections';
 import { DataService } from '@shared/service-proxies/service-data';

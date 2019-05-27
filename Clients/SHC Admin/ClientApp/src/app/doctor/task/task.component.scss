@@ -20,11 +20,11 @@
 
 .ck-editor__editable{
     min-height: 150px;
-    border: 1px solid #c4c4c4!important;
 }
 
 .ck-editor__main{
     max-width: 850px;
+    border: 1px solid #c4c4c4!important;
 }
 
 .image-uploader .upload-content .upload-description {
@@ -97,7 +97,7 @@
     color: #00695c!important;
 }
 .ck .ck-editor__main{
-    margin-left: 2px;
+    margin-left: 0px;
 }
 
 input:read-only{

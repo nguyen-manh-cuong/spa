@@ -53,7 +53,7 @@
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l('PackageSmsTo')}}</mat-label>
                             <input type="text" mask="dot_separator" formControlName="smsTo" matInput [required]="true"
-                                (keyup)="getValue($event.target.value, -1, 1)" (input)="inputOnlyNumber($event, 'smsTo')"
+                                (keyup)="getValue($event.target.value, -1, 1)" (input)="inputOnlyNumber($event, 'smsTo',1)"
                                 maxlength="11" #smsTo tabindex="{{_package.isDeleteDistribute != 0 && _isNew == false ? -1 : 0}}">
                             <validation matSuffix [control]="_frm.controls['smsTo']"></validation>
                         </mat-form-field>
@@ -63,7 +63,7 @@
                             <mat-label>{{l('PackageDetailCost')}}</mat-label>
                             <input type="text" mask="dot_separator" formControlName="detailCost" matInput
                                 [required]="true" (keyup)="getValue($event.target.value, -1, 2)"
-                                (input)="inputOnlyNumber($event, 'detailCost')" maxlength="11" #detailCost tabindex="{{_package.isDeleteDistribute != 0 && _isNew == false ? -1 : 0}}">
+                                (input)="inputOnlyNumber($event, 'detailCost',2)" maxlength="11" #detailCost tabindex="{{_package.isDeleteDistribute != 0 && _isNew == false ? -1 : 0}}">
                             <validation matSuffix [control]="_frm.controls['detailCost']"></validation>
                         </mat-form-field>
                     </div>

@@ -91,6 +91,10 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   @ViewChild('priceTo') priceTo;
   @ViewChild('doctorSummary') doctorSummary;
   @ViewChild('dataContainer') _avatar;
+
+  @ViewChild('healthfacilitiesInput', { read: MatAutocompleteTrigger }) trigger: MatAutocompleteTrigger;
+  @ViewChild('specialistInput', { read: MatAutocompleteTrigger }) SpecialistTrigger: MatAutocompleteTrigger;
+
   dataService: DataService;
   isLoading = false;
   specialIsLoading = false;
@@ -350,7 +354,10 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
 
     if (this.obj) {
       if (this.obj.specialist) {
-        this.obj.specialist.forEach((e: any) => this._specialistChip.push(e));
+        this.obj.specialist.forEach((e: any) => {
+          this._specialistChip.push(e);
+          this._speciaList.push(e.specialistCode);
+        });
       }
       if (this.obj) {
         if (this.obj.healthFacilities) {
@@ -431,6 +438,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
 
   replace_alias_number(str) {
     str = str.replace(/,/g, "");
+    str = str.replace(/\\/g, "");
     str = str.replace(/a|e|i|o|u|y|d|A|E|I|O|U|Y|D/g, "");
     return str;
   }
@@ -566,6 +574,10 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     this.healthfacilitiesControl.value ? this._frm.controls['healthfacilities'].setValue(this.healthfacilitiesControl.value.healthFacilitiesId) : (this.appSession.user.healthFacilitiesId == null ? this._frm.controls['healthfacilities'].setValue(null) : '');
   }
 
+  inputHealthFacilitiesClick() {
+    this.trigger.openPanel();
+  }
+
   closed(): void {
     if (this.healthfacilitiesControl.value && typeof this.healthfacilitiesControl.value == 'string' && !this.healthfacilitiesControl.value.trim()) this.healthfacilitiesControl.setErrors({ required: true })
   }
@@ -633,6 +645,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     return h ? h.name : undefined;
   }
 
+  check = 0;
 
   filterSpecialistOptions() {
     this.specialistCodeControl.valueChanges
@@ -678,6 +691,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     for (let i = 0; i < this._specialistChip.length; i++) {
       if (this._specialistChip[i].specialistCode == code) {
         this._specialistChip.splice(i, 1);
+        this._speciaList.splice(i, 1);
       }
     }
     if (this._specialistChip.length > 0) {
@@ -696,6 +710,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     if (this._specialistChip.length == 0) {
       var s = new Specialist(event.option.value.code, event.option.value.name);
       this._specialistChip.push(s);
+      this._speciaList.push(s.specialistCode);
     }
     else {
       this._specialistChip.forEach(h => {
@@ -706,6 +721,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
       if (check != false) {
         var s = new Specialist(event.option.value.code, event.option.value.name);
         this._specialistChip.push(s);
+        this._speciaList.push(s.specialistCode);
       }
       else {
         swal({
@@ -808,8 +824,11 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   }
 
 
-  ruleEmail() {
-
+  ruleEmail(event: any) {
+    const pattern = /^[a-zA-Z0-9\.\-\_\@]*$/;
+    if (!pattern.test(event.target.value)) {
+      event.target.value = event.target.value.replace(/[^a-zA-Z0-9\.\-\_\@]/g, "");
+    }
   }
 
 
@@ -817,18 +836,17 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   checkSpecial = true;
   checkHealthFacilities = true;
 
-  specialistClick() {
+  specialistClick(check?) {
+    if (check) {
+      this.check = check;
+    }
     if (this._specialistChip.length == 0) {
       this.checkSpecial = false;
     }
     else {
       this.checkSpecial = true;
     }
-  }
-
-
-  doctorSummaryKeypress($event) {
-
+    this.SpecialistTrigger.openPanel();
   }
 
   fullNameInput($event) {
@@ -851,7 +869,8 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   keyupSummary(event) {
     if (event.ctrlKey == true && event.key == "v") {
       if (event.target.textContent.length > 4000) {
-        event.target.textContent = event.target.textContent.substring(0, 4000);
+        var s=event.target.textContent.substring(0,4000)
+        this._frm.controls['summary'].patchValue(s);
       }
     }
   }
@@ -1097,8 +1116,6 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     if (this.appSession.userId && this._isNew == false) {
       params.updateUserId = this.appSession.userId;
     }
-
-
 
     if (this._specialistChip) {
       params.specialist = this._specialistChip;
