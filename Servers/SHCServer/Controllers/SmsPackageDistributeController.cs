@@ -76,7 +76,15 @@ namespace SHCServer.Controllers
                 }
             }
 
-            return Json(new ActionResultDto { Result = new { Items = objs.OrderByDesc(p => p.Id).TakePage(skipCount == 0 ? 1 : skipCount + 1, maxResultCount).Select(u => (new PackageDistributeViewModel(u, _connectionString))).ToList(), TotalCount = objs.Count() } });
+
+            var rs = objs.OrderByDesc(p => p.Id).GroupBy(p => new { p.HealthFacilitiesId, p.SmsBrandsId, p.SmsPackageId, p.YearEnd, p.YearStart, p.MonthEnd, p.MonthStart })
+                .Select(p => new PackageDistributeViewModel(p, _connectionString) {
+                    Amount = objs.Where(o => o.HealthFacilitiesId == p.HealthFacilitiesId && o.SmsBrandsId == p.SmsBrandsId && o.SmsPackageId == p.SmsPackageId
+                    && o.YearEnd == p.YearEnd && o.MonthEnd == p.MonthEnd && o.YearStart == p.YearStart).Count(),
+
+             });
+
+            return Json(new ActionResultDto { Result = new { Items = rs.TakePage(skipCount == 0 ? 1 : skipCount + 1, maxResultCount).ToList(), TotalCount = rs.Count() } });
         }
 
         [HttpPost]

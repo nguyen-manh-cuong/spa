@@ -405,6 +405,7 @@ export class DetailComponent extends AppComponentBase implements OnInit, AfterVi
   onReady(editor) {
     editor.ui.getEditableElement().parentElement.insertBefore(
       editor.ui.view.toolbar.element,
+      editor.ui.getEditableElement(),
       editor.isReadOnly = true
     );
   }
