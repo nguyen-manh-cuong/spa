@@ -91,6 +91,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   @ViewChild('priceTo') priceTo;
   @ViewChild('doctorSummary') doctorSummary;
   @ViewChild('dataContainer') _avatar;
+  @ViewChild('avatarImg') avatarImg;
 
   @ViewChild('healthfacilitiesInput', { read: MatAutocompleteTrigger }) trigger: MatAutocompleteTrigger;
   @ViewChild('specialistInput', { read: MatAutocompleteTrigger }) SpecialistTrigger: MatAutocompleteTrigger;
@@ -521,7 +522,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   }
 
   getSpecialist() {
-    this.dataService.get("catcommon", '', "{name:'asc'}", null, 300).subscribe(resp => this._specialist = resp.items);
+    this.dataService.get("catcommon", "{isActive:'true'}", "{name:'asc'}", null, 300).subscribe(resp => this._specialist = resp.items);
   }
 
   @ViewChild("continueAdd") continueAdd: MatCheckbox;
@@ -749,6 +750,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
       this._avatar.nativeElement.value = null;
       this._frm.controls['avatar'].setValue(null);
       this.avatarName = "Chưa chọn ảnh";
+      this._avatars[0] = null;
       return swal({
         title: 'Thông báo',
         text: 'File quá lớn. Chỉ được chọn file có dung lượng nhỏ hơn hoặc bằng 5MB',
@@ -772,6 +774,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
           reader.readAsDataURL(file);
         } else {
           this.avatarName = "Chưa chọn ảnh";
+          this._avatars[0] = null;
           swal({
             title: 'Thông báo',
             text: 'Chỉ được tải lên file jpg, png, jpeg, pdf',
@@ -869,7 +872,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   keyupSummary(event) {
     if (event.ctrlKey == true && event.key == "v") {
       if (event.target.textContent.length > 4000) {
-        var s=event.target.textContent.substring(0,4000)
+        var s = event.target.textContent.substring(0, 4000)
         this._frm.controls['summary'].patchValue(s);
       }
     }

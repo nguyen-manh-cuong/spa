@@ -91,7 +91,7 @@
                         <mat-form-field [ngClass]="{'mat-form-field-invalid':checkCertificationCode}"
                             appearance="outline" class="w-100">
                             <mat-label>{{l("DoctorCertificationCode")}}</mat-label>
-                            <input #certification (keypress)="certificationKeypress($event)"
+                            <input mask="A*" #certification (keypress)="certificationKeypress($event)"
                                 (input)="certificationInput($event)" ctrlKeys (ctrlV)="onCtrlV()" (ctrlC)="onCtrlC()"
                                 formControlName="certificationCode" matInput maxlength="45">
                         </mat-form-field>
@@ -248,7 +248,7 @@
                         <div style="margin-bottom:-4px" class="ml-1">
                             <mat-label class="label">{{l('DoctorAvatar')}}</mat-label>
                         </div>
-                        <img style="padding: 2px"
+                        <img #avatarImg style="padding: 2px"
                             [src]="checkAvatar ? uploadBaseUrl+ (this._obj.avatar?this._obj.avatar:'') : _avatars[0] || '../assets/images/Doctor_Default.jpg'"
                             height="180px" width="175px">
                     </div>
