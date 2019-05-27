@@ -16,7 +16,6 @@ namespace SHCServer.Models
             context = new MySqlContext(new MySqlConnectionFactory(connectionString));
 
             DoctorId = obj.DoctorId;
-            SpecialistCode = obj.SpecialistCode;
 
             var specialist = context.JoinQuery<DoctorSpecialists, CategoryCommon>((d, c) => new object[]
                 {
@@ -24,6 +23,17 @@ namespace SHCServer.Models
                 })
                 .Where((d, c) => d.DoctorId == obj.DoctorId && d.SpecialistCode == obj.SpecialistCode && c.IsDelete == false && c.IsActive == true)
                 .Select((d, c) => c).FirstOrDefault();
+
+            if (specialist != null)
+            {
+                Specialist = specialist.Name;
+                SpecialistCode = specialist.Code;
+            }
+            else
+            {
+                SpecialistCode = "Chuyên khoa đã bị xóa";
+                Specialist = "";
+            }
 
             Specialist = specialist != null ? specialist.Name : "";
             Name = specialist != null ? specialist.Name : "";
