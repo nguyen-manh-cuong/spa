@@ -288,6 +288,63 @@ namespace SHCServer.Controllers
             return Json(new { Code = result.CaptchaCode, Data = result.CaptchBase64Data });
         }
 
+        [HttpPost]
+        [Route("api/send-mail")]
+        public IActionResult SendMailResetPassword([FromBody] string email)
+        {
+            User currentUser = _context.Query<User>().Where(u => u.Email == email).FirstOrDefault();
+
+            if (currentUser != null)
+            {
+                //SHCServer.SendMail.SendMailResetPassword("trungngoc@dichthuatvantin.com", email, "NgocLong90", "smtp.googlemail.com", 587);
+                return Json(new ActionResultDto());
+            }
+
+            return StatusCode(406, _excep.Throw(406, "Thông báo", "Email không tồn tại."));
+        }
+
+        [HttpPut]
+        [Route("api/reset-password-user")]
+        public IActionResult ResetPasswordUser([FromBody] UserResetPasswordViewModel obj)
+        {
+
+            User currentUser = _context.Query<User>().Where(u => u.UserName == obj.UserName).FirstOrDefault();
+
+            string currenPassword = currentUser.Password;
+            string logPassword = currentUser.PasswordLog;
+
+            if (Utils.VerifyHashedPassword(currenPassword, obj.OldPassword))
+            {
+                return StatusCode(406, _excep.Throw(406, "Thông báo", "Mật khẩu không không đúng"));
+            }
+
+            if (Utils.VerifyHashedPassword(currenPassword, obj.NewPassword) || Utils.VerifyHashedPassword(logPassword, obj.NewPassword))
+            {
+                return StatusCode(406, _excep.Throw(406, "Thông báo", "Mật khẩu không được trùng với 2 lần mật khẩu trước. Đổi mật khẩu thất bại."));
+            }
+            
+            try
+            {
+                _context.Session.BeginTransaction();
+                _context.Update<User>(b => b.UserName == obj.UserName, a => new User()
+                {
+                    PasswordLog = currenPassword,
+                    Password = Utils.HashPassword(obj.NewPassword),
+                    UpdateDate = DateTime.Now
+                });
+
+                _context.Session.CommitTransaction();
+
+                return Json(new ActionResultDto());
+            }
+            catch (Exception e)
+            {
+                if (_context.Session.IsInTransaction)
+                    _context.Session.RollbackTransaction();
+                return StatusCode(500, _excep.Throw("Có lỗi xảy ra !", e.Message));
+            }
+        }
+
         public string convertToUnSign(string s)
         {
             Regex regex = new Regex("\\p{IsCombiningDiacriticalMarks}+");

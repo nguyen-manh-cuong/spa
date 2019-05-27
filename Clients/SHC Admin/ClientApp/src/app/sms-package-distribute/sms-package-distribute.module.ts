@@ -12,6 +12,7 @@ import { packagedistributeViewComponent } from './view/view.component';
 import { packagedistributeEditComponent } from './edit/edit.component';
 import { ValidationModule } from '@app/validation/validation.module';
 import { NgxMaskModule } from 'ngx-mask';
+import { SelectAutocompleteModule } from '@app/mat-select-autocomplete/select-autocomplete.module';
 
 @NgModule({
   imports: [
@@ -22,6 +23,7 @@ import { NgxMaskModule } from 'ngx-mask';
     UtilsModule,
     ValidationModule,
     SmsRoutingModule,
+    SelectAutocompleteModule,
     NgxMaskModule.forRoot()
   ],
   declarations: [SmsComponent, packagedistributeIndexComponent, packagedistributeTaskComponent, packagedistributeViewComponent,packagedistributeEditComponent],
