@@ -10,6 +10,10 @@ import { AppComponentBase } from '@shared/app-component-base';
 import { Observable } from 'rxjs';
 import { SignalRAspNetCoreHelper } from '@shared/helpers/SignalRAspNetCoreHelper';
 import { Title } from '@angular/platform-browser';
+import { MAT_DIALOG_DATA, MatButton, MatDialog, MatDialogRef } from '@angular/material';
+import { TaskComponent } from './reset-pasword/task/task.component';
+//import { PagedListingComponentBase } from '@shared/paged-listing-component-base';
+//import { TaskComponent } from './sms-template-task/task/task.component';
 
 @Component({
     templateUrl: './app.component.html',
@@ -21,6 +25,7 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
     private viewContainerRef: ViewContainerRef;
     private title = 'Viettel Gateway';
     public pateTitle = '';
+    dialogComponent: any;
 
     isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset).pipe(map(result => result.matches));
     shownLoginName: string = '';
@@ -28,7 +33,7 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
     languages: abp.localization.ILanguageInfo[];
     currentLanguage: abp.localization.ILanguageInfo;
 
-    constructor(injector: Injector, private breakpointObserver: BreakpointObserver, private _authService: AppAuthService, private router: Router, private titleService: Title) {
+    constructor(injector: Injector, private breakpointObserver: BreakpointObserver, private _authService: AppAuthService, private router: Router, private titleService: Title, public dialog: MatDialog) {
         super(injector);
         this.shownLoginName = this.appSession.getShownLoginName();
         this.router.events.subscribe((event: any) => {
@@ -73,6 +78,7 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
 
     ngOnInit(): void {
         // SignalRAspNetCoreHelper.initSignalR();
+        this.dialogComponent = TaskComponent;
 
         this.languages = _.filter(this.localization.languages, l => (<any>l).isDisabled === false);
         this.currentLanguage = this.localization.currentLanguage;
@@ -114,5 +120,10 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
 
     onResize(event) {
         // exported from $.AdminBSB.activateAll
+    }
+
+    openCustomDialog(): void {
+        const dialogRef = this.dialog.open(this.dialogComponent, { minWidth: '400px', maxWidth: '400px'});
+        dialogRef.afterClosed();
     }
 }
