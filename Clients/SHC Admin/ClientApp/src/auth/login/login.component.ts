@@ -44,11 +44,11 @@ export class LoginComponent extends AppComponentBase implements OnInit {
         this.filterOptions();
         this.healthfacilities.setValue(null);
 
-        console.log(122, localStorage.getItem('logCount'));
-        if (localStorage.getItem('logCount') != null) {
-            this.numberLoginFail = parseInt(localStorage.getItem('logCount'));
-        }
-        this.getCapcha();
+        // console.log(122, localStorage.getItem('logCount'));
+        // if (localStorage.getItem('logCount') != null) {
+        //     this.numberLoginFail = parseInt(localStorage.getItem('logCount'));
+        // }
+        // this.getCapcha();
     }
 
     get f() { return this.frmLogin.controls; }
