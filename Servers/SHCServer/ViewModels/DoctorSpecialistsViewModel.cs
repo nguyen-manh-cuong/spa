@@ -24,18 +24,19 @@ namespace SHCServer.Models
                 .Where((d, c) => d.DoctorId == obj.DoctorId && d.SpecialistCode == obj.SpecialistCode && c.IsDelete == false && c.IsActive == true)
                 .Select((d, c) => c).FirstOrDefault();
 
+            //Specialist = specialist != null ? (specialist.Name) : "";
+
             if (specialist != null)
             {
-                Specialist = specialist.Name;
                 SpecialistCode = specialist.Code;
+                Specialist = specialist.Name;
             }
             else
             {
-                SpecialistCode = "Chuyên khoa đã bị xóa";
+                SpecialistCode = null;
                 Specialist = "";
             }
 
-            Specialist = specialist != null ? specialist.Name : "";
             Name = specialist != null ? specialist.Name : "";
         }
 

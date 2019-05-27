@@ -356,8 +356,10 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     if (this.obj) {
       if (this.obj.specialist) {
         this.obj.specialist.forEach((e: any) => {
-          this._specialistChip.push(e);
-          this._speciaList.push(e.specialistCode);
+          if(e.specialistCode!=null){
+            this._specialistChip.push(e);
+            this._speciaList.push(e.specialistCode);
+          }
         });
       }
       if (this.obj) {
