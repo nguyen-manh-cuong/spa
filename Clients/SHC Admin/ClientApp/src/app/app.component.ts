@@ -108,7 +108,7 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
     }
 
     logout(): void {
-        localStorage.setItem('logCount', '1');
+        localStorage.removeItem('logCount');
         this._authService.logout();
     }
 
