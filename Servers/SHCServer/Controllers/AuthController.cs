@@ -1,22 +1,20 @@
-﻿
-using SHCServer.Models;
-using SHCServer.ViewModels;
-using Microsoft.AspNetCore.Http;
+﻿using AuthServer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using SHCServer.Models;
+using SHCServer.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
-using Viettel.MySql;
-using AuthServer;
-using System.IO;
 using System.Text.RegularExpressions;
+using Viettel.MySql;
 
 namespace SHCServer.Controllers
 {
@@ -25,6 +23,7 @@ namespace SHCServer.Controllers
         private readonly string _connectionString;
         private readonly string _host;
         private readonly int _port;
+
         public AuthController(IOptions<Audience> settings, IConfiguration configuration)
         {
             _settings = settings;
@@ -47,7 +46,6 @@ namespace SHCServer.Controllers
 
             //check null language
             if (string.IsNullOrEmpty(language)) language = "vi";
-
 
             List<LanguageDto> languages = new List<LanguageDto>
             {
@@ -112,7 +110,7 @@ namespace SHCServer.Controllers
                                          new MenuItem {Name = "SmsLog", Icon = "", Route = "/app/sms-log"}
                                     }},
                                     new MenuItem {Name = "Admin", Icon = "settings", Items = new List<MenuItem>{
-                                         new MenuItem {Name = "Danh mục khung giờ khám", Icon = "", Route = "/app/booking-timeslots"},    
+                                         new MenuItem {Name = "Danh mục khung giờ khám", Icon = "", Route = "/app/booking-timeslots"},
                                          new MenuItem {Name = "CategoryCommon", Icon="", Route="/app/category-common"},
                                          new MenuItem {Name = "ApproveExamScheduleDoctor", Icon="", Route="/app/booking-doctor-approve"},
                                          new MenuItem {Name = "ExamScheduleDoctor", Icon="", Route="/app/booking-doctor"},
@@ -120,7 +118,7 @@ namespace SHCServer.Controllers
                                          new MenuItem {Name = "Danh sách bệnh nhân đặt khám", Icon="", Route="/app/booking-list"},
                                          new MenuItem {Name = "Danh sách bác sĩ", Icon="", Route="/app/doctor"},
                                     }}
-                                } 
+                                }
                             }
                         }
                     }
@@ -159,14 +157,29 @@ namespace SHCServer.Controllers
 
             if (currentUser != null)
             {
+                if (currentUser.LockedTime != null)
+                {
+                    return StatusCode(401, _excep.Throw(401, "Thông báo", "Đăng nhập không thành công. Vui lòng trở lại sau 60 phút"));
+                }
+
+                //DbContext context = new MySqlContext(new MySqlConnectionFactory("server=localhost;port=3306;database=mdm;user=root;password=64688990;CharSet=utf8;"));
+
                 if (Utils.VerifyHashedPassword(currentUser.Password, user.Password))
                 {
                     return Json(GenerateJwtToken(user.UserNameOrEmailAddress, currentUser, _settings));
                 }
+
+                _context.Session.BeginTransaction();
+                _context.Update<User>(b => b.UserName == currentUser.UserName, a => new User()
+                {
+                    Counter = a.Counter + 1
+                });
+
+                _context.Session.CommitTransaction();
             }
 
             //return Json(new ActionResultDto { Error = new { code = 0, message = "Login failed!", details = "Invalid user name or password" } });
-            return StatusCode(401, _excep.Throw(401, "Đăng nhập không thành công!", "Tài khoản hoặc mật khẩu không đúng."));
+            return StatusCode(406, _excep.Throw(401,"Đăng nhập không thành công!", "Tài khoản hoặc mật khẩu không đúng."));
         }
 
         [HttpPost]
@@ -307,7 +320,6 @@ namespace SHCServer.Controllers
         [Route("api/reset-password-user")]
         public IActionResult ResetPasswordUser([FromBody] UserResetPasswordViewModel obj)
         {
-
             User currentUser = _context.Query<User>().Where(u => u.UserName == obj.UserName).FirstOrDefault();
 
             string currenPassword = currentUser.Password;
@@ -321,7 +333,7 @@ namespace SHCServer.Controllers
             {
                 return StatusCode(406, _excep.Throw(406, "Thông báo", "Mật khẩu không được trùng với 2 lần mật khẩu trước. Đổi mật khẩu thất bại."));
             }
-            
+
             try
             {
                 _context.Session.BeginTransaction();
@@ -359,6 +371,7 @@ namespace SHCServer.Controllers
                       + Guid.NewGuid().ToString().Substring(0, 4)
                       + Path.GetExtension(fileName);
         }
+
         private static AuthenticateResultModel GenerateJwtToken(string email, User user, IOptions<Audience> settings)
         {
             List<Claim> claims = new List<Claim>

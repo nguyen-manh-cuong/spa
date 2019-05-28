@@ -73,12 +73,8 @@ export class IndexComponent extends PagedListingComponentBase<IBookingDoctorsCal
         this.dialogDetail = DetailComponent;
 
         if (this.appSession.user.healthFacilitiesId) {
-            this.dataService.get("healthfacilities", JSON.stringify({healthfacilitiesId : this.appSession.user.healthFacilitiesId}), '', null, null).subscribe(resp => {this._healthfacilities = resp.items;});
             this.dataService.getAll('doctors', String(this.appSession.user.healthFacilitiesId)).subscribe(resp => this._doctors = resp.items);
-
-            setTimeout(() => {
             this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId);
-            }, 500);
         }
         else {
             this.filterOptions();

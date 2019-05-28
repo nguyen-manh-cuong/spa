@@ -19,40 +19,25 @@
 <div class="content">
     <form [formGroup]="frmSearch" class="form-filter pl-2 pr-2" novalidate>
         <div class="row m-0 pt-4">
-            <div class="col-md-10">
-                <div class="row">
-                    <div class="col-md-6" [hidden]="this.appSession.user.healthFacilitiesId">
-                        <mat-form-field appearance="outline" class="w-100">
-                            <mat-label>{{l('Unit')}}</mat-label>
-                            <input matInput [formControl]="healthfacilities" [matAutocomplete]="auto">
-                            <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn"
-                                (optionSelected)="onSelectHealthFacilities($event.option.value)">
-                                <mat-option *ngIf="isLoading" class="is-loading">
-                                    <mat-spinner diameter="50"></mat-spinner>
-                                </mat-option>
-                                <mat-option *ngFor="let o of _healthfacilities" [value]="o">
-                                    {{o.code + ' - ' + o.name}}
-                                </mat-option>
-                            </mat-autocomplete>
-                        </mat-form-field>
-                    </div>
-                    <div class="col-md-6 disabled" [hidden]="!this.appSession.user.healthFacilitiesId">
-                        <mat-form-field appearance="outline" class="w-100">
-                            <mat-select formControlName="healthfacilities">
-                                <mat-option *ngFor="let o of _healthfacilities" [value]="o.healthFacilitiesId">
-                                    {{ o.name }}</mat-option>
-                            </mat-select>
-                        </mat-form-field>
-                    </div>
-                    <div class="col-md-6">
-                        <mat-form-field appearance="outline" class="w-100">
-                            <mat-label>{{l("BookingTimeSlotsUnitTimeslost")}}</mat-label>
-                            <input formControlName="keyFilter" matInput autocomplete maxlength="255">
-                        </mat-form-field>
-                    </div>
-                </div>
+            <div class="col-md-6" *ngIf="appSession.user.accountType == 0">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>{{l('Unit')}}</mat-label>
+                    <input matInput [formControl]="healthfacilities" [matAutocomplete]="auto">
+                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="onSelectHealthFacilities($event.option.value)">
+                        <mat-option *ngIf="isLoading" class="is-loading"><mat-spinner diameter="50"></mat-spinner></mat-option>
+                        <mat-option *ngFor="let o of _healthfacilities" [value]="o">
+                            {{o.code + ' - ' + o.name}}
+                        </mat-option>
+                    </mat-autocomplete>
+                </mat-form-field>
             </div>
-            <div class="col-md-2 text-center d-flex align-self-center">
+            <div class="col-md-{{appSession.user.accountType == 0 ? 3 : 6}}">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>{{l("BookingTimeSlotsUnitTimeslost")}}</mat-label>
+                    <input formControlName="keyFilter" matInput autocomplete maxlength="255">
+                </mat-form-field>
+            </div> 
+            <div class="col-md-3 text-center d-flex align-self-center">
                 <button #btnSearch mat-stroked-button (click)="customSearch()" color="primary" class="w-100 mb-4">
                     <mat-icon class="mr-2">search</mat-icon>{{l("Search")}}
                 </button>
@@ -68,7 +53,7 @@
                 <td mat-cell *matCellDef="let element; let i = index;" class="min-w-30 text-center">
                     {{(i + 1) + (paginator.pageIndex * paginator.pageSize)}}</td>
             </ng-container>
-            <ng-container matColumnDef="healthFacilitiesName">
+            <ng-container matColumnDef="healthFacilitiesName" *ngIf="appSession.user.accountType == 0">
                 <th mat-header-cell *matHeaderCellDef class="min-w-30 text-center pl-0"> {{l("Unit")}} </th>
                 <td mat-cell *matCellDef="let element; let i = index;" class="min-w-30">{{element.healthFacilitiesName}}
                 </td>

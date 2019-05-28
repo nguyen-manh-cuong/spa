@@ -68,7 +68,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
     arrayStatus = [{ position: 1, status: 'Đã khám', quantitystatus: 0 }, { position: 2, status: 'Chờ khám', quantitystatus: 0 }, { position: 3, status: 'Hủy khám', quantitystatus: 0 }, { position: 4, status: 'Mới đăng ký', quantitystatus: 0 }];
     isLoading = false;
 
-    displayedColumns = ['orderNumber', 'healthFacilitiesName', 'doctorName', 'quantity'];
+    displayedColumns = this.appSession.user.accountType != 0 ? ['orderNumber', 'doctorName', 'quantity'] : ['orderNumber', 'healthFacilitiesName', 'doctorName', 'quantity'];
     _bookingServiceTypes = [{ id: 0, name: 'Mới đăng ký' }, { id: 1, name: 'Chờ khám' }, { id: 2, name: 'Đã khám' }, { id: 3, name: 'Hủy khám' }, { id: 4, name: 'Tất cả' }];
     _bookingInformationsTime = [{ id: 0, name: 'Hôm nay' }, { id: 1, name: 'Hôm qua' }, { id: 2, name: 'Tuần này' }, { id: 3, name: 'Tuần trước' }, { id: 4, name: 'Tháng này' }, { id: 5, name: 'Tháng trước' }, { id: 6, name: 'Quý này' }, { id: 7, name: 'Quý trước' }, { id: 8, name: 'Năm nay' }, { id: 9, name: 'Năm trước' }, { id: 10, name: 'Theo khoảng thời gian' }];
 
@@ -94,12 +94,8 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
 
         //new
         if (this.appSession.user.healthFacilitiesId) {
-            this.dataService.get("healthfacilities", JSON.stringify({ healthfacilitiesId: this.appSession.user.healthFacilitiesId }), '', null, null).subscribe(resp => { this._healthfacilities = resp.items; });
             this.dataService.getAll('doctors', String(this.appSession.user.healthFacilitiesId)).subscribe(resp => this._doctors = resp.items);
-
-            setTimeout(() => {
-                this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId);
-            }, 500);
+            this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId);
         } else {
             this.filterOptions();
             this.healthfacilities.setValue(null);

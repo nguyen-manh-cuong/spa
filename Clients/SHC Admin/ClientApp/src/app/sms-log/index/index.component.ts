@@ -43,7 +43,7 @@ export class IndexComponent extends PagedListingComponentBase<ISmsLogs> implemen
         defaultOpen: false
     }
 
-    displayedColumns = ['orderNumber', 'healthfacilitiesName', 'phoneNumber', 'type', 'content', 'sentDate', 'status', 'messageError', 'telco', '_smsTemplateContent'];
+    displayedColumns = this.appSession.user.accountType != 0 ? ['orderNumber', 'phoneNumber', 'type', 'content', 'sentDate', 'status', 'messageError', 'telco'] : ['orderNumber', 'healthfacilitiesName', 'phoneNumber', 'type', 'content', 'sentDate', 'status', 'messageError', 'telco'];
 
     _smsTemplate: ISmsTemplate[] = [];
     _healthfacilities: IHealthfacilities[] = [];
@@ -100,11 +100,7 @@ export class IndexComponent extends PagedListingComponentBase<ISmsLogs> implemen
 
         if (this.appSession.user.healthFacilitiesId) {
             this._checkSession = true;
-
-            this.dataService.get("healthfacilities", JSON.stringify({ healthfacilitiesId: this.appSession.user.healthFacilitiesId }), '', null, null).subscribe(resp => {
-                this._healthfacilities = resp.items;
-                this.frmSearch.controls['healthfacilities'].setValue(this._healthfacilities[0].healthFacilitiesId);
-            });
+            this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId);      
           } else{
             this.filterOptions();
             this.healthfacilities.setValue(null);

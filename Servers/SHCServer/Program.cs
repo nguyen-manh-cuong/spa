@@ -14,7 +14,7 @@ namespace SHCServer
     {
         public static void Main(string[] args)
         {
-            SendMail.Start();
+            //SendMail.Start();
             IDbCommandInterceptor interceptor = new DbCommandInterceptor();
             DbConfiguration.UseInterceptors(interceptor);
 

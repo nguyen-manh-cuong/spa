@@ -91,6 +91,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   @ViewChild('priceTo') priceTo;
   @ViewChild('doctorSummary') doctorSummary;
   @ViewChild('dataContainer') _avatar;
+  @ViewChild('avatarImg') avatarImg;
 
   @ViewChild('healthfacilitiesInput', { read: MatAutocompleteTrigger }) trigger: MatAutocompleteTrigger;
   @ViewChild('specialistInput', { read: MatAutocompleteTrigger }) SpecialistTrigger: MatAutocompleteTrigger;
@@ -321,7 +322,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
       allowBooking: [this._obj.allowBooking],
       allowFilter: [this._obj.allowFilter],
       allowSearch: [this._obj.allowSearch],
-      healthfacilities: [this._obj.healthFacilities]
+      healthfacilities: [this.appSession.user.healthFacilities ? this.appSession.user.healthFacilitiesId : this._obj.healthFacilities]
     };
 
 
@@ -355,8 +356,10 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     if (this.obj) {
       if (this.obj.specialist) {
         this.obj.specialist.forEach((e: any) => {
-          this._specialistChip.push(e);
-          this._speciaList.push(e.specialistCode);
+          if(e.specialistCode!=null){
+            this._specialistChip.push(e);
+            this._speciaList.push(e.specialistCode);
+          }
         });
       }
       if (this.obj) {
@@ -397,7 +400,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   //Base//
 
   certificationInput($event) {
-    if ($event.target.value) {
+    if ($event.target.value && $event.target.value.trim()!='') {
       this._certificationInputCheck = false;
     }
     else {
@@ -412,7 +415,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     if ($event.key == "v") {
       this._certificationInputCheck = false;
     }
-    if ($event.key == "x" && this.certification.elementNative.value == "") {
+    if ($event.key == "x" && this.certification.elementNative.value == "" && this.certification.elementNative.value.trim()!='') {
       this.certificationDatePicker.nativeElement.value = "";
       this._frm.controls['certificationDate'].setValue(null);
     }
@@ -521,7 +524,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   }
 
   getSpecialist() {
-    this.dataService.get("catcommon", '', "{name:'asc'}", null, 300).subscribe(resp => this._specialist = resp.items);
+    this.dataService.get("catcommon", "{isActive:'true'}", "{name:'asc'}", null, 300).subscribe(resp => this._specialist = resp.items);
   }
 
   @ViewChild("continueAdd") continueAdd: MatCheckbox;
@@ -749,6 +752,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
       this._avatar.nativeElement.value = null;
       this._frm.controls['avatar'].setValue(null);
       this.avatarName = "Chưa chọn ảnh";
+      this._avatars[0] = null;
       return swal({
         title: 'Thông báo',
         text: 'File quá lớn. Chỉ được chọn file có dung lượng nhỏ hơn hoặc bằng 5MB',
@@ -772,6 +776,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
           reader.readAsDataURL(file);
         } else {
           this.avatarName = "Chưa chọn ảnh";
+          this._avatars[0] = null;
           swal({
             title: 'Thông báo',
             text: 'Chỉ được tải lên file jpg, png, jpeg, pdf',
@@ -869,7 +874,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   keyupSummary(event) {
     if (event.ctrlKey == true && event.key == "v") {
       if (event.target.textContent.length > 4000) {
-        var s=event.target.textContent.substring(0,4000)
+        var s = event.target.textContent.substring(0, 4000)
         this._frm.controls['summary'].patchValue(s);
       }
     }

@@ -21,7 +21,7 @@ import { SelectAutocompleteComponent } from '@app/mat-select-autocomplete/select
 export class packagedistributeIndexComponent extends PagedListingComponentBase<IPachkageDistribute> implements OnInit {
 
     frmSearch: FormGroup;
-    displayedColumns = ['Stt', 'HealthFacilitiesId', 'StartTime', 'pk', 'sms', 'isActive', 'task'];
+    displayedColumns = this.appSession.user.accountType != 0 ? ['Stt', 'StartTime', 'pk', 'sms', 'isActive', 'task'] : ['Stt', 'HealthFacilitiesId', 'StartTime', 'pk', 'sms', 'isActive', 'task'];
 
     _month = [{ id: 13, name: 'Tất cả' }, { id: 1, name: 'Tháng 1' }, { id: 2, name: 'Tháng 2' }, { id: 3, name: 'Tháng 3' }, { id: 4, name: 'Tháng 4' }, { id: 5, name: 'Tháng 5' }, { id: 6, name: 'Tháng 6' }, { id: 7, name: 'Tháng 7' }, { id: 8, name: 'Tháng 8' }, { id: 9, name: 'Tháng 9' }, { id: 10, name: 'Tháng 10' }, { id: 11, name: 'Tháng 11' }, { id: 12, name: 'Tháng 12' },];
     _medicalFacility = [{ healthFacilitiesId: 1, name: 'Cơ sở y tế phường Đại Kim', code: '' }, { healthFacilitiesId: 2, name: 'Cơ sở y tế phường Định Công', code: '' }, { healthFacilitiesId: 3, name: 'Cơ sở y tế phường Hoàng Liệt', code: '' }, 
@@ -29,8 +29,6 @@ export class packagedistributeIndexComponent extends PagedListingComponentBase<I
     _medicalFacilityFind = [];
     _Status = [{ id: 2, name: 'Tất cả' }, { id: 1, name: 'Hiệu lực' }, { id: 0, name: 'Không hiệu lực' }];
 
-    selectedOptions = [];
-    selected = this.selectedOptions;
     showError = false;
     errorMessage = '';
 
@@ -59,7 +57,7 @@ export class packagedistributeIndexComponent extends PagedListingComponentBase<I
             monthEnd: [13,],
             toYear: ['', [Validators.maxLength(4), Validators.min(0), Validators.max(9999), Validators.pattern('[0-9]*')]],
             fromYear: ['', [Validators.maxLength(4), Validators.min(0), Validators.max(9999), Validators.pattern('[0-9]*')]],
-            HealthFacilitiesId: ['',],
+            HealthFacilitiesId: [this.appSession.user.healthFacilities ? [this.appSession.user.healthFacilitiesId] : '',],
             Status: [2,],
         });
 
@@ -131,7 +129,6 @@ export class packagedistributeIndexComponent extends PagedListingComponentBase<I
     }
 
 
-
     onSelectMonthStart(value) {
         this.frmSearch.controls['monthStart'].setValue(value);
     }
@@ -140,14 +137,7 @@ export class packagedistributeIndexComponent extends PagedListingComponentBase<I
     }
     
       getSelectedOptions(selected) {
-        this.selectedOptions = []; 
-        this.selected = selected;
-        if (this.selected.length) {
-            for (var i = 0; i < this.selected.length; i++) {
-                this.selectedOptions.push(this._medicalFacility.find(x => x.healthFacilitiesId === this.selected[this.selected.length - 1]).code + " - " + this._medicalFacility.find(x => x.healthFacilitiesId === this.selected[this.selected.length - 1]).name);
-            }
-        }
-        this.frmSearch.controls['HealthFacilitiesId'].setValue(this.selected);
+        this.frmSearch.controls['HealthFacilitiesId'].setValue(selected);
       }
 
     customSearch() {

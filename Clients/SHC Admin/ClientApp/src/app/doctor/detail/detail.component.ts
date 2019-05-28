@@ -369,7 +369,9 @@ export class DetailComponent extends AppComponentBase implements OnInit, AfterVi
 
     if (this.obj) {
       if (this.obj.specialist) {
-        this.obj.specialist.forEach((e: any) => this._specialistChip.push(e));
+        this.obj.specialist.forEach((e: any) =>{ 
+          if(e.specialistCode!=null)
+          this._specialistChip.push(e);});
       }
       if (this.obj) {
         if (this.obj.healthFacilities) {
