@@ -43,6 +43,9 @@ namespace SHCServer.Models
 
         public int? HealthFacilitiesId { get; set; }
         public bool? IsDelete { get; set; }
+        public DateTime? LockedTime { get; set; }
+        public int? Counter { get; set; }
+
     }
 
     [Table("sys_users")]

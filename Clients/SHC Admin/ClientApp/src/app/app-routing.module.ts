@@ -76,6 +76,10 @@ import { NgModule } from '@angular/core';
                     {
                         path: 'doctor',
                         loadChildren: 'app/doctor/doctor.module#DoctorModule', canActivate: [AppRouteGuard]
+                    }, 
+                    {
+                        path: 'template',
+                        loadChildren: 'app/template-component/template.module#TemplateModule', canActivate: [AppRouteGuard]
                     }
                ]
             },
