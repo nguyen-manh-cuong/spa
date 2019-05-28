@@ -15,7 +15,6 @@ import { MAT_DIALOG_DATA, MatButton, MatDialog, MatDialogRef } from '@angular/ma
 import { TaskComponent } from './reset-pasword/task/task.component';
 //import { PagedListingComponentBase } from '@shared/paged-listing-component-base';
 //import { TaskComponent } from './sms-template-task/task/task.component';
-
 import { DataService } from '@shared/service-proxies/service-data';
 import { HealthfacilitiesListComponent } from './healthfacilities-list/healthfacilities-list.component';
 
@@ -176,7 +175,7 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
     }
 
     openCustomDialog(): void {
-        const dialogRef = this.dialog.open(this.dialogComponent, { minWidth: '400px', maxWidth: '400px'});
+        const dialogRef = this._dialog.open(this.dialogComponent, { minWidth: '400px', maxWidth: '400px'});
         dialogRef.afterClosed();
     }
 }

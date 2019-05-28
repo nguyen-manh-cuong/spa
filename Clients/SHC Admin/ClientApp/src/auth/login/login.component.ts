@@ -1,11 +1,15 @@
 import { AfterViewInit, Component, Injector, OnInit, ViewEncapsulation } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { AbpSessionService } from '@abp/session/abp-session.service';
 import { AppComponentBase } from '@shared/app-component-base';
 import { LoginService } from './login.service';
 import { Router } from '@angular/router';
+import { IHealthfacilities } from '@shared/Interfaces';
+import { debounceTime, tap, switchMap, finalize } from 'rxjs/operators';
+import { DataService } from '@shared/service-proxies/service-data';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
     selector: 'app-login',
@@ -18,8 +22,11 @@ export class LoginComponent extends AppComponentBase implements OnInit {
     frmLogin: FormGroup;
     submitted = false;
     saving = true;
+    isLoading = false;
+    dataService: DataService;
+    numberLoginFail = 0;
 
-    constructor(private http: HttpClient, injector: Injector, public loginService: LoginService, private _formBuilder: FormBuilder, private _router: Router, private _sessionService: AbpSessionService) {
+    constructor(private _sanitizer: DomSanitizer, private _dataService: DataService, private http: HttpClient, injector: Injector, public loginService: LoginService, private _formBuilder: FormBuilder, private _router: Router, private _sessionService: AbpSessionService) {
         super(injector);
     }
 
@@ -27,9 +34,9 @@ export class LoginComponent extends AppComponentBase implements OnInit {
         this.frmLogin = this._formBuilder.group({
             userNameOrEmailAddress: [this.loginService.authenticateModel.userNameOrEmailAddress, Validators.required],
             password: [this.loginService.authenticateModel.password, Validators.required],
-            healthfacilities: [],
             codeCapcha: [''],
-        }); 
+        });
+        this.dataService = this._dataService;
     }
 
     get f() { return this.frmLogin.controls; }
@@ -46,7 +53,7 @@ export class LoginComponent extends AppComponentBase implements OnInit {
 
     capcha = false;
     _capcha: { code: string, data: any } = { code: '', data: '' };
-    
+
 
     login(): void {
         let numLoginFail = 0;
@@ -67,8 +74,8 @@ export class LoginComponent extends AppComponentBase implements OnInit {
 
         this.loginService.authenticateModel = Object.assign(this.loginService.authenticateModel, this.frmLogin.value);
         this.loginService.authenticate(() => { }, error => {
-                localStorage.setItem('logCount', (numLoginFail + 1).toString())
-            });
+            localStorage.setItem('logCount', (numLoginFail + 1).toString())
+        });
     }
 
     getCapcha() {
@@ -77,13 +84,5 @@ export class LoginComponent extends AppComponentBase implements OnInit {
 
     validateCapcha(value: any) {
         if (value.length == 4) this._capcha.code != value ? this.capcha = true : this.capcha = false;
-    }
-
-    //add h
-    displayFn(h?: IHealthfacilities): string | undefined {
-        return h ? h.name : undefined;
-    }
-
-        this.loginService.authenticate(() => { console.log(); }, error => console.log(error));
     }
 }
