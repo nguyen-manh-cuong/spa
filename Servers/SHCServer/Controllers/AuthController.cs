@@ -312,8 +312,7 @@ namespace SHCServer.Controllers
 
             string currenPassword = currentUser.Password;
             string logPassword = currentUser.PasswordLog;
-
-            if (Utils.VerifyHashedPassword(currenPassword, obj.OldPassword))
+            if (!Utils.VerifyHashedPassword(currenPassword, obj.OldPassword))
             {
                 return StatusCode(406, _excep.Throw(406, "Thông báo", "Mật khẩu không không đúng"));
             }

@@ -1,0 +1,43 @@
+<mat-tab-group>
+    <mat-tab label="Đổi mật khẩu">
+        <ng-template matTabContent>
+            <mat-card style="width: 400px;">
+                <mat-card-header class="d-flex flex-column justify-content-center">
+                    <h4 class="header blue lighter bigger mt-0" style="text-align:center">
+                        <img src="assets/images/logo-viettel_03.png">
+                        <br>
+                        <span class=" text-primary"> VIETTEL GATEWAY</span>
+                    </h4>
+                </mat-card-header>
+                <mat-card-content class="shadow-none">
+                    <form [formGroup]="frmResetPassword" novalidate>
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l("OldPassword")}}</mat-label>
+                            <input formControlName="OldPassword" matInput type="password" [required]="true">
+                            <validation matSuffix [control]="frmResetPassword.controls['OldPassword']"></validation>
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l("NewPassword")}}</mat-label>
+                            <input formControlName="NewPassword" type="password" matInput [required]="true">
+                            <validation matSuffix [control]="frmResetPassword.controls['NewPassword']"></validation>
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l("RePassword")}}</mat-label>
+                            <input formControlName="RePassword" type="password" matInput [required]="true">
+                            <validation matSuffix [control]="frmResetPassword.controls['RePassword']"></validation>
+                        </mat-form-field>
+                        <div class="d-flex justify-content-center">
+                            <button mat-raised-button color="primary" class="w-100" (click)="resetPassword()" [disabled]="frmResetPassword.invalid">{{l("Lưu")}}</button>
+                        </div>
+                    </form>
+                </mat-card-content>
+            </mat-card>
+        </ng-template>
+    </mat-tab>
+    <mat-tab label="Cập nhật thông tin">
+        <ng-template matTabContent>
+            Nội dung đang được cập nhật
+        </ng-template>
+    </mat-tab>
+</mat-tab-group>
+
