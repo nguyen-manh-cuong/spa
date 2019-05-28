@@ -103,7 +103,7 @@
 }
 
 .ck-editor__main{
-    max-width: 850px;
+    max-width: 1050px;
 }
 
 .custom-readonly {
@@ -132,4 +132,17 @@ textarea {
 
 .ck .ck-editor__main {
     margin-right: -6px;
+}
+
+.noscroll .cdk-global-overlay-wrapper > .cdk-overlay-pane{
+    width: calc(100vw - 250px)!important;
+    pointer-events: auto;
+    position: absolute!important;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    max-width: unset!important;
+}
+.noscroll{
+    overflow: hidden!important;
 }

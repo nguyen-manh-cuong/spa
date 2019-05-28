@@ -400,7 +400,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   //Base//
 
   certificationInput($event) {
-    if ($event.target.value) {
+    if ($event.target.value && $event.target.value.trim()!='') {
       this._certificationInputCheck = false;
     }
     else {
@@ -415,7 +415,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     if ($event.key == "v") {
       this._certificationInputCheck = false;
     }
-    if ($event.key == "x" && this.certification.elementNative.value == "") {
+    if ($event.key == "x" && this.certification.elementNative.value == "" && this.certification.elementNative.value.trim()!='') {
       this.certificationDatePicker.nativeElement.value = "";
       this._frm.controls['certificationDate'].setValue(null);
     }
