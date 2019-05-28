@@ -513,6 +513,11 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
 
   ///////////////////////////////////
   getSpecialJoin(element: [Specialist]) {
+    for(var i=0; i<element.length; i++){
+      if(element[i].specialistCode==null){
+        element.splice(i,1);
+      }
+    }
     return element.map((e) => e.name).join(", ");
   }
   //Auto complete specialist
