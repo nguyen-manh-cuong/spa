@@ -137,7 +137,7 @@ namespace SHCServer.Controllers
 
                 if (sms.SmsTemplateName != nameCurrentTemplate)
                 {
-                    string sql = $"SELECT COUNT(*) as SLL FROM smarthealthcare.sms_template where BINARY SmsTemplateName = '{sms.SmsTemplateName}' " +
+                    string sql = $"SELECT COUNT as SLL FROM smarthealthcare.sms_template where BINARY SmsTemplateName = '{sms.SmsTemplateName}' " +
               $"and {sms.IsDelete} = false";
                     //if (sms.HealthFacilitiesId != null)
                     //{

@@ -1,30 +1,3 @@
 <mat-accordion displayMode="flat">
-    <ng-template ngFor let-menuItem [ngForOf]="menuItems" let-mainMenuItemIndex="index">
-        <mat-expansion-panel class="mat-elevation-z" *ngIf="showMenuItem(menuItem)" [ngClass]="{'no-child': menuItem.items.length == 0}" hideToggle="{{menuItem.items.length == 0}}">
-            <mat-expansion-panel-header collapsedHeight="48px" expandedHeight="48px" routerLinkActive="active" color="primary">
-                <!-- <mat-panel-title> -->
-                <div *ngIf="menuItem.items.length > 0" class="d-flex align-items-center text-light">
-                    <mat-icon class="mr-3">{{menuItem.icon ? menuItem.icon : 'x'}}</mat-icon> {{l(menuItem.name)}}
-                </div>
-                <a *ngIf="menuItem.items.length == 0" [routerLink]="[menuItem.route]" class="d-flex align-items-center text-light w-100">
-                    <mat-icon class="mr-3">{{menuItem.icon ? menuItem.icon : 'x'}}</mat-icon> {{l(menuItem.name)}}
-                </a>
-                <span class="spacer"></span>
-                <!-- <mat-icon>account_circle</mat-icon> -->
-                <!-- </mat-panel-title> -->
-            </mat-expansion-panel-header>
-            <ng-template ngFor let-subMenuItem [ngForOf]="menuItem.items" let-mainMenuItemIndex="index">
-                <mat-expansion-panel class="mat-elevation-z" *ngIf="showMenuItem(subMenuItem)" [ngClass]="{'no-child': subMenuItem.items.length == 0}" hideToggle="{{subMenuItem.items.length == 0}}">
-                    <mat-expansion-panel-header collapsedHeight="48px" expandedHeight="48px" routerLinkActive="active">
-                        <div *ngIf="subMenuItem.items.length > 0" class="d-flex align-items-center text-light">
-                            <mat-icon class="mr-3"></mat-icon> {{l(subMenuItem.name)}}
-                        </div>
-                        <a *ngIf="subMenuItem.items.length == 0" [routerLink]="[subMenuItem.route]" class="d-flex align-items-center text-light w-100">
-                            <mat-icon class="mr-3"></mat-icon> {{l(subMenuItem.name)}}
-                        </a>
-                    </mat-expansion-panel-header>
-                </mat-expansion-panel>
-            </ng-template>
-        </mat-expansion-panel>
-    </ng-template>
+    <app-recusive-content [level]="0" [menu]="menuItems"></app-recusive-content>
 </mat-accordion>

@@ -1,36 +1,38 @@
-.mat-expansion-panel {
-    background: transparent !important;
-    &.mat-expanded {
+.sidenav {
+    .mat-expansion-panel {
+      background: transparent !important;
+      &.mat-expanded {
         background: rgba(0, 0, 0, 0.24) !important;
-    }
-    .mat-expansion-panel-header {
+      }
+      .mat-expansion-panel-header {
         &:hover {
-            background: rgba(0, 0, 0, 0.24) !important;
+          background: rgba(0, 0, 0, 0.24) !important;
         }
         &.active {
-            background-color: #00695c !important;
+          background-color: #00695c !important;
         }
-    }
-    &.no-child {
+      }
+      &.no-child {
         .mat-expansion-panel-content {
-            .mat-expansion-panel-body {
-                display: none !important;
-            }
+          .mat-expansion-panel-body {
+            display: none !important;
+          }
         }
-    }
-    .mat-expansion-panel-body {
-        padding: 0
-    }
-    .mat-expansion-indicator {
+      }
+      .mat-expansion-panel-body {
+        padding: 0;
+      }
+      .mat-expansion-indicator {
         &::after {
-            color: white;
-            position: relative;
-            top: -2px;
+          color: white;
+          position: relative;
+          top: -2px;
         }
+      }
     }
-}
-
-a,
-a:hover {
+  }
+  a,
+  a:hover {
     text-decoration: none;
-}
+  }
+  

@@ -49,6 +49,8 @@ import { CommonModule } from '@angular/common';
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { RouterModule } from '@angular/router';
 import { getDutchPaginatorIntl } from './paginator.intl';
+import { IndentationPipe, StringToArrayPipe } from 'pipes/all.pipe';
+
 @NgModule({
     imports: [
         CommonModule,
@@ -78,7 +80,7 @@ import { getDutchPaginatorIntl } from './paginator.intl';
         
         MatProgressSpinnerModule
     ],
-    declarations: [AccountTypePipe],
+    declarations: [AccountTypePipe, IndentationPipe, StringToArrayPipe],
     providers: [{ provide: MatPaginatorIntl, useValue: getDutchPaginatorIntl() }],
     exports: [
         CdkTableModule,
@@ -113,7 +115,8 @@ import { getDutchPaginatorIntl } from './paginator.intl';
         // MatProgressBarModule,
         PerfectScrollbarModule,
         AccountTypePipe,
-
+        IndentationPipe, 
+        StringToArrayPipe,
         MatProgressSpinnerModule
     ]
 })

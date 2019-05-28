@@ -23,10 +23,7 @@ export class LoginComponent extends AppComponentBase implements OnInit {
     submitted = false;
     saving = true;
     isLoading = false;
-    healthfacilities = new FormControl();
     dataService: DataService;
-    
-    _healthfacilities = [];
     numberLoginFail = 0;
 
     constructor(private _sanitizer: DomSanitizer, private _dataService: DataService, private http: HttpClient, injector: Injector, public loginService: LoginService, private _formBuilder: FormBuilder, private _router: Router, private _sessionService: AbpSessionService) {
@@ -37,18 +34,9 @@ export class LoginComponent extends AppComponentBase implements OnInit {
         this.frmLogin = this._formBuilder.group({
             userNameOrEmailAddress: [this.loginService.authenticateModel.userNameOrEmailAddress, Validators.required],
             password: [this.loginService.authenticateModel.password, Validators.required],
-            healthfacilities: [],
             codeCapcha: [''],
-        }); 
+        });
         this.dataService = this._dataService;
-        this.filterOptions();
-        this.healthfacilities.setValue(null);
-
-        console.log(122, localStorage.getItem('logCount'));
-        if (localStorage.getItem('logCount') != null) {
-            this.numberLoginFail = parseInt(localStorage.getItem('logCount'));
-        }
-        this.getCapcha();
     }
 
     get f() { return this.frmLogin.controls; }
@@ -65,7 +53,7 @@ export class LoginComponent extends AppComponentBase implements OnInit {
 
     capcha = false;
     _capcha: { code: string, data: any } = { code: '', data: '' };
-    
+
 
     login(): void {
         let numLoginFail = 0;
@@ -86,8 +74,8 @@ export class LoginComponent extends AppComponentBase implements OnInit {
 
         this.loginService.authenticateModel = Object.assign(this.loginService.authenticateModel, this.frmLogin.value);
         this.loginService.authenticate(() => { }, error => {
-                localStorage.setItem('logCount', (numLoginFail + 1).toString())
-            });
+            localStorage.setItem('logCount', (numLoginFail + 1).toString())
+        });
     }
 
     getCapcha() {
@@ -96,44 +84,5 @@ export class LoginComponent extends AppComponentBase implements OnInit {
 
     validateCapcha(value: any) {
         if (value.length == 4) this._capcha.code != value ? this.capcha = true : this.capcha = false;
-    }
-
-    //add h
-    displayFn(h?: IHealthfacilities): string | undefined {
-        return h ? h.name : undefined;
-    }
-
-    filterOptions() {
-        this.healthfacilities.valueChanges
-            .pipe(
-                debounceTime(500),
-                tap(() => this.isLoading = true),
-                switchMap(value => this.filter(value))
-            )
-            .subscribe(data => {
-                this._healthfacilities = data.items;
-            });
-    }
-
-    filter(value: any) {
-        var fValue = typeof value === 'string' ? value : (value ? value.name : '')
-        this._healthfacilities = [];
-
-        return this.dataService
-            .get("healthfacilities", JSON.stringify({
-                name: isNaN(fValue) ? fValue : "",
-                code: !isNaN(fValue) ? fValue : ""
-            }), '', null, null)
-            .pipe(
-                finalize(() => this.isLoading = false)
-            )
-    }
-
-    focusoutHealthfacilities(){
-        !this.healthfacilities.value ? this.healthfacilities.setErrors({required: true}) : "";
-    }
-
-    onSelectHealthFacilities(obj: any) {
-        this.frmLogin.controls['healthfacilities'].setValue(obj.healthFacilitiesId);
     }
 }

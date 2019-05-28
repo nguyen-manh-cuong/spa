@@ -1,4 +1,5 @@
 import * as _ from 'lodash';
+import swal from 'sweetalert2';
 
 import { ActivatedRouteSnapshot, ActivationEnd, NavigationEnd, NavigationError, NavigationStart, Router } from '@angular/router';
 import { AfterViewInit, ChangeDetectorRef, Component, Injector, OnInit, ViewContainerRef, ViewEncapsulation } from '@angular/core';
@@ -10,6 +11,12 @@ import { AppComponentBase } from '@shared/app-component-base';
 import { Observable } from 'rxjs';
 import { SignalRAspNetCoreHelper } from '@shared/helpers/SignalRAspNetCoreHelper';
 import { Title } from '@angular/platform-browser';
+import { MAT_DIALOG_DATA, MatButton, MatDialog, MatDialogRef } from '@angular/material';
+import { TaskComponent } from './reset-pasword/task/task.component';
+//import { PagedListingComponentBase } from '@shared/paged-listing-component-base';
+//import { TaskComponent } from './sms-template-task/task/task.component';
+import { DataService } from '@shared/service-proxies/service-data';
+import { HealthfacilitiesListComponent } from './healthfacilities-list/healthfacilities-list.component';
 
 @Component({
     templateUrl: './app.component.html',
@@ -21,6 +28,7 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
     private viewContainerRef: ViewContainerRef;
     private title = 'Viettel Gateway';
     public pateTitle = '';
+    dialogComponent: any;
 
     isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset).pipe(map(result => result.matches));
     shownLoginName: string = '';
@@ -28,7 +36,15 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
     languages: abp.localization.ILanguageInfo[];
     currentLanguage: abp.localization.ILanguageInfo;
 
-    constructor(injector: Injector, private breakpointObserver: BreakpointObserver, private _authService: AppAuthService, private router: Router, private titleService: Title) {
+    constructor(
+        injector: Injector, 
+        private breakpointObserver: BreakpointObserver, 
+        private _authService: AppAuthService, 
+        private router: Router, 
+        private titleService: Title,
+        private _dialog: MatDialog,
+        private _dataService: DataService
+    ) {
         super(injector);
         this.shownLoginName = this.appSession.getShownLoginName();
         this.router.events.subscribe((event: any) => {
@@ -73,6 +89,35 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
 
     ngOnInit(): void {
         // SignalRAspNetCoreHelper.initSignalR();
+        if(this.appSession.user.accountType != 0){
+            var healthFacilities = (abp.session as any).healthFacilities;
+            var check = true;
+
+            if(healthFacilities && healthFacilities.length){
+                if(healthFacilities.length > 1){
+                    for (let index = 0; index < healthFacilities.length; index++) {
+                        if(healthFacilities[index].isDefault == true) {
+                            this.appSession.user.healthFacilitiesId = healthFacilities[index].healthFacilitiesId;
+                            this.appSession.user.healthFacilities = healthFacilities[index];
+                            check = false;
+                            break;
+                        }
+                    }
+                } else{
+                    check = false;
+                    this.appSession.user.healthFacilitiesId = healthFacilities[0].healthFacilitiesId;
+                    this.appSession.user.healthFacilities = healthFacilities[0];
+                    this._dataService.update('usershealthfacilities', {
+                        userId: abp.session.userId,
+                        healthFacilitiesId: healthFacilities[0].healthFacilitiesId
+                    }).subscribe(resp => {}, err => {});
+                }
+
+                if(check == true) this._dialog.open(HealthfacilitiesListComponent, { minWidth: 'calc(100vw/3)', maxWidth: 'calc(100vw - 300px)', disableClose: true, data: healthFacilities ? healthFacilities : null});
+            } else{
+                this._dialog.open(HealthfacilitiesListComponent, { minWidth: 'calc(100vw/3)', maxWidth: 'calc(100vw - 300px)', disableClose: true, data: []});
+            }
+        }
 
         this.languages = _.filter(this.localization.languages, l => (<any>l).isDisabled === false);
         this.currentLanguage = this.localization.currentLanguage;
@@ -108,11 +153,29 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
     }
 
     logout(): void {
-        localStorage.setItem('logCount', '1');
+        localStorage.removeItem('logCount');
         this._authService.logout();
     }
 
     onResize(event) {
         // exported from $.AdminBSB.activateAll
+    }
+
+    getHealthfacility(){
+        this._dataService
+            .get("usershealthfacilities", JSON.stringify({userId : abp.session.userId}), '', null, null)
+            .subscribe(resp => {
+                if(resp && resp.items && resp.items.length){
+                    if(resp.items.length != 1) this._dialog.open(HealthfacilitiesListComponent, { minWidth: 'calc(100vw/3)', maxWidth: 'calc(100vw - 300px)', disableClose: true, data: resp.items});
+                    else{
+                        swal('Thông báo', 'Tài khoản của bạn chỉ có 1 csyt', 'warning');
+                    }
+                }
+            });
+    }
+
+    openCustomDialog(): void {
+        const dialogRef = this._dialog.open(this.dialogComponent, { minWidth: '400px', maxWidth: '400px'});
+        dialogRef.afterClosed();
     }
 }

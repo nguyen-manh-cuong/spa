@@ -50,12 +50,37 @@ namespace SHCServer.Controllers
             var objs = _context.Query<BookingInformations>().Where(b => b.BookingServiceType == 1 && b.IsDelete == false)
                 .LeftJoin<Doctor>((b, s) => b.DoctorId == s.DoctorId)
                 .LeftJoin<BookingTimeslots>((b, s, d) => b.TimeSlotId == d.TimeSlotId)
-                .Select((b, s, d) => new { b.HealthFacilitiesId,
-                    b.TimeSlotId, b.DoctorId, b.Status, b.ExaminationDate, b.CreateDate, b.Gender, b.ExaminationWorkingTime, b.ExaminationTime,
-                    b.BookingType, b.BookingId, b.Address,
-                b.PhoneNumber, b.Reason, b.BookingUser, b.BookingRepresent, b.PhoneRepresent, b.EmailRepresent, b.TicketId, b.BirthDate, b.BirthMonth, b.BirthYear,
-                b.DistrictCode, b.ProvinceCode,
-                    s.FullName, d.HoursStart, d.HoursEnd, d.MinuteEnd, d.MinuteStart});
+                .Select((b, s, d) => new {
+                    b.HealthFacilitiesId,
+                    b.TimeSlotId,
+                    b.DoctorId,
+                    b.Status,
+                    b.ExaminationDate,
+                    b.CreateDate,
+                    b.Gender,
+                    b.ExaminationWorkingTime,
+                    b.ExaminationTime,
+                    b.BookingType,
+                    b.BookingId,
+                    b.Address,
+                    b.PhoneNumber,
+                    b.Reason,
+                    b.BookingUser,
+                    b.BookingRepresent,
+                    b.PhoneRepresent,
+                    b.EmailRepresent,
+                    b.TicketId,
+                    b.BirthDate,
+                    b.BirthMonth,
+                    b.BirthYear,
+                    b.DistrictCode,
+                    b.ProvinceCode,
+                    s.FullName,
+                    d.HoursStart,
+                    d.HoursEnd,
+                    d.MinuteEnd,
+                    d.MinuteStart
+                });
 
             if (filter != null)
             {
@@ -78,7 +103,7 @@ namespace SHCServer.Controllers
                     {
                         objs = objs.Where(b => b.TicketId == value.Trim() || b.PhoneNumber == value.Trim() || b.BookingUser.Contains(value.Trim()));
                     }
-                    if (string.Equals(key, "startTime")) objs = objs.Where(b => b.ExaminationDate>= DateTime.Parse(value));
+                    if (string.Equals(key, "startTime")) objs = objs.Where(b => b.ExaminationDate >= DateTime.Parse(value));
                     if (string.Equals(key, "endTime")) objs = objs.Where(b => b.ExaminationDate <= DateTime.Parse(value));
 
                 }
@@ -98,7 +123,7 @@ namespace SHCServer.Controllers
             {
                 objs = objs.OrderByDesc(b => b.CreateDate);
             }
-          
+
             return Json(new ActionResultDto { Result = new { Items = objs.TakePage(skipCount == 0 ? 1 : skipCount + 1, maxResultCount).ToList(), TotalCount = objs.Count() } });
         }
 
@@ -119,7 +144,8 @@ namespace SHCServer.Controllers
                         Status = 3,
 
                     });
-                } else
+                }
+                else
                 {
                     _context.Update<BookingInformations>(p => p.BookingId == booking.bookingId, a => new BookingInformations
                     {
@@ -129,7 +155,7 @@ namespace SHCServer.Controllers
                         Address = booking.address.Trim(),
                         UpdateDate = DateTime.Now,
                         UpdateUserId = booking.updateUserId
-                });
+                    });
                 }
 
                 _context.Session.CommitTransaction();
@@ -149,7 +175,7 @@ namespace SHCServer.Controllers
         {
             try
             {
-                if (_context.Query<BookingInformations>().Where(g => g.BookingId == id && g.IsDelete == false && g.Status != 0 && g.Status != 1 ).Count() > 0)
+                if (_context.Query<BookingInformations>().Where(g => g.BookingId == id && g.IsDelete == false && g.Status != 0 && g.Status != 1).Count() > 0)
                 {
                     //return Json(new ActionResultDto { Success = false, Error = new { Code = 401, Message = "Tạo gói không thành công.", Details = "Gói SMS đã tồn tại!" } });
                     return StatusCode(406, _excep.Throw(406, "Hủy đặt khám không thành công.", "Không thể xóa lịch đặt khám đã diễn ra/đã hủy!"));
@@ -177,7 +203,7 @@ namespace SHCServer.Controllers
 
         [HttpGet]
         [Route("api/bookinginformationsgroupby")]
-         public IActionResult GetByGroup(int skipCount = 0, int maxResultCount = 10, string sorting = null, string filter = null)
+        public IActionResult GetByGroup(int skipCount = 0, int maxResultCount = 10, string sorting = null, string filter = null)
         {
             var objs = _context.Query<BookingInformations>().Where(b => b.BookingServiceType == 1);
             var check = 0;
@@ -188,7 +214,7 @@ namespace SHCServer.Controllers
                 {
                     if (string.Equals(key, "healthfacilities"))
                     {
-                        if(!string.IsNullOrEmpty(value))
+                        if (!string.IsNullOrEmpty(value))
                         {
                             check = 1;
                             objs = objs.Where(b => b.HealthFacilitiesId.ToString() == value.Trim() || b.HealthFacilitiesId.ToString() == null);
@@ -205,7 +231,8 @@ namespace SHCServer.Controllers
                         }
                     }
 
-                    if (string.Equals(key, "startTime")) {
+                    if (string.Equals(key, "startTime"))
+                    {
                         objs = objs.Where(b => b.ExaminationDate >= DateTime.Parse(value));
                         var start = DateTime.Parse(value);
                     }
@@ -214,11 +241,11 @@ namespace SHCServer.Controllers
                         objs = objs.Where(b => b.ExaminationDate <= DateTime.Parse(value));
                         var end = DateTime.Parse(value);
                     }
-                     
+
 
                 }
             }
-            if(check == 0) return Json(new ActionResultDto { Result = new { Items = new List<BookingInformationsViewModel>() } });
+            if (check == 0) return Json(new ActionResultDto { Result = new { Items = new List<BookingInformationsViewModel>() } });
             if (sorting != null)
             {
                 foreach (var (key, value) in JsonConvert.DeserializeObject<Dictionary<string, string>>(sorting))
@@ -235,15 +262,16 @@ namespace SHCServer.Controllers
             }
 
             var a = objs;
-            var rs = objs.GroupBy(p => p.DoctorId).Select(p => new BookingInformationsViewModel(p, _connectionString) {
-                Quantity = objs.Where(o=>o.DoctorId==p.DoctorId).Count(),
+            var rs = objs.GroupBy(p => p.DoctorId).Select(p => new BookingInformationsViewModel(p, _connectionString)
+            {
+                Quantity = objs.Where(o => o.DoctorId == p.DoctorId).Count(),
                 QuantityByStatusPending = objs.Where(o => o.Status == 1).Count(),
                 QuantityByStatusDone = objs.Where(o => o.Status == 2).Count(),
                 QuantityByStatusCancel = objs.Where(o => o.Status == 3).Count(),
                 QuantityByStatusNew = objs.Where(o => o.Status == 0).Count(),
                 QuantityByGenderMale = objs.Where(o => o.Gender == 1).Count(),//Nam
                 QuantityByGenderFemale = objs.Where(o => o.Gender == 2).Count(),//Nu               
-            });           
+            });
             return Json(new ActionResultDto { Result = new { Items = rs.TakePage(skipCount == 0 ? 1 : skipCount + 1, maxResultCount).ToList(), TotalCount = rs.Count(), TotalPatientCount = objs.Count() } });
         }
     }

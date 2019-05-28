@@ -14,15 +14,19 @@ namespace SHCServer
     {
         public static void Main(string[] args)
         {
+            //SendMail.Start();
             IDbCommandInterceptor interceptor = new DbCommandInterceptor();
             DbConfiguration.UseInterceptors(interceptor);
 
             RegisterMappingType();
             BuildWebHost(args).Run();
+            
         }
 
         public static IWebHost BuildWebHost(string[] args)
         {
+            
+
             return WebHost
                    .CreateDefaultBuilder(args)
                    .ConfigureAppConfiguration(config =>

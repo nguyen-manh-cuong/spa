@@ -36,7 +36,9 @@ export class AppPreBootstrap {
             }
         }).done(result => {
             AppConsts.appBaseUrl = result.appBaseUrl;
-            AppConsts.gatewayServiceBaseUrl = result.gatewayServiceBaseUrl;
+            AppConsts.appName = result.appName;
+            AppConsts.appId = result.appId;
+            AppConsts.serverBaseUrl = result.serverBaseUrl;
             AppConsts.remoteServiceBaseUrl = result.remoteServiceBaseUrl;
             AppConsts.localeMappings = result.localeMappings;
             AppConsts.uploadBaseUrl = result.uploadBaseUrl;
@@ -48,27 +50,39 @@ export class AppPreBootstrap {
         const cookieLangValue = abp.utils.getCookieValue('Abp.Localization.CultureName');
         const token = abp.auth.getToken();
         return abp.ajax({
-            url: AppConsts.gatewayServiceBaseUrl + '/UserConfiguration',
+            url: AppConsts.serverBaseUrl + '/UserConfiguration',
             method: 'GET',
             headers: {
                 AppCulture: cookieLangValue ? cookieLangValue : 'vi',
-                Authorization: 'Bearer ' + abp.auth.getToken()
+                AppName: AppConsts.appName,
+                AppId: AppConsts.appId,
+                Authorization: 'Bearer ' + (token ? token : '')
             }
-        }).done(result => {
-
+        }).done(result => {                        
             $.extend(true, abp, result);
 
-            // moment.locale('vi');
-            moment.locale(abp.localization.currentLanguage.name);
-            (window as any).moment.locale(abp.localization.currentLanguage.name);
+            abp.ajax({
+                url: AppConsts.remoteServiceBaseUrl + '/usershealthfacilities?filter=' + JSON.stringify({userId : abp.session.userId}),
+                method: 'GET'
+            }).done(resp => {
+                (abp.session as any).healthFacilities = resp.items;
 
-            abp.event.trigger('abp.dynamicScriptsInitialized');
-
-            // if (abp.clock.provider.supportsMultipleTimezone) {
-            //     moment.tz.setDefault(abp.timing.timeZoneInfo.iana.timeZoneId);
-            // }
-            LocalizedResourcesHelper.loadResources(callback);
-            // callback();
+                if (result.nav) {
+                    abp.nav.menus['mainMenu'].items = (JSON.parse(result.nav.menus.mainMenu.items).items);
+                    (<any>abp.nav.menus['mainMenu'].items).unshift({ name: 'HomePage', value: { name: 'HomePage', routeId: 0, route: '' }, items: [], route: '/app/dashboard' })
+                }
+                // moment.locale('vi');
+                moment.locale(abp.localization.currentLanguage.name);
+                (window as any).moment.locale(abp.localization.currentLanguage.name);
+    
+                abp.event.trigger('abp.dynamicScriptsInitialized');
+    
+                // if (abp.clock.provider.supportsMultipleTimezone) {
+                //     moment.tz.setDefault(abp.timing.timeZoneInfo.iana.timeZoneId);
+                // }
+                LocalizedResourcesHelper.loadResources(callback);
+                // callback();
+            })
         });
     }
 }

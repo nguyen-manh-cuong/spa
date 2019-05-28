@@ -244,11 +244,11 @@
                 </div>
 
                 <div class="row pb-3">
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <div style="margin-bottom:-4px" class="ml-1">
                             <mat-label class="label">{{l('DoctorAvatar')}}</mat-label>
                         </div>
-                        <img style="padding: 2px"
+                        <img #avatarImg style="padding: 2px"
                             [src]="checkAvatar ? uploadBaseUrl+ (this._obj.avatar?this._obj.avatar:'') : _avatars[0] || '../assets/images/Doctor_Default.jpg'"
                             height="180px" width="175px">
                     </div>
@@ -268,7 +268,7 @@
                         </div>
                     </div> -->
 
-                    <div class="col-md-3 mt-4 image-uploader text-muted" data-name="first"
+                    <div class="col-md-2 ml-3 mt-4 image-uploader text-muted" data-name="first"
                         data-description="Ảnh đại diện">
                         <div class="upload-content">
                             <span class="upload-description"></span>
@@ -355,9 +355,9 @@
                                 </mat-option>
                             </mat-autocomplete>
                         </mat-form-field> -->
-                    <div class="col-md-12" [hidden]="this.appSession.user.healthFacilitiesId">
-                        <mat-form-field appearance="outline" class="w-100"
-                        [ngClass]="{'mat-form-field-invalid':!checkHealthFacilities}">
+                        
+                    <div class="col-md-12" *ngIf="appSession.user.accountType == 0">
+                        <mat-form-field appearance="outline" class="w-100" [ngClass]="{'mat-form-field-invalid':!checkHealthFacilities}">
                             <mat-label>{{l('HealthFacilities')}}</mat-label>
                             <mat-chip-list #chipList>
                                 <mat-chip *ngFor="let o of _healthfacilitiesChip" [selectable]="selectable"
@@ -383,13 +383,10 @@
                             </mat-autocomplete>
                         </mat-form-field>
                     </div>
-                    <div class="col-md-12 disabled" [hidden]="!this.appSession.user.healthFacilitiesId">
+                    <div class="col-md-12 disabled" *ngIf="appSession.user.accountType != 0">
                         <mat-form-field appearance="outline" class="w-100">
-                            <mat-label>{{l('HealthFacilities')}}</mat-label>
-                            <mat-select formControlName="healthfacilities">
-                                <mat-option *ngFor="let o of _healthfacilities" [value]="o.healthFacilitiesId">
-                                    {{ o.name }}</mat-option>
-                            </mat-select>
+                            <mat-label>{{l('Unit')}}</mat-label>
+                            <input type="text" value="{{appSession.user.healthFacilities ? appSession.user.healthFacilities.name : ''}}" matInput [required]="true" tabindex="-1">
                         </mat-form-field>
                     </div>
                 </div>
