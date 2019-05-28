@@ -185,10 +185,10 @@ namespace SHCServer.Controllers
         {
             try
             {
-                if (_context.Query<SmsLogs>().Where(pd => pd.SmsPackagesDistributeId == id && pd.Status == 1).Count() > 0)
-                {
-                    return StatusCode(500, _excep.Throw("Xóa gói không thành công.", "Gói SMS đang được sử dụng!"));
-                }
+                //if (_context.Query<SmsLogs>().Where(pd => pd.SmsPackagesDistributeId == id && pd.Status == 1).Count() > 0)
+                //{
+                //    return StatusCode(500, _excep.Throw("Xóa gói không thành công.", "Gói SMS đang được sử dụng!"));
+                //}
                 _context.Session.BeginTransaction();
 
                 //_context.Delete<SmsPackagesDistribute>(g => g.Id == id);

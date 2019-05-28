@@ -178,6 +178,7 @@ export class BookingIPCCComponent extends AppComponentBase implements OnInit {
           type: 'success',
           confirmButtonClass: 'mat-raised-button mat-primary bg-danger',
           confirmButtonText: 'OK',
+          timer : 3000
         }).then(() => {
           this.router.navigateByUrl('/');
         });
