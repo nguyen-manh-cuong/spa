@@ -18,7 +18,7 @@ import swal from 'sweetalert2';
     styleUrls: ['./edit.component.scss']
 })
 export class EditComponent extends AppComponentBase implements OnInit, AfterViewInit {
-    api: string = 'bookinginformations';
+    api: string = 'bookinglist';
     ValidationRule = new ValidationRule();
 
     _frm: FormGroup;

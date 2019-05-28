@@ -92,7 +92,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     }
 
     ngOnInit() {
-        this.api = 'smsmanual';
+        this.api = 'smsmanualbirthday';
         this.frmSearch = this._formBuilder.group({
             healthfacilities: [],
             doctor: [],
@@ -128,12 +128,8 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
         this.dataService.getAll('provinces').subscribe(resp => this._provinces = resp.items);
 
         if(this.appSession.user.healthFacilitiesId){
-            this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId);
-            this.dataService.get("healthfacilities", JSON.stringify({healthfacilitiesId : this.appSession.user.healthFacilitiesId}), '', null, null).subscribe(resp => {
-                this._healthfacilities = resp.items;
-                this.frmSearch.controls['healthfacilities'].setValue(this._healthfacilities[0].healthFacilitiesId);
-            });
             this.dataService.getAll('doctors', String(this.appSession.user.healthFacilitiesId)).subscribe(resp => this._doctors = resp.items);
+            this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId);
           } else{
             this.filterOptions();
             this.healthfacilities.setValue(null);

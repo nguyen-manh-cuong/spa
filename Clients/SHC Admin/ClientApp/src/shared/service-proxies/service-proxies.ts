@@ -8,7 +8,7 @@
 
 import * as moment from 'moment';
 
-import { AddClaimsToRequest, AddQueriesToRequest, IAddHeadersToRequest, IAuthenticationOptions, IDownstreamHeaderTransform, IDownstreamHostAndPort, IFileCacheOptions, IGroup, IHttpHandlerOptions, ILoadBalancerOptions, IQoSOptions, IRateLimitOptions, IRouter, ISecurityOptions, IUpstreamHeaderTransform, RouteClaimsRequirement } from '@shared/Interfaces';
+import { AddClaimsToRequest, AddQueriesToRequest, IAddHeadersToRequest, IAuthenticationOptions, IDownstreamHeaderTransform, IDownstreamHostAndPort, IFileCacheOptions, IGroup, IHttpHandlerOptions, ILoadBalancerOptions, IQoSOptions, IRateLimitOptions, IRouter, ISecurityOptions, IUpstreamHeaderTransform, RouteClaimsRequirement, IHealthfacilities } from '@shared/Interfaces';
 import { HttpClient, HttpHeaders, HttpResponse, HttpResponseBase } from '@angular/common/http';
 import { Inject, Injectable, InjectionToken, Optional } from '@angular/core';
 import { Observable, from as _observableFrom, of as _observableOf, throwError as _observableThrow } from 'rxjs';
@@ -675,7 +675,7 @@ export class SessionServiceProxy {
      * @return Success
      */
     getCurrentLoginInformations(): Observable<GetCurrentLoginInformationsOutput> {
-        let url_ = AppConsts.gatewayServiceBaseUrl + "/GetCurrentLoginInformations";
+        let url_ = AppConsts.serverBaseUrl + "/GetCurrentLoginInformations";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: any = {
@@ -1068,7 +1068,7 @@ export class TokenAuthServiceProxy {
      * @return Success
      */
     authenticate(model: AuthenticateModel | null | undefined): Observable<AuthenticateResultModel> {
-        let url_ = AppConsts.gatewayServiceBaseUrl + "/auth";
+        let url_ = AppConsts.serverBaseUrl + "/api/auth";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(model);
@@ -2528,9 +2528,10 @@ export class UserLoginInfoDto implements IUserLoginInfoDto {
     fullName: string | undefined;
     userName: string | undefined;
     email: string | undefined;
-    id: number | undefined;
+    userId: number | undefined;
     accountType: number | undefined;
     healthFacilitiesId: number | undefined;
+    healthFacilities: IHealthfacilities | undefined;
 
     groups: IGroup;
 
@@ -2551,7 +2552,7 @@ export class UserLoginInfoDto implements IUserLoginInfoDto {
             this.fullName = data["fullName"];
             this.userName = data["userName"];
             this.email = data["email"];
-            this.id = data["id"];
+            this.userId = data["userId"];
             this.accountType = data["accountType"];
             this.groups = data["groups"];
             this.healthFacilitiesId = data["healthFacilitiesId"];
@@ -2571,7 +2572,7 @@ export class UserLoginInfoDto implements IUserLoginInfoDto {
         data["fullName"] = this.fullName;
         data["userName"] = this.userName;
         data["email"] = this.email;
-        data["id"] = this.id;
+        data["userId"] = this.userId;
         return data;
     }
 
@@ -2588,8 +2589,9 @@ export interface IUserLoginInfoDto {
     fullName: string | undefined;
     userName: string | undefined;
     email: string | undefined;
-    id: number | undefined;
+    userId: number | undefined;
     healthFacilitiesId: number | undefined;
+    healthFacilities: IHealthfacilities | undefined;
 }
 
 export class TenantLoginInfoDto implements ITenantLoginInfoDto {
@@ -2816,7 +2818,6 @@ export class AuthenticateModel implements IAuthenticateModel {
     userNameOrEmailAddress: string;
     password: string;
     rememberClient: boolean | undefined;
-    healthfacilities: number;
 
     constructor(data?: IAuthenticateModel) {
         if (data) {
@@ -2832,7 +2833,6 @@ export class AuthenticateModel implements IAuthenticateModel {
             this.userNameOrEmailAddress = data["userNameOrEmailAddress"];
             this.password = data["password"];
             this.rememberClient = data["rememberClient"];
-            this.healthfacilities = data["healthfacilities"];
         }
     }
 
@@ -2848,7 +2848,6 @@ export class AuthenticateModel implements IAuthenticateModel {
         data["userNameOrEmailAddress"] = this.userNameOrEmailAddress;
         data["password"] = this.password;
         data["rememberClient"] = this.rememberClient;
-        data["healthfacilities"] = this.healthfacilities;
         return data;
     }
 
@@ -2864,7 +2863,6 @@ export interface IAuthenticateModel {
     userNameOrEmailAddress: string;
     password: string;
     rememberClient: boolean | undefined;
-    healthfacilities: number;
 }
 
 export class AuthenticateResultModel implements IAuthenticateResultModel {

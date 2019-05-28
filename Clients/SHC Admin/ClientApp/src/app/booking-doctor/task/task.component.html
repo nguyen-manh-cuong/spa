@@ -46,7 +46,7 @@
                         </mat-form-field>
                     </div>
 
-                    <div class="col-md-12" [hidden]="this.appSession.user.healthFacilitiesId">
+                    <div class="col-md-12" *ngIf="appSession.user.accountType == 0">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l('Unit')}}</mat-label>
                             <input matInput [formControl]="healthfacilities" [matAutocomplete]="auto" required>
@@ -86,13 +86,11 @@
                                 </mat-option>
                             </mat-autocomplete>
                         </mat-form-field> -->               
-                    </div> 
-                    <div class="col-md-12 disabled" [hidden]="!this.appSession.user.healthFacilitiesId">
+                    </div>
+                    <div class="col-md-12 disabled" *ngIf="appSession.user.accountType != 0">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l('Unit')}}</mat-label>
-                            <mat-select formControlName="healthfacilities" required>
-                                <mat-option *ngFor="let o of _healthfacilities" [value]="o.healthFacilitiesId">{{ o.name }}</mat-option>
-                            </mat-select>
+                            <input type="text" value="{{appSession.user.healthFacilities ? appSession.user.healthFacilities.name : ''}}" matInput [required]="true" tabindex="-1">
                         </mat-form-field>
                     </div>
                     

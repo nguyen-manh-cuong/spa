@@ -92,7 +92,7 @@
             </div>
         </div>
         <div class="row m-0 pt-0">
-            <div class="col-md-5" [hidden]="this.appSession.user.healthFacilitiesId">
+            <div class="col-md-5" *ngIf="appSession.user.accountType == 0">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('Unit')}}</mat-label>
                     <input (input)="inputHealthFacilitest($event)" matInput [formControl]="healthfacilities"
@@ -106,15 +106,6 @@
                             {{o.code + ' - ' + o.name}}
                         </mat-option>
                     </mat-autocomplete>
-                </mat-form-field>
-            </div>
-            <div class="col-md-5 disabled" [hidden]="!this.appSession.user.healthFacilitiesId">
-                <mat-form-field appearance="outline" class="w-100">
-                    <mat-label>{{l('Phòng khám')}}</mat-label>
-                    <mat-select formControlName="healthfacilitiesId">
-                        <mat-option *ngFor="let o of _healthfacilities" [value]="o.healthFacilitiesId">{{ o.name }}
-                        </mat-option>
-                    </mat-select>
                 </mat-form-field>
             </div>
             <div class="col-md-4 fadeIn animated">
