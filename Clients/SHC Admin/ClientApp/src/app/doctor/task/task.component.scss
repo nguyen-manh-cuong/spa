@@ -19,11 +19,11 @@
 }
 
 .ck-editor__editable{
-    min-height: 150px;
+    min-height: 200px;
 }
 
 .ck-editor__main{
-    max-width: 850px;
+    max-width: 1050px;
     border: 1px solid #c4c4c4!important;
 }
 
@@ -104,15 +104,15 @@ input:read-only{
     color:#00695c!important;
 }
 
-// .noscroll .cdk-global-overlay-wrapper > .cdk-overlay-pane{
-//     width: calc(100vw - 250px)!important;
-//     pointer-events: auto;
-//     position: absolute!important;
-//     right: 0;
-//     top: 0;
-//     bottom: 0;
-//     max-width: unset!important;
-// }
-// .noscroll{
-//     overflow: hidden!important;
-// }
+.noscroll .cdk-global-overlay-wrapper > .cdk-overlay-pane{
+    width: calc(100vw - 250px)!important;
+    pointer-events: auto;
+    position: absolute!important;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    max-width: unset!important;
+}
+.noscroll{
+    overflow: hidden!important;
+}
