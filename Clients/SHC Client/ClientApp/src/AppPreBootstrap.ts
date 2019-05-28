@@ -38,6 +38,7 @@ export class AppPreBootstrap {
             AppConsts.appBaseUrl = result.appBaseUrl;
             AppConsts.remoteServiceBaseUrl = result.remoteServiceBaseUrl;
             AppConsts.localeMappings = result.localeMappings;
+            AppConsts.uploadBaseUrl = result.uploadBaseUrl;
 
             callback();
         });

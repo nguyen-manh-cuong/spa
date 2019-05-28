@@ -50,7 +50,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     _healthfacilities = [];
     _currentYear = new Date().getFullYear();
     _sex = [{ id: 0, name: 'Tất cả' }, { id: 1, name: 'Nam' }, { id: 2, name: 'Nữ' }, { id: 3, name: 'Không xác định' }];
-    _compareFist = ['>=', '>' ];
+    _compareFist = ['>=', '>'];
     _compareLast = ['<=', '<'];
 
     selection = new SelectionModel<IMedicalHealthcareHistories>(true, []);
@@ -58,17 +58,17 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     isLoading = false;
     filteredOptions: Observable<IHealthfacilities[]>;
     healthfacilities = new FormControl();
-    
+
     cDate = new Date();
 
     filteredProvinceOptions: Observable<IProvince[]>;
     provinceCode = new FormControl();
     _provinceCode: string;
-  
+
     filteredDistrictOptions: Observable<IDistrict[]>;
     districtCode = new FormControl();
     _districtCode: string;
-  
+
     filteredWardOptions: Observable<IWard[]>;
     wardCode = new FormControl();
     _wardCode: string;
@@ -168,23 +168,23 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     filterOptions() {
         this.healthfacilities.valueChanges
             .pipe(
-              debounceTime(500),
-              tap(() => this.isLoading = true),
-              switchMap(value => this.filter(value))
+                debounceTime(500),
+                tap(() => this.isLoading = true),
+                switchMap(value => this.filter(value))
             )
             .subscribe(data => {
                 this._healthfacilities = data.items;
             });
     }
-  
-    filter(value: any){
-        var fValue = typeof value === 'string'  ? value : (value ? value.name : '')
+
+    filter(value: any) {
+        var fValue = typeof value === 'string' ? value : (value ? value.name : '')
         this._healthfacilities = [];
-  
+
         return this.dataService
             .get("healthfacilities", JSON.stringify({
-                name : isNaN(fValue) ? fValue : "",
-                code : !isNaN(fValue) ? fValue : ""
+                name: isNaN(fValue) ? fValue : "",
+                code: !isNaN(fValue) ? fValue : ""
             }), '', null, null)
             .pipe(
                 finalize(() => this.isLoading = false)
@@ -340,7 +340,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
 
     customSearch() {
         if (this.ageFist.nativeElement.value && this.ageLast.nativeElement.value) {
-            if (this.ageFist.nativeElement.value > this.ageLast.nativeElement.value) {
+            if (parseInt(this.ageFist.nativeElement.value) > parseInt(this.ageLast.nativeElement.value)) {
                 return swal({
                     title: 'Thông báo',
                     text: 'Tuổi từ phải nhỏ hơn tuổi đến',
@@ -368,7 +368,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
         }
         else {
             this.healthfacilities.value ? this.frmSearch.controls['healthfacilities'].setValue(this.healthfacilities.value.healthFacilitiesId) : (this.appSession.user.healthFacilitiesId == null ? this.frmSearch.controls['healthfacilities'].setValue(null) : '');
-        } 
+        }
 
         this.healthInsuranceNumber.nativeElement.value ? this.frmSearch.controls['healthInsuranceNumber'].setValue(this.healthInsuranceNumber.nativeElement.value) : this.frmSearch.controls['healthInsuranceNumber'].setValue('');
 
@@ -380,8 +380,9 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
 
         this.ageFist.nativeElement.value ? this.frmSearch.controls['ageFist'].setValue(this.ageFist.nativeElement.value) : this.frmSearch.controls['ageFist'].setValue('');
         this.ageLast.nativeElement.value ? this.frmSearch.controls['ageLast'].setValue(this.ageLast.nativeElement.value) : this.frmSearch.controls['ageLast'].setValue('');
-       
+
         this.birthYear.nativeElement.value ? this.frmSearch.controls['birthYear'].setValue(this.birthYear.nativeElement.value) : this.frmSearch.controls['birthYear'].setValue('');
+
         this.btnSearchClicks$.next();
     }
 
@@ -414,7 +415,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     }
 
     detail(obj): void {
-        const dialogRef = this.dialog.open(this.dialogDetail, { minWidth: 'calc(100vw/2)', maxWidth: 'calc(100vw - 300px)', data: obj});
+        const dialogRef = this.dialog.open(this.dialogDetail, { minWidth: 'calc(100vw/2)', maxWidth: 'calc(100vw - 300px)', data: obj });
         dialogRef.afterClosed().subscribe(() => this.paginator._changePageSize(this.paginator.pageSize));
     }
 }

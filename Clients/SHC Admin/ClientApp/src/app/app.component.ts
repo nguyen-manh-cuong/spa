@@ -11,7 +11,11 @@ import { AppComponentBase } from '@shared/app-component-base';
 import { Observable } from 'rxjs';
 import { SignalRAspNetCoreHelper } from '@shared/helpers/SignalRAspNetCoreHelper';
 import { Title } from '@angular/platform-browser';
-import { MatDialog } from '@angular/material';
+import { MAT_DIALOG_DATA, MatButton, MatDialog, MatDialogRef } from '@angular/material';
+import { TaskComponent } from './reset-pasword/task/task.component';
+//import { PagedListingComponentBase } from '@shared/paged-listing-component-base';
+//import { TaskComponent } from './sms-template-task/task/task.component';
+
 import { DataService } from '@shared/service-proxies/service-data';
 import { HealthfacilitiesListComponent } from './healthfacilities-list/healthfacilities-list.component';
 
@@ -25,6 +29,7 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
     private viewContainerRef: ViewContainerRef;
     private title = 'Viettel Gateway';
     public pateTitle = '';
+    dialogComponent: any;
 
     isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset).pipe(map(result => result.matches));
     shownLoginName: string = '';
@@ -149,6 +154,7 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
     }
 
     logout(): void {
+        localStorage.removeItem('logCount');
         this._authService.logout();
     }
 
@@ -167,5 +173,10 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
                     }
                 }
             });
+    }
+
+    openCustomDialog(): void {
+        const dialogRef = this.dialog.open(this.dialogComponent, { minWidth: '400px', maxWidth: '400px'});
+        dialogRef.afterClosed();
     }
 }

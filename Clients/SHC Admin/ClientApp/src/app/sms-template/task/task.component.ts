@@ -10,6 +10,7 @@ import { DataService } from '@shared/service-proxies/service-data';
 import { SelectionModel } from '@angular/cdk/collections';
 import { ValidationRule } from '@shared/common/common';
 import swal from 'sweetalert2';
+import { log } from 'util';
 
 
 @Component({
@@ -45,7 +46,6 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
 
         if (this.smstemplate) {
             this._smstemplates = _.clone(this.smstemplate);
-            console.log(this._smstemplates);
             this.dataService.getAll('smslog', JSON.stringify({ smsTemplateId: this._smstemplates.id, status: '1' })).subscribe(resp => resp.items.length > 0 ? this._isUsedSuccess = true : this._isUsedSuccess = false);
             this._isNew = false;
         }
@@ -72,6 +72,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     lengthSmsContent = 0;
     inputSmsContent() {
         this.lengthSmsContent = this._frm.value.smsContent.toString().length;
+        //this.cursorIndex=this.lengthSmsContent;
     }
 
     submit() {
@@ -102,7 +103,9 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
                 this.dialogRef.close();
             }, err => console.log(err));
     }
-
+    cursorIndex: number;
+    strFirts = "";
+    strSecond = "";
     mescontent: string = '';
     changeSelected(e) {
         if (this.lengthSmsContent > 500) {
@@ -111,114 +114,198 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
         switch (e) {
             case 1:
                 this._context.mescontent = this._frm.controls['smsContent'].value;
+                if (this.cursorIndex) {
+                    this.strFirts = this._context.mescontent.substring(0, this.cursorIndex);
+                    this.strSecond = this._context.mescontent.substring(this.cursorIndex, this._context.mescontent.length);
+                }
+                else {
+                    this.strFirts = this._context.mescontent;
+                    this.strSecond = "";
+                }
                 if (this._context.mescontent == null) {
                     this._frm.controls['smsContent'].setValue(' <PHONGKHAM>');
                 } else {
                     if ((this._context.mescontent + ' <PHONGKHAM>').length > 500) {
                         return;
                     }
-                    this._frm.controls['smsContent'].setValue(this._context.mescontent + ' <PHONGKHAM>');
+                    this._frm.controls['smsContent'].setValue(this.strFirts + ' <PHONGKHAM>' + this.strSecond);
                 }
                 break;
             case 2:
                 this._context.mescontent = this._frm.controls['smsContent'].value;
+                if (this.cursorIndex) {
+                    this.strFirts = this._context.mescontent.substring(0, this.cursorIndex);
+                    this.strSecond = this._context.mescontent.substring(this.cursorIndex, this._context.mescontent.length);
+                }
+                else {
+                    this.strFirts = this._context.mescontent;
+                    this.strSecond = "";
+                }
                 if (this._context.mescontent == null) {
                     this._frm.controls['smsContent'].setValue(' <PHONGKHAM>');
                 } else {
                     if ((this._context.mescontent + ' <NGAYSINH>').length > 500) {
                         return;
                     }
-                    this._frm.controls['smsContent'].setValue(this._context.mescontent + ' <NGAYSINH>');
+                    this._frm.controls['smsContent'].setValue(this.strFirts + ' <NGAYSINH>' + this.strSecond);
                 }
                 break;
             case 3:
                 this._context.mescontent = this._frm.controls['smsContent'].value;
+                if (this.cursorIndex) {
+                    this.strFirts = this._context.mescontent.substring(0, this.cursorIndex);
+                    this.strSecond = this._context.mescontent.substring(this.cursorIndex, this._context.mescontent.length);
+                }
+                else {
+                    this.strFirts = this._context.mescontent;
+                    this.strSecond = "";
+                }
                 if (this._context.mescontent == null) {
                     this._frm.controls['smsContent'].setValue(' <HOTEN>');
                 } else {
                     if ((this._context.mescontent + ' <HOTEN>').length > 500) {
                         return;
                     }
-                    this._frm.controls['smsContent'].setValue(this._context.mescontent + ' <HOTEN>');
+                    this._frm.controls['smsContent'].setValue(this.strFirts + ' <HOTEN>' + this.strSecond);
                 }
                 break;
             case 4:
                 this._context.mescontent = this._frm.controls['smsContent'].value;
+                if (this.cursorIndex) {
+                    this.strFirts = this._context.mescontent.substring(0, this.cursorIndex);
+                    this.strSecond = this._context.mescontent.substring(this.cursorIndex, this._context.mescontent.length);
+                }
+                else {
+                    this.strFirts = this._context.mescontent;
+                    this.strSecond = "";
+                }
                 if (this._context.mescontent == null) {
                     this._frm.controls['smsContent'].setValue(' <EMAIL>');
                 } else {
                     if ((this._context.mescontent + ' <EMAIL>').length > 500) {
                         return;
                     }
-                    this._frm.controls['smsContent'].setValue(this._context.mescontent + ' <EMAIL>');
+                    this._frm.controls['smsContent'].setValue(this.strFirts + ' <EMAIL>' + this.strSecond);
                 }
                 break;
             case 5:
                 this._context.mescontent = this._frm.controls['smsContent'].value;
+                if (this.cursorIndex) {
+                    this.strFirts = this._context.mescontent.substring(0, this.cursorIndex);
+                    this.strSecond = this._context.mescontent.substring(this.cursorIndex, this._context.mescontent.length);
+                }
+                else {
+                    this.strFirts = this._context.mescontent;
+                    this.strSecond = "";
+                }
                 if (this._context.mescontent == null) {
                     this._frm.controls['smsContent'].setValue(' <GIOITINH>');
                 } else {
                     if ((this._context.mescontent + ' <GIOITINH>').length > 500) {
                         return;
                     }
-                    this._frm.controls['smsContent'].setValue(this._context.mescontent + ' <GIOITINH>');
+                    this._frm.controls['smsContent'].setValue(this.strFirts + ' <GIOITINH>' + this.strSecond);
                 }
                 break;
             case 6:
                 this._context.mescontent = this._frm.controls['smsContent'].value;
+                if (this.cursorIndex) {
+                    this.strFirts = this._context.mescontent.substring(0, this.cursorIndex);
+                    this.strSecond = this._context.mescontent.substring(this.cursorIndex, this._context.mescontent.length);
+                }
+                else {
+                    this.strFirts = this._context.mescontent;
+                    this.strSecond = "";
+                }
                 if (this._context.mescontent == null) {
                     this._frm.controls['smsContent'].setValue(' <NGAYHIENTAI>');
                 } else {
                     if ((this._context.mescontent + ' <NGAYHIENTAI>').length > 500) {
                         return;
                     }
-                    this._frm.controls['smsContent'].setValue(this._context.mescontent + ' <NGAYHIENTAI>');
+                    this._frm.controls['smsContent'].setValue(this.strFirts + ' <NGAYHIENTAI>' + this.strSecond);
                 }
                 break;
             case 7:
                 this._context.mescontent = this._frm.controls['smsContent'].value;
+                if (this.cursorIndex) {
+                    this.strFirts = this._context.mescontent.substring(0, this.cursorIndex);
+                    this.strSecond = this._context.mescontent.substring(this.cursorIndex, this._context.mescontent.length);
+                }
+                else {
+                    this.strFirts = this._context.mescontent;
+                    this.strSecond = "";
+                }
                 if (this._context.mescontent == null) {
                     this._frm.controls['smsContent'].setValue(' <NGAYTAIKHAM>');
                 } else {
                     if ((this._context.mescontent + ' <NGAYTAIKHAM>').length > 500) {
                         return;
                     }
-                    this._frm.controls['smsContent'].setValue(this._context.mescontent + ' <NGAYTAIKHAM>');
+                    this._frm.controls['smsContent'].setValue(this.strFirts + ' <NGAYTAIKHAM>' + this.strSecond);
                 }
                 break;
             case 8:
                 this._context.mescontent = this._frm.controls['smsContent'].value;
+                if (this.cursorIndex) {
+                    this.strFirts = this._context.mescontent.substring(0, this.cursorIndex);
+                    this.strSecond = this._context.mescontent.substring(this.cursorIndex, this._context.mescontent.length);
+                }
+                else {
+                    this.strFirts = this._context.mescontent;
+                    this.strSecond = "";
+                }
                 if (this._context.mescontent == null) {
                     this._frm.controls['smsContent'].setValue(' <PHONGBAN>');
                 } else {
                     if ((this._context.mescontent + ' <PHONGBAN>').length > 500) {
                         return;
                     }
-                    this._frm.controls['smsContent'].setValue(this._context.mescontent + ' <PHONGBAN>');
+                    this._frm.controls['smsContent'].setValue(this.strFirts + ' <PHONGBAN>' + this.strSecond);
                 }
                 break;
             case 9:
                 this._context.mescontent = this._frm.controls['smsContent'].value;
+                if (this.cursorIndex) {
+                    this.strFirts = this._context.mescontent.substring(0, this.cursorIndex);
+                    this.strSecond = this._context.mescontent.substring(this.cursorIndex, this._context.mescontent.length);
+                }
+                else {
+                    this.strFirts = this._context.mescontent;
+                    this.strSecond = "";
+                }
                 if (this._context.mescontent == null) {
                     this._frm.controls['smsContent'].setValue(' <TENDICHVU>');
                 } else {
                     if ((this._context.mescontent + ' <TENDICHVU>').length > 500) {
                         return;
                     }
-                    this._frm.controls['smsContent'].setValue(this._context.mescontent + ' <TENDICHVU>');
+                    this._frm.controls['smsContent'].setValue(this.strFirts + ' <TENDICHVU>' + this.strSecond);
                 }
                 break;
             case 10:
                 this._context.mescontent = this._frm.controls['smsContent'].value;
+                if (this.cursorIndex) {
+                    this.strFirts = this._context.mescontent.substring(0, this.cursorIndex);
+                    this.strSecond = this._context.mescontent.substring(this.cursorIndex, this._context.mescontent.length);
+                }
+                else {
+                    this.strFirts = this._context.mescontent;
+                    this.strSecond = "";
+                }
                 if (this._context.mescontent == null) {
                     this._frm.controls['smsContent'].setValue(' <TENTHUOC>');
                 } else {
                     if ((this._context.mescontent + ' <TENTHUOC>').length > 500) {
                         return;
                     }
-                    this._frm.controls['smsContent'].setValue(this._context.mescontent + ' <TENTHUOC>');
+                    this._frm.controls['smsContent'].setValue(this.strFirts + ' <TENTHUOC>' + this.strSecond);
                 }
                 break;
         }
+    }
+    cussorPointer(e, value) {
+        // string 
+        this.cursorIndex = e;
     }
 }

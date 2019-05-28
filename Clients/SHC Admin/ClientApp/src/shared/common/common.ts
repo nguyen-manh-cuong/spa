@@ -88,6 +88,17 @@ export class ValidationRule {
             if (control.value.split('@')[0].length > 64 || control.value.split('@')[1].length > 255) {
                 return { email: true };
             }
+
+            var local = control.value.split('@')[0];
+            if (local.indexOf('-') != local.lastIndexOf('-') || local.indexOf('-') + 1 == local.length || local.indexOf('-') == 0) {
+                return { email: true };
+            }
+
+            var domain = control.value.split('@')[1];
+            domain = domain.split('.')[0];
+            if (domain.indexOf('-') != domain.lastIndexOf('-') || domain.indexOf('-') + 1 == domain.length || domain.indexOf('-') == 0) {
+                return { email: true };
+            }
         }
 
         return null;

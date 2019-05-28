@@ -89,8 +89,9 @@ namespace SHCServer.ViewModels
             Specialist = context.JoinQuery<Doctor, DoctorSpecialists>((d, ds) => new object[]
                 {
                     JoinType.InnerJoin, d.DoctorId == ds.DoctorId
-                }).Where((d, ds) => ds.IsDelete == false && ds.IsActive == true && ds.DoctorId == obj.DoctorId).Select((d, ds) => 
-                new DoctorSpecialistsViewModel(ds,connectionString)).ToList();
+                })
+                .Where((d, ds) => ds.IsDelete == false && ds.IsActive == true && ds.DoctorId == obj.DoctorId).Select((d, ds) =>
+                new DoctorSpecialistsViewModel(ds, connectionString)).ToList();
 
             HealthFacilities = context.JoinQuery<Doctor, HealthFacilitiesDoctors>((d, hf) => new object[]
                {

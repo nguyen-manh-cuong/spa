@@ -10,6 +10,7 @@ import swal from 'sweetalert2';
 import { packagedistributeViewComponent } from '../view/view.component';
 import { DatePipe } from '@angular/common';
 import { packagedistributeEditComponent } from '../edit/edit.component';
+import { SelectAutocompleteComponent } from '@app/mat-select-autocomplete/select-autocomplete.component'
 
 @Component({
     selector: 'app-packagedistributeindex',
@@ -23,14 +24,19 @@ export class packagedistributeIndexComponent extends PagedListingComponentBase<I
     displayedColumns = this.appSession.user.accountType != 0 ? ['Stt', 'StartTime', 'pk', 'sms', 'isActive', 'task'] : ['Stt', 'HealthFacilitiesId', 'StartTime', 'pk', 'sms', 'isActive', 'task'];
 
     _month = [{ id: 13, name: 'Tất cả' }, { id: 1, name: 'Tháng 1' }, { id: 2, name: 'Tháng 2' }, { id: 3, name: 'Tháng 3' }, { id: 4, name: 'Tháng 4' }, { id: 5, name: 'Tháng 5' }, { id: 6, name: 'Tháng 6' }, { id: 7, name: 'Tháng 7' }, { id: 8, name: 'Tháng 8' }, { id: 9, name: 'Tháng 9' }, { id: 10, name: 'Tháng 10' }, { id: 11, name: 'Tháng 11' }, { id: 12, name: 'Tháng 12' },];
-    _medicalFacility = [{ id: 1, name: 'Cơ sở y tế phường Đại Kim' }, { id: 2, name: 'Cơ sở y tế phường Định Công' }, { id: 3, name: 'Cơ sở y tế phường Hoàng Liệt' }, { id: 4, name: 'Cơ sở y tế phường Giáp Bát' }, { id: 5, name: 'Cơ sở y tế phường Lĩnh Nam' },];
+    _medicalFacility = [{ healthFacilitiesId: 1, name: 'Cơ sở y tế phường Đại Kim', code: '' }, { healthFacilitiesId: 2, name: 'Cơ sở y tế phường Định Công', code: '' }, { healthFacilitiesId: 3, name: 'Cơ sở y tế phường Hoàng Liệt', code: '' }, 
+    { healthFacilitiesId: 4, name: 'Cơ sở y tế phường Giáp Bát', code: '' }, { healthFacilitiesId: 5, name: 'Cơ sở y tế phường Lĩnh Nam', code: '' }];
     _medicalFacilityFind = [];
     _Status = [{ id: 2, name: 'Tất cả' }, { id: 1, name: 'Hiệu lực' }, { id: 0, name: 'Không hiệu lực' }];
+
+    showError = false;
+    errorMessage = '';
 
     constructor(injector: Injector, private _dataService: DataService, private datePipe: DatePipe, public dialog: MatDialog, private _formBuilder: FormBuilder) { super(injector); }
 
     ViewComponent: any;
     EditComponent: any;
+    @ViewChild(SelectAutocompleteComponent) multiSelect: SelectAutocompleteComponent;
     @ViewChild("monthStart") monthStart;
     @ViewChild("monthEnd") monthEnd;
 
@@ -43,6 +49,7 @@ export class packagedistributeIndexComponent extends PagedListingComponentBase<I
 
         this.dialogComponent = packagedistributeEditComponent;
         this.EditComponent = this.dialogComponent;
+
 
         this.dialogComponent = packagedistributeTaskComponent;
         this.frmSearch = this._formBuilder.group({
@@ -105,10 +112,6 @@ export class packagedistributeIndexComponent extends PagedListingComponentBase<I
         });
     }
 
-    selectAll() {
-
-    }
-
     openView(obj?: IPachkageDistribute): void {
         const dialogRef = this.dialog.open(this.ViewComponent, { minWidth: 'calc(100vw/2)', maxWidth: 'calc(100vw - 300px)', data: obj ? obj : null });
         dialogRef.afterClosed().subscribe(() => {
@@ -126,16 +129,18 @@ export class packagedistributeIndexComponent extends PagedListingComponentBase<I
     }
 
 
-
     onSelectMonthStart(value) {
         this.frmSearch.controls['monthStart'].setValue(value);
     }
     onSelectMonthEnd(value) {
         this.frmSearch.controls['monthEnd'].setValue(value);
     }
+    
+      getSelectedOptions(selected) {
+        this.frmSearch.controls['HealthFacilitiesId'].setValue(selected);
+      }
 
     customSearch() {
-        console.log('vao ham search')
         if (this.frmSearch.controls['fromYear'].value == this.frmSearch.controls['toYear'].value) {
             if(this.frmSearch.controls['monthStart'].value > this.frmSearch.controls['monthEnd'].value){
                 return swal({

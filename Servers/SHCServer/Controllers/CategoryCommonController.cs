@@ -25,7 +25,7 @@ namespace SHCServer.Controllers
         [Route("api/catcommon")]
         public IActionResult GetAll(int skipCount = 0, int maxResultCount = 10, string sorting = null, string filter = null)
         {
-            var objs = _context.Query<CategoryCommon>().Where(o => o.Type == "CHUYENKHOA" && o.IsDelete == false && o.IsActive == true);
+            var objs = _context.Query<CategoryCommon>().Where(o => o.Type == "CHUYENKHOA" && o.IsDelete == false);
 
             if (filter != null)
             {
@@ -38,10 +38,18 @@ namespace SHCServer.Controllers
                         objs = objs.Where(o => o.Code.Contains(value.Trim()));
 
                     if (string.Equals(key, "name"))
-                        objs = objs.Where(o => o.Name.Contains(value.Trim()));
+                    {
+                        var s = value.Replace(@"%", "\\%").Replace(@"_", "\\_").Trim();
+                        objs = objs.Where(o => o.Name.Contains(s));
+                    }
 
                     if (string.Equals(key, "id"))
                         objs = objs.Where(o => o.Id.ToString().Contains(value.Trim()));
+
+                    if (string.Equals(key, "isActive"))
+                    {
+                        objs = objs.Where(o => o.IsActive == Convert.ToBoolean(value.Trim()));
+                    }
                     //if (string.Equals(key, "max"))
                     //{
                     //    maxResultCount = 300;

@@ -80,7 +80,7 @@
                     <div class="col-md-6">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("Email")}}</mat-label>
-                            <input (input)="ruleEmail()" formControlName="email" matInput maxlength="320">
+                            <input (input)="ruleEmail($event)" formControlName="email" matInput maxlength="320">
                             <validation matSuffix [control]="_frm.controls['email']"></validation>
                         </mat-form-field>
                     </div>
@@ -91,7 +91,7 @@
                         <mat-form-field [ngClass]="{'mat-form-field-invalid':checkCertificationCode}"
                             appearance="outline" class="w-100">
                             <mat-label>{{l("DoctorCertificationCode")}}</mat-label>
-                            <input #certification (keypress)="certificationKeypress($event)"
+                            <input mask="A*" #certification (keypress)="certificationKeypress($event)"
                                 (input)="certificationInput($event)" ctrlKeys (ctrlV)="onCtrlV()" (ctrlC)="onCtrlC()"
                                 formControlName="certificationCode" matInput maxlength="45">
                         </mat-form-field>
@@ -205,7 +205,9 @@
                                     <mat-icon class="chip" matChipRemove *ngIf="specialRemovable">cancel</mat-icon>
                                     {{o.name}}
                                 </mat-chip>
-                                <input (click)="specialistClick()" matInput #specialistInput
+                                <input
+                                
+                                 (click)="specialistClick()" matInput #specialistInput
                                     [formControl]="specialistCodeControl" [matAutocomplete]="autoSpecialist"
                                     [matChipInputFor]="specialChipList"
                                     [matChipInputSeparatorKeyCodes]="specialSeparatorKeysCodes"
@@ -246,9 +248,9 @@
                         <div style="margin-bottom:-4px" class="ml-1">
                             <mat-label class="label">{{l('DoctorAvatar')}}</mat-label>
                         </div>
-                        <img style="padding: 2px"
-                            [src]="checkAvatar ? uploadBaseUrl+ (this._obj.avatar?this._obj.avatar:'') : _avatars[0] || 'https://cmkt-image-prd.global.ssl.fastly.net/0.1.0/ps/1441527/1160/772/m1/fpnw/wm0/businessman-avatar-icon-01-.jpg?1468234792&s=e3a468692e15e93a2056bd848193e97a'"
-                            height="175px" width="200px">
+                        <img #avatarImg style="padding: 2px"
+                            [src]="checkAvatar ? uploadBaseUrl+ (this._obj.avatar?this._obj.avatar:'') : _avatars[0] || '../assets/images/Doctor_Default.jpg'"
+                            height="180px" width="175px">
                     </div>
                     <!-- <div class="col-md-4 mt-3">
                         <div class="col-md-3 btn btn-primary">
@@ -289,7 +291,7 @@
                         <div>
                             <mat-label class="label">{{l('DoctorSummary')}}</mat-label>
                         </div>
-                        <ckeditor (change)="doctorSummaryInput($event)" #doctorSummary class="ckeditor"
+                        <ckeditor (input)="summaryInput($event)" (keyup)="keyupSummary($event)" #doctorSummary class="ckeditor w-100"
                             max-length="4000"
                             [config]="{ toolbar: [ 'heading', '|', 'bold', 'italic','|','bulletedList','numberedList','|','blockQuote','link','undo','redo'] }"
                             formControlName="summary" [editor]="Editor" (ready)="onReady($event)">
@@ -363,7 +365,9 @@
                                     <mat-icon class="chip" matChipRemove *ngIf="removable">cancel</mat-icon>
                                     {{o.code +' - ' +o.name}}
                                 </mat-chip>
-                                <input matInput #healthfacilitiesInput [formControl]="healthfacilitiesControl"
+                                <input 
+                                (click)="inputHealthFacilitiesClick()"
+                                    matInput #healthfacilitiesInput [formControl]="healthfacilitiesControl"
                                     [matAutocomplete]="auto" [matChipInputFor]="chipList"
                                     [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                                     [matChipInputAddOnBlur]="addOnBlur" (matChipInputTokenEnd)="add($event)"

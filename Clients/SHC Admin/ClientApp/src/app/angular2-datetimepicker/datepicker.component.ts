@@ -286,7 +286,7 @@ export class DatePicker implements OnInit, ControlValueAccessor {
         this.date = new Date(this.date.setFullYear(selectedYear));
         this.yearView = !this.yearView;
         this.monthDays = this.generateDays(this.date);
-        this.done();
+        this.onChangeCallback(this.date.toString());
     }
     setMonth(evt: any) {
         if (evt.target.getAttribute('id')) {
@@ -294,7 +294,7 @@ export class DatePicker implements OnInit, ControlValueAccessor {
             this.date = new Date(this.date.setMonth(selectedMonth));
             this.monthsView = !this.monthsView;
             this.monthDays = this.generateDays(this.date);
-            this.done();
+            this.onChangeCallback(this.date.toString());
         }
     }
     prevMonth(e: any) {
@@ -313,7 +313,7 @@ export class DatePicker implements OnInit, ControlValueAccessor {
         }
         this.date = new Date(this.date);
         this.monthDays = this.generateDays(this.date);
-        this.done();
+        this.onChangeCallback(this.date.toString());
     }
     nextMonth(e: any) {
         e.stopPropagation();
@@ -332,7 +332,7 @@ export class DatePicker implements OnInit, ControlValueAccessor {
         }
         this.date = new Date(this.date);
         this.monthDays = this.generateDays(this.date);
-        this.done();
+        this.onChangeCallback(this.date.toString());
     }
     onChange(evt: any) {
        
@@ -340,7 +340,7 @@ export class DatePicker implements OnInit, ControlValueAccessor {
 
 
     incHour() {
-        if (this.hourValue.toString().length > 1) {
+        if (this.hourValue.toString().length > 0) {
             if (this.hourValue.toString().length > 1 && this.hourValue < 10) {
                 this.hourValue = parseInt(this.hourValue.toString().slice(-1));
             }
@@ -355,7 +355,7 @@ export class DatePicker implements OnInit, ControlValueAccessor {
         }
     }
     incMinutes() {
-        if (this.hourValue.toString().length > 1) {
+        if (this.hourValue.toString().length > 0) {
             if (this.minValue.toString().length > 1 && this.minValue < 10) {
                 this.minValue = parseInt(this.minValue.toString().slice(-1));
             }

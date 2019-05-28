@@ -10,6 +10,7 @@ import { DataService } from '@shared/service-proxies/service-data';
 import { Title, DomSanitizer } from '@angular/platform-browser';
 import { IDoctor, IHealthfacilities } from '@shared/Interfaces';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { AppConsts } from '@shared/AppConsts';
 
 
 @Component({
@@ -47,7 +48,7 @@ export class BookingComponent extends AppComponentBase implements OnInit, AfterV
     public _workingTimes = [];
     public _lstWorkingTimes = [];
     public _capcha: { code: string, data: any } = { code: '', data: '' };
-
+    
     //4
     success = 0;
     isDoctor = 0;
@@ -60,6 +61,7 @@ export class BookingComponent extends AppComponentBase implements OnInit, AfterV
     capcha = false;
     defaultd = '../assets/images/default/defaultd.png';
     defaulth = '../assets/images/default/defaulth.jpg';
+    uploadBaseUrl="";
 
     slideConfig = {
         "slidesToShow": 4,
@@ -96,6 +98,7 @@ export class BookingComponent extends AppComponentBase implements OnInit, AfterV
             this.frmBooking.controls['phoneNumber'].setValue(this.appSession.user.phoneNumber);
         }
 
+        this.uploadBaseUrl = AppConsts.uploadBaseUrl;
         this._dataService.getAll('provinces').subscribe(resp => this._provinces = this._provincesExamination = resp.items);
         this.getDate();
         this.getCapcha();

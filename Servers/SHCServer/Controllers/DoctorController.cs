@@ -85,7 +85,7 @@ namespace SHCServer.Controllers
             {
                 foreach (var (key, value) in JsonConvert.DeserializeObject<Dictionary<string, string>>(filter))
                 {
-                    if (string.IsNullOrEmpty(value))
+                    if (string.IsNullOrEmpty(value.Trim()))
                         continue;
 
                     if (string.Equals(key, "provinceCode"))
@@ -106,7 +106,8 @@ namespace SHCServer.Controllers
                     }
                     if (string.Equals(key, "info") && !string.IsNullOrEmpty(value))
                     {
-                        objs = objs.Where(d => d.FullName.ToString().Contains(value.Trim()) || (d.PhoneNumber.Equals(value.Trim())));
+                        var s = value.Replace(@"%", "\\%").Replace(@"_", "\\_").Trim();
+                        objs = objs.Where(d => d.FullName.ToString().Contains(s) || (d.PhoneNumber.Equals(s)));
                     }
                 }
             }

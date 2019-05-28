@@ -146,6 +146,12 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
         this.dataService.getAll('doctors', obj.healthFacilitiesId).subscribe(resp => this._doctors = resp.items);
     }
 
+    // onInputHealthFacilities(value) {
+    //     if (value != ' ') {
+    //         this._doctors = null;
+    //     }
+    // }
+
     onSelectProvince(obj: any) {
         this._districts = this._wards = [];
         this.frmSearch.patchValue({ districtCode: null, wardCode: null });
