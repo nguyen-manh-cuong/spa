@@ -1,0 +1,32 @@
+<form id="form-dialog" class="container p-relative" novalidate>
+  <div class="p-absolute t-5 r-5">
+    <button *ngIf="appSession.user.healthFacilities" mat-icon-button mat-dialog-close style="z-index: 9;" [matTooltipPosition]="'left'" matTooltip="Đóng">
+        <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <mat-tab-group>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        {{_checkLength > 1 ? "Chọn phòng khám" : "Thông báo"}}
+      </ng-template>
+
+      <div class="pt-4" *ngIf="_checkLength > 1">
+        <div class="mat-cell pl-2 pr-2 disabled divdisabled" *ngIf="appSession.user.healthFacilities">
+          <input type="checkbox" class="mycheckbox" [checked]="true" tabindex="-1">
+          <span class="myspan">{{appSession.user.healthFacilities ? appSession.user.healthFacilities.name : ""}}</span> 
+        </div>
+        <div *ngFor="let el of _usersHealthfacilities; index as i" class="mat-cell pl-2 pr-2" [hidden]="appSession.user.healthFacilities && (appSession.user.healthFacilities.healthFacilitiesId == el.healthFacilitiesId)">
+          <input type="checkbox" class="mycheckbox" id="{{i}}" (change)="getHealthFacilities(el, i, $event)" [checked]="i == _checked">
+          <span class="myspan">{{el.name}}</span> 
+        </div>
+      </div>
+
+      <div class="pt-4" *ngIf="_checkLength == 0">
+        <h2>Tài khoản của bạn chưa có Cơ sở y tế</h2>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+  <div class="text-right mb-3" *ngIf="_checkLength > 1">
+    <button type="button" mat-raised-button color="primary" [disabled]="_checked == -1" (click)="updateDefault()">{{l("Xác nhận")}}</button>
+  </div>
+</form>

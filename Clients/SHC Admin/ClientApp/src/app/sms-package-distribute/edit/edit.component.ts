@@ -67,7 +67,7 @@ export class packagedistributeEditComponent extends AppComponentBase implements 
 
 
         this._context = {
-            healthFacilitiesId: [this._obj.healthFacilitiesId, Validators.required],
+            healthFacilitiesId: [this.appSession.user.healthFacilities ? this.appSession.user.healthFacilitiesId : this._obj.healthFacilitiesId, Validators.required],
             smsBrandsId: [this._obj.smsBrandsId, Validators.required],
             monthStart: [this._obj.monthStart,],
             monthEnd: [this._obj.monthEnd,],

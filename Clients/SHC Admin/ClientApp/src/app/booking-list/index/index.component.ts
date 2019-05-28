@@ -74,7 +74,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
     }
 
     ngOnInit() {
-        this.api = 'bookinginformations';
+        this.api = 'bookinglist';              
         this.frmSearch = this._formBuilder.group({
             healthfacilities: [],
             doctor: [],
@@ -93,15 +93,10 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
         this.dialogReasonReject = ReasonComponent;
 
         if(this.appSession.user.healthFacilitiesId) {
-            this.dataService.get('healthfacilities', JSON.stringify({healthfacilitiesId : this.appSession.user.healthFacilitiesId}), '', null, null).subscribe(resp => {this._healthfacilities = resp.items;});
-            this.dataService.getAll('doctors', String(this.appSession.user.healthFacilitiesId)).subscribe(resp => {
-                this._doctors = resp.items;
-            });
-
-            setTimeout(() => {
-                this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId);
-            }, 500);
-        } else {
+            this.dataService.getAll('doctors', String(this.appSession.user.healthFacilitiesId)).subscribe(resp => {this._doctors = resp.items;});
+            this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId);       
+        }
+        else{
             this.filterOptions();
             this.healthfacilities.setValue(null);
         }

@@ -24,7 +24,7 @@ export class AppSessionService {
     }
 
     get userId(): number {
-        return this.user ? this.user.id : null;
+        return this.user ? this.user.userId : null;
     }
 
     get tenant(): TenantLoginInfoDto {

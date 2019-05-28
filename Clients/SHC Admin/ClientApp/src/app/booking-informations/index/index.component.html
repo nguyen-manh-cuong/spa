@@ -14,7 +14,7 @@
 <div class="content">
     <form [formGroup]="frmSearch" class="form-filter form-custom pl-2 pr-2  mb-4" novalidate>
         <div class="row pt-4">
-            <div class="col-md-6" [hidden]="this.appSession.user.healthFacilitiesId">
+            <div class="col-md-6" *ngIf="appSession.user.accountType == 0">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('Unit')}}</mat-label>
                     <input matInput [formControl]="healthfacilities" [matAutocomplete]="auto">
@@ -24,13 +24,6 @@
                             {{o.code + ' - ' + o.name}}
                         </mat-option>
                     </mat-autocomplete>
-                </mat-form-field>
-            </div>
-            <div class="col-md-6 disabled" [hidden]="!this.appSession.user.healthFacilitiesId">
-                <mat-form-field appearance="outline" class="w-100">
-                    <mat-select formControlName="healthfacilities" required>
-                        <mat-option *ngFor="let o of _healthfacilities" [value]="o.healthFacilitiesId">{{ o.name }}</mat-option>
-                    </mat-select>
                 </mat-form-field>
             </div>
             <div class="col-md-3">
@@ -50,8 +43,6 @@
                     </mat-select>
                 </mat-form-field>
             </div>
-        </div>
-        <div class="row">
             <div class="col-md-3">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('Thời gian')}}</mat-label>
@@ -93,7 +84,7 @@
                         <th mat-header-cell *matHeaderCellDef class="min-w-30 text-center"> {{l("OrderNumber")}} </th>
                         <td mat-cell *matCellDef="let element; let i = index;" class="min-w-30 text-center border-right">{{(i + 1) + (paginator.pageIndex * paginator.pageSize)}}</td>
                     </ng-container>
-                    <ng-container matColumnDef="healthFacilitiesName">
+                    <ng-container matColumnDef="healthFacilitiesName" *ngIf="appSession.user.accountType == 0">
                         <th mat-header-cell *matHeaderCellDef class="text-center"> {{l("Đơn vị")}} </th>
                         <td mat-cell *matCellDef="let element"> {{element.healthFacilitiesName}} </td>
                     </ng-container>

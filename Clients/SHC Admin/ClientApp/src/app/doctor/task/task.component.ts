@@ -322,7 +322,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
       allowBooking: [this._obj.allowBooking],
       allowFilter: [this._obj.allowFilter],
       allowSearch: [this._obj.allowSearch],
-      healthfacilities: [this._obj.healthFacilities]
+      healthfacilities: [this.appSession.user.healthFacilities ? this.appSession.user.healthFacilitiesId : this._obj.healthFacilities]
     };
 
 
