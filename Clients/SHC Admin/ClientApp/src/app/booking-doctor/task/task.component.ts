@@ -73,7 +73,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
 
         this._context = {
             startTime: [moment(new Date().setHours(7, 0, 0, 0)).toDate()],
-            endTime: [moment(new Date()).add(6, 'days').toDate],
+            endTime: [moment(new Date()).add(6, 'days').toDate()],
             healthfacilities: [this.appSession.user.healthFacilitiesId,Validators.required],
             doctor: [,Validators.required],
             address: [,[Validators.required, validationRule.hasValue]]
