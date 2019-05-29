@@ -2,8 +2,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { CommonModule } from '@angular/common';
 import { IndexComponent } from './index/index.component';
-import { TemplateComponent } from './template.component';
-import { TemplateRoutingModule } from './template-routing.module';
+import { ChangePasswordComponent } from './change-password.component';
+import { ChangePasswordRoutingModule } from './change-password-routing.module';
 import { NgModule } from '@angular/core';
 import { SharedModule } from '@shared/shared.module';
 import { TaskComponent } from './task/task.component';
@@ -18,11 +18,11 @@ import { NgxMaskModule} from 'ngx-mask';
     ReactiveFormsModule,
     SharedModule,
     UtilsModule,
-    TemplateRoutingModule,
+    ChangePasswordRoutingModule,
     ValidationModule,
     NgxMaskModule.forRoot()
-  ],
-  declarations: [TemplateComponent, IndexComponent, TaskComponent],
+    ],
+    declarations: [ChangePasswordComponent, IndexComponent, TaskComponent],
   entryComponents: [TaskComponent]
 })
-export class TemplateModule { }
+export class ChangePasswordModule { }

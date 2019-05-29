@@ -8,6 +8,8 @@ import { LoginService } from './login/login.service';
 import { NgModule } from '@angular/core';
 import { SharedModule } from '@shared/shared.module';
 import { UtilsModule } from '@shared/utils/utils.module';
+import { SecretComponent } from './secret/secret.component';
+import { ResetComponent } from './reset-password/reset-password.component';
 
 @NgModule({
     imports: [
@@ -17,7 +19,7 @@ import { UtilsModule } from '@shared/utils/utils.module';
         SharedModule,
         UtilsModule
     ],
-    declarations: [LoginComponent, AuthComponent],
+    declarations: [LoginComponent, AuthComponent, SecretComponent, ResetComponent],
     providers: [
         LoginService
     ]

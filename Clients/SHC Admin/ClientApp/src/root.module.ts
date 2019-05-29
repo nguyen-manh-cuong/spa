@@ -66,7 +66,7 @@ export function shouldLoadLocale(): boolean {
 
 
 export function getRemoteServiceBaseUrl(): string {
-    return AppConsts.remoteServiceBaseUrl;
+    return AppConsts.serverBaseUrl;
 }
 
 export function convertAbpLocaleToAngularLocale(locale: string): string {
