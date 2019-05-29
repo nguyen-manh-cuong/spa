@@ -6,31 +6,51 @@ import { AppComponentBase } from '@shared/app-component-base';
 import { DataService } from '@shared/service-proxies/service-data';
 import { ValidationRule } from '@shared/common/common';
 import swal from 'sweetalert2';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
     selector: 'app-index',
     templateUrl: './index.component.html',
     styleUrls: ['./index.component.scss']
 })
-export class IndexComponent extends  AppComponentBase implements OnInit {
+export class IndexComponent extends AppComponentBase implements OnInit {
     // variable
     api: string = 'reset-password-user';
     frmResetPassword: FormGroup;
     _obj: any = { NewPassword: '', OldPassword: '', UserName: '' }
 
     //contructor
-    constructor(injector: Injector, private _dataService: DataService, private _formBuilder: FormBuilder) { super(injector); }
+    constructor(injector: Injector, private _dataService: DataService, private _formBuilder: FormBuilder, private _sanitizer: DomSanitizer) { super(injector); }
 
     ngOnInit() {
         const validationRule = new ValidationRule();
         this.frmResetPassword = this._formBuilder.group({
-            NewPassword: [this._obj.NewPassword],
             OldPassword: [this._obj.OldPassword],
-            UserName: []
-
+            NewPassword: [this._obj.NewPassword],
+            UserName: this.appSession.user.userName,
+            RePassword: [],
+            codeCapcha: [''],
         })
+        this.getCapcha();
+              
     }
+    //capchar
+    capcha = false;
+    _capcha: { code: string, data: any } = { code: '', data: '' };
+  
+    getCapcha() {
+        this._dataService.getAny('get-captcha-image').subscribe(res => this._capcha = { code: res.code, data: this._sanitizer.bypassSecurityTrustResourceUrl('data:image/jpg;base64,' + res.data) });
+    }
+
+    validateCapcha(value: any) {
+        if (value.length == 4) this._capcha.code != value ? this.capcha = true : this.capcha = false;
+    }
+    
     resetPassword() {
+        if (this.frmResetPassword.controls['codeCapcha'].value != this._capcha.code) {
+            this.capcha = true;
+            return;
+        }
         console.log('gia tri cua form', this.frmResetPassword)
         // call api
         this._dataService.update(this.api, Object.assign(this.frmResetPassword.value)).subscribe(() => {
@@ -42,5 +62,6 @@ export class IndexComponent extends  AppComponentBase implements OnInit {
             });
         }, err => { });
     }
+
 
 }

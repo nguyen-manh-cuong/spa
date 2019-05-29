@@ -78,8 +78,8 @@ import { NgModule } from '@angular/core';
                         loadChildren: 'app/doctor/doctor.module#DoctorModule', canActivate: [AppRouteGuard]
                     }, 
                     {
-                        path: 'template',
-                        loadChildren: 'app/template-component/template.module#TemplateModule', canActivate: [AppRouteGuard]
+                        path: 'change-password',
+                        loadChildren: 'app/change-password/change-password.module#ChangePasswordModule', canActivate: [AppRouteGuard]
                     }
                ]
             },

@@ -81,7 +81,7 @@ namespace SHCServer.Controllers
         public IActionResult Create([FromBody] SmsTemplateInputViewModel sms)
         {
             string sql = $"SELECT * FROM smarthealthcare.sms_template where BINARY SmsTemplateName = '{sms.SmsTemplateName}' " +
-               $"and {sms.IsDelete} = false";
+                $"and {sms.IsDelete} = false";
             //if (sms.HealthFacilitiesId != null)
             //{
             //    sql = sql + $" and (HealthFacilitiesId = {sms.HealthFacilitiesId} or HealthFacilitiesId = null)";
@@ -137,8 +137,8 @@ namespace SHCServer.Controllers
 
                 if (sms.SmsTemplateName != nameCurrentTemplate)
                 {
-                    string sql = $"SELECT COUNT as SLL FROM smarthealthcare.sms_template where BINARY SmsTemplateName = '{sms.SmsTemplateName}' " +
-              $"and {sms.IsDelete} = false";
+                    string sql = $"SELECT * FROM smarthealthcare.sms_template where BINARY SmsTemplateName = '{sms.SmsTemplateName}' " +
+                    $"and {sms.IsDelete} = false";
                     //if (sms.HealthFacilitiesId != null)
                     //{
                     //    sql = sql + $" and (HealthFacilitiesId = {sms.HealthFacilitiesId} or HealthFacilitiesId = null)";
