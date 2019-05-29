@@ -156,7 +156,8 @@ namespace SHCServer.Controllers
         public IActionResult Login(int skipCount = 0, int maxResultCount = 10, string sorting = null, string filter = null)
         {
             string query = @"select 
-                                    ui.*
+                                    ui.*,
+                                    u.Status as MdmStatus
                                 from smarthealthcare.sys_users ui
                                 inner join mdm.sys_users u on ui.Id = u.UserId";
             List<string> clause = new List<string>();
@@ -181,13 +182,16 @@ namespace SHCServer.Controllers
                 {
                     Id = Convert.ToInt32(reader["Id"]),
                     Counter = Convert.ToInt32(reader["Counter"]),
-                    LockedTime = reader["LockedTime"] != DBNull.Value ? Convert.ToDateTime(reader["LockedTime"]) : (DateTime.Parse("1970/12/12 00:01"))
+                    LockedTime = reader["LockedTime"] != DBNull.Value ? Convert.ToDateTime(reader["LockedTime"]) : (DateTime.Parse("1970/12/12 00:01")),
+                    Status = Convert.ToInt32(reader["Status"]),
+                    ExpriredDate = reader["LockedTime"] != DBNull.Value ? Convert.ToDateTime(reader["LockedTime"]) : DateTime.Now,
+                    MdmStatus = Convert.ToInt32(reader["MdmStatus"])
                 });
             }
             reader.Close();
             if (lst.Count == 0)
             {
-                return Json(new ActionResultDto {  });
+                return Json(new ActionResultDto { Result = new { Items = "" } });
             }
             var currentUser = lst.FirstOrDefault();
 

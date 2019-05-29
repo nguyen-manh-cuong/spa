@@ -86,8 +86,17 @@ export class LoginComponent extends AppComponentBase implements OnInit {
         let lockedTime = 0;
         
         this._dataService.get('auth', JSON.stringify({ 'userName': this.frmLogin.controls['userNameOrEmailAddress'].value }), null, null, null).subscribe(data => {
+            if (!data.items) {
+                return swal({
+                    title: this.l('Notification'),
+                    text: this.l('Đăng nhập không thành công. Tên đăng nhập hoặc mật khẩu không chính xác'),
+                    type: 'warning',
+                    timer: 3000
+                });
+            }
+            console.log(112, data.items);
             lockedTime = (moment(new Date(data.items.lockedTime)).valueOf() - moment(Date.now()).valueOf()) / (1000 * 60);
-            console.log(113, lockedTime);
+            
             if (lockedTime > 0 && lockedTime <= 60) {
                 return swal({
                     title: this.l('Notification'),
