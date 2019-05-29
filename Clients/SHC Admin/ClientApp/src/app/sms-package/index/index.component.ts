@@ -8,6 +8,8 @@ import { PagedListingComponentBase } from '@shared/paged-listing-component-base'
 import { TaskComponent } from '../task/task.component';
 import { DetailComponent } from '../detail/detail.component';
 import swal from 'sweetalert2';
+import { Router } from '@angular/router';
+import { getPermission } from '@shared/helpers/utils';
 
 @Component({
     selector: 'app-index',
@@ -19,8 +21,9 @@ export class IndexComponent extends PagedListingComponentBase<IUser> implements 
     displayedColumns = ['orderNumber', 'name', 'description', 'quantity', 'cost', 'status', 'task'];
     status = [{ id: 2, name: 'Tất cả'}, { id: 1, name: 'Hiệu lực'}, { id: 0, name: 'Không hiệu lực'}];
     dialogDetail: any;
+    permission: any;
 
-    constructor(injector: Injector, private _dataService: DataService, public dialog: MatDialog, private _formBuilder: FormBuilder) {
+    constructor(injector: Injector, private _dataService: DataService, public dialog: MatDialog, private _formBuilder: FormBuilder, private router: Router) {
         super(injector);
     }
 
@@ -31,6 +34,7 @@ export class IndexComponent extends PagedListingComponentBase<IUser> implements 
 
         this.dialogComponent = TaskComponent;
         this.dialogDetail = DetailComponent;
+        this.permission = getPermission(abp.nav.menus['mainMenu'].items, this.router.url);
     }
     
     detail(obj): void{

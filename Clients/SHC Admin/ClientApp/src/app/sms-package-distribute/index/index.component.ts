@@ -11,6 +11,8 @@ import { packagedistributeViewComponent } from '../view/view.component';
 import { DatePipe } from '@angular/common';
 import { packagedistributeEditComponent } from '../edit/edit.component';
 import { SelectAutocompleteComponent } from '@app/mat-select-autocomplete/select-autocomplete.component'
+import { getPermission } from '@shared/helpers/utils';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-packagedistributeindex',
@@ -31,8 +33,9 @@ export class packagedistributeIndexComponent extends PagedListingComponentBase<I
 
     showError = false;
     errorMessage = '';
+    permission: any;
 
-    constructor(injector: Injector, private _dataService: DataService, private datePipe: DatePipe, public dialog: MatDialog, private _formBuilder: FormBuilder) { super(injector); }
+    constructor(injector: Injector, private _dataService: DataService, private datePipe: DatePipe, public dialog: MatDialog, private _formBuilder: FormBuilder, private router: Router) { super(injector); }
 
     ViewComponent: any;
     EditComponent: any;
@@ -49,6 +52,7 @@ export class packagedistributeIndexComponent extends PagedListingComponentBase<I
 
         this.dialogComponent = packagedistributeEditComponent;
         this.EditComponent = this.dialogComponent;
+        this.permission = getPermission(abp.nav.menus['mainMenu'].items, this.router.url);
 
 
         this.dialogComponent = packagedistributeTaskComponent;

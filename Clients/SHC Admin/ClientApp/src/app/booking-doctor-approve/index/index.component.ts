@@ -13,6 +13,8 @@ import { SelectionModel } from '@angular/cdk/collections';
 import swal from 'sweetalert2';
 import * as moment from 'moment';
 import * as _ from 'lodash';
+import { Router } from '@angular/router';
+import { getPermission } from '@shared/helpers/utils';
 
 export const MY_FORMATS = {
     parse: {
@@ -50,12 +52,13 @@ export class IndexComponent extends PagedListingComponentBase<IBookingDoctorsCal
     filteredOptions: Observable<IHealthfacilities[]>;
     selection = new SelectionModel<IBookingDoctorsCalendarsView>(true, []);
     isLoading = false;
+    permission: any;
 
     @ViewChild("startTime") startTime;
     @ViewChild("endTime") endTime;
     @ViewChild('auto') auto;
 
-    constructor(injector: Injector, private _dataService: DataService, public dialog: MatDialog, private _formBuilder: FormBuilder) {
+    constructor(injector: Injector, private _dataService: DataService, public dialog: MatDialog, private _formBuilder: FormBuilder, private router: Router) {
         super(injector);
     }
 
@@ -65,12 +68,13 @@ export class IndexComponent extends PagedListingComponentBase<IBookingDoctorsCal
             healthfacilities: [],
             doctor: [],
             startTime: [moment(new Date().setHours(7, 0, 0, 0)).toDate()],
-            endTime: [moment(new Date()).add(6, 'days').toDate],
+            endTime: [moment(new Date()).add(6, 'days').toDate()],
             status: [3]
         });
 
         this.dataService = this._dataService;
         this.dialogDetail = DetailComponent;
+        this.permission = getPermission(abp.nav.menus['mainMenu'].items, this.router.url);
 
         if (this.appSession.user.healthFacilitiesId) {
             this.dataService.getAll('doctors', String(this.appSession.user.healthFacilitiesId)).subscribe(resp => this._doctors = resp.items);
@@ -84,8 +88,8 @@ export class IndexComponent extends PagedListingComponentBase<IBookingDoctorsCal
         setTimeout(() => {
             this.startTime.nativeElement.value = moment(new Date()).format("DD/MM/YYYY");
             this.endTime.nativeElement.value = moment(new Date().setDate(new Date().getDate() + 6)).format("DD/MM/YYYY");
-            this.startTime.nativeElement.focus();
-            this.endTime.nativeElement.focus();
+            // this.startTime.nativeElement.focus();
+            // this.endTime.nativeElement.focus();
             this.getDate(this.startTime.nativeElement.value, this.endTime.nativeElement.value);
         }, 1000);
     }

@@ -1,7 +1,7 @@
 <div class="toolbar fadeIn animated">
         <div class="row w-100 m-0">
             <div class="col-4 text-left d-flex align-items-center">
-                <button mat-stroked-button color="primary" (click)="openDialog()">
+                <button *ngIf="permission.add" mat-stroked-button color="primary" (click)="openDialog()">
                     <mat-icon class="f-20 m-l--10 mat-icon m-t-2 material-icons">add</mat-icon>{{l("CreateNew")}}
                 </button>
                 <div class="separate"></div>
@@ -77,11 +77,11 @@
                                 <mat-icon>more_vert</mat-icon>
                             </button>
                             <mat-menu #menu="matMenu" class="d-flex-column">
-                                    <button mat-icon-button (click)="openDialog(element)">
+                                    <button *ngIf="permission.edit" mat-icon-button (click)="openDialog(element)">
                                             <mat-icon class="text-muted f-18">edit</mat-icon>
                                             Sửa
                                         </button>
-                                        <button mat-icon-button (click)="element.isActive?deleteDialogMessage(element,'name') :deleteDialog(element, 'name')">
+                                        <button *ngIf="permission.delete" mat-icon-button (click)="element.isActive?deleteDialogMessage(element,'name') :deleteDialog(element, 'name')">
                                             <mat-icon class="text-muted f-18">delete</mat-icon>
                                             Xóa
                                         </button>
