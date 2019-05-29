@@ -326,12 +326,12 @@ namespace SHCServer.Controllers
             string logPassword = currentUser.PasswordLog;
             if (!Utils.VerifyHashedPassword(currenPassword, obj.OldPassword))
             {
-                return StatusCode(406, _excep.Throw(406, "Thông báo", "Mật khẩu không không đúng"));
+                return StatusCode(406, _excep.Throw(406, "Thông báo", "Đổi mật khẩu không thành công. Mật khẩu hiện tại không đúng"));
             }
 
-            if (Utils.VerifyHashedPassword(currenPassword, obj.NewPassword) || Utils.VerifyHashedPassword(logPassword, obj.NewPassword))
+            if (Utils.VerifyHashedPassword(currenPassword, obj.NewPassword))
             {
-                return StatusCode(406, _excep.Throw(406, "Thông báo", "Mật khẩu không được trùng với 2 lần mật khẩu trước. Đổi mật khẩu thất bại."));
+                return StatusCode(406, _excep.Throw(406, "Thông báo", "Đổi mật khẩu không thành công. Mật khẩu mới không được trùng với mật khẩu hiện tại"));
             }
 
             try
