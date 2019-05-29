@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using SHCServer.Models;
 using SHCServer.ViewModels;
 using System;
@@ -14,6 +15,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Text.RegularExpressions;
+using Viettel;
 using Viettel.MySql;
 
 namespace SHCServer.Controllers
@@ -150,37 +152,96 @@ namespace SHCServer.Controllers
             return Json(new ActionResultDto { Result = new { user = "" } });
         }
 
-        [HttpPost]
+        [HttpGet]
         [Route("api/Auth")]
-        public IActionResult Login([FromBody] AuthenticateModel user)
+        public IActionResult Login(int skipCount = 0, int maxResultCount = 10, string sorting = null, string filter = null)
         {
-            User currentUser = _context.Query<User>().Where(u => u.UserName == user.UserNameOrEmailAddress || u.Email == user.UserNameOrEmailAddress).FirstOrDefault();
+            string query = @"select 
+                                    ui.*,
+                                    u.Status as MdmStatus
+                                from smarthealthcare.sys_users ui
+                                inner join mdm.sys_users u on ui.Id = u.UserId";
+            List<string> clause = new List<string>();
+            List<DbParam> param = new List<DbParam>();
 
-            if (currentUser != null)
+            if (filter != null && filter != "null")
             {
-                if (currentUser.LockedTime != null)
+                var data = JsonConvert.DeserializeObject<Dictionary<string, string>>(filter);
+                if (data.ContainsKey("userName"))
                 {
-                    return StatusCode(401, _excep.Throw(401, "Thông báo", "Đăng nhập không thành công. Vui lòng trở lại sau 60 phút"));
+                    clause.Add("WHERE u.UserName = @userName OR u.Email = @userName OR u.PhoneNumber = @userName");
+                    param.Add(DbParam.Create("@userName", data["userName"].ToString()));
                 }
+            }
 
-                //DbContext context = new MySqlContext(new MySqlConnectionFactory("server=localhost;port=3306;database=mdm;user=root;password=64688990;CharSet=utf8;"));
-
-                if (Utils.VerifyHashedPassword(currentUser.Password, user.Password))
+            string strQuery = $"{query} {string.Join(" ", clause)}";
+            var reader = _context.Session.ExecuteReader(strQuery, param);
+            List<User> lst = new List<User>();
+            while (reader.Read())
+            {
+                lst.Add(new User()
                 {
-                    return Json(GenerateJwtToken(user.UserNameOrEmailAddress, currentUser, _settings));
-                }
-
-                _context.Session.BeginTransaction();
-                _context.Update<User>(b => b.UserName == currentUser.UserName, a => new User()
-                {
-                    Counter = a.Counter + 1
+                    Id = Convert.ToInt32(reader["Id"]),
+                    Counter = Convert.ToInt32(reader["Counter"]),
+                    LockedTime = reader["LockedTime"] != DBNull.Value ? Convert.ToDateTime(reader["LockedTime"]) : (DateTime.Parse("1970/12/12 00:01")),
+                    Status = Convert.ToInt32(reader["Status"]),
+                    ExpriredDate = reader["LockedTime"] != DBNull.Value ? Convert.ToDateTime(reader["LockedTime"]) : DateTime.Now,
+                    MdmStatus = Convert.ToInt32(reader["MdmStatus"])
                 });
+            }
+            reader.Close();
+            if (lst.Count == 0)
+            {
+                return Json(new ActionResultDto { Result = new { Items = "" } });
+            }
+            var currentUser = lst.FirstOrDefault();
 
+            if (filter != null && filter != "null")
+            {
+                var data = JsonConvert.DeserializeObject<Dictionary<string, string>>(filter);
+                _context.Session.BeginTransaction();
+                if (data.ContainsKey("counter"))
+                {
+                    
+
+                    if (int.Parse(data["counter"].ToString()) >= 10)
+                    {
+                        _context.Update<User>(c => c.Id == currentUser.Id, x => new User()
+                        {
+                            Counter = currentUser.Counter + 1,
+                            LockedTime = DateTime.Now.AddMinutes(60)
+                        });
+                    }
+                    else if (int.Parse(data["counter"].ToString()) == -1)
+                    {
+                        _context.Update<User>(c => c.Id == currentUser.Id, x => new User()
+                        {
+                            Counter = 0,
+                            LockedTime = null
+                        });
+                    }
+                    else
+                    {
+                        _context.Update<User>(c => c.Id == currentUser.Id, x => new User()
+                        {
+                            Counter = currentUser.Counter + 1
+                        });
+                    }
+
+                }
+
+                if (data.ContainsKey("lockedTime") && double.Parse(data["lockedTime"].ToString()) > 60)
+                {
+                    _context.Update<User>(c => c.Id == currentUser.Id, x => new User()
+                    {
+                        LockedTime = null
+                    });
+                }
                 _context.Session.CommitTransaction();
             }
 
-            //return Json(new ActionResultDto { Error = new { code = 0, message = "Login failed!", details = "Invalid user name or password" } });
-            return StatusCode(406, _excep.Throw(401,"Đăng nhập không thành công!", "Tài khoản hoặc mật khẩu không đúng."));
+
+            return Json(new ActionResultDto { Result = new { Items = currentUser } });
         }
 
         [HttpPost]
