@@ -17,6 +17,8 @@ import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/materia
 import { ReasonComponent } from '../reason/reason.component';
 import { Observable } from 'rxjs';
 import { startWith, map, debounceTime, tap, switchMap, finalize } from 'rxjs/operators';
+import { getPermission } from '@shared/helpers/utils';
+import { Router } from '@angular/router';
 
 export const MY_FORMATS = {
     parse: {
@@ -61,6 +63,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
     _isChosenTime = false;
     isLoading = false;
 
+    permission: any;
     dialogSendComponent: any;
     selectionData = new SelectionModel<IMedicalHealthcareHistories>(true, []);
 
@@ -69,7 +72,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
     @ViewChild('endTime') endTime;
     @ViewChild('auto') auto;
     @ViewChild('bookingService') bookingService;
-    constructor(injector: Injector, private _dataService: DataService, public dialog: MatDialog, private _formBuilder: FormBuilder) {
+    constructor(injector: Injector, private _dataService: DataService, public dialog: MatDialog, private _formBuilder: FormBuilder, private router: Router) {
         super(injector);
     }
 
@@ -91,6 +94,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
 
         this.dialogDetail = DetailComponent;
         this.dialogReasonReject = ReasonComponent;
+        this.permission = getPermission(abp.nav.menus['mainMenu'].items, this.router.url);
 
         if(this.appSession.user.healthFacilitiesId) {
             this.dataService.getAll('doctors', String(this.appSession.user.healthFacilitiesId)).subscribe(resp => {this._doctors = resp.items;});
