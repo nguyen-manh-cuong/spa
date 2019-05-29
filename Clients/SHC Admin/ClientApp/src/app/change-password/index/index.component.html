@@ -1,38 +1,26 @@
 <mat-tab-group>
     <mat-tab label="Thông tin cá nhân">
-        
-    </mat-tab>
+        <ng-template matTabContent class="p-4 min-h-400"></ng-template>
+</mat-tab>
     <mat-tab label="Đổi mật khẩu">
-        <ng-template matTabContent class="p-4">
+        <ng-template matTabContent class="p-4 min-h-400">
             <mat-card class="shadow-none ml-auto mr-auto max-w-400">
                 <mat-card-content class="shadow-none">
                     <form [formGroup]="frmResetPassword" novalidate>
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("Mật khẩu hiện tại")}}</mat-label>
-                            <input formControlName="OldPassword" matInput type="password" [required]="true" maxlength="255">
+                            <input formControlName="OldPassword" matInput type="password" [required]="true" maxlength="255" minlength="8">
                             <validation matSuffix [control]="frmResetPassword.controls['OldPassword']"></validation>
                         </mat-form-field>
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("Mật khẩu mới")}}</mat-label> 
-                            <input formControlName="NewPassword" type="password" matInput [required]="true" maxlength="255">
+                            <input formControlName="NewPassword" type="password" matInput [required]="true" maxlength="255" minlength="8">
                             <validation matSuffix [control]="frmResetPassword.controls['NewPassword']"></validation>
                         </mat-form-field>
                         <mat-form-field appearance="outline" class="w-100">
-                            <mat-label>{{l("Xác nhận mật khẩu mới")}}</mat-label>
-                            <input formControlName="RePassword" type="password" matInput [required]="true" maxlength="255">
-                            <mat-icon matSuffix
-                                      *ngIf="frmResetPassword.controls['RePassword'].invalid && (frmResetPassword.controls['RePassword'].dirty || frmResetPassword.controls['RePassword'].touched)"
-                                      [matTooltipPosition]="'before'" matTooltipClass="bg-danger text-light mr-1"
-                                      matTooltip="{{l('NotBeEmpty')}}" color="warn">
-                                info
-                                <!-- Xác nhận khẩu mới không đúng -->
-                            </mat-icon>
-                            <mat-icon matSuffix
-                                      *ngIf="(!frmResetPassword.controls['RePassword'].invalid && frmResetPassword.controls['RePassword'].value != frmResetPassword.controls['NewPassword'].value )"
-                                      [matTooltipPosition]="'before'" matTooltipClass="bg-danger text-light mr-1"
-                                      matTooltip="{{l('Xác nhận khẩu mới không đúng')}}" color="warn">
-                                info
-                            </mat-icon>
+                            <mat-label>{{l("Xác nhận lại mật khẩu")}}</mat-label>
+                            <input formControlName="RePassword" type="password" matInput [required]="true" maxlength="255" minlength="8">
+                            <validation matSuffix [control]="frmResetPassword.controls['RePassword']"></validation>
                         </mat-form-field>
                         <div>
                             <div class="mb-4 d-flex">
@@ -43,7 +31,7 @@
                                 <div class="mr-2"><img [src]="_capcha.data" width="162" height="39" alt="" /></div>
                                 <div type="button" class="btn-refresh" (click)="getCapcha()"><i class="fa fa-refresh" aria-hidden="true"></i></div>
                             </div>
-                            <small *ngIf="this.capcha" class="help-block" style="color: red;margin-left: 114px;">Mã xác nhận không khớp</small>
+                            <small *ngIf="this.capcha" class="help-block" style="color: red;margin-left: 114px;">Mã xác nhận không đúng</small>
 
                         </div>
                         <div class="d-flex justify-content-center">

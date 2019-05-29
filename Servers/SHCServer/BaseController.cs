@@ -11,6 +11,7 @@ namespace SHCServer
     {
         protected static IOptions<Audience> _settings;
         protected DbContext _context;
+        protected DbContext _contextmdmdb;
         protected FriendlyException _excep;
 
 

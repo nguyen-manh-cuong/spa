@@ -15,3 +15,8 @@
     background-color: #fff;
     width: 116px;
 }
+@media (min-width: 1366px) {
+    .min-h-400 {
+        min-height: 400px;
+    }
+}

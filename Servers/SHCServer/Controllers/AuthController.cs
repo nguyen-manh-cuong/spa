@@ -28,6 +28,7 @@ namespace SHCServer.Controllers
         {
             _settings = settings;
             _context = new MySqlContext(new MySqlConnectionFactory(configuration.GetConnectionString("DefaultConnection")));
+            _contextmdmdb = new MySqlContext(new MySqlConnectionFactory(configuration.GetConnectionString("ConnectionMDM")));
             _connectionString = configuration.GetConnectionString("DefaultConnection");
 
             _host = configuration.GetValue("Gateway:Ip", "127.0.0.1");
@@ -320,7 +321,7 @@ namespace SHCServer.Controllers
         [Route("api/reset-password-user")]
         public IActionResult ResetPasswordUser([FromBody] UserResetPasswordViewModel obj)
         {
-            User currentUser = _context.Query<User>().Where(u => u.UserName == obj.UserName).FirstOrDefault();
+            User currentUser = _contextmdmdb.Query<User>().Where(u => u.UserName == obj.UserName).FirstOrDefault();
 
             string currenPassword = currentUser.Password;
             string logPassword = currentUser.PasswordLog;
@@ -336,7 +337,7 @@ namespace SHCServer.Controllers
 
             try
             {
-                _context.Session.BeginTransaction();
+                _contextmdmdb.Session.BeginTransaction();
                 _context.Update<User>(b => b.UserName == obj.UserName, a => new User()
                 {
                     PasswordLog = currenPassword,
@@ -344,14 +345,14 @@ namespace SHCServer.Controllers
                     UpdateDate = DateTime.Now
                 });
 
-                _context.Session.CommitTransaction();
+                _contextmdmdb.Session.CommitTransaction();
 
                 return Json(new ActionResultDto());
             }
             catch (Exception e)
             {
-                if (_context.Session.IsInTransaction)
-                    _context.Session.RollbackTransaction();
+                if (_contextmdmdb.Session.IsInTransaction)
+                    _contextmdmdb.Session.RollbackTransaction();
                 return StatusCode(500, _excep.Throw("Có lỗi xảy ra !", e.Message));
             }
         }
