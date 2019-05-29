@@ -1,17 +1,17 @@
 import {
-  Component,
-  EventEmitter,
-  Input,
-  OnChanges,
-  Output,
-  ViewChild,
-  DoCheck
+    Component,
+    EventEmitter,
+    Input,
+    OnChanges,
+    Output,
+    ViewChild,
+    DoCheck
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
 
 @Component({
-  selector: 'mat-select-autocomplete',
-  template: `
+    selector: 'mat-select-autocomplete',
+    template: `
   <mat-form-field appearance="{{appearance}}" class="{{class}}">
     <mat-select #selectElem [attr.disabled]="disabled" [placeholder]="placeholder" [formControl]="formControl" [multiple]="multiple"
     [(ngModel)]="selectedValue" (selectionChange)="onSelectionChange($event)">
@@ -35,8 +35,8 @@ import { FormControl } from '@angular/forms';
     <mat-hint style="color:red" *ngIf="showErrorMsg">{{errorMsg}}</mat-hint>
   </mat-form-field>
   `,
-  styles: [
-    `
+    styles: [
+        `
     .box-search {
       margin: 8px;
       border-radius: 2px;
@@ -64,169 +64,169 @@ import { FormControl } from '@angular/forms';
     .pl-1 {
       padding-left: 1rem;
     }`
-  ]
+    ]
 })
 export class SelectAutocompleteComponent implements OnChanges, DoCheck {
 
-  @Input()
-  placeholder;
-  @Input()
-  options;
-  @Input()
-  disabled = false;
-  @Input()
-  code = 'code';
-  @Input()
-  display = 'display';
-  @Input()
-  value = 'value';
-  @Input()
-  formControl = new FormControl();
-  @Input()
-  errorMsg = 'Field is required';
-  @Input()
-  showErrorMsg = false;
-  @Input()
-  selectedOptions;
-  @Input()
-  multiple = true;
+    @Input()
+    placeholder;
+    @Input()
+    options;
+    @Input()
+    disabled = false;
+    @Input()
+    code = 'code';
+    @Input()
+    display = 'display';
+    @Input()
+    value = 'value';
+    @Input()
+    formControl = new FormControl();
+    @Input()
+    errorMsg = 'Field is required';
+    @Input()
+    showErrorMsg = false;
+    @Input()
+    selectedOptions;
+    @Input()
+    multiple = true;
 
-  // New Options
-  @Input()
-  labelCount = 1;
-  @Input()
-  appearance = 'standard';
-  @Input()
-  class = 'grid-7-11';
+    // New Options
+    @Input()
+    labelCount = 1;
+    @Input()
+    appearance = 'standard';
+    @Input()
+    class = 'grid-7-11';
 
-  @Output()
-  selectionChange: EventEmitter<any> = new EventEmitter();
+    @Output()
+    selectionChange: EventEmitter<any> = new EventEmitter();
 
-  @ViewChild('selectElem') selectElem;
+    @ViewChild('selectElem') selectElem;
 
-  filteredOptions: Array<any> = [];
-  selectedValue: Array<any> = [];
-  selectedName: Array<any> = [];
-  selectAllChecked = false;
-  displayString = '';
-  constructor() { }
+    filteredOptions: Array<any> = [];
+    selectedValue: Array<any> = [];
+    selectedName: Array<any> = [];
+    selectAllChecked = false;
+    displayString = '';
+    constructor() { }
 
-  ngOnChanges() {
-    this.filteredOptions = this.options;
-    if (this.selectedOptions) {
-      this.selectedValue = this.selectedOptions;
-    } else if (this.formControl.value) {
-      this.selectedValue = this.formControl.value;
-    }
-  }
-
-  ngDoCheck() {
-    if(!this.selectedValue.length) {
-      this.selectionChange.emit(this.selectedValue);
-    }
-  }
-
-  toggleDropdown() {
-    this.selectElem.toggle();
-  }
-
-  toggleSelectAll = function(val) {
-    if (val.checked) {
-      this.filteredOptions.forEach(option => {
-        if (!this.selectedValue.includes(option[this.value])) {
-          this.selectedValue = this.selectedValue.concat([option[this.value]]);
+    ngOnChanges() {
+        this.filteredOptions = this.options;
+        if (this.selectedOptions) {
+            this.selectedValue = this.selectedOptions;
+        } else if (this.formControl.value) {
+            this.selectedValue = this.formControl.value;
         }
-      });
-    } else {
-      this.selectedValue = [];
     }
-    this.selectionChange.emit(this.selectedValue);
-  };
 
-  filterItem(value) {
-    if (!isNaN(value)) {
-      this.filteredOptions = this.options.filter(
-        item => item[this.code].toLowerCase().indexOf(value.toLowerCase()) > -1
-      );
-    } else {
-      this.filteredOptions = this.options.filter(
-        item => item[this.display].toLowerCase().indexOf(value.toLowerCase()) > -1
-      );
-    }
-    this.selectAllChecked = true;
-    this.filteredOptions.forEach(item => {
-        if (this.selectedValue.indexOf(item[this.value]) > -1) {
-        this.selectAllChecked = false;
-      }
-    });
-  }
-
-  hideOption(option) {
-    return !(this.filteredOptions.indexOf(option) > -1);
-  }
-
-  // Returns plain strings array of filtered values
-  getFilteredOptionsValues() {
-    const filteredValues = [];
-    this.filteredOptions.forEach(option => {
-      filteredValues.push(option.value);
-    });
-    return filteredValues;
-  }
-
-  onDisplayString() {
-    this.displayString = '';
-    if (this.selectedName && this.selectedName.length) {
-      let displayOption = [];
-      if (this.multiple) {
-        // Multi select display
-        for (let i = 0; i < this.labelCount; i++) {
-          displayOption[i] = this.options.find(
-            option => option === this.selectedName[i]
-          );
+    ngDoCheck() {
+        if (!this.selectedValue.length) {
+            this.selectionChange.emit(this.selectedValue);
         }
-        if (displayOption.length) {
-          for (let i = 0; i < displayOption.length; i++) {
-              this.displayString += displayOption[i][this.display] + ',';
-          }
-          this.displayString = this.displayString.slice(0, -1);
-          if (this.selectedName.length > 1) {
-            this.displayString += ` (+${this.selectedName.length - this.labelCount} others)`;
-          }
-        }
-      } else {
-        // Single select display
-        displayOption =  this.options.filter(
-          option => option.value === this.selectedName
-        );
-        if (displayOption.length) {
-          this.displayString = displayOption[0][this.display];
-        }
-      }
-    }
-    return this.displayString;
-  }
-
-  onSelectionChange(val) {
-    this.selectedName = [];
-    const filteredValues = this.getFilteredOptionsValues();
-    let count = 0;
-    if (this.multiple) {
-        this.selectedValue.filter(item => {
-            if (filteredValues.indexOf(item) > -1) {
-          count++;
-        }
-      });
-      this.selectAllChecked = count === this.filteredOptions.length;
-    }
-    this.selectedValue = val.value;
-    for (var i = 0; i < this.selectedValue.length; i++) {
-      this.selectedName.push(this.options.find(
-        item => item[this.value] == this.selectedValue[i]
-      ));      
     }
 
-    this.selectionChange.emit(this.selectedValue);
-  }
+    toggleDropdown() {
+        this.selectElem.toggle();
+    }
+
+    toggleSelectAll = function (val) {
+        if (val.checked) {
+            this.filteredOptions.forEach(option => {
+                if (!this.selectedValue.includes(option[this.value])) {
+                    this.selectedValue = this.selectedValue.concat([option[this.value]]);
+                }
+            });
+        } else {
+            this.selectedValue = [];
+        }
+        this.selectionChange.emit(this.selectedValue);
+    };
+
+    filterItem(value) {
+        if (!isNaN(value)) {
+            this.filteredOptions = this.options.filter(
+                item => item[this.code].toLowerCase().indexOf(value.toLowerCase()) > -1
+            );
+        } else {
+            this.filteredOptions = this.options.filter(
+                item => item[this.display].toLowerCase().indexOf(value.toLowerCase()) > -1
+            );
+        }
+        this.selectAllChecked = true;
+        this.filteredOptions.forEach(item => {
+            if (this.selectedValue.indexOf(item[this.value]) > -1) {
+                this.selectAllChecked = false;
+            }
+        });
+    }
+
+    hideOption(option) {
+        return !(this.filteredOptions.indexOf(option) > -1);
+    }
+
+    // Returns plain strings array of filtered values
+    getFilteredOptionsValues() {
+        const filteredValues = [];
+        this.filteredOptions.forEach(option => {
+            filteredValues.push(option.value);
+        });
+        return filteredValues;
+    }
+
+    onDisplayString() {
+        this.displayString = '';
+        if (this.selectedName && this.selectedName.length) {
+            let displayOption = [];
+            if (this.multiple) {
+                // Multi select display
+                for (let i = 0; i < this.labelCount; i++) {
+                    displayOption[i] = this.options.find(
+                        option => option === this.selectedName[i]
+                    );
+                }
+                if (displayOption.length) {
+                    for (let i = 0; i < displayOption.length; i++) {
+                        this.displayString += displayOption[i][this.display] + ',';
+                    }
+                    this.displayString = this.displayString.slice(0, -1);
+                    if (this.selectedName.length > 1) {
+                        this.displayString += ` (+${this.selectedName.length - this.labelCount} cơ sở khác)`;
+                    }
+                }
+            } else {
+                // Single select display
+                displayOption = this.options.filter(
+                    option => option.value === this.selectedName
+                );
+                if (displayOption.length) {
+                    this.displayString = displayOption[0][this.display];
+                }
+            }
+        }
+        return this.displayString;
+    }
+
+    onSelectionChange(val) {
+        this.selectedName = [];
+        const filteredValues = this.getFilteredOptionsValues();
+        let count = 0;
+        if (this.multiple) {
+            this.selectedValue.filter(item => {
+                if (filteredValues.indexOf(item) > -1) {
+                    count++;
+                }
+            });
+            this.selectAllChecked = count === this.filteredOptions.length;
+        }
+        this.selectedValue = val.value;
+        for (var i = 0; i < this.selectedValue.length; i++) {
+            this.selectedName.push(this.options.find(
+                item => item[this.value] == this.selectedValue[i]
+            ));
+        }
+
+        this.selectionChange.emit(this.selectedValue);
+    }
 
 }
