@@ -44,7 +44,7 @@ export class LoginService {
 
         if (authenticateResult.accessToken) {
             // Successfully logged in
-            console.log(111, authenticateResult.accessToken);
+            //console.log(111, authenticateResult.accessToken);
             this.login(authenticateResult.accessToken, authenticateResult.encryptedAccessToken, authenticateResult.expireInSeconds, this.rememberMe);
 
         } else {
