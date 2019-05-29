@@ -60,7 +60,7 @@ export class AppPreBootstrap {
             }
         }).done(result => {                        
             $.extend(true, abp, result);
-
+            console.log(63, AppConsts.remoteServiceBaseUrl);
             abp.ajax({
                 url: AppConsts.remoteServiceBaseUrl + '/usershealthfacilities?filter=' + JSON.stringify({userId : abp.session.userId}),
                 method: 'GET'

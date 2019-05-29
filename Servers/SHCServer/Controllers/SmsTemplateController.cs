@@ -80,29 +80,31 @@ namespace SHCServer.Controllers
         [Route("api/sms-templates")]
         public IActionResult Create([FromBody] SmsTemplateInputViewModel sms)
         {
-            string sql = $"SELECT COUNT(*) as SLL FROM smarthealthcare.sms_template where BINARY SmsTemplateName = '{sms.SmsTemplateName}' " +
+            string sql = $"SELECT * FROM smarthealthcare.sms_template where BINARY SmsTemplateName = '{sms.SmsTemplateName}' " +
                 $"and {sms.IsDelete} = false";
-            if (sms.HealthFacilitiesId != null)
-            {
-                sql = sql + $" and (HealthFacilitiesId = {sms.HealthFacilitiesId} or HealthFacilitiesId = null)";
-            }
+            //if (sms.HealthFacilitiesId != null)
+            //{
+            //    sql = sql + $" and (HealthFacilitiesId = {sms.HealthFacilitiesId} or HealthFacilitiesId = null)";
+            //}
 
             List<string> clause = new List<string>();
             List<DbParam> param = new List<DbParam>();
             var str = $"{sql} {string.Join(" ", clause)}";
             var reader = _context.Session.ExecuteReader($"{sql} {string.Join(" ", clause)}", param);
 
-            var total = 0;
+            var HealthFacilitiesId = "";
+            var Id = 0;
 
             List<SmsTemplate> lst = new List<SmsTemplate>();
             while (reader.Read())
             {
-                total = Convert.ToInt32(reader["SLL"]);
+                Id = Convert.ToInt32(reader["Id"]);
+                HealthFacilitiesId = Convert.ToString(reader["HealthFacilitiesId"]);
             }
 
             reader.Close();
 
-            if (total > 0)
+            if (Id != 0 && (HealthFacilitiesId == "" || Convert.ToInt32(HealthFacilitiesId) == sms.HealthFacilitiesId))
                 return StatusCode(406, _excep.Throw(406, "Tạo mẫu tin nhắn không thành công.", "Tên mẫu tin nhắn đã tồn t" +
                     "" +
                     "" +
@@ -116,9 +118,9 @@ namespace SHCServer.Controllers
                     "" +
                     "" +
                     "ại !"));
-            
-            if (_context.Query<SmsTemplate>().Where(g => g.SmsContent  == sms.SmsContent && ((g.CreateUserId == sms.CreateUserId) || (g.CreateUserId == 1)) && sms.IsDelete == false).Count() > 0)  
-                    return StatusCode(406, _excep.Throw(406, "Tạo mẫu tin nhắn không thành công.", "Nội dung tin nhắn đã tồn tại !"));
+
+            if (_context.Query<SmsTemplate>().Where(g => g.SmsContent == sms.SmsContent && ((g.CreateUserId == sms.CreateUserId) || (g.CreateUserId == 1)) && sms.IsDelete == false).Count() > 0)
+                return StatusCode(406, _excep.Throw(406, "Tạo mẫu tin nhắn không thành công.", "Nội dung tin nhắn đã tồn tại !"));
 
             return Json(new ActionResultDto { Result = _context.Insert(new SmsTemplate(sms)) });
         }
@@ -135,29 +137,31 @@ namespace SHCServer.Controllers
 
                 if (sms.SmsTemplateName != nameCurrentTemplate)
                 {
-                    string sql = $"SELECT COUNT(*) as SLL FROM smarthealthcare.sms_template where BINARY SmsTemplateName = '{sms.SmsTemplateName}' " +
+                    string sql = $"SELECT * FROM smarthealthcare.sms_template where BINARY SmsTemplateName = '{sms.SmsTemplateName}' " +
               $"and {sms.IsDelete} = false";
-                    if (sms.HealthFacilitiesId != null)
-                    {
-                        sql = sql + $" and (HealthFacilitiesId = {sms.HealthFacilitiesId} or HealthFacilitiesId = null)";
-                    }
+                    //if (sms.HealthFacilitiesId != null)
+                    //{
+                    //    sql = sql + $" and (HealthFacilitiesId = {sms.HealthFacilitiesId} or HealthFacilitiesId = null)";
+                    //}
 
                     List<string> clause = new List<string>();
                     List<DbParam> param = new List<DbParam>();
                     var str = $"{sql} {string.Join(" ", clause)}";
                     var reader = _context.Session.ExecuteReader($"{sql} {string.Join(" ", clause)}", param);
 
-                    var total = 0;
+                    var HealthFacilitiesId = "";
+                    var Id = 0;
 
                     List<SmsTemplate> lst = new List<SmsTemplate>();
                     while (reader.Read())
                     {
-                        total = Convert.ToInt32(reader["SLL"]);
+                        Id = Convert.ToInt32(reader["Id"]);
+                        HealthFacilitiesId = Convert.ToString(reader["HealthFacilitiesId"]);
                     }
 
                     reader.Close();
 
-                    if (total > 0)
+                    if (Id != 0 && (HealthFacilitiesId == "" || Convert.ToInt32(HealthFacilitiesId) == sms.HealthFacilitiesId))
                         return StatusCode(406, _excep.Throw(406, "Sửa mẫu tin nhắn không thành công.", "Tên mẫu tin nhắn đã tồn t" +
                             "" +
                             "" +
@@ -172,7 +176,7 @@ namespace SHCServer.Controllers
                             "" +
                             "ại !"));
                 }
-              
+
 
                 if (_context.Query<SmsTemplate>().Where(g => g.SmsContent == sms.SmsContent && g.Id != sms.Id && sms.IsDelete == false).Count() > 0)
                     return StatusCode(406, _excep.Throw(406, "Sửa mẫu tin nhắn không thành công.", "Nội dung tin nhắn đã tồn tại !"));

@@ -139,10 +139,10 @@ export class packagedistributeIndexComponent extends PagedListingComponentBase<I
     onSelectMonthEnd(value) {
         this.frmSearch.controls['monthEnd'].setValue(value);
     }
-    
-      getSelectedOptions(selected) {
+
+    getSelectedOptions(selected) {
         this.frmSearch.controls['HealthFacilitiesId'].setValue(selected);
-      }
+    }
 
     customSearch() {
         if (this.frmSearch.controls['fromYear'].value == this.frmSearch.controls['toYear'].value) {
