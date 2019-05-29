@@ -5,7 +5,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AbpSessionService } from '@abp/session/abp-session.service';
 import { AppComponentBase } from '@shared/app-component-base';
 import { LoginService } from './login.service';
-import { Router } from '@angular/router';
+import { Router, Route } from '@angular/router';
 import { IHealthfacilities } from '@shared/Interfaces';
 import { debounceTime, tap, switchMap, finalize } from 'rxjs/operators';
 import { DataService } from '@shared/service-proxies/service-data';
@@ -26,7 +26,15 @@ export class LoginComponent extends AppComponentBase implements OnInit {
     dataService: DataService;
     numberLoginFail = 0;
 
-    constructor(private _sanitizer: DomSanitizer, private _dataService: DataService, private http: HttpClient, injector: Injector, public loginService: LoginService, private _formBuilder: FormBuilder, private _router: Router, private _sessionService: AbpSessionService) {
+    constructor(
+        private router:Router,
+        private _sanitizer: DomSanitizer, 
+        private _dataService: DataService, 
+        private http: HttpClient, injector: Injector, 
+        public loginService: LoginService, 
+        private _formBuilder: FormBuilder, 
+        private _router: Router, 
+        private _sessionService: AbpSessionService) {
         super(injector);
     }
 
@@ -84,5 +92,9 @@ export class LoginComponent extends AppComponentBase implements OnInit {
 
     validateCapcha(value: any) {
         if (value.length == 4) this._capcha.code != value ? this.capcha = true : this.capcha = false;
+    }
+
+    resetPassWordClick(){
+        this.router.navigate(['/auth/secret']);
     }
 }
