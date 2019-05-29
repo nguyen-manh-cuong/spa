@@ -10,7 +10,7 @@
         <form [formGroup]="frmLogin" novalidate>
             <mat-form-field appearance="outline" class="w-100">
                 <mat-label>{{l("Login_Textbox_UserName")}}</mat-label>
-                <input formControlName="userNameOrEmailAddress" matInput autocomplete>
+                <input formControlName="userNameOrEmailAddress" #userNameOrEmail matInput autocomplete (keyup)="onHandleLoginInput($event)">
                 <mat-icon matSuffix *ngIf="frmLogin.controls['userNameOrEmailAddress'].valid || !frmLogin.controls['userNameOrEmailAddress'].touched" class="text-muted">account_circle</mat-icon>
                 <mat-icon matSuffix *ngIf="frmLogin.controls['userNameOrEmailAddress'].invalid && (frmLogin.controls['userNameOrEmailAddress'].dirty || frmLogin.controls['userNameOrEmailAddress'].touched)" matTooltipClass="bg-danger text-light" matTooltip="Không được để trống" color="warn">info</mat-icon>
             </mat-form-field>
@@ -20,6 +20,20 @@
                 <mat-icon matSuffix *ngIf="frmLogin.controls['password'].valid || !frmLogin.controls['password'].touched" class="text-muted">lock</mat-icon>
                 <mat-icon matSuffix *ngIf="frmLogin.controls['password'].invalid && (frmLogin.controls['password'].dirty || frmLogin.controls['password'].touched)" matTooltipClass="bg-danger text-light" matTooltip="Không được để trống" color="warn">info</mat-icon>
             </mat-form-field>
+
+            <div *ngIf="numberLoginFail > 5">
+                <div class="mb-4 d-flex">
+                    <div class="d-flex position-relative" [ngClass]="{'has-error': this.capcha}">
+                        <label class="col required min-width-100 lbl-capcha position-absolute {{this.capcha ? 'text-danger' : ''}}">Mã xác nhận<span class="text-danger">*</span></label>
+                        <input type="text" name="prof_place" formControlName="codeCapcha" mask="A*" maxlength="4" (change)="validateCapcha($event.target.value)" class="col form-control validate mr-2">
+                    </div>
+                    <div class="mr-2"><img [src]="_capcha.data" width="162" height="39" alt="" /></div>
+                    <div type="button" class="btn-refresh" (click)="getCapcha()"><i class="fa fa-refresh" aria-hidden="true"></i></div>
+                </div>
+                <small *ngIf="this.capcha" class="help-block" style="color: red;margin-left: 114px;">Mã xác nhận không khớp</small>
+
+            </div>
+
             <div class="row">
                 <div class="col-md-6">
                     <div class="pt-2 d-flex justify-content-start">
