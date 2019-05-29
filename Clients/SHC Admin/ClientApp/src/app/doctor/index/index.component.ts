@@ -14,6 +14,8 @@ import swal from 'sweetalert2';
 import { start } from 'repl';
 import { DetailComponent } from '../detail/detail.component';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
+import { getPermission } from '@shared/helpers/utils';
+import { Router } from '@angular/router';
 
 
 
@@ -60,12 +62,12 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
   districtCode = new FormControl();
   _districtCode: string;
 
-
+  permission: any;
   healthfacilitiesControl = new FormControl();
 
   displayedColumns = ['orderNumber', 'fullName', 'specialist', 'phoneNumber', 'address', 'priceFrom', 'allowBooking', 'allowFilter', 'allowSearch', 'task'];
 
-  constructor(injector: Injector, private _dataService: DataService, public dialog: MatDialog, private _formBuilder: FormBuilder) { super(injector); }
+  constructor(injector: Injector, private _dataService: DataService, public dialog: MatDialog, private _formBuilder: FormBuilder, private router: Router) { super(injector); }
 
 
   ngOnInit() {
@@ -81,6 +83,8 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
 
     var provinceCode;
     var districtCode;
+
+    this.permission = getPermission(abp.nav.menus['mainMenu'].items, this.router.url);
 
     if (this.appSession.user.healthFacilitiesId) {
       this.dataService.getAll('healthfacilities', "{healthfacilitiesId:" + String(this.appSession.user.healthFacilitiesId) + "}").subscribe(resp => {

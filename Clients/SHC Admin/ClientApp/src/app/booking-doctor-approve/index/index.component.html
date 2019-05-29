@@ -110,11 +110,11 @@
                 <td mat-cell *matCellDef="let element" class="text-center">
                     <div *ngFor="let dc of element.lstBookingDoctorsCalendars; index as j" class="{{item.date == dc.strCalendarDate ? 'btn' : ''}} {{dc.status == 0 ? 'wait' : (dc.status == 1 ? 'approve' : 'restore' )}}">
                         <span *ngIf="item.date == dc.strCalendarDate">
-                            <input type="checkbox" class="mycheckbox" *ngIf="dc.status == 0" (change)="getCalendarId(dc.calendarId, $event.target.checked)" id="{{dc.calendarId}}">
+                            <input type="checkbox" class="mycheckbox" *ngIf="dc.status == 0 && permission.edit" (change)="getCalendarId(dc.calendarId, $event.target.checked)" id="{{dc.calendarId}}">
                             <!-- <mat-checkbox *ngIf="dc.status == 0" (change)="getCalendarId(dc.calendarId, $event.checked)" id="{{i}}"></mat-checkbox> -->
                             <a *ngIf="dc.status != 2" (click)="detail(dc)">{{item.date == dc.strCalendarDate ? dc.hoursStart + 'h' + dc.minuteStart + ' - ' + dc.hoursEnd + 'h' + dc.minuteEnd : ''}}</a>
                             <del *ngIf="dc.status == 2" style="color: red;" (click)="detail(dc)">{{item.date == dc.strCalendarDate ? dc.hoursStart + 'h' + dc.minuteStart + ' - ' + dc.hoursEnd + 'h' + dc.minuteEnd : ''}}</del>
-                            <i *ngIf="dc.status == 1 || dc.status == 2" class="fa fa-{{dc.status == 1 ? 'times-circle' : 'history'}} icon" aria-hidden="true" (click)="update(dc)"></i>
+                            <i *ngIf="(dc.status == 1 || dc.status == 2) && permission.edit" class="fa fa-{{dc.status == 1 ? 'times-circle' : 'history'}} icon" aria-hidden="true" (click)="update(dc)"></i>
                         </span>
                     </div>
                 </td>

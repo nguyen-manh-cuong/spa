@@ -231,12 +231,12 @@
                             <mat-icon class="text-muted">dvr</mat-icon>
                             Xem chi tiết
                         </button>
-                        <button mat-icon-button *ngIf="element.status == 0 || element.status == 1 ? true : false"
+                        <button mat-icon-button *ngIf="(element.status == 0 || element.status == 1) && permission.edit ? true : false"
                                 (click)="openDialog(element)">
                             <mat-icon class="text-muted f-18">edit</mat-icon>
                             Sửa
                         </button>
-                        <button mat-icon-button *ngIf="element.status == 0 || element.status == 1 ? true : false"
+                        <button mat-icon-button *ngIf="(element.status == 0 || element.status == 1) && permission.edit ? true : false"
                                 (click)="deleteDialogPackage(element)">
                             <mat-icon class="text-muted f-18">cancel</mat-icon>
                             Hủy đặt khám

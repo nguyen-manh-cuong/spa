@@ -7,6 +7,8 @@ import { MatDialog } from '@angular/material';
 import { PagedListingComponentBase } from '@shared/paged-listing-component-base';
 import { TaskComponent } from '../task/task.component';
 import swal from 'sweetalert2';
+import { getPermission } from '@shared/helpers/utils';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-index',
@@ -17,11 +19,11 @@ import swal from 'sweetalert2';
 export class IndexComponent extends PagedListingComponentBase<ISmsTemplate> implements OnInit, AfterViewInit {
 
     displayedColumns = ['orderNumber', 'smsTemplateName', 'messageType', 'smsContent', 'isActive', 'organizationName', 'task'];
-
+    permission: any;
     _status = [{ id: 2, name: "Tất cả" }, { id: 1, name: "Hiệu lực" }, { id: 0, name: "Không hiệu lực" }]
 
 
-    constructor(injector: Injector, private _dataService: DataService, public dialog: MatDialog, private _formBuilder: FormBuilder) {
+    constructor(injector: Injector, private _dataService: DataService, public dialog: MatDialog, private _formBuilder: FormBuilder, private router: Router) {
         super(injector);
     }
 
@@ -31,6 +33,7 @@ export class IndexComponent extends PagedListingComponentBase<ISmsTemplate> impl
         this.dataService = this._dataService;
         this.dialogComponent = TaskComponent;
         this._status
+        this.permission = getPermission(abp.nav.menus['mainMenu'].items, this.router.url);
     }
 
     maxLengthTxt(text) {

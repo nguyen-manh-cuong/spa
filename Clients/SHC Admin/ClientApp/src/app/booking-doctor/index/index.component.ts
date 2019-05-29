@@ -19,6 +19,8 @@ import timeGrigPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import { Observable } from 'rxjs';
 import { startWith, map, debounceTime, tap, switchMap, finalize } from 'rxjs/operators';
+import { getPermission } from '@shared/helpers/utils';
+import { Router } from '@angular/router';
 
 
 
@@ -45,10 +47,11 @@ import { startWith, map, debounceTime, tap, switchMap, finalize } from 'rxjs/ope
     calendarWeekends = true;
     calendarPlugins = [listPlugin, dayGridPlugin, timeGrigPlugin, interactionPlugin];
     calendarEvents: EventInput[] = [];
+    permission: any;
 
     @ViewChild('calendar') calendarComponent: FullCalendarComponent; 
  
-    constructor(injector: Injector, private _dataService: DataService, public dialog: MatDialog, private _formBuilder: FormBuilder) {
+    constructor(injector: Injector, private _dataService: DataService, public dialog: MatDialog, private _formBuilder: FormBuilder, private router: Router) {
       super(injector);
     }
 
@@ -62,6 +65,7 @@ import { startWith, map, debounceTime, tap, switchMap, finalize } from 'rxjs/ope
       this.dataService = this._dataService;
       this.dialogTask = TaskComponent;
       this.calendarComponent.locale = viLocale;
+      this.permission = getPermission(abp.nav.menus['mainMenu'].items, this.router.url);
 
       if(this.appSession.user.healthFacilitiesId){
         this.dataService.getAll('doctors', String(this.appSession.user.healthFacilitiesId)).subscribe(resp => this._doctors = resp.items);

@@ -138,7 +138,7 @@ namespace SHCServer.Controllers
                 if (sms.SmsTemplateName != nameCurrentTemplate)
                 {
                     string sql = $"SELECT * FROM smarthealthcare.sms_template where BINARY SmsTemplateName = '{sms.SmsTemplateName}' " +
-                    $"and {sms.IsDelete} = false";
+              $"and {sms.IsDelete} = false";
                     //if (sms.HealthFacilitiesId != null)
                     //{
                     //    sql = sql + $" and (HealthFacilitiesId = {sms.HealthFacilitiesId} or HealthFacilitiesId = null)";

@@ -21,7 +21,8 @@ namespace SHCServer.Models
         public DateTime? BirthDay { get; set; }
         public DateTime? UpdateDate { get; set; }
         public DateTime? CreateDate { get; set; }
-        public bool? Status { get; set; }
+        public int? Status { get; set; }
+        public int? MdmStatus { get; set; }
 
         // Location
         public string ProvinceCode { get; set; }
@@ -44,6 +45,7 @@ namespace SHCServer.Models
         public int? HealthFacilitiesId { get; set; }
         public bool? IsDelete { get; set; }
         public DateTime? LockedTime { get; set; }
+        public DateTime? ExpriredDate { get; set; }
         public int? Counter { get; set; }
 
     }
