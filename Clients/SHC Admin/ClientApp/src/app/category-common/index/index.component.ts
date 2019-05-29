@@ -11,6 +11,8 @@ import { ILanguage, IBookingTimeslots } from '@shared/Interfaces';
 import { PagedListingComponentBase } from '@shared/paged-listing-component-base';
 import { TaskComponent } from '../task/task.component';
 import swal from 'sweetalert2';
+import { getPermission } from '@shared/helpers/utils';
+import { Router } from '@angular/router';
 
 export class EntityDto {
   id: number;
@@ -25,13 +27,15 @@ export class EntityDto {
 export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> implements OnInit {
 
   displayedColumns = ['orderNumber', 'code', 'name', 'isActive', 'task'];
+  permission: any;
 
-  constructor(injector: Injector, private _dataService: DataService, public dialog: MatDialog, private _formBuilder: FormBuilder) { super(injector); }
+  constructor(injector: Injector, private _dataService: DataService, public dialog: MatDialog, private _formBuilder: FormBuilder, private router: Router) { super(injector); }
 
   ngOnInit() {
     this.api = 'catcommon';
     this.dataService = this._dataService;
     this.dialogComponent = TaskComponent;
+    this.permission = getPermission(abp.nav.menus['mainMenu'].items, this.router.url);
     this.frmSearch = this._formBuilder.group({ name: [] });
   }
   showErrorDeleteMessage() {

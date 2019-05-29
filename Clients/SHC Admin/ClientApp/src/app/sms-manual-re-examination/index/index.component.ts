@@ -15,6 +15,8 @@ import { MatDialog, MatInput, MatDatepicker } from '@angular/material';
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { startTimeRange } from '@angular/core/src/profile/wtf_impl';
+import { getPermission } from '@shared/helpers/utils';
+import { Router } from '@angular/router';
 export const MY_FORMATS = {
     parse: {
         dateInput: 'DD/MM/YYYY',
@@ -57,6 +59,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     filteredOptions: Observable<IHealthfacilities[]>;
     healthfacilities = new FormControl();
     cDate = new Date();
+    permission: any;
 
     filteredProvinceOptions: Observable<IProvince[]>;
     provinceCode = new FormControl();
@@ -74,7 +77,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     @ViewChild("endTime") endTime;
     @ViewChild("startTime") startTime;
 
-    constructor(injector: Injector, private _dataService: DataService, public dialog: MatDialog, private _formBuilder: FormBuilder) {
+    constructor(injector: Injector, private _dataService: DataService, public dialog: MatDialog, private _formBuilder: FormBuilder, private router: Router) {
         super(injector);
     }
 
@@ -107,7 +110,8 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
         this.frmSearch.controls['endTime'].setValue(new Date(new Date().setDate(new Date().getDate() + this.frmSearch.controls['about'].value)));
         this.frmSearch.controls['startTime'].setValue(new Date(new Date().setDate(new Date().getDate())));
         this.dataService.getAll('provinces').subscribe(resp => this._provinces = resp.items);
-
+        this.permission = getPermission(abp.nav.menus['mainMenu'].items, this.router.url);
+        console.log(111, this.permission);
 
 
         if (this.appSession.user.healthFacilitiesId) {

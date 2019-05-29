@@ -14,8 +14,8 @@ import { ResetComponent } from './reset-password/reset-password.component';
         component: AuthComponent,
         children: [
           { path: 'login', component: LoginComponent },
-          { path: 'secret', component: SecretComponent},
-          { path: 'reset-password', component: ResetComponent},
+          { path: 'reset-password', component: SecretComponent},
+          { path: 'secret', redirectTo:'login'},
           { path: '', redirectTo:'login'}
         ]
       }

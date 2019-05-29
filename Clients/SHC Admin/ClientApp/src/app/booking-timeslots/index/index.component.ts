@@ -11,6 +11,8 @@ import { ILanguage, IBookingTimeslots, IHealthfacilities, IMedicalHealthcareHist
 import { PagedListingComponentBase } from '@shared/paged-listing-component-base';
 import { TaskComponent } from '../task/task.component';
 import swal from 'sweetalert2';
+import { getPermission } from '@shared/helpers/utils';
+import { Router } from '@angular/router';
 
 
 export class EntityDto {
@@ -29,14 +31,16 @@ export class IndexComponent extends PagedListingComponentBase<IBookingTimeslots>
   filteredOptions: Observable<IHealthfacilities[]>;
   healthfacilities = new FormControl();
   isLoading = false;
+  permission: any;
   displayedColumns = this.appSession.user.accountType != 0 ? ['orderNumber', 'code', 'name', 'time', 'status', 'task'] : ['orderNumber', 'healthFacilitiesName', 'code', 'name', 'time', 'status', 'task'];
 
-  constructor(injector: Injector, private _dataService: DataService, public dialog: MatDialog, private _formBuilder: FormBuilder) { super(injector); }
+  constructor(injector: Injector, private _dataService: DataService, public dialog: MatDialog, private _formBuilder: FormBuilder, private router: Router) { super(injector); }
 
   ngOnInit() {
     this.api = 'bookingtimeslots';
     this.dataService = this._dataService;
     this.dialogComponent = TaskComponent;
+    this.permission = getPermission(abp.nav.menus['mainMenu'].items, this.router.url);
     this.frmSearch = this._formBuilder.group({
       keyFilter: [],
       healthfacilities: [this.appSession.user.healthFacilitiesId],

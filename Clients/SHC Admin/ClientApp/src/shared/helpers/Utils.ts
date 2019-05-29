@@ -53,3 +53,43 @@ export function standardized(obj: object, libs: object): object {
         return val;
     });
 }
+
+export function getPermission(items: any, router: string): object {
+    var route = router.split("/");
+    var check: boolean = false;
+    var permission = {
+        add: false,
+        delete: false,
+        edit: false,
+        view: false
+    }
+    route.splice(-1, 1);
+
+    if(items.length){
+        for (let i = 0; i < items.length; i++) {
+            if(items[i].route === route.join("/")){
+                permission.add = items[i].add;
+                permission.delete = items[i].delete;
+                permission.edit = items[i].edit;
+                permission.view = items[i].view;
+                break;
+            } else{
+                var child = items[i].items;
+
+                if(child.length){
+                    for (let i = 0; i < child.length; i++) {
+                        if(child[i].route === route.join("/")){
+                            permission.add = child[i].add;
+                            permission.delete = child[i].delete;
+                            permission.edit = child[i].edit;
+                            permission.view = child[i].view;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    return permission;
+}
