@@ -634,7 +634,7 @@ namespace SHCServer.Controllers
         }
 
         public static string ReplaceContentBookingSms(string content, BookingInformationsViewModel mhh, string packageName)
-        {
+        {       
             string _content = content;
             if (!string.IsNullOrEmpty(content))
             {
