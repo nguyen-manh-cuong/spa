@@ -108,10 +108,10 @@
                         <mat-icon>more_vert</mat-icon>
                     </button>
                     <mat-menu #menu="matMenu">
-                        <button *ngIf="permission.edit" mat-menu-item (click)="openDialog(element)">
+                        <button *ngIf="permission.edit" mat-menu-item (click)="element.healthFacilitiesName ==='Toàn hệ thống'? adminConfirm() :openDialog(element)">
                             <mat-icon class="text-muted f-18">edit</mat-icon>{{l("Edit")}}
                         </button>
-                        <button *ngIf="permission.delete" mat-menu-item (click)="element.isActive ?showMess() : deleteDialog(element, 'code', 'timeSlotId')">
+                        <button *ngIf="permission.delete" mat-menu-item (click)="element.healthFacilitiesName ==='Toàn hệ thống'? adminConfirm(1):( element.isActive ?showMess() : deleteDialog(element, 'code', 'timeSlotId'))">
                             <mat-icon class="text-muted f-18">delete</mat-icon>{{l("Delete")}}
                         </button>
                     </mat-menu>

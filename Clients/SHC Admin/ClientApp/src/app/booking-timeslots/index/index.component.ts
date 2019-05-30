@@ -53,6 +53,8 @@ export class IndexComponent extends PagedListingComponentBase<IBookingTimeslots>
       this.filterOptions();
       this.healthfacilities.setValue(null);
     }
+
+    console.log(this.dataSources);
   }
 
   displayFn(h?: IHealthfacilities): string | undefined {
@@ -128,6 +130,25 @@ export class IndexComponent extends PagedListingComponentBase<IBookingTimeslots>
       type: 'error',
       timer: 3000
     });
+  }
+
+  adminConfirm(check?){
+    if(check==1){
+      swal({
+        title: "Không có quyền xóa khung giờ khám",
+        text: "",
+        type: "warning",
+        timer:3000
+      });
+    }
+    else{
+      swal({
+        title: "Không có quyền sửa khung giờ khám",
+        text: "",
+        type: "warning",
+        timer:3000
+      });
+    }
   }
 
   checkPermission(isEdit: boolean, isDelete: boolean): boolean{

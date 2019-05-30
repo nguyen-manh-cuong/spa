@@ -193,7 +193,7 @@ namespace SHCServer.Controllers
                 double timeEnd = double.Parse($"{item.HoursEnd},{item.MinuteEnd}");
                 if ((timeStartInput >= timeStart && timeStartInput < timeEnd) || (timeEndInput > timeStart && timeEndInput <= timeEnd) || (timeStartInput < timeStart && timeEnd < timeEndInput))
                 {
-                    return StatusCode(409, _excep.Throw("Thông báo", "Sửa khung giờ khám không thành công. Thời gian của khung giờ khám trùng với khung giờ khám đã có!"));
+                    return StatusCode(409, _excep.Throw("Sửa khung giờ khám không thành công", "Thời gian của khung giờ khám trùng với khung giờ khám đã có!"));
                 }
             }
 

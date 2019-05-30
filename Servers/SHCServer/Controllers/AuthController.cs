@@ -176,10 +176,10 @@ namespace SHCServer.Controllers
 
             string strQuery = $"{query} {string.Join(" ", clause)}";
             var reader = _context.Session.ExecuteReader(strQuery, param);
-            List<User> lst = new List<User>();
+            List<UserLoginViewModel> lst = new List<UserLoginViewModel>();
             while (reader.Read())
             {
-                lst.Add(new User()
+                lst.Add(new UserLoginViewModel()
                 {
                     Id = Convert.ToInt32(reader["Id"]),
                     Counter = Convert.ToInt32(reader["Counter"]),
