@@ -20,6 +20,8 @@ export class TaskComponent extends AppComponentBase implements OnInit {
     //contructor
     constructor(injector: Injector, private _dataService: DataService, private _formBuilder: FormBuilder, public dialogRef: MatDialogRef<TaskComponent>, @Inject(MAT_DIALOG_DATA) public obj) { super(injector); }
 
+
+
     ngOnInit() {
         const validationRule = new ValidationRule();
         this.frmResetPassword = this._formBuilder.group({
