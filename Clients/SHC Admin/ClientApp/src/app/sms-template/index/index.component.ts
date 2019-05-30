@@ -54,4 +54,13 @@ export class IndexComponent extends PagedListingComponentBase<ISmsTemplate> impl
             timer: 3000
         })
     }
+
+    checkPermission(isEdit: boolean, isDelete: boolean): boolean{
+        if(isEdit || isDelete){
+            return true;
+        } else{
+            this.displayedColumns = ['orderNumber', 'smsTemplateName', 'messageType', 'smsContent', 'isActive', 'organizationName'];
+            return false;
+        }
+    }
 }

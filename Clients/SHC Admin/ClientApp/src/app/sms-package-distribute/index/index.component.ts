@@ -13,6 +13,7 @@ import { packagedistributeEditComponent } from '../edit/edit.component';
 import { SelectAutocompleteComponent } from '@app/mat-select-autocomplete/select-autocomplete.component'
 import { getPermission } from '@shared/helpers/utils';
 import { Router } from '@angular/router';
+import { AnyARecord } from 'dns';
 
 @Component({
     selector: 'app-packagedistributeindex',
@@ -144,6 +145,7 @@ export class packagedistributeIndexComponent extends PagedListingComponentBase<I
         this.frmSearch.controls['HealthFacilitiesId'].setValue(selected);
     }
 
+
     customSearch() {
         if (this.frmSearch.controls['fromYear'].value == this.frmSearch.controls['toYear'].value) {
             if(this.frmSearch.controls['monthStart'].value > this.frmSearch.controls['monthEnd'].value){
@@ -166,4 +168,12 @@ export class packagedistributeIndexComponent extends PagedListingComponentBase<I
         this.btnSearchClicks$.next();
     }
 
+    checkPermission(isEdit: boolean, isDelete: boolean): boolean{
+        if(isEdit || isDelete){
+            return true;
+        } else{
+            this.displayedColumns = this.appSession.user.accountType != 0 ? ['Stt', 'StartTime', 'pk', 'sms', 'isActive'] : ['Stt', 'HealthFacilitiesId', 'StartTime', 'pk', 'sms', 'isActive'];
+            return false;
+        }
+    }
 }

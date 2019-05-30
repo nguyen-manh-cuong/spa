@@ -168,7 +168,7 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
                 if(resp && resp.items && resp.items.length){
                     if(resp.items.length != 1) this._dialog.open(HealthfacilitiesListComponent, { minWidth: 'calc(100vw/3)', maxWidth: 'calc(100vw - 300px)', disableClose: true, data: resp.items});
                     else{
-                        swal('Thông báo', 'Tài khoản của bạn chỉ có 1 csyt', 'warning');
+                        swal('Thông báo', 'Tài khoản của bạn chỉ có 1 CSYT', 'warning');
                     }
                 }
             });
