@@ -98,7 +98,7 @@ export abstract class PagedListingComponentBase<EntityDto> extends AppComponentB
         var duration = moment.duration(time, 'milliseconds');
         // Làm tròn
         var days = Math.floor(duration.asDays());
-        var months = Math.floor(duration.asMonths());
+        var months = Math.floor(duration.asMonths() + 1);
         var years = Math.floor(duration.asYears());
 
         var ageString = "";

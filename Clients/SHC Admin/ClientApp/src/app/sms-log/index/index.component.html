@@ -88,7 +88,7 @@
                     <mat-label>Mẫu tin nhắn</mat-label>
                     <mat-select formControlName="smsTemplate">
                         <mat-option class="text-center">{{l('CancelSelect')}}</mat-option>
-                        <mat-option *ngFor="let o of _smsTemplate" [value]="o.id">{{ o.smsContent }}</mat-option>
+                        <mat-option *ngFor="let o of _smsTemplate" [value]="o.id">{{ o.smsTemplateName }}</mat-option>
                     </mat-select>
                 </mat-form-field>
             </div>
