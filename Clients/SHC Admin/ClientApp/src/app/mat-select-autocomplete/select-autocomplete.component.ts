@@ -139,9 +139,13 @@ export class SelectAutocompleteComponent implements OnChanges, DoCheck {
                 if (!this.selectedValue.includes(option[this.value])) {
                     this.selectedValue = this.selectedValue.concat([option[this.value]]);
                 }
+                if (!this.selectedName.includes(option[this.value])) {
+                    this.selectedName = this.selectedName.concat([option]);
+                }
             });
         } else {
             this.selectedValue = [];
+            this.selectedName = [];
         }
         this.selectionChange.emit(this.selectedValue);
     };
