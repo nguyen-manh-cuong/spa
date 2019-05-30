@@ -304,7 +304,7 @@ namespace SHCServer.Controllers
                     {
                         UserId = user.Id,
                         IsUsingCall = obj.isUsingCall != null ? obj.isUsingCall : false,
-                        IsUsingdoctor = obj.isUsingdoctor != null ? obj.isUsingdoctor : false,
+                        IsUsingDoctor = obj.isUsingDoctor != null ? obj.isUsingDoctor : false,
                         IsUsingExamination = obj.isUsingExamination != null ? obj.isUsingExamination : false,
                         IsUsingRegister = obj.isUsingRegister != null ? obj.isUsingRegister : false,
                         IsUsingUpload = obj.isUsingUpload != null ? obj.isUsingUpload : false,

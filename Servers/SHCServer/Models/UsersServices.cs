@@ -13,7 +13,7 @@ namespace SHCServer.Models
         [AutoIncrement]
         public int Id { set; get; }
         public int UserId { get; set; }
-        public bool? IsUsingdoctor { get; set; }
+        public bool? IsUsingDoctor { get; set; }
         public bool? IsUsingCall { get; set; }
         public bool? IsUsingUpload { get; set; }
         public bool? IsUsingRegister { get; set; }
