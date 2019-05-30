@@ -160,7 +160,7 @@ export class LoginComponent extends AppComponentBase implements OnInit {
         if (value.length == 4) this._capcha.code != value ? this.capcha = true : this.capcha = false;
     }
 
-    resetPassWordClick() {
-        this.router.navigate(['/auth/secret']);
+    resetPassWordClick(){
+        this.router.navigate(['/auth/reset-password']);
     }
 }
