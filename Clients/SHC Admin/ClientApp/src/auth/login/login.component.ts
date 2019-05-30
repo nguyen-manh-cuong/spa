@@ -1,18 +1,15 @@
-import { AfterViewInit, Component, Injector, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Component, Injector, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 
 import { AbpSessionService } from '@abp/session/abp-session.service';
 import { AppComponentBase } from '@shared/app-component-base';
 import { LoginService } from './login.service';
 import { Router, Route } from '@angular/router';
-import { IHealthfacilities } from '@shared/Interfaces';
-import { debounceTime, tap, switchMap, finalize } from 'rxjs/operators';
 import { DataService } from '@shared/service-proxies/service-data';
 import { DomSanitizer } from '@angular/platform-browser';
 import * as moment from 'moment';
 import swal from 'sweetalert2';
-import { error } from '@angular/compiler/src/util';
 
 @Component({
     selector: 'app-login',
@@ -77,15 +74,14 @@ export class LoginComponent extends AppComponentBase implements OnInit {
         console.log(event.target.value);
         this._dataService.get('auth', JSON.stringify({ 'userName': event.target.value }), null, null, null).subscribe(data => {
             if (data.items != undefined) {
-                let numLoginFail = data.items.counter;
-                this.numberLoginFail = numLoginFail;
+                if (data.items.counter < 10) {
+                    this.numberLoginFail = data.items.counter;
+                }
             }
         });
     }
 
     login(): void {
-        console.log(112, localStorage.getItem('userName'));
-
         let numLoginFail = 1;
         let lockedTime = 0;
 
@@ -93,30 +89,15 @@ export class LoginComponent extends AppComponentBase implements OnInit {
             if (!data.items) {
                 return swal({
                     title: this.l('Notification'),
-                    text: this.l('Đăng nhập không thành công. Tài khoản chưa được kích họat hoặc bị khóa'),
+                    text: this.l('Đăng nhập không thành công. Tài khoản không tồn tại'),
                     type: 'warning',
                     timer: 3000
                 });
             }
 
-
-            numLoginFail = data.items.counter + 1;
-            this.numberLoginFail = numLoginFail;
-            lockedTime = (moment(new Date(data.items.lockedTime)).valueOf() - moment(Date.now()).valueOf()) / (1000 * 60);
-
-            if (lockedTime > 0 && lockedTime <= 60) {
-                this.getCapcha();
-                return swal({
-                    title: this.l('Notification'),
-                    text: this.l('Đăng nhập không thành công. Vui lòng trở lại sau 60 phút'),
-                    type: 'warning',
-                    timer: 3000
-                });
-            }
-
-            if (data.items.status == 2 || data.items.mdmStatus == 1 || moment(new Date(data.items.expriredDate)).valueOf() < moment(Date.now()).valueOf()) {
+            if (data.items.status != 2 || data.items.mdmStatus != 1 || moment(new Date(data.items.expriredDate)).valueOf() < moment(Date.now()).valueOf()) {
                 this._dataService.get('auth', JSON.stringify({
-                    'userName': this.frmLogin.controls['userNameOrEmailAddress'].value, 'counter': numLoginFail, 'lockedTime': lockedTime
+                    'userName': this.frmLogin.controls['userNameOrEmailAddress'].value
                 }), null, null, null).subscribe(data => {
                     return swal({
                         title: this.l('Notification'),
@@ -127,8 +108,25 @@ export class LoginComponent extends AppComponentBase implements OnInit {
                 });
                 return;
             }
+            
+            lockedTime = (moment(Date.now()).valueOf() - moment(new Date(data.items.lockedTime)).valueOf()) / (1000 * 60);
+            if (data.lockedTime < 1 && data.lockedTime > 0) {
+                this.numberLoginFail = 0;
+                this.userNameOrEmail.nativeElement.focus();
+                this.frmLogin.controls['userNameOrEmailAddress'].setValue('');
+                this.frmLogin.controls['password'].setValue('');
+                return swal({
+                    title: this.l('Notification'),
+                    text: this.l('Đăng nhập không thành công. Vui lòng trở lại sau 60 phút'),
+                    type: 'warning',
+                    timer: 3000
+                });
+            }
 
-            if (numLoginFail >= 5) {
+            numLoginFail = data.items.counter + 1;
+            this.numberLoginFail = numLoginFail;
+
+            if (numLoginFail > 5) {
                 if (this.frmLogin.controls['codeCapcha'].value != this._capcha.code) {
                     this.capcha = true;
                     this.codeCapcha.nativeElement.focus();
@@ -146,7 +144,9 @@ export class LoginComponent extends AppComponentBase implements OnInit {
 
             this.submitted = true;
             if (this.frmLogin.invalid) { return; }
+
             this.loginService.authenticateModel = Object.assign(this.loginService.authenticateModel, this.frmLogin.value);
+
             this.loginService.authenticate((success) => {
                 if (this.frmLogin.controls['isRemberMeChecked'].value) {
                     localStorage.setItem('userName', this.frmLogin.controls['userNameOrEmailAddress'].value);
@@ -170,9 +170,7 @@ export class LoginComponent extends AppComponentBase implements OnInit {
                     }
                 });
 
-                
-
-                if (numLoginFail < 5) {
+                if (numLoginFail <= 5) {
                     return swal({
                         title: this.l('Notification'),
                         text: this.l(`Đăng nhập không thành công. Tên đăng nhập hoặc mật khẩu không chính xác. Bạn còn ${5 - numLoginFail} lần thử`),
@@ -182,12 +180,11 @@ export class LoginComponent extends AppComponentBase implements OnInit {
                 } else {
                     return swal({
                         title: this.l('Notification'),
-                        text: this.l(`Mã xác nhận không trùng khớp. Bạn còn ${10 - numLoginFail} lần thử`),
+                        text: this.l(`Đăng nhập không thành công. Tên đăng nhập hoặc mật khẩu không chính xác. Bạn còn ${10 - numLoginFail} lần thử`),
                         type: 'warning',
                         timer: 3000
                     });
                 }
-
             });
         });
     }

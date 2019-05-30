@@ -183,7 +183,7 @@ namespace SHCServer.Controllers
                 {
                     Id = Convert.ToInt32(reader["Id"]),
                     Counter = Convert.ToInt32(reader["Counter"]),
-                    LockedTime = reader["LockedTime"] != DBNull.Value ? Convert.ToDateTime(reader["LockedTime"]) : (DateTime.Parse("1970/12/12 00:01")),
+                    LockedTime = reader["LockedTime"] != DBNull.Value ? Convert.ToDateTime(reader["LockedTime"]) : (DateTime.Parse("9999/12/12 00:01")),
                     Status = Convert.ToInt32(reader["Status"]),
                     ExpriredDate = reader["ExpriredDate"] != DBNull.Value ? Convert.ToDateTime(reader["ExpriredDate"]) : DateTime.Now,
                     MdmStatus = Convert.ToInt32(reader["MdmStatus"])
@@ -196,20 +196,38 @@ namespace SHCServer.Controllers
             }
             var currentUser = lst.FirstOrDefault();
 
+            TimeSpan span = (TimeSpan)(currentUser.LockedTime - DateTime.Now);
+            double totalMinutes = span.TotalMinutes;
+
+            if (totalMinutes >= 1 || totalMinutes <= 0)
+            {
+                if (currentUser.Counter >= 10)
+                {
+                    _context.Session.BeginTransaction();
+                    _context.Update<User>(c => c.Id == currentUser.Id, x => new User()
+                    {
+                        Counter = 0,
+                        LockedTime = null
+                    });
+                    _context.Session.CommitTransaction();
+
+                    return Json(new ActionResultDto { Result = new { Items = currentUser, lockedTime = totalMinutes } });
+                }
+            }
+            
+
             if (filter != null && filter != "null")
             {
                 var data = JsonConvert.DeserializeObject<Dictionary<string, string>>(filter);
                 _context.Session.BeginTransaction();
                 if (data.ContainsKey("counter"))
                 {
-                    
-
-                    if (int.Parse(data["counter"].ToString()) >= 9)
+                    if (int.Parse(data["counter"].ToString()) >= 10)
                     {
                         _context.Update<User>(c => c.Id == currentUser.Id, x => new User()
                         {
                             Counter = currentUser.Counter + 1,
-                            LockedTime = DateTime.Now.AddMinutes(60)
+                            LockedTime = DateTime.Now.AddMinutes(1)
                         });
                     }
                     else if (int.Parse(data["counter"].ToString()) == -1)
@@ -220,28 +238,18 @@ namespace SHCServer.Controllers
                             LockedTime = null
                         });
                     }
-                    else
+                    else if (int.Parse(data["counter"].ToString()) < 10)
                     {
                         _context.Update<User>(c => c.Id == currentUser.Id, x => new User()
                         {
                             Counter = currentUser.Counter + 1
                         });
                     }
-
                 }
 
-                if (data.ContainsKey("lockedTime") && double.Parse(data["lockedTime"].ToString()) > 60)
-                {
-                    _context.Update<User>(c => c.Id == currentUser.Id, x => new User()
-                    {
-                        LockedTime = null
-                    });
-                }
                 _context.Session.CommitTransaction();
             }
-
-
-            return Json(new ActionResultDto { Result = new { Items = currentUser } });
+            return Json(new ActionResultDto { Result = new { Items = currentUser, lockedTime = totalMinutes } });
         }
 
         [HttpPost]
