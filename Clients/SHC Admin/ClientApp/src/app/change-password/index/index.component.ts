@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import { Component, Inject, Injector, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, Inject, Injector, OnInit, ViewChild, AfterViewInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef, MatInput } from '@angular/material';
 import { AppComponentBase } from '@shared/app-component-base';
@@ -12,7 +12,8 @@ import { AppAuthService } from '@shared/auth/app-auth.service';
 @Component({
     selector: 'app-index',
     templateUrl: './index.component.html',
-    styleUrls: ['./index.component.scss']
+    styleUrls: ['./index.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class IndexComponent extends AppComponentBase implements OnInit {
     // variable
