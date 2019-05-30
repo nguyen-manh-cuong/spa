@@ -21,11 +21,11 @@
                 <mat-icon matSuffix *ngIf="frmLogin.controls['password'].invalid && (frmLogin.controls['password'].dirty || frmLogin.controls['password'].touched)" matTooltipClass="bg-danger text-light" matTooltip="Không được để trống" color="warn">info</mat-icon>
             </mat-form-field>
 
-            <div *ngIf="numberLoginFail > 5">
+            <div *ngIf="numberLoginFail >= 4">
                 <div class="mb-4 d-flex">
                     <div class="d-flex position-relative" [ngClass]="{'has-error': this.capcha}">
                         <label class="col required min-width-100 lbl-capcha position-absolute {{this.capcha ? 'text-danger' : ''}}">Mã xác nhận<span class="text-danger">*</span></label>
-                        <input type="text" name="prof_place" formControlName="codeCapcha" mask="A*" maxlength="4" (change)="validateCapcha($event.target.value)" class="col form-control validate mr-2">
+                        <input type="text" name="prof_place" formControlName="codeCapcha" #codeCapcha mask="A*" maxlength="4" (change)="validateCapcha($event.target.value)" class="col form-control validate mr-2">
                     </div>
                     <div class="mr-2"><img [src]="_capcha.data" width="162" height="39" alt="" /></div>
                     <div type="button" class="btn-refresh" (click)="getCapcha()"><i class="fa fa-refresh" aria-hidden="true"></i></div>
@@ -37,7 +37,7 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="pt-2 d-flex justify-content-start">
-                        <mat-checkbox color="primary">{{l("Login_Checkbox_Remember")}}</mat-checkbox>
+                        <mat-checkbox color="primary" formControlName="isRemberMeChecked">{{l("Login_Checkbox_Remember")}}</mat-checkbox>
                     </div>
                 </div>
                 <div class="col-md-6">

@@ -28,7 +28,9 @@ export class LoginComponent extends AppComponentBase implements OnInit {
     isLoading = false;
     dataService: DataService;
     numberLoginFail = 0;
+
     @ViewChild('userNameOrEmail') userNameOrEmail;
+    @ViewChild('codeCapcha') codeCapcha;
 
     constructor(
         private router: Router,
@@ -43,14 +45,14 @@ export class LoginComponent extends AppComponentBase implements OnInit {
 
     ngOnInit(): void {
         this.frmLogin = this._formBuilder.group({
-            userNameOrEmailAddress: [this.loginService.authenticateModel.userNameOrEmailAddress, Validators.required],
-            password: [this.loginService.authenticateModel.password, Validators.required],
+            userNameOrEmailAddress: [localStorage.getItem('userName'), Validators.required], //this.loginService.authenticateModel.userNameOrEmailAddress
+            password: [localStorage.getItem('password'), Validators.required], //this.loginService.authenticateModel.password
             codeCapcha: [''],
+            isRemberMeChecked: [false]
         });
         this.dataService = this._dataService;
         this.getCapcha();
 
-        
         setTimeout(() => {
             this.userNameOrEmail.nativeElement.focus();
         }, 1000);
@@ -82,23 +84,26 @@ export class LoginComponent extends AppComponentBase implements OnInit {
     }
 
     login(): void {
-        let numLoginFail = 0;
+        console.log(112, localStorage.getItem('userName'));
+
+        let numLoginFail = 1;
         let lockedTime = 0;
-        
+
         this._dataService.get('auth', JSON.stringify({ 'userName': this.frmLogin.controls['userNameOrEmailAddress'].value }), null, null, null).subscribe(data => {
             if (!data.items) {
                 return swal({
                     title: this.l('Notification'),
-                    text: this.l('Đăng nhập không thành công. Tên đăng nhập hoặc mật khẩu không chính xác'),
+                    text: this.l('Đăng nhập không thành công. Tài khoản không tồn tại'),
                     type: 'warning',
                     timer: 3000
                 });
             }
 
-            numLoginFail = data.items.counter;
+
+            numLoginFail = data.items.counter + 1;
             this.numberLoginFail = numLoginFail;
             lockedTime = (moment(new Date(data.items.lockedTime)).valueOf() - moment(Date.now()).valueOf()) / (1000 * 60);
-            
+
             if (lockedTime > 0 && lockedTime <= 60) {
                 this.getCapcha();
                 return swal({
@@ -122,11 +127,20 @@ export class LoginComponent extends AppComponentBase implements OnInit {
                 });
                 return;
             }
-            
-            if (numLoginFail > 5) {
+
+            if (numLoginFail >= 5) {
                 if (this.frmLogin.controls['codeCapcha'].value != this._capcha.code) {
                     this.capcha = true;
-                    return;
+                    this.codeCapcha.nativeElement.focus();
+                    this.frmLogin.controls['codeCapcha'].setValue('');
+                    this._dataService.get('auth', JSON.stringify({ 'userName': this.frmLogin.controls['userNameOrEmailAddress'].value, 'counter': numLoginFail, 'lockedTime': lockedTime }), null, null, null).subscribe(data => { });
+
+                    return swal({
+                        title: this.l('Notification'),
+                        text: this.l(`Mã xác nhận không trùng khớp. Bạn còn ${10 - numLoginFail} lần thử`),
+                        type: 'warning',
+                        timer: 3000
+                    });
                 }
             }
 
@@ -134,20 +148,46 @@ export class LoginComponent extends AppComponentBase implements OnInit {
             if (this.frmLogin.invalid) { return; }
             this.loginService.authenticateModel = Object.assign(this.loginService.authenticateModel, this.frmLogin.value);
             this.loginService.authenticate((success) => {
-                console.log(success);
+                if (this.frmLogin.controls['isRemberMeChecked'].value) {
+                    localStorage.setItem('userName', this.frmLogin.controls['userNameOrEmailAddress'].value);
+                    localStorage.setItem('password', this.frmLogin.controls['password'].value);
+                } else {
+                    localStorage.removeItem('userName');
+                    localStorage.removeItem('password');
+                }
+
                 if (success) {
                     this._dataService.get('auth', JSON.stringify({ 'userName': this.frmLogin.controls['userNameOrEmailAddress'].value, 'counter': -1 }), null, null, null).subscribe(data => { });
                 }
 
             }, error => {
-                    this._dataService.get('auth', JSON.stringify({
-                        'userName': this.frmLogin.controls['userNameOrEmailAddress'].value, 'counter': numLoginFail, 'lockedTime': lockedTime
-                    }), null, null, null).subscribe(data => {
-                        
-                        if (numLoginFail > 5) {
-                            this.getCapcha();
-                        }
+                this._dataService.get('auth', JSON.stringify({
+                    'userName': this.frmLogin.controls['userNameOrEmailAddress'].value, 'counter': numLoginFail, 'lockedTime': lockedTime
+                }), null, null, null).subscribe(data => {
+
+                    if (numLoginFail > 4) {
+                        this.getCapcha();
+                    }
+                });
+
+                
+
+                if (numLoginFail < 5) {
+                    return swal({
+                        title: this.l('Notification'),
+                        text: this.l(`Đăng nhập không thành công. Tên đăng nhập hoặc mật khẩu không chính xác. Bạn còn ${5 - numLoginFail} lần thử`),
+                        type: 'warning',
+                        timer: 3000
                     });
+                } else {
+                    return swal({
+                        title: this.l('Notification'),
+                        text: this.l(`Mã xác nhận không trùng khớp. Bạn còn ${10 - numLoginFail} lần thử`),
+                        type: 'warning',
+                        timer: 3000
+                    });
+                }
+
             });
         });
     }
@@ -160,7 +200,7 @@ export class LoginComponent extends AppComponentBase implements OnInit {
         if (value.length == 4) this._capcha.code != value ? this.capcha = true : this.capcha = false;
     }
 
-    resetPassWordClick(){
+    resetPassWordClick() {
         this.router.navigate(['/auth/reset-password']);
     }
 }
