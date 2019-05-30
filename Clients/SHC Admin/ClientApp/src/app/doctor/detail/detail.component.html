@@ -305,7 +305,7 @@
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l('HealthFacilities')}}</mat-label>
                             <mat-chip-list readonly #chipList>
-                                <mat-chip *ngFor="let o of _healthfacilitiesChip" [selectable]="selectable"
+                                <mat-chip class="disabled" *ngFor="let o of _healthfacilitiesChip" [selectable]="selectable"
                                     [removable]="removable" (removed)="remove(o.code)">
                                     {{o.code +' - ' +o.name}}
                                 </mat-chip>

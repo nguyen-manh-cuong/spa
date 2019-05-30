@@ -63,4 +63,13 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
       }
     });
   }
+
+  checkPermission(isEdit: boolean, isDelete: boolean): boolean{
+    if(isEdit || isDelete){
+        return true;
+    } else{
+        this.displayedColumns = ['orderNumber', 'code', 'name', 'isActive'];
+        return false;
+    }
+  }
 }

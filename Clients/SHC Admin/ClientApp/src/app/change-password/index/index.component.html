@@ -10,7 +10,6 @@
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("Mật khẩu hiện tại")}}</mat-label>
                             <input formControlName="Password" matInput type="password" [required]="true" maxlength="255" minlength="6" class="form-control">
-                            <mat-icon matSuffix *ngIf="frmLogin.controls['password'].valid || !frmLogin.controls['password'].touched" class="text-muted">lock</mat-icon>
                             <validation matSuffix [control]="frmResetPassword.controls['Password']"></validation>
                         </mat-form-field>
                         <mat-form-field appearance="outline" class="w-100">
@@ -28,6 +27,7 @@
                                 <div class="d-flex position-relative" [ngClass]="{'has-error': this.capcha}">
                                     <label class="col required min-width-100 lbl-capcha position-absolute {{this.capcha ? 'text-danger' : ''}}">Mã xác nhận<span class="text-danger">*</span></label>
                                     <input type="text" name="prof_place" formControlName="codeCapcha" mask="A*" maxlength="4" (change)="validateCapcha($event.target.value)" class="col validate mr-2" [required]="true">
+                                    <validation matSuffix [control]="frmResetPassword.controls['codeCapcha']"></validation>
                                 </div>
                                 <div class="mr-2"><img [src]="_capcha.data" width="162" height="39" alt="" /></div>
                                 <div type="button" class="btn-refresh" (click)="getCapcha()"><i class="fa fa-refresh" aria-hidden="true"></i></div>

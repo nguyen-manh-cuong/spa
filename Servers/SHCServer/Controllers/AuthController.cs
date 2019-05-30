@@ -30,7 +30,7 @@ namespace SHCServer.Controllers
         {
             _settings = settings;
             _context = new MySqlContext(new MySqlConnectionFactory(configuration.GetConnectionString("DefaultConnection")));
-            _contextmdmdb = new MySqlContext(new MySqlConnectionFactory(configuration.GetConnectionString("ConnectionMDM")));
+            _contextmdmdb = new MySqlContext(new MySqlConnectionFactory(configuration.GetConnectionString("MdmConnection")));
             _connectionString = configuration.GetConnectionString("DefaultConnection");
 
             _host = configuration.GetValue("Gateway:Ip", "127.0.0.1");
@@ -176,10 +176,10 @@ namespace SHCServer.Controllers
 
             string strQuery = $"{query} {string.Join(" ", clause)}";
             var reader = _context.Session.ExecuteReader(strQuery, param);
-            List<User> lst = new List<User>();
+            List<UserLoginViewModel> lst = new List<UserLoginViewModel>();
             while (reader.Read())
             {
-                lst.Add(new User()
+                lst.Add(new UserLoginViewModel()
                 {
                     Id = Convert.ToInt32(reader["Id"]),
                     Counter = Convert.ToInt32(reader["Counter"]),
@@ -304,7 +304,7 @@ namespace SHCServer.Controllers
                     {
                         UserId = user.Id,
                         IsUsingCall = obj.isUsingCall != null ? obj.isUsingCall : false,
-                        IsUsingdoctor = obj.isUsingdoctor != null ? obj.isUsingdoctor : false,
+                        IsUsingDoctor = obj.isUsingDoctor != null ? obj.isUsingDoctor : false,
                         IsUsingExamination = obj.isUsingExamination != null ? obj.isUsingExamination : false,
                         IsUsingRegister = obj.isUsingRegister != null ? obj.isUsingRegister : false,
                         IsUsingUpload = obj.isUsingUpload != null ? obj.isUsingUpload : false,

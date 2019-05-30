@@ -93,7 +93,7 @@ export class LoginComponent extends AppComponentBase implements OnInit {
             if (!data.items) {
                 return swal({
                     title: this.l('Notification'),
-                    text: this.l('Đăng nhập không thành công. Tài khoản không tồn tại'),
+                    text: this.l('Đăng nhập không thành công. Tài khoản chưa được kích họat hoặc bị khóa'),
                     type: 'warning',
                     timer: 3000
                 });
