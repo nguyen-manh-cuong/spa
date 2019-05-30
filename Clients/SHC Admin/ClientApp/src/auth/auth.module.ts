@@ -10,6 +10,7 @@ import { SharedModule } from '@shared/shared.module';
 import { UtilsModule } from '@shared/utils/utils.module';
 import { SecretComponent } from './secret/secret.component';
 import { ResetComponent } from './reset-password/reset-password.component';
+import { ValidationModule } from '@app/validation/validation.module';
 
 @NgModule({
     imports: [
@@ -17,6 +18,7 @@ import { ResetComponent } from './reset-password/reset-password.component';
         FormsModule, ReactiveFormsModule,
         AuthRoutingModule,
         SharedModule,
+        ValidationModule,
         UtilsModule
     ],
     declarations: [LoginComponent, AuthComponent, SecretComponent, ResetComponent],

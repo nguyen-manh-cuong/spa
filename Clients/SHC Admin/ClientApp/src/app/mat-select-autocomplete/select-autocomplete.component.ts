@@ -7,6 +7,7 @@ import {
     ViewChild,
     DoCheck
 } from '@angular/core';
+import { DataService } from '@shared/service-proxies/service-data';
 import { FormControl } from '@angular/forms';
 
 @Component({
@@ -90,6 +91,8 @@ export class SelectAutocompleteComponent implements OnChanges, DoCheck {
     selectedOptions;
     @Input()
     multiple = true;
+    @Input()
+    apiSearch;
 
     // New Options
     @Input()
@@ -109,7 +112,7 @@ export class SelectAutocompleteComponent implements OnChanges, DoCheck {
     selectedName: Array<any> = [];
     selectAllChecked = false;
     displayString = '';
-    constructor() { }
+    constructor(private _dataService: DataService) { }
 
     ngOnChanges() {
         this.filteredOptions = this.options;
@@ -144,21 +147,36 @@ export class SelectAutocompleteComponent implements OnChanges, DoCheck {
     };
 
     filterItem(value) {
-        if (!isNaN(value)) {
-            this.filteredOptions = this.options.filter(
-                item => item[this.code].toLowerCase().indexOf(value.toLowerCase()) > -1
-            );
-        } else {
-            this.filteredOptions = this.options.filter(
-                item => item[this.display].toLowerCase().indexOf(value.toLowerCase()) > -1
-            );
-        }
-        this.selectAllChecked = true;
-        this.filteredOptions.forEach(item => {
-            if (this.selectedValue.indexOf(item[this.value]) > -1) {
-                this.selectAllChecked = false;
+        if (value.length) {
+            if (!isNaN(value)) {
+                this._dataService.getAll(this.apiSearch, "{code:" + value + "}").subscribe(resp => {
+                    this.options = resp.items;
+                    this.filteredOptions = this.options.filter(
+                        item => item[this.code].toLowerCase().indexOf(value.toLowerCase()) > -1
+                    );
+                    this.selectAllChecked = true;
+                    this.filteredOptions.forEach(item => {
+                        if (this.selectedValue.indexOf(item[this.value]) > -1) {
+                            this.selectAllChecked = false;
+                        }
+                    });
+                });
+            } else {
+                this._dataService.getAll(this.apiSearch, JSON.stringify({name: value})).subscribe(resp => {
+                    this.options = resp.items;
+                    this.filteredOptions = this.options.filter(
+                        item => item[this.display].toLowerCase().indexOf(value.toLowerCase()) > -1
+                    );
+                    this.selectAllChecked = true;
+                    this.filteredOptions.forEach(item => {
+                        if (this.selectedValue.indexOf(item[this.value]) > -1) {
+                            this.selectAllChecked = false;
+                        }
+                    });
+                });
             }
-        });
+        }
+        
     }
 
     hideOption(option) {

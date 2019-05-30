@@ -150,7 +150,7 @@ namespace SHCServer.Controllers
         [Route("api/healthfacilities")]
         public IActionResult GetHealthfacilities(string filter)
         {
-            var objs = _context.Query<HealthFacilities>().Where(o => o.IsActive == true && o.IsDelete == false);
+         var objs = _context.Query<HealthFacilities>().Where(o => o.IsActive == true && o.IsDelete == false);
             if (filter != null)
             {
                 foreach (var (key, value) in JsonConvert.DeserializeObject<Dictionary<string, string>>(filter))

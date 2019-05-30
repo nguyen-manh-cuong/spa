@@ -44,6 +44,7 @@
                     [placeholder]="l('PackageDistributeHealthFacilities')" [errorMsg]="errorMessage"
                     [showErrorMsg]="showError" [options]="_medicalFacility" 
                     [code]="'code'"
+                    [apiSearch]="'healthfacilities'"
                     [display]="'name'" [value]="'healthFacilitiesId'"
                     [multiple]='true'
                     (selectionChange)="getSelectedOptions($event)">

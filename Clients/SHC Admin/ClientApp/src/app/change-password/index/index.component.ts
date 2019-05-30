@@ -27,7 +27,7 @@ export class IndexComponent extends AppComponentBase implements OnInit {
     ngOnInit() {
         const validationRule = new ValidationRule();
         this.frmResetPassword = this._formBuilder.group({
-            Password: [this._obj.Password],
+            Password: [this._obj.Password], 
             NewPassword: [this._obj.NewPassword],
             UserName: this.appSession.user.userName,
             RePassword: [],
