@@ -10,7 +10,6 @@
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("Mật khẩu hiện tại")}}</mat-label>
                             <input formControlName="Password" matInput type="password" [required]="true" maxlength="255" minlength="6" class="form-control">
-                            <mat-icon matSuffix *ngIf="frmLogin.controls['password'].valid || !frmLogin.controls['password'].touched" class="text-muted">lock</mat-icon>
                             <validation matSuffix [control]="frmResetPassword.controls['Password']"></validation>
                         </mat-form-field>
                         <mat-form-field appearance="outline" class="w-100">
