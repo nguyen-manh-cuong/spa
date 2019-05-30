@@ -150,8 +150,8 @@ export class TaskComponent extends AppComponentBase implements OnInit {
 
     onSelectDoctor(obj: any){
         this.dataService.getAll('bookingtimeslot', JSON.stringify({
-            healthfacilities : this._frm.controls['healthfacilities'].value,
-            doctorId : obj
+            //healthfacilities : this._frm.controls['healthfacilities'].value,
+            //doctorId : obj
         })).subscribe(resp => this._timeSlot = _.orderBy(resp.items, ['hoursStart'], ['asc']));
     }
 
