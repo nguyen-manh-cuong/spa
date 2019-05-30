@@ -6,7 +6,7 @@ import { AppComponentBase } from '@shared/app-component-base';
 import { DataService } from '@shared/service-proxies/service-data';
 import { ValidationRule } from '@shared/common/common';
 import swal from 'sweetalert2';
-import { DomSanitizer } from '@angular/platform-browser';
+import { DomSanitizer, Title } from '@angular/platform-browser';
 import { AppAuthService } from '@shared/auth/app-auth.service';
 
 @Component({
@@ -20,20 +20,22 @@ export class IndexComponent extends AppComponentBase implements OnInit {
     api: string = 'reset-password-user';
     frmResetPassword: FormGroup;
     _obj: any = { NewPassword: '', OldPassword: '', UserName: '' }
+    validateRule = new ValidationRule();
 
     //contructor
-    constructor(injector: Injector, private _dataService: DataService, private _formBuilder: FormBuilder, private _sanitizer: DomSanitizer, private _authService: AppAuthService) { super(injector); }
+    constructor(injector: Injector, private _dataService: DataService, private _formBuilder: FormBuilder, private _sanitizer: DomSanitizer, private _authService: AppAuthService, private titleService: Title) { super(injector); }
 
     ngOnInit() {
         const validationRule = new ValidationRule();
         this.frmResetPassword = this._formBuilder.group({
             Password: [this._obj.Password], 
-            NewPassword: [this._obj.NewPassword],
+            NewPassword: [this._obj.NewPassword, [this.validateRule.passwordStrong, Validators.required]],
             UserName: this.appSession.user.userName,
             RePassword: [],
-            codeCapcha: [''],
+            capcha: ['', [Validators.required]]
         })
         this.getCapcha();
+        this.titleService.setTitle('VIETTEL GATEWAY | Cập nhật thông tin');
 
     }
     //capchar
@@ -46,6 +48,37 @@ export class IndexComponent extends AppComponentBase implements OnInit {
 
     validateCapcha(value: any) {
         if (value.length == 4) this._capcha.code != value ? this.capcha = true : this.capcha = false;
+    }
+
+    capchaInput(event) {
+        event.target.value = this.replace_space(this.replace_alias(event.target.value));
+        if ((this._capcha.code != event.target.value) && (this.frmResetPassword.controls['capcha'].value != "")) {
+            this.frmResetPassword.controls['capcha'].setErrors({ 'capcha': true });
+        }
+    }
+
+    replace_alias(str) {
+        str = str.replace(/[^A-Za-z0-9]+/ig, "");
+        str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
+        str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
+        str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i");
+        str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, "o");
+        str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u");
+        str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y");
+        str = str.replace(/đ/g, "d");
+        str = str.replace(/À|Á|Ạ|Ả|Ã|Â|Ầ|Ấ|Ậ|Ẩ|Ẫ|Ă|Ằ|Ắ|Ặ|Ẳ|Ẵ/g, "A");
+        str = str.replace(/È|É|Ẹ|Ẻ|Ẽ|Ê|Ề|Ế|Ệ|Ể|Ễ/g, "E");
+        str = str.replace(/Ì|Í|Ị|Ỉ|Ĩ/g, "I");
+        str = str.replace(/Ò|Ó|Ọ|Ỏ|Õ|Ô|Ồ|Ố|Ộ|Ổ|Ỗ|Ơ|Ờ|Ớ|Ợ|Ở|Ỡ/g, "O");
+        str = str.replace(/Ù|Ú|Ụ|Ủ|Ũ|Ư|Ừ|Ứ|Ự|Ử|Ữ/g, "U");
+        str = str.replace(/Ỳ|Ý|Ỵ|Ỷ|Ỹ/g, "Y");
+        str = str.replace(/Đ/g, "D");
+        return str;
+    }
+
+    replace_space(str) {
+        str = str.replace(/ /g, "");
+        return str;
     }
 
     // update databsae

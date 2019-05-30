@@ -4,7 +4,7 @@
 </mat-tab>
     <mat-tab label="Đổi mật khẩu">
         <ng-template matTabContent class="p-4 min-h-400">
-            <mat-card class="shadow-none ml-auto mr-auto max-w-400">
+            <mat-card class="shadow-none ml-auto mr-auto max-w-470">
                 <mat-card-content class="shadow-none">
                     <form [formGroup]="frmResetPassword" novalidate class="form-change-password">
                         <mat-form-field appearance="outline" class="w-100">
@@ -13,27 +13,38 @@
                             <validation matSuffix [control]="frmResetPassword.controls['Password']"></validation>
                         </mat-form-field>
                         <mat-form-field appearance="outline" class="w-100">
-                            <mat-label>{{l("Mật khẩu mới")}}</mat-label> 
-                            <input formControlName="NewPassword" type="password" matInput [required]="true" maxlength="255" minlength="6" class="form-control">
-                            <validation matSuffix [control]="frmResetPassword.controls['NewPassword']"></validation>
+                            <mat-label>{{l("Mật khẩu mới")}}</mat-label>
+                            <input formControlName="NewPassword" type="password" matInput  maxlength="255" minlength="6" class="form-control" title="Mật khẩu cần có ít nhất 8 kí tự">
+                            <!--<validation matSuffix [control]="frmResetPassword.controls['NewPassword']"></validation>-->
+                            <validation matSuffix [control]="frmResetPassword.controls['NewPassword']"></validation>     
                         </mat-form-field>
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("Xác nhận lại mật khẩu")}}</mat-label>
                             <input formControlName="RePassword" type="password" matInput [required]="true" maxlength="255" minlength="6" class="form-control">
                             <validation matSuffix [control]="frmResetPassword.controls['RePassword']"></validation>
                         </mat-form-field>
-                        <div>
-                            <div class="mb-4 d-flex">
-                                <div class="d-flex position-relative" [ngClass]="{'has-error': this.capcha}">
-                                    <label class="col required min-width-100 lbl-capcha position-absolute {{this.capcha ? 'text-danger' : ''}}">Mã xác nhận<span class="text-danger">*</span></label>
-                                    <input type="text" name="prof_place" formControlName="codeCapcha" mask="A*" maxlength="4" (change)="validateCapcha($event.target.value)" class="col validate mr-2" [required]="true">
-                                    <validation matSuffix [control]="frmResetPassword.controls['codeCapcha']"></validation>
-                                </div>
-                                <div class="mr-2"><img [src]="_capcha.data" width="162" height="39" alt="" /></div>
-                                <div type="button" class="btn-refresh" (click)="getCapcha()"><i class="fa fa-refresh" aria-hidden="true"></i></div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <mat-form-field appearance="outline" class="w-100" [ngClass]="{'mat-form-field-invalid':capcha}">
+                                    <mat-label>{{l("ResetCapcha")}}</mat-label>
+                                    <input (input)="capchaInput($event)" formControlName="capcha" matInput autocomplete="off"
+                                           [required] ="true" class="form-control">
+                                    <mat-icon matSuffix *ngIf="capcha" matTooltipClass="bg-danger text-light"
+                                              matTooltip="Sai mã xác nhận" color="warn">
+                                        info
+                                    </mat-icon>
+                                    <validation *ngIf="!capcha" matSuffix [control]="frmResetPassword.controls['capcha']"></validation>
+                                </mat-form-field>
                             </div>
-                            <small *ngIf="this.capcha" class="help-block" style="color: red;margin-left: 114px;">Mã xác nhận không đúng</small>
-
+                            <div class="col-md-4 mt-1" style="margin-left:-20px!important;padding-bottom: 1px!important">
+                                <img [src]="_capcha.data" width="160" height="40" alt="" />
+                            </div>
+                            <div class="col-md-1 mt-1 ml-3">
+                                <span type="button" class="btn-refresh" (click)="getCapcha()">
+                                    <i class="fa fa-refresh"
+                                       aria-hidden="true"></i>
+                                </span>
+                            </div>
                         </div>
                         <div class="d-flex justify-content-center">
                             <button mat-raised-button color="primary" class="w-100" (click)="resetPassword()" [disabled]="frmResetPassword.invalid">{{l("Lưu")}}</button>

@@ -22,6 +22,9 @@ import { AppConsts } from '@shared/AppConsts';
 
 export class BookingComponent extends AppComponentBase implements OnInit, AfterViewInit {
     validateRule = new ValidationRule();
+
+    doctorTotal:string = "";
+
     public _currentStep: number = 1;
     public frmBooking: FormGroup;
 
@@ -175,6 +178,7 @@ export class BookingComponent extends AppComponentBase implements OnInit, AfterV
                     this._dataService.get('doctors', this._healthfacility.healthFacilitiesId.toString(), '', 0, 0)
                         .subscribe(resp => {
                             this._doctors = resp.items
+                            this.doctorTotal = resp.totalDoctor
                             //this.spinner.hide();
                         });
                 }
