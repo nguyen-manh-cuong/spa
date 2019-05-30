@@ -185,7 +185,7 @@ namespace SHCServer.Controllers
                     Counter = Convert.ToInt32(reader["Counter"]),
                     LockedTime = reader["LockedTime"] != DBNull.Value ? Convert.ToDateTime(reader["LockedTime"]) : (DateTime.Parse("1970/12/12 00:01")),
                     Status = Convert.ToInt32(reader["Status"]),
-                    ExpriredDate = reader["LockedTime"] != DBNull.Value ? Convert.ToDateTime(reader["LockedTime"]) : DateTime.Now,
+                    ExpriredDate = reader["ExpriredDate"] != DBNull.Value ? Convert.ToDateTime(reader["ExpriredDate"]) : DateTime.Now,
                     MdmStatus = Convert.ToInt32(reader["MdmStatus"])
                 });
             }
