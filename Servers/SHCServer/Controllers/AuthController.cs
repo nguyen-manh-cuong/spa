@@ -30,7 +30,7 @@ namespace SHCServer.Controllers
         {
             _settings = settings;
             _context = new MySqlContext(new MySqlConnectionFactory(configuration.GetConnectionString("DefaultConnection")));
-            _contextmdmdb = new MySqlContext(new MySqlConnectionFactory(configuration.GetConnectionString("ConnectionMDM")));
+            _contextmdmdb = new MySqlContext(new MySqlConnectionFactory(configuration.GetConnectionString("MdmConnection")));
             _connectionString = configuration.GetConnectionString("DefaultConnection");
 
             _host = configuration.GetValue("Gateway:Ip", "127.0.0.1");
