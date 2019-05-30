@@ -1,4 +1,4 @@
-﻿import { AfterViewInit, Component, Injector, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, Injector, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
@@ -94,10 +94,13 @@ export class LoginComponent extends AppComponentBase implements OnInit {
                     timer: 3000
                 });
             }
-            console.log(112, data.items);
+
+            numLoginFail = data.items.counter;
+            this.numberLoginFail = numLoginFail;
             lockedTime = (moment(new Date(data.items.lockedTime)).valueOf() - moment(Date.now()).valueOf()) / (1000 * 60);
             
             if (lockedTime > 0 && lockedTime <= 60) {
+                this.getCapcha();
                 return swal({
                     title: this.l('Notification'),
                     text: this.l('Đăng nhập không thành công. Vui lòng trở lại sau 60 phút'),
@@ -105,10 +108,21 @@ export class LoginComponent extends AppComponentBase implements OnInit {
                     timer: 3000
                 });
             }
+
+            if (data.items.status == 2 || data.items.mdmStatus == 1 || moment(new Date(data.items.expriredDate)).valueOf() < moment(Date.now()).valueOf()) {
+                this._dataService.get('auth', JSON.stringify({
+                    'userName': this.frmLogin.controls['userNameOrEmailAddress'].value, 'counter': numLoginFail, 'lockedTime': lockedTime
+                }), null, null, null).subscribe(data => {
+                    return swal({
+                        title: this.l('Notification'),
+                        text: this.l('Đăng nhập không thành công. Tài khoản chưa được kích họat hoặc bị khóa'),
+                        type: 'warning',
+                        timer: 3000
+                    });
+                });
+                return;
+            }
             
-            numLoginFail = data.items.counter;
-            this.numberLoginFail = numLoginFail;
-            console.log(821, this.numberLoginFail);
             if (numLoginFail > 5) {
                 if (this.frmLogin.controls['codeCapcha'].value != this._capcha.code) {
                     this.capcha = true;
@@ -129,7 +143,7 @@ export class LoginComponent extends AppComponentBase implements OnInit {
                     this._dataService.get('auth', JSON.stringify({
                         'userName': this.frmLogin.controls['userNameOrEmailAddress'].value, 'counter': numLoginFail, 'lockedTime': lockedTime
                     }), null, null, null).subscribe(data => {
-                        console.log('OKE');
+                        
                         if (numLoginFail > 5) {
                             this.getCapcha();
                         }
