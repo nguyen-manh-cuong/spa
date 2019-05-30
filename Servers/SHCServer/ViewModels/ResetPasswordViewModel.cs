@@ -13,5 +13,6 @@ namespace SHCServer.ViewModels
         public string PhoneNumber { get; set; }
         public string Password { get; set; }
         public string SecretCode { get; set; }
+        public string NewPassword { get; set; }
     }
 }

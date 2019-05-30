@@ -1,4 +1,8 @@
 .max-w-400{max-width: 400px;}
+.form-control{height: 30px;}
+form:not(.task-form) .mat-form-field-appearance-outline .mat-form-field-suffix {
+    top: 2px !important;
+}
 .btn-refresh {
     background-color: #fff;
     text-align: center;
@@ -14,4 +18,9 @@
     font-weight: 500;
     background-color: #fff;
     width: 116px;
+}
+@media (min-width: 1366px) {
+    .min-h-400 {
+        min-height: 400px;
+    }
 }
