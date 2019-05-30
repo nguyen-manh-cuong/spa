@@ -7,6 +7,7 @@ import { DataService } from '@shared/service-proxies/service-data';
 import { ValidationRule } from '@shared/common/common';
 import swal from 'sweetalert2';
 import { DomSanitizer } from '@angular/platform-browser';
+import { AppAuthService } from '@shared/auth/app-auth.service';
 
 @Component({
     selector: 'app-index',
@@ -20,12 +21,12 @@ export class IndexComponent extends AppComponentBase implements OnInit {
     _obj: any = { NewPassword: '', OldPassword: '', UserName: '' }
 
     //contructor
-    constructor(injector: Injector, private _dataService: DataService, private _formBuilder: FormBuilder, private _sanitizer: DomSanitizer) { super(injector); }
+    constructor(injector: Injector, private _dataService: DataService, private _formBuilder: FormBuilder, private _sanitizer: DomSanitizer, private _authService: AppAuthService) { super(injector); }
 
     ngOnInit() {
         const validationRule = new ValidationRule();
         this.frmResetPassword = this._formBuilder.group({
-            OldPassword: [this._obj.OldPassword],
+            Password: [this._obj.Password],
             NewPassword: [this._obj.NewPassword],
             UserName: this.appSession.user.userName,
             RePassword: [],
@@ -63,11 +64,12 @@ export class IndexComponent extends AppComponentBase implements OnInit {
         // call api
         this._dataService.update(this.api, Object.assign(this.frmResetPassword.value)).subscribe(() => {
             swal({
-                title: this.l('SaveSuccess'),
+                title: this.l('Đổi mật khẩu thành công'),
                 text: '',
                 type: 'success',
                 timer: 3000
             });
+            this._authService.logout();
         }, err => { });
     }
 

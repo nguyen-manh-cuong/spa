@@ -380,13 +380,13 @@ namespace SHCServer.Controllers
 
         [HttpPut]
         [Route("api/reset-password-user")]
-        public IActionResult ResetPasswordUser([FromBody] UserResetPasswordViewModel obj)
+        public IActionResult ResetPasswordUser([FromBody] ResetPasswordViewModel obj)
         {
-            User currentUser = _contextmdmdb.Query<User>().Where(u => u.UserName == obj.UserName).FirstOrDefault();
+            ResetPassword currentUser = _contextmdmdb.Query<ResetPassword>().Where(u => u.UserName == obj.UserName).FirstOrDefault();
 
             string currenPassword = currentUser.Password;
-            string logPassword = currentUser.PasswordLog;
-            if (!Utils.VerifyHashedPassword(currenPassword, obj.OldPassword))
+            // so sanh mat khau nhap vao voi mat khau cua user do trong db
+            if (!Utils.VerifyHashedPassword(currenPassword, obj.Password))
             {
                 return StatusCode(406, _excep.Throw(406, "Thông báo", "Đổi mật khẩu không thành công. Mật khẩu hiện tại không đúng"));
             }
@@ -399,11 +399,9 @@ namespace SHCServer.Controllers
             try
             {
                 _contextmdmdb.Session.BeginTransaction();
-                _context.Update<User>(b => b.UserName == obj.UserName, a => new User()
+                _contextmdmdb.Update<ResetPassword>(b => b.UserName == obj.UserName, a => new ResetPassword()
                 {
-                    PasswordLog = currenPassword,
                     Password = Utils.HashPassword(obj.NewPassword),
-                    UpdateDate = DateTime.Now
                 });
 
                 _contextmdmdb.Session.CommitTransaction();
