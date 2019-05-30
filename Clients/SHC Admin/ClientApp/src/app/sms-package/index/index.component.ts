@@ -36,17 +36,18 @@ export class IndexComponent extends PagedListingComponentBase<IUser> implements 
         this.dialogDetail = DetailComponent;
         this.permission = getPermission(abp.nav.menus['mainMenu'].items, this.router.url);
     }
-    
-    detail(obj): void{
+
+    detail(obj): void {
         const dialogRef = this.dialog.open(this.dialogDetail, { minWidth: 'calc(100vw/2)', maxWidth: 'calc(100vw - 300px)', data: obj ? obj : null });
         dialogRef.afterClosed().subscribe(() => this.paginator._changePageSize(this.paginator.pageSize));
     }
 
-    showMessage(title: string, content: string, type: string){
+    showMessage(title: string, content: string, type: string) {
         swal({
-            title:this.l('PackagesMessageTitle.'), 
-            text:this.l('PackagesMessageContent'), 
-            type:'error',
-            timer:3000});
+            title: this.l('PackagesMessageTitle.'),
+            text: this.l('PackagesMessageContent'),
+            type: 'error',
+            timer: 3000
+        });
     }
 }

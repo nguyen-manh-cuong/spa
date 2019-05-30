@@ -13,6 +13,7 @@ import { SmsPackagesRoutingModule } from './sms-package-routing.module';
 import { UtilsModule } from '@shared/utils/utils.module';
 import { NgxMaskModule } from 'ngx-mask';
 import { ValidationModule } from '@app/validation/validation.module';
+import { LoginSessionModule } from '../login-session/login-session.module';
 
 @NgModule({
     imports: [
@@ -22,6 +23,7 @@ import { ValidationModule } from '@app/validation/validation.module';
         SharedModule,
         UtilsModule,
         ValidationModule,
+        LoginSessionModule,
         NgxMaskModule.forRoot()
     ],
 

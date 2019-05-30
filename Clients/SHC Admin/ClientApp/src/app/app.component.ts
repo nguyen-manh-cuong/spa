@@ -12,7 +12,7 @@ import { Observable } from 'rxjs';
 import { SignalRAspNetCoreHelper } from '@shared/helpers/SignalRAspNetCoreHelper';
 import { Title } from '@angular/platform-browser';
 import { MAT_DIALOG_DATA, MatButton, MatDialog, MatDialogRef } from '@angular/material';
-import { TaskComponent } from './reset-pasword/task/task.component';
+import { TaskComponent } from './login-session/task/task.component';
 //import { PagedListingComponentBase } from '@shared/paged-listing-component-base';
 //import { TaskComponent } from './sms-template-task/task/task.component';
 import { DataService } from '@shared/service-proxies/service-data';
@@ -37,10 +37,10 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
     currentLanguage: abp.localization.ILanguageInfo;
 
     constructor(
-        injector: Injector, 
-        private breakpointObserver: BreakpointObserver, 
-        private _authService: AppAuthService, 
-        private router: Router, 
+        injector: Injector,
+        private breakpointObserver: BreakpointObserver,
+        private _authService: AppAuthService,
+        private router: Router,
         private titleService: Title,
         private _dialog: MatDialog,
         private _dataService: DataService
