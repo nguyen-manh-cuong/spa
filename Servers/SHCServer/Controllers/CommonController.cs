@@ -143,7 +143,7 @@ namespace SHCServer.Controllers
 
             lstDoctor = lstDoctor.OrderBy(o => o.FullName).ToList();
 
-            return Json(new ActionResultDto { Result = new { Items = lstDoctor } });
+            return Json(new ActionResultDto { Result = new { Items = lstDoctor,TotalDoctor=lstDoctor.Count } });
         }
 
         [HttpGet]

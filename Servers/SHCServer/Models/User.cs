@@ -22,7 +22,7 @@ namespace SHCServer.Models
         public DateTime? UpdateDate { get; set; }
         public DateTime? CreateDate { get; set; }
         public int? Status { get; set; }
-        public int? MdmStatus { get; set; }
+        //public int? MdmStatus { get; set; }
 
         // Location
         public string ProvinceCode { get; set; }

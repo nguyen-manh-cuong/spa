@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using SHCServer.Models;
-using SHCServer.ViewModels;
-using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using Viettel;
+using SHCServer.Models;
+using SHCServer.ViewModels;
+using System;
+using System.Collections.Generic;
 using Viettel.MySql;
 
 namespace SHCServer.Controllers
@@ -62,6 +60,20 @@ namespace SHCServer.Controllers
         [Route("api/smspackages")]
         public IActionResult Create([FromBody] PackageInputViewModel package)
         {
+            package.Name = package.Name.Trim();
+
+            for (int i = 0; i < package.Name.Length + 1; i++)
+            {
+                package.Name = package.Name.Replace("  ", " ");
+            }
+
+            package.Description = package.Description.Trim();
+
+            for (int i = 0; i < package.Description.Length + 1; i++)
+            {
+                package.Description = package.Description.Replace("  ", " ");
+            }
+
             if (_context.Query<SmsPackage>().Where(g => g.Name == package.Name && g.IsDelete == false).Count() > 0)
             {
                 //return Json(new ActionResultDto { Success = false, Error = new { Code = 401, Message = "Tạo gói không thành công.", Details = "Gói SMS đã tồn tại!" } });
@@ -90,7 +102,7 @@ namespace SHCServer.Controllers
                 }
 
                 _context.InsertRange(listPackageDetail);
-            }            
+            }
 
             return Json(new ActionResultDto { Result = packageResult });
         }
@@ -113,7 +125,8 @@ namespace SHCServer.Controllers
 
                 _context.Session.BeginTransaction();
 
-                _context.Update<SmsPackage>(p => p.Id == package.Id, a => new SmsPackage {
+                _context.Update<SmsPackage>(p => p.Id == package.Id, a => new SmsPackage
+                {
                     Name = package.Name,
                     Description = package.Description,
                     Quantity = package.Quantity,

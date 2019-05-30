@@ -175,6 +175,7 @@ export class BookingComponent extends AppComponentBase implements OnInit, AfterV
                     this._dataService.get('doctors', this._healthfacility.healthFacilitiesId.toString(), '', 0, 0)
                         .subscribe(resp => {
                             this._doctors = resp.items
+                            this._healthfacility.totalDoctor = resp.totalDoctor
                             //this.spinner.hide();
                         });
                 }
