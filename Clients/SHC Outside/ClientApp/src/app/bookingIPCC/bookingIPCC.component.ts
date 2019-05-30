@@ -51,7 +51,12 @@ export class BookingIPCCComponent extends AppComponentBase implements OnInit {
   
   @ViewChild("examinationDate") examinationDate;
 
-  constructor(injector: Injector, private _dataService: DataService, private _formBuilder: FormBuilder, private _location: Location, private router: Router) {
+  constructor(
+    injector: Injector, 
+    private _dataService: DataService, 
+    private _formBuilder: FormBuilder, 
+    private _location: Location, 
+    private router: Router) {
     super(injector);
   }
 
@@ -180,7 +185,7 @@ export class BookingIPCCComponent extends AppComponentBase implements OnInit {
           confirmButtonText: 'OK',
           timer : 3000
         }).then(() => {
-          this.router.navigateByUrl('/');
+          this.router.navigateByUrl('/app/bookingIPCC');
         });
       }, err => {})
   }
