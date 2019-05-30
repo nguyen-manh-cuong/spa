@@ -72,7 +72,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
                     this.dialogRef.close()
                     swal({
                         title: 'Thông báo',
-                        text: resp,
+                        html: resp,
                         type: 'error',
                         timer: 3000
                     });

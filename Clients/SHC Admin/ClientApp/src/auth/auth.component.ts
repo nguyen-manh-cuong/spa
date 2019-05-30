@@ -18,7 +18,7 @@ export class AuthComponent extends AppComponentBase implements OnInit {
     super(injector);
   }
 
-  ngOnInit() {
+    ngOnInit() {
   }
 
 }

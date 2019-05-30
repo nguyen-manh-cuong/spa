@@ -20,7 +20,7 @@ export class DetailComponent extends AppComponentBase implements OnInit, AfterVi
     public totalItems: number;
 
     _frm: FormGroup;
-    displayedColumns = ['_message', '_sentSmsDate', '_status'];
+    displayedColumns = ['orderNumber', '_message', '_sentSmsDate', '_status'];
     _obj: IMedicalHealthcareHistories | any = { code: '', fullName: '', phoneNumber: '', gender: '', birthDate: '', birthMonth: '', birthYear: '', patientId: '', healthInsuranceNumber: '', birthDay: '' };
     _context: any;
 
@@ -45,8 +45,11 @@ export class DetailComponent extends AppComponentBase implements OnInit, AfterVi
             this._obj = _.clone(this.obj);
             abp.ui.setBusy('#form-dialog');
             this._dataService.getAll(this.api, JSON.stringify({ 'patientId': this._obj.patientId, 'objectType': 1, 'checkSmsLogDetail': 1 }), null).subscribe(smsData => {
+                let index = 0;
                 for (var item of smsData.items) {
+                    index++;
                     let obj = {
+                        index: index,
                         message: item.message,
                         sentSmsDate: item.sentDate,
                         status: item.status == 1 ? 'Thành công' : 'Lỗi'

@@ -42,8 +42,9 @@ namespace SHCServer.Controllers
                         var query = value.Replace(@"%", "\\%").Replace(@"_", "\\_").Trim();
                         objs = objs.Where(b => b.Code.Contains(query) || b.Name.Contains(query));
                     }
-                    if (string.Equals(key, "healthfacilities") && !string.IsNullOrWhiteSpace(value))
-                        objs = objs.Where(b => b.HealthFacilitiesId.ToString() == value.Trim() || b.HealthFacilitiesId == null);
+                    if (string.Equals(key, "healthfacilities") && !string.IsNullOrWhiteSpace(value)) objs = objs.Where(b => b.HealthFacilitiesId.ToString() == value.Trim());
+                        //objs = objs.Where(b => b.HealthFacilitiesId.ToString() == value.Trim() || b.HealthFacilitiesId == null);
+
                 }
 
             }
