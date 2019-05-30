@@ -34,7 +34,10 @@ export class ValidationComponent implements OnInit {
             'invalidphonenumber': isVi ? 'Số điện thoại không đúng định dạng' : 'Invalid phone number',
             'minlength': isVi ? 'Không đủ độ dài tối thiểu' : 'The phone number not match length',
             'topnumber': isVi ? 'Sai đầu số điện thoại' : 'Invalid phone number',
-            'email': isVi ? 'Không đúng định dạng email' : 'Invalid email'
+            'email': isVi ? 'Không đúng định dạng email' : 'Invalid email',
+            'comparePassword':isVi?'Xác nhận mật khẩu mới không đúng':'Confirm password incorrect',
+            'capcha': isVi? 'Mã xác nhận không đúng':'Capcha incorrect',
+            'passwordStrong' : isVi ? 'Mật khẩu phải có chữ hoa, chữ thường, số và ký tự đặc biệt.' : 'Password incorrect'
         }
         return messages[err]
     }

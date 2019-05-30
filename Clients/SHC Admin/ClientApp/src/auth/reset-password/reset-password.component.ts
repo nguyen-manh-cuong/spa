@@ -13,6 +13,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import swal from 'sweetalert2';
 import { AppConsts } from '@shared/AppConsts';
 import { Observable } from 'rxjs';
+import { ValidationRule } from '@shared/common/common';
 
 @Component({
     selector: 'app-reset-password',
@@ -42,11 +43,13 @@ export class ResetComponent extends AppComponentBase implements OnInit {
     }
 
     ngOnInit(): void {
+        const validationRule = new ValidationRule();
+
         this.frmReset = this._formBuilder.group({
             info: [this.info],
             secretCode: ['', [Validators.required]],
-            newPassword: ['', [Validators.required]],
-            confirmPassword: ['', [Validators.required]],
+            newPassword: ['', [Validators.required, validationRule.passwordStrong]],
+            confirmPassword: ['', [Validators.required, validationRule.passwordStrong]],
             capcha: ['', [Validators.required]]
         });
         this.getCapcha();
@@ -56,22 +59,19 @@ export class ResetComponent extends AppComponentBase implements OnInit {
         this._dataService.getAny('get-captcha-image').subscribe(res => this._capcha = { code: res.code, data: this._sanitizer.bypassSecurityTrustResourceUrl('data:image/jpg;base64,' + res.data) });
     }
 
-    validateCapcha(value: any) {
-        if (value.length == 4)
-            this._capcha.code != value ? this.capcha = true : this.capcha = false;
-    }
-
     loginClick() {
         this.router.navigate(['/auth/login']);
     }
 
     capchaInput(event) {
         event.target.value = this.replace_space(this.replace_alias(event.target.value));
-        this.capcha = false;
+        if (this._capcha.code != event.target.value) {
+            this.frmReset.controls['capcha'].setErrors({'capcha':true});
+        }
     }
 
     replace_alias(str) {
-        str = str.replace(/[^A-Za-z0-9]+/ig, ""); 
+        str = str.replace(/[^A-Za-z0-9]+/ig, "");
         str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
         str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
         str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i");
@@ -94,21 +94,29 @@ export class ResetComponent extends AppComponentBase implements OnInit {
         return str;
     }
 
-
+    confirmPasswordInput(value) {
+        if (value != this.frmReset.controls['newPassword'].value) {
+            this.frmReset.controls['confirmPassword'].setErrors({ 'comparePassword': true });
+        }
+    }
 
     submit() {
         if (this.frmReset.controls['newPassword'].value != this.frmReset.controls['confirmPassword'].value) {
             return swal({
-                title: "ResetPassErrorConfirmPasswordTitle",
-                text: "ResetPassErrorConfirmPasswordMessage",
+                title: "Đổi mật khẩu không thành công",
+                text: "Xác nhận mật khẩu mới không đúng",
                 type: "warning",
                 timer: 3000
             });
         }
 
         if (this.frmReset.controls['capcha'].value != this._capcha.code) {
-            this.capcha = true;
-            return;
+            return swal({
+                title: "Đổi mật khẩu không thành công",
+                text: "Mã xác nhận không chính xác",
+                type: "warning",
+                timer: 3000
+            })
         } else {
             this._dataService.update("users", Object.assign(
                 {
@@ -119,8 +127,7 @@ export class ResetComponent extends AppComponentBase implements OnInit {
                     secretCode: this.frmReset.controls['secretCode'].value
                 })).subscribe(() => {
                     swal({
-                        title: "ResetPassSuccessTitle",
-                        text: "ResetPassSuccessMessage",
+                        title: "Đổi mật khẩu thành công",
                         type: "success",
                         timer: 3000
                     });
