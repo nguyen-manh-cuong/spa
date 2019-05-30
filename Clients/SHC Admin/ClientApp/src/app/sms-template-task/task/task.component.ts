@@ -43,7 +43,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
 
     sendSms() {
         if (this.data && this.data.selection && this.data.selection.selected.length) {
-            console.log(this.data.selection.selected);
+            console.log(this._frm.controls['smsContent'].value);
             if (this.data.selection.selected[0].phoneNumber != undefined) {
                 this._dataService.create('infoSendsms', {
                     lstMedicalHealthcareHistories: this.data.selection.selected,

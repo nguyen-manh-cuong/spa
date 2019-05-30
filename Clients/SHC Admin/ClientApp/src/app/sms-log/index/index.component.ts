@@ -43,7 +43,7 @@ export class IndexComponent extends PagedListingComponentBase<ISmsLogs> implemen
         defaultOpen: false
     }
 
-    displayedColumns = this.appSession.user.accountType != 0 ? ['orderNumber', 'phoneNumber', 'type', 'content', 'sentDate', 'status', 'messageError', 'telco'] : ['orderNumber', 'healthfacilitiesName', 'phoneNumber', 'type', 'content', 'sentDate', 'status', 'messageError', 'telco'];
+    displayedColumns = this.appSession.user.accountType != 0 ? ['orderNumber', 'phoneNumber', 'type', 'content', 'sentDate', 'status', 'messageError', 'telco', '_smsTemplateContent'] : ['orderNumber', 'healthfacilitiesName', 'phoneNumber', 'type', 'content', 'sentDate', 'status', 'messageError', 'telco'];
 
     _smsTemplate: ISmsTemplate[] = [];
     _healthfacilities: IHealthfacilities[] = [];

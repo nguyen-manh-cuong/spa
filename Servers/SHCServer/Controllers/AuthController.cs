@@ -30,6 +30,7 @@ namespace SHCServer.Controllers
         {
             _settings = settings;
             _context = new MySqlContext(new MySqlConnectionFactory(configuration.GetConnectionString("DefaultConnection")));
+            _contextmdmdb = new MySqlContext(new MySqlConnectionFactory(configuration.GetConnectionString("ConnectionMDM")));
             _connectionString = configuration.GetConnectionString("DefaultConnection");
 
             _host = configuration.GetValue("Gateway:Ip", "127.0.0.1");
@@ -184,7 +185,7 @@ namespace SHCServer.Controllers
                     Counter = Convert.ToInt32(reader["Counter"]),
                     LockedTime = reader["LockedTime"] != DBNull.Value ? Convert.ToDateTime(reader["LockedTime"]) : (DateTime.Parse("1970/12/12 00:01")),
                     Status = Convert.ToInt32(reader["Status"]),
-                    ExpriredDate = reader["LockedTime"] != DBNull.Value ? Convert.ToDateTime(reader["LockedTime"]) : DateTime.Now,
+                    ExpriredDate = reader["ExpriredDate"] != DBNull.Value ? Convert.ToDateTime(reader["ExpriredDate"]) : DateTime.Now,
                     MdmStatus = Convert.ToInt32(reader["MdmStatus"])
                 });
             }
@@ -203,7 +204,7 @@ namespace SHCServer.Controllers
                 {
                     
 
-                    if (int.Parse(data["counter"].ToString()) >= 10)
+                    if (int.Parse(data["counter"].ToString()) >= 9)
                     {
                         _context.Update<User>(c => c.Id == currentUser.Id, x => new User()
                         {
@@ -379,13 +380,13 @@ namespace SHCServer.Controllers
 
         [HttpPut]
         [Route("api/reset-password-user")]
-        public IActionResult ResetPasswordUser([FromBody] UserResetPasswordViewModel obj)
+        public IActionResult ResetPasswordUser([FromBody] ResetPasswordViewModel obj)
         {
-            User currentUser = _context.Query<User>().Where(u => u.UserName == obj.UserName).FirstOrDefault();
+            ResetPassword currentUser = _contextmdmdb.Query<ResetPassword>().Where(u => u.UserName == obj.UserName).FirstOrDefault();
 
             string currenPassword = currentUser.Password;
-            string logPassword = currentUser.PasswordLog;
-            if (!Utils.VerifyHashedPassword(currenPassword, obj.OldPassword))
+            // so sanh mat khau nhap vao voi mat khau cua user do trong db
+            if (!Utils.VerifyHashedPassword(currenPassword, obj.Password))
             {
                 return StatusCode(406, _excep.Throw(406, "Thông báo", "Đổi mật khẩu không thành công. Mật khẩu hiện tại không đúng"));
             }
@@ -397,22 +398,20 @@ namespace SHCServer.Controllers
 
             try
             {
-                _context.Session.BeginTransaction();
-                _context.Update<User>(b => b.UserName == obj.UserName, a => new User()
+                _contextmdmdb.Session.BeginTransaction();
+                _contextmdmdb.Update<ResetPassword>(b => b.UserName == obj.UserName, a => new ResetPassword()
                 {
-                    PasswordLog = currenPassword,
                     Password = Utils.HashPassword(obj.NewPassword),
-                    UpdateDate = DateTime.Now
                 });
 
-                _context.Session.CommitTransaction();
+                _contextmdmdb.Session.CommitTransaction();
 
                 return Json(new ActionResultDto());
             }
             catch (Exception e)
             {
-                if (_context.Session.IsInTransaction)
-                    _context.Session.RollbackTransaction();
+                if (_contextmdmdb.Session.IsInTransaction)
+                    _contextmdmdb.Session.RollbackTransaction();
                 return StatusCode(500, _excep.Throw("Có lỗi xảy ra !", e.Message));
             }
         }
