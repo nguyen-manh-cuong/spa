@@ -8,6 +8,7 @@ import { IHealthfacilities } from '@shared/Interfaces';
 import { debounceTime, tap, switchMap, finalize } from 'rxjs/operators';
 import { DataService } from '@shared/service-proxies/service-data';
 import { DomSanitizer } from '@angular/platform-browser';
+import swal from 'sweetalert2';
 
 @Component({
     selector: 'app-secret',
@@ -45,18 +46,16 @@ export class SecretComponent extends AppComponentBase implements OnInit {
         this._dataService.getAny('get-captcha-image').subscribe(res => this._capcha = { code: res.code, data: this._sanitizer.bypassSecurityTrustResourceUrl('data:image/jpg;base64,' + res.data) });
     }
 
-    validateCapcha(value: any) {
-        if (value.length == 4)
-            this._capcha.code != value ? this.capcha = true : this.capcha = false;
-    }
-
     loginClick() {
         this.router.navigate(['/auth/login']);
     }
 
+    
     capchaInput(event) {
         event.target.value = this.replace_space(this.replace_alias(event.target.value));
-        this.capcha = false;
+        if (this._capcha.code != event.target.value) {
+            this.frmSecret.controls['capcha'].setErrors({'capcha':true});
+        }
     }
 
     replace_alias(str) {
@@ -97,8 +96,12 @@ export class SecretComponent extends AppComponentBase implements OnInit {
         var info = this.frmSecret.controls['info'].value;
         var secret = this.makeSecret(8);
         if (this.frmSecret.controls['capcha'].value != this._capcha.code) {
-            this.capcha = true;
-            return;
+            return swal({
+                title:"Đổi mật khẩu không thành công",
+                text: "Mã xác nhận không chính xác",
+                type: "warning",
+                timer: 3000
+            })
         } else {
             this._dataService.create("users", Object.assign({
                 userName: info,

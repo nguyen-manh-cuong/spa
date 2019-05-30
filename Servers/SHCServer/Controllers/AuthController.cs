@@ -204,7 +204,7 @@ namespace SHCServer.Controllers
                 {
                     
 
-                    if (int.Parse(data["counter"].ToString()) >= 10)
+                    if (int.Parse(data["counter"].ToString()) >= 9)
                     {
                         _context.Update<User>(c => c.Id == currentUser.Id, x => new User()
                         {
