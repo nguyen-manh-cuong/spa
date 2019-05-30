@@ -99,10 +99,10 @@ export class TaskComponent extends AppComponentBase implements OnInit {
         }
 
         setTimeout(() => {
-            this.startTime.nativeElement.value = moment(new Date()).format("DD/MM/YYYY");
-            this.endTime.nativeElement.value = moment(new Date().setDate(new Date().getDate() + 6)).format("DD/MM/YYYY");
-            this.startTime.nativeElement.focus();
-            this.endTime.nativeElement.focus();
+            // this.startTime.nativeElement.value = moment(new Date()).format("DD/MM/YYYY");
+            // this.endTime.nativeElement.value = moment(new Date().setDate(new Date().getDate() + 6)).format("DD/MM/YYYY");
+            // this.startTime.nativeElement.focus();
+            // this.endTime.nativeElement.focus();
             this.getDate(this.startTime.nativeElement.value, this.endTime.nativeElement.value);
         }, 1000);
     }
@@ -150,8 +150,8 @@ export class TaskComponent extends AppComponentBase implements OnInit {
 
     onSelectDoctor(obj: any){
         this.dataService.getAll('bookingtimeslot', JSON.stringify({
-            healthfacilities : this._frm.controls['healthfacilities'].value,
-            doctorId : obj
+            //healthfacilities : this._frm.controls['healthfacilities'].value,
+            //doctorId : obj
         })).subscribe(resp => this._timeSlot = _.orderBy(resp.items, ['hoursStart'], ['asc']));
     }
 
@@ -219,8 +219,8 @@ export class TaskComponent extends AppComponentBase implements OnInit {
     changeDate(value: any, type: any) {
         if(!this.checkDate()){
             this.getDate(this.startTime.nativeElement.value, this.endTime.nativeElement.value);
-            if(type == 1) this.startTime.nativeElement.value ? this._frm.controls['startTime'].setValue(moment(this.startTime.nativeElement.value + '00:00:00', 'DD/MM/YYYY hh:mm:ss').add(7, 'hours').toDate()) : '';
-            if(type == 2) this.endTime.nativeElement.value ? this._frm.controls['endTime'].setValue(moment(this.endTime.nativeElement.value + '23:59:59', 'DD/MM/YYYY hh:mm:ss').add(7, 'hours').toDate()) : '';
+            // if(type == 1) this.startTime.nativeElement.value ? this._frm.controls['startTime'].setValue(moment(this.startTime.nativeElement.value + '00:00:00', 'DD/MM/YYYY hh:mm:ss').add(7, 'hours').toDate()) : '';
+            // if(type == 2) this.endTime.nativeElement.value ? this._frm.controls['endTime'].setValue(moment(this.endTime.nativeElement.value + '23:59:59', 'DD/MM/YYYY hh:mm:ss').add(7, 'hours').toDate()) : '';
         } 
     }
 

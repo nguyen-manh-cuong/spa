@@ -1,12 +1,12 @@
 import { RouterModule, Routes } from '@angular/router';
 import { TaskComponent } from './task/task.component';
 import { NgModule } from '@angular/core';
-import { ResetPasswordComponent } from './reset-password.component';
+import { LoginSessionComponent } from './login-session.component';
 
 const routes: Routes = [
     {
         path: '',
-        component: ResetPasswordComponent,
+        component: LoginSessionComponent,
         children: [
             { path: 'task', component: TaskComponent },
             { path: '', redirectTo: 'task' }
@@ -18,4 +18,4 @@ const routes: Routes = [
     imports: [RouterModule.forChild(routes)],
     exports: [RouterModule]
 })
-export class ResetPasswordRoutingModule { }
+export class LoginSessionRoutingModule { }

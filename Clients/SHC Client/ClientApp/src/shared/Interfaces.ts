@@ -1,4 +1,4 @@
-import { NgMultiLabelTemplateDirective } from "@ng-select/ng-select/ng-select/ng-templates.directive";
+//import { NgMultiLabelTemplateDirective } from "@ng-select/ng-select/ng-select/ng-templates.directive";
 
 export interface IUser {
     id?: number;
@@ -116,7 +116,7 @@ export interface IHealthfacilities {
     avatar: string,
     specialist: IHealthfacilitiesSpecialists[];
     specialistName: string,
-    totalDoctor: NgMultiLabelTemplateDirective
+    totalDoctor: number
 }
 
 
