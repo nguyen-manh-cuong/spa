@@ -138,15 +138,15 @@ export class DetailComponent extends AppComponentBase implements OnInit, AfterVi
 
   _healthfacilitiesChip = [];
   visible = true;
-  selectable = true;
-  removable = true;
+  selectable = false;
+  removable = false;
   addOnBlur = true;
   separatorKeysCodes: number[] = [ENTER, COMMA];
 
   _specialistChip = [];
   specialVisible = true;
-  specialSelectable = true;
-  specialRemovable = true;
+  specialSelectable = false;
+  specialRemovable = false;
   specialAddOnBlur = true;
   specialSeparatorKeysCodes: number[] = [ENTER, COMMA];
 
