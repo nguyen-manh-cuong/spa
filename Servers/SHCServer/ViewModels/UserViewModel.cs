@@ -83,7 +83,7 @@ namespace SHCServer.ViewModels
         public GroupInputViewModel[] Groups { get; set; }
 
         public int Id { set; get; }
-        public bool? isUsingdoctor { get; set; }
+        public bool? isUsingDoctor { get; set; }
         public bool? isUsingCall { get; set; }
         public bool? isUsingUpload { get; set; }
         public bool? isUsingRegister { get; set; }
