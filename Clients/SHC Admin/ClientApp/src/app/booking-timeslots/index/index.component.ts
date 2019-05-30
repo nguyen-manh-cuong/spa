@@ -129,4 +129,13 @@ export class IndexComponent extends PagedListingComponentBase<IBookingTimeslots>
       timer: 3000
     });
   }
+
+  checkPermission(isEdit: boolean, isDelete: boolean): boolean{
+    if(isEdit || isDelete){
+        return true;
+    } else{
+        this.displayedColumns = this.appSession.user.accountType != 0 ? ['orderNumber', 'code', 'name', 'time', 'status'] : ['orderNumber', 'healthFacilitiesName', 'code', 'name', 'time', 'status'];
+        return false;
+    }
+  }
 }

@@ -49,4 +49,13 @@ export class IndexComponent extends PagedListingComponentBase<IUser> implements 
             type:'error',
             timer:3000});
     }
+
+    checkPermission(isEdit: boolean, isDelete: boolean): boolean{
+        if(isEdit || isDelete){
+            return true;
+        } else{
+            this.displayedColumns = ['orderNumber', 'name', 'description', 'quantity', 'cost', 'status'];
+            return false;
+        }
+    }
 }

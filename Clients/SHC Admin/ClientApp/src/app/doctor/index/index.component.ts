@@ -638,4 +638,13 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
       this.paginator._changePageSize(this.paginator.pageSize);
     });
   }
+
+  checkPermission(isEdit: boolean, isDelete: boolean): boolean{
+    if(isEdit || isDelete){
+        return true;
+    } else{
+        this.displayedColumns = ['orderNumber', 'fullName', 'specialist', 'phoneNumber', 'address', 'priceFrom', 'allowBooking', 'allowFilter', 'allowSearch'];;
+        return false;
+    }
+  }
 }

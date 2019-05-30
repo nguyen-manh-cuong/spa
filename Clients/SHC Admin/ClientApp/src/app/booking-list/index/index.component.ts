@@ -388,4 +388,13 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
         var req = omitBy(this.frmSearch.value, isNil);
         this.btnSearchClicks$.next();
     }
+
+    checkPermission(isEdit: boolean): boolean{
+        if(isEdit){
+            return true;
+        } else{
+            this.displayedColumns = ['orderNumber', 'code', 'patient', 'gender', 'phone', 'year', 'description', 'doctor', 'examinationDate', 'status', '_bookingServiceType'];
+            return false;
+        }
+      }
 }
