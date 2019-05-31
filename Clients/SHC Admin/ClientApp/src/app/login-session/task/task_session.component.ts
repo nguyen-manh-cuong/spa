@@ -121,7 +121,7 @@ export class TaskSessionComponent extends AppComponentBase implements OnInit {
                 });
             }
 
-            if (data.items.status == 2 || data.items.mdmStatus == 1 || moment(new Date(data.items.expriredDate)).valueOf() < moment(Date.now()).valueOf()) {
+            if (data.items.status != 2 || data.items.mdmStatus != 1 || moment(new Date(data.items.expriredDate)).valueOf() < moment(Date.now()).valueOf()) {
                 this._dataService.get('auth', JSON.stringify({
                     'userName': this.frmLogin.controls['userNameOrEmailAddress'].value, 'counter': numLoginFail, 'lockedTime': lockedTime
                 }), null, null, null).subscribe(data => {

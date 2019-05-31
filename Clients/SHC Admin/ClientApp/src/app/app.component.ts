@@ -88,6 +88,7 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
 
     ngOnInit(): void {
         // SignalRAspNetCoreHelper.initSignalR();
+
         if(this.appSession.user.accountType != 0){
             var healthFacilities = (abp.session as any).healthFacilities;
             var check = true;
