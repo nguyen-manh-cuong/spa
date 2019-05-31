@@ -45,10 +45,17 @@ export class LoginService {
 
         if (authenticateResult.accessToken) {
             // Successfully logged in
-            console.log(111, authenticateResult.accessToken);
+            //console.log(111, authenticateResult.accessToken);
+
+            abp.utils.setCookieValue(
+                'Abp.UserLogin.Expried',
+                "60000",
+                new Date(new Date().getTime() + 1 * 60000), // 1 minutes
+                abp.appPath
+            );
 
             this.login(authenticateResult.accessToken, authenticateResult.encryptedAccessToken, authenticateResult.expireInSeconds, this.rememberMe);
-
+            console.log(51, 1);
         } else {
             // Unexpected result!
             console.log(119, this.authenticateResult);
@@ -71,7 +78,7 @@ export class LoginService {
             AppConsts.authorization.encrptedAuthTokenName,
             encryptedAccessToken,
             tokenExpireDate,
-            abp.appPath
+            abp.appPath,
         );
 
         let initialUrl = UrlHelper.initialUrl;

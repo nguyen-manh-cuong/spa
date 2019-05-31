@@ -45,7 +45,7 @@ export class LoginComponent extends AppComponentBase implements OnInit {
         this.frmLogin = this._formBuilder.group({
             userNameOrEmailAddress: [localStorage.getItem('userName'), Validators.required], //this.loginService.authenticateModel.userNameOrEmailAddress
             password: [localStorage.getItem('password'), Validators.required], //this.loginService.authenticateModel.password
-            codeCapcha: [''],
+            codeCapcha: ['', [Validators.required]],
             isRemberMeChecked: [false]
         });
         this.dataService = this._dataService;
@@ -148,15 +148,17 @@ export class LoginComponent extends AppComponentBase implements OnInit {
             this.loginService.authenticateModel = Object.assign(this.loginService.authenticateModel, this.frmLogin.value);
 
             this.loginService.authenticate((success) => {
-                if (this.frmLogin.controls['isRemberMeChecked'].value) {
-                    localStorage.setItem('userName', this.frmLogin.controls['userNameOrEmailAddress'].value);
-                    localStorage.setItem('password', this.frmLogin.controls['password'].value);
-                } else {
-                    localStorage.removeItem('userName');
-                    localStorage.removeItem('password');
-                }
+               
 
                 if (success) {
+                    if (this.frmLogin.controls['isRemberMeChecked'].value) {
+                        localStorage.setItem('userName', this.frmLogin.controls['userNameOrEmailAddress'].value);
+                        localStorage.setItem('password', this.frmLogin.controls['password'].value);
+                    } else {
+                        localStorage.removeItem('userName');
+                        localStorage.removeItem('password');
+                    }
+
                     this._dataService.get('auth', JSON.stringify({ 'userName': this.frmLogin.controls['userNameOrEmailAddress'].value, 'counter': -1 }), null, null, null).subscribe(data => { });
                 }
 
