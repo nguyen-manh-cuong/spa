@@ -28,8 +28,8 @@ export class IndexComponent extends AppComponentBase implements OnInit {
     ngOnInit() {
         const validationRule = new ValidationRule();
         this.frmResetPassword = this._formBuilder.group({
-            Password: [this._obj.Password], 
-            NewPassword: [this._obj.NewPassword, [this.validateRule.passwordStrong, Validators.required]],
+            Password: [this._obj.Password],
+            NewPassword: [this._obj.NewPassword, [this.validateRule.passwordStrong, Validators.required, this.validateRule.hasValue]],
             UserName: this.appSession.user.userName,
             RePassword: [],
             capcha: ['', [Validators.required]]
@@ -55,6 +55,9 @@ export class IndexComponent extends AppComponentBase implements OnInit {
         if ((this._capcha.code != event.target.value) && (this.frmResetPassword.controls['capcha'].value != "")) {
             this.frmResetPassword.controls['capcha'].setErrors({ 'capcha': true });
         }
+    }
+    newPasswordInput(event) {
+        event.target.value = this.replace_space(event.target.value);
     }
 
     replace_alias(str) {

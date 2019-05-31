@@ -2,7 +2,7 @@ import { AfterViewInit, Component, Injector, OnInit, ViewChild } from '@angular/
 import { MatDialog, MatPaginator, MatTableDataSource, MatSort } from '@angular/material';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { isEmpty, isNil, isNull, omitBy, zipObject } from 'lodash';
-import { merge, of, Subscription, Observable, timer } from 'rxjs';
+import { merge, of, Subscription, Observable } from 'rxjs';
 import { TaskSessionComponent } from '@app/login-session/task/task_session.component';
 
 import { AppComponentBase } from 'shared/app-component-base';
@@ -55,7 +55,6 @@ export abstract class PagedListingComponentBase<EntityDto> extends AppComponentB
 
     btnSearchClicks$ = new Subject<Event>();
     frmSearch: FormGroup;
-    isShowLogin =  false;
     ruleSearch = {};
     timerSubscription: Subscription;
     timer: Observable<number>
@@ -175,32 +174,22 @@ export abstract class PagedListingComponentBase<EntityDto> extends AppComponentB
             this.timerSubscription.unsubscribe();
         }
 
-        let timeLogged = moment(new Date(AppConsts.timeLoggedin)).valueOf() / 1000;
-        let timeNow = moment(Date.now()).valueOf() / 1000;
+        const cookieUserLogin = abp.utils.getCookieValue('Abp.UserLogin.Expried');
 
-        var source = timer(1000, 20000);
-        source.subscribe(val => {
-            var healthFacilities = (abp.session as any).timeLogged;
-            console.log(201, val);
-            console.log(202, abp.session);
-            console.log(203, timeNow);
-            console.log(204, healthFacilities);
-            if (val > 0 && !this.isShow) {
-            this.isShow = true;
+        if (cookieUserLogin == null) {
             const dialogRef = this.dialog.open(this.dialogSession, { minWidth: '400px', maxWidth: '400px)', disableClose: true, data: null });
             dialogRef.afterClosed().subscribe(() => {
                 this.paginator.pageIndex = 0;
                 this.paginator._changePageSize(this.paginator.pageSize);
             });
-            }
-        });
+        }
+
+
     }
 
     ngAfterViewInit(): void {
 
         this.dialogSession = TaskSessionComponent;
-
-        //this.startTimer();
 
         //this.dataSources.sort = this.sort;
         if (this.sort) {
@@ -221,6 +210,7 @@ export abstract class PagedListingComponentBase<EntityDto> extends AppComponentB
                 }),
                 map((data: any) => {
                     setTimeout(() => this.isTableLoading = false, 500);
+                    this.startTimer();
                     this.totalItems = data.totalCount;
                     return data.items;
                 }),

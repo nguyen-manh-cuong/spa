@@ -14,7 +14,7 @@
                         </mat-form-field>
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("Mật khẩu mới")}}</mat-label>
-                            <input formControlName="NewPassword" type="password" matInput  maxlength="255" minlength="6" class="form-control" title="Mật khẩu cần có ít nhất 8 kí tự">
+                            <input formControlName="NewPassword" type="password" (input) ="newPasswordInput($event)" matInput  maxlength="255" minlength="6" [required]="true" class="form-control" title="Mật khẩu cần có ít nhất 8 kí tự">
                             <!--<validation matSuffix [control]="frmResetPassword.controls['NewPassword']"></validation>-->
                             <validation matSuffix [control]="frmResetPassword.controls['NewPassword']"></validation>     
                         </mat-form-field>

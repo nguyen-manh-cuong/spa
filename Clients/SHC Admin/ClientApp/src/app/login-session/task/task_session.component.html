@@ -10,7 +10,7 @@
         <form [formGroup]="frmLogin" novalidate>
             <mat-form-field appearance="outline" class="w-100">
                 <mat-label>{{l("Login_Textbox_UserName")}}</mat-label>
-                <input formControlName="userNameOrEmailAddress" #userNameOrEmail matInput autocomplete (keyup)="onHandleLoginInput($event)">
+                <input formControlName="userNameOrEmailAddress" #userNameOrEmail matInput autocomplete autofocus (keyup)="onHandleLoginInput($event)">
                 <mat-icon matSuffix *ngIf="frmLogin.controls['userNameOrEmailAddress'].valid || !frmLogin.controls['userNameOrEmailAddress'].touched" class="text-muted">account_circle</mat-icon>
                 <mat-icon matSuffix *ngIf="frmLogin.controls['userNameOrEmailAddress'].invalid && (frmLogin.controls['userNameOrEmailAddress'].dirty || frmLogin.controls['userNameOrEmailAddress'].touched)" matTooltipClass="bg-danger text-light" matTooltip="Không được để trống" color="warn">info</mat-icon>
             </mat-form-field>
@@ -21,7 +21,7 @@
                 <mat-icon matSuffix *ngIf="frmLogin.controls['password'].invalid && (frmLogin.controls['password'].dirty || frmLogin.controls['password'].touched)" matTooltipClass="bg-danger text-light" matTooltip="Không được để trống" color="warn">info</mat-icon>
             </mat-form-field>
 
-            <div *ngIf="numberLoginFail >= 4">
+            <div *ngIf="numberLoginFail > 4">
                 <div class="mb-4 d-flex">
                     <div class="d-flex position-relative" [ngClass]="{'has-error': this.capcha}">
                         <label class="col required min-width-100 lbl-capcha position-absolute {{this.capcha ? 'text-danger' : ''}}">Mã xác nhận<span class="text-danger">*</span></label>

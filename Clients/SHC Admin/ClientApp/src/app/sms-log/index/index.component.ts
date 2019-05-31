@@ -8,18 +8,18 @@ import { map, startWith, finalize, switchMap, tap, debounceTime } from 'rxjs/ope
 import swal from 'sweetalert2';
 import * as moment from 'moment';
 
-import {MomentDateAdapter} from '@angular/material-moment-adapter';
-import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
+import { MomentDateAdapter } from '@angular/material-moment-adapter';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 
 export const MY_FORMATS = {
     parse: {
         dateInput: 'DD/MM/YYYY',
     },
     display: {
-      dateInput: 'DD/MM/YYYY',
-      monthYearLabel: 'MMM YYYY',
-      dateA11yLabel: 'LL',
-      monthYearA11yLabel: 'MMMM YYYY',
+        dateInput: 'DD/MM/YYYY',
+        monthYearLabel: 'MMM YYYY',
+        dateA11yLabel: 'LL',
+        monthYearA11yLabel: 'MMMM YYYY',
     },
 };
 
@@ -28,8 +28,8 @@ export const MY_FORMATS = {
     templateUrl: './index.component.html',
     styleUrls: ['./index.component.scss'],
     providers: [
-        {provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE]},
-        {provide: MAT_DATE_FORMATS, useValue: MY_FORMATS},
+        { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
+        { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
     ],
     encapsulation: ViewEncapsulation.None
 })
@@ -43,7 +43,7 @@ export class IndexComponent extends PagedListingComponentBase<ISmsLogs> implemen
         defaultOpen: false
     }
 
-    displayedColumns = this.appSession.user.accountType != 0 ? ['orderNumber', 'phoneNumber', 'type', 'content', 'sentDate', 'status', 'messageError', 'telco', '_smsTemplateContent'] : ['orderNumber', 'healthfacilitiesName', 'phoneNumber', 'type', 'content', 'sentDate', 'status', 'messageError', 'telco'];
+    displayedColumns = this.appSession.user.accountType != 0 ? ['orderNumber', 'phoneNumber', 'type', 'content', 'sentDate', 'status', 'messageError', 'telco', '_smsTemplateContent'] : ['orderNumber', 'healthfacilitiesName', 'phoneNumber', 'type', 'content', 'sentDate', 'status', 'messageError', 'telco', '_smsTemplateContent'];
 
     _smsTemplate: ISmsTemplate[] = [];
     _healthfacilities: IHealthfacilities[] = [];
@@ -70,7 +70,7 @@ export class IndexComponent extends PagedListingComponentBase<ISmsLogs> implemen
         super(injector);
     }
 
-    ngOnInit() {
+    ngOnInit() {        
         this.api = 'smslog';
         this.frmSearch = this._formBuilder.group({
             healthfacilities: [],
@@ -82,7 +82,7 @@ export class IndexComponent extends PagedListingComponentBase<ISmsLogs> implemen
             telco: [],
             smsTemplate: []
         });
-        
+
         setTimeout(() => {
             //this.startTime.nativeElement.value = moment(new Date()).format("DD/MM/YYYY");
             //this.endTime.nativeElement.value = moment(new Date()).format("DD/MM/YYYY");
@@ -93,18 +93,18 @@ export class IndexComponent extends PagedListingComponentBase<ISmsLogs> implemen
 
         this.dataService = this._dataService;
 
-        this.dataService.getAll('sms-templates', JSON.stringify({'checkGetList' : '1'}), '').subscribe(resp => {
-            console.log(resp.items);
+        this.dataService.getAll('sms-templates', JSON.stringify({ 'checkGetList': '1' }), '').subscribe(resp => {
             this._smsTemplate = resp.items;
         });
 
         if (this.appSession.user.healthFacilitiesId) {
             this._checkSession = true;
-            this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId);      
-          } else{
+            this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId);
+        } else {
             this.filterOptions();
             this.healthfacilities.setValue(null);
-          }
+        }
+        
     }
 
     displayFn(h?: IHealthfacilities): string | undefined {
@@ -114,30 +114,31 @@ export class IndexComponent extends PagedListingComponentBase<ISmsLogs> implemen
     filterOptions() {
         this.healthfacilities.valueChanges
             .pipe(
-              debounceTime(500),
-              tap(() => this.isLoading = true),
-              switchMap(value => this.filter(value))
+                debounceTime(500),
+                tap(() => this.isLoading = true),
+                switchMap(value => this.filter(value))
             )
             .subscribe(data => {
                 this._healthfacilities = data.items;
             });
-      }
-  
-      filter(value: any){
-        var fValue = typeof value === 'string'  ? value : (value ? value.name : '')
+    }
+
+    filter(value: any) {
+        var fValue = typeof value === 'string' ? value : (value ? value.name : '')
         this._healthfacilities = [];
-  
+
         return this.dataService
             .get("healthfacilities", JSON.stringify({
-                name : isNaN(fValue) ? fValue : "",
-                code : !isNaN(fValue) ? fValue : ""
+                name: isNaN(fValue) ? fValue : "",
+                code: !isNaN(fValue) ? fValue : ""
             }), '', null, null)
             .pipe(
                 finalize(() => this.isLoading = false)
             )
-      }
+    }
 
     customSearch() {
+        
         //if(!this.endTime.nativeElement.value || !this.startTime.nativeElement.value){
         //    return swal({
         //        title:'Thông báo', 
@@ -145,7 +146,7 @@ export class IndexComponent extends PagedListingComponentBase<ISmsLogs> implemen
         //        type:'warning',
         //        timer:3000});
         //}
-        
+
         //if(!moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').isValid()){
         //    return swal({
         //        title:'Thông báo', 
@@ -169,48 +170,50 @@ export class IndexComponent extends PagedListingComponentBase<ISmsLogs> implemen
 
         //var startTime = moment(this.startTime.nativeElement.value + '00:00:00', 'DD/MM/YYYY hh:mm:ss').add(7, 'hours').toDate();
         //var endTime = moment(this.endTime.nativeElement.value + '23:59:59:', 'DD/MM/YYYY hh:mm:ss').add(7, 'hours').toDate();
-        console.log(1, this.startDate);
-        console.log(2, this.endDate);
+
 
         this._startDate = moment(this.startDate).format('DD/MM/YYYY HH:mm');
         this._endDate = moment(this.endDate).format('DD/MM/YYYY HH:mm');
 
-        console.log(1, this._startDate);
-        console.log(2, this._endDate);
+        var startDate = moment(this.startDate).valueOf();
+        var endDate = moment(this.endDate).valueOf();
 
-        if (this._endDate < this._startDate) {
+        if (endDate < startDate) {
             return swal(this.l('Notification'), this.l('FromDateMustBeGreaterThanOrEqualToDate'), 'warning');
         }
 
         let yearStart = parseInt(this._startDate.slice(6, 10));
         let yearEnd = parseInt(this._endDate.slice(6, 10));
 
-        if (yearEnd - yearStart > 1 ) {
+        if (yearEnd - yearStart > 1) {
             return swal({
-                title:'Thông báo', 
-                text:'Dữ liệu không được lấy quá 1 năm',
+                title: 'Thông báo',
+                text: 'Dữ liệu không được lấy quá 1 năm',
                 type: 'warning',
-                timer:3000});
+                timer: 3000
+            });
         }
         if (yearEnd - yearStart == 1) {
             let monthStartTime = parseInt(this._startDate.slice(4, 6));
             let monthEndTime = parseInt(this._endDate.slice(4, 6));
             if (monthEndTime > monthStartTime) {
                 return swal({
-                    title:'Thông báo', 
-                    text:'Dữ liệu không được lấy quá 1 năm', 
-                    type:'warning',
-                    timer:3000});
+                    title: 'Thông báo',
+                    text: 'Dữ liệu không được lấy quá 1 năm',
+                    type: 'warning',
+                    timer: 3000
+                });
             }
             if (monthStartTime == monthEndTime) {
                 let dateStartTime = parseInt(this._startDate.slice(1, 3));
                 let dateEndTime = parseInt(this._endDate.slice(1, 3));
                 if (dateStartTime < dateEndTime) {
                     return swal({
-                        title:'Thông báo', 
-                        text:'Dữ liệu không được lấy quá 1 năm', 
-                        type:'warning',
-                        timer:3000});
+                        title: 'Thông báo',
+                        text: 'Dữ liệu không được lấy quá 1 năm',
+                        type: 'warning',
+                        timer: 3000
+                    });
                 }
             }
         }
@@ -221,7 +224,7 @@ export class IndexComponent extends PagedListingComponentBase<ISmsLogs> implemen
         else {
             this.healthfacilities.value ? this.frmSearch.controls['healthfacilities'].setValue(this.healthfacilities.value.healthFacilitiesId) : '';
         }
-        
+
         this.smsTemplate.value ? this.frmSearch.controls['smsTemplate'].setValue(this.smsTemplate.value) : '';
         this.frmSearch.controls['startTime'].setValue(this._startDate);
         this.frmSearch.controls['endTime'].setValue(this._endDate);
