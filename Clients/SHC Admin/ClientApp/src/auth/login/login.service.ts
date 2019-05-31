@@ -48,7 +48,7 @@ export class LoginService {
             console.log(111, authenticateResult.accessToken);
 
             this.login(authenticateResult.accessToken, authenticateResult.encryptedAccessToken, authenticateResult.expireInSeconds, this.rememberMe);
-
+            console.log(51, 1);
         } else {
             // Unexpected result!
             console.log(119, this.authenticateResult);

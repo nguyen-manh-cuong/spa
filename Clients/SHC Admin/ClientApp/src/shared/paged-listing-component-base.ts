@@ -15,6 +15,7 @@ import swal from 'sweetalert2';
 import { analyzeAndValidateNgModules } from '@angular/compiler';
 import * as moment from 'moment';
 import {MomentDateAdapter} from '@angular/material-moment-adapter';
+import { AppConsts } from './AppConsts';
 
 export class PagedResultDto {
     items: any[];
@@ -174,8 +175,16 @@ export abstract class PagedListingComponentBase<EntityDto> extends AppComponentB
             this.timerSubscription.unsubscribe();
         }
 
+        let timeLogged = moment(new Date(AppConsts.timeLoggedin)).valueOf() / 1000;
+        let timeNow = moment(Date.now()).valueOf() / 1000;
+
         var source = timer(1000, 20000);
         source.subscribe(val => {
+            var healthFacilities = (abp.session as any).timeLogged;
+            console.log(201, val);
+            console.log(202, abp.session);
+            console.log(203, timeNow);
+            console.log(204, healthFacilities);
             if (val > 0 && !this.isShow) {
             this.isShow = true;
             const dialogRef = this.dialog.open(this.dialogSession, { minWidth: '400px', maxWidth: '400px)', disableClose: true, data: null });

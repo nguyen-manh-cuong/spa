@@ -414,7 +414,8 @@
                                                         cước </span>
                                                     <div class="upload-button">
                                                         <input #dataContainer type="file"
-                                                            accept="image/*, application/pdf" multiple
+                                                             (click)="dataContainer.value = null"
+                                                            accept="image/*, application/pdf"
                                                             (change)="detectFiles($event, 'idCard')"><span
                                                             class="btn btn-sm btn-primary-inverted">
                                                             <i class="fa fa-paperclip" aria-hidden="true"></i>Tải
