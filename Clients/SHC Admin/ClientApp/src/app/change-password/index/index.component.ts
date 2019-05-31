@@ -94,7 +94,7 @@ export class IndexComponent extends AppComponentBase implements OnInit {
                 timer: 3000
             });
         }
-        if (this.frmResetPassword.controls['codeCapcha'].value != this._capcha.code) {
+        if (this.frmResetPassword.controls['capcha'].value != this._capcha.code) {
             this.capcha = true;
             return;
         }

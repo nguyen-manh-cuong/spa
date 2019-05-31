@@ -97,8 +97,22 @@ export class ResetComponent extends AppComponentBase implements OnInit {
         return str;
     }
 
-    confirmPasswordInput(value) {
-        if (value != this.frmReset.controls['newPassword'].value) {
+    newPasswordInput($event){
+        this.frmReset.controls['newPassword'].setValue(this.replace_space($event.target.value));
+
+        if ($event.target.value == '') {
+            return this.frmReset.controls['newPassword'].setErrors({ 'required': true });
+        }
+    }
+
+    confirmPasswordInput($event) {
+        this.frmReset.controls['confirmPassword'].setValue(this.replace_space($event.target.value));
+
+        if ($event.target.value == '') {
+            return this.frmReset.controls['confirmPassword'].setErrors({ 'required': true });
+        }
+
+        if ($event.target.value != this.frmReset.controls['newPassword'].value) {
             this.frmReset.controls['confirmPassword'].setErrors({ 'comparePassword': true });
         }
     }
