@@ -10,7 +10,6 @@ import { DataService } from '@shared/service-proxies/service-data';
 import { DomSanitizer } from '@angular/platform-browser';
 import * as moment from 'moment';
 import swal from 'sweetalert2';
-import { AppConsts } from '../../shared/AppConsts';
 
 @Component({
     selector: 'app-login',
@@ -46,7 +45,7 @@ export class LoginComponent extends AppComponentBase implements OnInit {
         this.frmLogin = this._formBuilder.group({
             userNameOrEmailAddress: [localStorage.getItem('userName'), Validators.required], //this.loginService.authenticateModel.userNameOrEmailAddress
             password: [localStorage.getItem('password'), Validators.required], //this.loginService.authenticateModel.password
-            codeCapcha: [''],
+            codeCapcha: ['', [Validators.required]],
             isRemberMeChecked: [false]
         });
         this.dataService = this._dataService;
