@@ -14,14 +14,14 @@
           <div class="col-md-12" [ngClass]="{'disabled': _isUsedSuccess}">
             <mat-form-field appearance="outline" class="w-100">
               <mat-label>{{l("PackageTemplateName")}}</mat-label>
-              <input #txtName="matInput" formControlName="smsTemplateName" matInput autocomplete required maxlength="255">
+              <input [readonly]="_isUsedSuccess" #txtName="matInput" formControlName="smsTemplateName" matInput autocomplete required maxlength="255">
               <validation matSuffix [control]="_frm.controls['smsTemplateName']"></validation>
             </mat-form-field>
           </div>
           <div class="col-md-8" [ngClass]="{'disabled': _isUsedSuccess}">
             <mat-form-field appearance="outline" class="w-100">
               <mat-label>{{l("PackageTemplateMessageType")}}</mat-label>
-              <mat-select formControlName="messageType">
+              <mat-select formControlName="messageType" tabindex="-1">
                 <mat-option *ngIf="_messageType.length" class="text-center" [innerHTML]="'<div class=\'text-center border-bottom w-100\'>'+ l('Bỏ chọn') +'</div>'"></mat-option>
                 <mat-option *ngFor="let o of _messageType" [value]="o.id">{{ o.name }}</mat-option>
               </mat-select>
@@ -36,7 +36,7 @@
           <div class="col-md-12" [ngClass]="{'disabled': _isUsedSuccess}">
               <mat-form-field appearance="outline" class="w-100">
                   <mat-label>{{l("PackageTemplateMessageContent")}}</mat-label>
-                  <textarea formControlName="smsContent" rows="5" matInput required maxlength="500" (keyup)="inputSmsContent($event)" (click)="cussorPointer($event.target.selectionStart, $event.target.value)"></textarea>
+                  <textarea [readonly]="_isUsedSuccess" formControlName="smsContent" rows="5" matInput required maxlength="500" (keyup)="inputSmsContent($event)" (click)="cussorPointer($event.target.selectionStart, $event.target.value)"></textarea>
                   <validation matSuffix [control]="_frm.controls['smsContent']"></validation>
               </mat-form-field>
           </div>
