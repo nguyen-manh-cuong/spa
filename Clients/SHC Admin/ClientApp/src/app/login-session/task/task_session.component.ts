@@ -157,15 +157,15 @@ export class TaskSessionComponent extends AppComponentBase implements OnInit {
             this.loginService.authenticateModel = Object.assign(this.loginService.authenticateModel, this.frmLogin.value);
 
             this.loginService.authenticate((success) => {
-                if (this.frmLogin.controls['isRemberMeChecked'].value) {
-                    localStorage.setItem('userName', this.frmLogin.controls['userNameOrEmailAddress'].value);
-                    localStorage.setItem('password', this.frmLogin.controls['password'].value);
-                } else {
-                    localStorage.removeItem('userName');
-                    localStorage.removeItem('password');
-                }
-
                 if (success) {
+                    if (this.frmLogin.controls['isRemberMeChecked'].value) {
+                        localStorage.setItem('userName', this.frmLogin.controls['userNameOrEmailAddress'].value);
+                        localStorage.setItem('password', this.frmLogin.controls['password'].value);
+                    } else {
+                        localStorage.removeItem('userName');
+                        localStorage.removeItem('password');
+                    }
+
                     this._dataService.get('auth', JSON.stringify({ 'userName': this.frmLogin.controls['userNameOrEmailAddress'].value, 'counter': -1 }), null, null, null).subscribe(data => { });
                 }
 
