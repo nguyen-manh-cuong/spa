@@ -5,7 +5,12 @@ export class AppConsts {
     static uploadBaseUrl: string;
     static appBaseHref: string; // returns angular's base-href parameter value if used during the publish
 
+    static appId: number;
+    static appName: string;
+    static serverBaseUrl: string; 
+
     static localeMappings: any = [];
+    
 
     static readonly userManagement = {
         defaultAdminUserName: 'admin'

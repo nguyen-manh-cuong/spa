@@ -40,6 +40,9 @@ export class AppPreBootstrap {
             AppConsts.localeMappings = result.localeMappings;
             AppConsts.uploadBaseUrl = result.uploadBaseUrl;
 
+            AppConsts.appName = result.appName;
+            AppConsts.appId = result.appId;
+            AppConsts.serverBaseUrl = result.serverBaseUrl;
             callback();
         });
     }
@@ -48,11 +51,13 @@ export class AppPreBootstrap {
         const cookieLangValue = abp.utils.getCookieValue('Abp.Localization.CultureName');
         const token = abp.auth.getToken();
         return abp.ajax({
-            url: AppConsts.remoteServiceBaseUrl + '/UserConfiguration',
+            url: AppConsts.serverBaseUrl + '/UserConfiguration',
             method: 'GET',
             headers: {
                 AppCulture: cookieLangValue ? cookieLangValue : 'vi',
-                Authorization: 'Bearer ' + abp.auth.getToken()
+                AppName: AppConsts.appName,
+                AppId: AppConsts.appId,
+                Authorization: 'Bearer ' + (token ? token : '')
             }
         }).done(result => {
 
