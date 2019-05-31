@@ -156,11 +156,13 @@ namespace SHCServer.Controllers
         [Route("api/Auth")]
         public IActionResult Login(int skipCount = 0, int maxResultCount = 10, string sorting = null, string filter = null)
         {
-            string query = @"select 
+            string query = @"SELECT 
                                     ui.*,
                                     u.Status as MdmStatus
-                                from smarthealthcare.sys_users ui
-                                inner join mdm.sys_users u on ui.Id = u.UserId";
+                                FROM smarthealthcare.sys_users ui
+                                INNER JOIN mdm.sys_users u
+                                ON ui.Id = u.UserId
+                                AND ui.IsDelete = 0";
             List<string> clause = new List<string>();
             List<DbParam> param = new List<DbParam>();
 

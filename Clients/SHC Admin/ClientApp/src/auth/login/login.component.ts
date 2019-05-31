@@ -82,8 +82,6 @@ export class LoginComponent extends AppComponentBase implements OnInit {
     }
 
     login(): void {
-        console.log('login')
-
         let numLoginFail = 1;
         let lockedTime = 0;
 
@@ -126,7 +124,14 @@ export class LoginComponent extends AppComponentBase implements OnInit {
             }
 
             numLoginFail = data.items.counter + 1;
-            this.numberLoginFail = numLoginFail;
+
+            if (numLoginFail >= 10) {
+                this.numberLoginFail = 0;
+            } else {
+                this.numberLoginFail = numLoginFail;
+            }
+
+            
 
             if (numLoginFail > 5) {
                 if (this.frmLogin.controls['codeCapcha'].value != this._capcha.code) {
