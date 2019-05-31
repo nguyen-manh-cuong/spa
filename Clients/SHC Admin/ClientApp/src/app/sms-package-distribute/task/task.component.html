@@ -12,13 +12,22 @@
       <div class="pt-4">
           <div class="row">
               <div class="col-md-6" *ngIf="appSession.user.accountType == 0">
-                  <mat-form-field appearance="outline" class="w-100">
-                      <mat-label>{{l('PackageDistributeHealthFacilities')}}</mat-label>
-                      <mat-select formControlName="healthFacilitiesId" [required]="true" multiple>
-                          <mat-option *ngFor="let o of _medicalFacility" [value]="o.healthFacilitiesId">{{ o.code }} - {{ o.name }}</mat-option>
-                      </mat-select>
-                      <mat-icon matSuffix *ngIf="_frmpackagedistribute.controls['healthFacilitiesId'].invalid && (_frmpackagedistribute.controls['healthFacilitiesId'].dirty || _frmpackagedistribute.controls['healthFacilitiesId'].touched)" [matTooltipPosition]="'before'" matTooltipClass="bg-danger text-light mr-1" matTooltip="{{l('NotBeEmpty')}}" color="warn">info</mat-icon>
-                  </mat-form-field>
+                  <!--<mat-form-field appearance="outline" class="w-100">
+        <mat-label>{{l('PackageDistributeHealthFacilities')}}</mat-label>
+        <mat-select formControlName="healthFacilitiesId" [required]="true" multiple>
+            <mat-option *ngFor="let o of _medicalFacility" [value]="o.healthFacilitiesId">{{ o.code }} - {{ o.name }}</mat-option>
+        </mat-select>
+        <mat-icon matSuffix *ngIf="_frmpackagedistribute.controls['healthFacilitiesId'].invalid && (_frmpackagedistribute.controls['healthFacilitiesId'].dirty || _frmpackagedistribute.controls['healthFacilitiesId'].touched)" [matTooltipPosition]="'before'" matTooltipClass="bg-danger text-light mr-1" matTooltip="{{l('NotBeEmpty')}}" color="warn">info</mat-icon>
+    </mat-form-field>-->
+                  <mat-select-autocomplete appearance="outline" class="w-100"
+                                           [placeholder]="l('PackageDistributeHealthFacilities')" [errorMsg]="errorMessage"
+                                           [showErrorMsg]="showError" [options]="_medicalFacility"
+                                           [code]="'code'"
+                                           [apiSearch]="'healthfacilities'"
+                                           [display]="'name'" [value]="'healthFacilitiesId'"
+                                           [multiple]='true'
+                                           (selectionChange)="getSelectedOptions($event)">
+                  </mat-select-autocomplete>
               </div>
               <div class="col-md-6 disabled" *ngIf="appSession.user.accountType != 0">
                     <mat-form-field appearance="outline" class="w-100">

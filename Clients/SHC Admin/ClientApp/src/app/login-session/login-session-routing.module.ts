@@ -1,5 +1,5 @@
 import { RouterModule, Routes } from '@angular/router';
-import { TaskComponent } from './task/task.component';
+import { TaskSessionComponent } from './task/task_session.component';
 import { NgModule } from '@angular/core';
 import { LoginSessionComponent } from './login-session.component';
 
@@ -8,7 +8,7 @@ const routes: Routes = [
         path: '',
         component: LoginSessionComponent,
         children: [
-            { path: 'task', component: TaskComponent },
+            { path: 'task', component: TaskSessionComponent },
             { path: '', redirectTo: 'task' }
         ]
     }
