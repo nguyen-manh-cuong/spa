@@ -282,7 +282,6 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
                 setTimeout(() => {
                     this.listBooking = this.dataSources.data;
                     if (this.listBooking.length == 0) {
-                        console.log('vao ham if')
                         this._quantityCancel = 0;
                         this._quantityDone = 0;
                         this._quantityPending = 0;
@@ -291,7 +290,6 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
                         this._quantityFemale = 0;
                     }
                     else {
-                        console.log('vao ham else')
                         for (var item of this.listBooking) {
                             this._quantityCancel = item.quantityByStatusCancel;
                             this._quantityDone = item.quantityByStatusDone;

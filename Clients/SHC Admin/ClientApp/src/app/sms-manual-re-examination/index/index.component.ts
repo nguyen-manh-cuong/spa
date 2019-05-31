@@ -111,7 +111,6 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
         this.frmSearch.controls['startTime'].setValue(new Date(new Date().setDate(new Date().getDate())));
         this.dataService.getAll('provinces').subscribe(resp => this._provinces = resp.items);
         this.permission = getPermission(abp.nav.menus['mainMenu'].items, this.router.url);
-        console.log(111, this.permission);
 
 
         if (this.appSession.user.healthFacilitiesId) {
@@ -500,7 +499,6 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
             code: "A01.SMSTAIKHAM",
             healthFacilitiesId: this.appSession.user.healthFacilitiesId
         }), '', 0, 0).subscribe(resp => {
-            console.log(336, resp);
 
             if (!resp || !resp.items) {
                 return this.openCustomDialog();

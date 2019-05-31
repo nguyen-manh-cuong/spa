@@ -13,6 +13,7 @@ import { HttpClient, HttpHeaders, HttpResponse, HttpResponseBase } from '@angula
 import { Inject, Injectable, InjectionToken, Optional } from '@angular/core';
 import { Observable, from as _observableFrom, of as _observableOf, throwError as _observableThrow } from 'rxjs';
 import { catchError as _observableCatch, mergeMap as _observableMergeMap } from 'rxjs/operators';
+import { AppConsts } from '@shared/AppConsts';
 
 export const API_BASE_URL = new InjectionToken<string>('API_BASE_URL');
 
@@ -674,7 +675,7 @@ export class SessionServiceProxy {
      * @return Success
      */
     getCurrentLoginInformations(): Observable<GetCurrentLoginInformationsOutput> {
-        let url_ = this.baseUrl + "/GetCurrentLoginInformations";
+        let url_ = AppConsts.serverBaseUrl + "/GetCurrentLoginInformations";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: any = {
@@ -770,7 +771,7 @@ export class TokenAuthServiceProxy {
      * @return Success
      */
     authenticate(model: AuthenticateModel | null | undefined): Observable<AuthenticateResultModel> {
-        let url_ = this.baseUrl + "/auth";
+        let url_ = AppConsts.serverBaseUrl + "/api/auth";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(model);

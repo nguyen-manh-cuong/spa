@@ -149,7 +149,6 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
         setTimeout(() => {
             $("#smsTo" + length).focus();
         }, 500);
-        console.log(151, smsTo)
     }
 
     checkPackageDetail() {
