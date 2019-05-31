@@ -109,7 +109,6 @@ export class DetailComponent extends AppComponentBase implements OnInit {
             }
         }
         address = this._booking.address != undefined ? this._booking.address : "" +  (this._booking.address != undefined && district != "" ? ", " : "") +  (district != "" ?  district : "") +  ((district != "") || (this._booking.address != undefined) && province != "" ? ", " : "")   + (province != "" ? province : "");
-        console.log(address);
         this._addressString = address;
         //this._frm.controls['address'].setValue(address);
     }

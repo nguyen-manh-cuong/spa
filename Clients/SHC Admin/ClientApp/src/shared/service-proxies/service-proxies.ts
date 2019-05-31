@@ -2546,7 +2546,6 @@ export class UserLoginInfoDto implements IUserLoginInfoDto {
     }
 
     init(data?: any) {
-        console.log(data);
         if (data) {
             this.name = data["name"];
             this.fullName = data["fullName"];

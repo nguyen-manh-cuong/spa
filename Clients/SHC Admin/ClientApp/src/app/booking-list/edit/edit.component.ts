@@ -46,12 +46,10 @@ export class EditComponent extends AppComponentBase implements OnInit, AfterView
         }
 
     ngOnInit() {
-        console.log(_.trim("     dfgdfgd      12   haha a     ".replace(/\s+/g," ")))
         const validationRule = new ValidationRule();
         if (this.bookingData) {
             this._booking = _.clone(this.bookingData);
             this.selectedStatus = this._status.find(x => x.id == this._booking.status).name;
-            console.log(this.selectedStatus);
         }
         setTimeout(() => { this.getAddress() }, 1000);
         this._dataService.getAll('provinces').subscribe(resp => { this._province = resp.items });
@@ -110,7 +108,6 @@ export class EditComponent extends AppComponentBase implements OnInit, AfterView
         }
         //address = this._booking.address != undefined ? this._booking.address + ", " : "" + (district != "" ? district : "") + (province != "" ? ", " + province : "");
         address = this._booking.address != undefined ? this._booking.address : "" +  (this._booking.address != undefined && district != "" ? ", " : "") +  (district != "" ?  district : "") +  ((district != "") || (this._booking.address != undefined) && province != "" ? ", " : "")   + (province != "" ? province : "");
-        console.log('Địa chỉ', address);
         this._frm.controls['address'].setValue(address);
     }
 
@@ -148,8 +145,6 @@ export class EditComponent extends AppComponentBase implements OnInit, AfterView
     }
 
     submit() {
-        console.log(this._booking.bookingId);
-        console.log(this._frm.value);
 
         var params = _.pick(this._frm.value, ['bookingId', 'reason', 'status', 'bookingUser', 'address', 'updateUserId']);
 

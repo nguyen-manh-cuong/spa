@@ -54,7 +54,6 @@ export class IndexComponent extends PagedListingComponentBase<IBookingTimeslots>
       this.healthfacilities.setValue(null);
     }
 
-    console.log(this.dataSources);
   }
 
   displayFn(h?: IHealthfacilities): string | undefined {

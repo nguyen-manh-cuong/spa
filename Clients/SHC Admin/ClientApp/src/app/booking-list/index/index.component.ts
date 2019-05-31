@@ -143,7 +143,6 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
     }
 
     onInputHealthfacilities(obj: any) {
-        console.log(obj);
         if (obj != '') {
             this.frmSearch.controls['healthfacilities'].setValue(0);
         } else {

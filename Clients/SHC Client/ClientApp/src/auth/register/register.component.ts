@@ -159,7 +159,6 @@ export class RegisterComponent implements OnInit {
 
     submit() {
         this.frmUser.value.birthDay = new Date($('#birthY').val() + '-' + $('#birthM').val() + '-' + $('#birthDay').val());
-        console.log($('#birthY').val() + '-' + $('#birthM').val() + '-' + $('#birthDay').val());
         if (this.frmUser.controls['password'].value != this.frmUser.controls['confirmPassword'].value) {
             this.frmUser.controls['confirmPassword'].setErrors({ password: true });
         }
@@ -267,7 +266,6 @@ export class RegisterComponent implements OnInit {
     }
 
     removeFile(i: number, type: number) {
-        console.log(i);
         if (type == 1) {
             this.arrayIdCard.splice(i, 1);
             this._idCardUrls.splice(i, 1);

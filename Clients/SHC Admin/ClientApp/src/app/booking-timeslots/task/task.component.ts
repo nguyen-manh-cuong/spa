@@ -98,7 +98,6 @@ export class TaskComponent extends AppComponentBase implements OnInit {
     }
 
     submit() {
-        console.log(101, this._frm.value);
 
         var start = this._frm.controls['hoursStart'].value.concat(this._frm.controls['minuteStart'].value);
         var end = this._frm.controls['hoursEnd'].value.concat(this._frm.controls['minuteEnd'].value);

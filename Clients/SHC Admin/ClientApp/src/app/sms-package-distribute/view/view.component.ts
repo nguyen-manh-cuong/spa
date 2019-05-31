@@ -40,7 +40,6 @@ export class packagedistributeViewComponent extends AppComponentBase implements 
     this._dataService.getAll('smspackages-all').subscribe(resp => this._package = resp.items);
       if (this.obj) {
           this._obj = _.clone(this.obj);
-          console.log(this._obj);
       this._obj.monthStart = this.obj.monthStart;
         this._obj.monthEnd = this.obj.monthEnd;
         this._obj.yearStart = this.obj.yearStart;
