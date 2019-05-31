@@ -178,7 +178,7 @@ export abstract class PagedListingComponentBase<EntityDto> extends AppComponentB
         source.subscribe(val => {
             if (val > 0 && !this.isShow) {
             this.isShow = true;
-            const dialogRef = this.dialog.open(this.dialogSession, { minWidth: 'calc(100vw/2)', maxWidth: 'calc(100vw - 300px)', disableClose: true, data: null });
+            const dialogRef = this.dialog.open(this.dialogSession, { minWidth: '400px', maxWidth: '400px)', disableClose: true, data: null });
             dialogRef.afterClosed().subscribe(() => {
                 this.paginator.pageIndex = 0;
                 this.paginator._changePageSize(this.paginator.pageSize);
@@ -191,7 +191,7 @@ export abstract class PagedListingComponentBase<EntityDto> extends AppComponentB
 
         this.dialogSession = TaskSessionComponent;
 
-        this.startTimer();
+        //this.startTimer();
 
         //this.dataSources.sort = this.sort;
         if (this.sort) {
