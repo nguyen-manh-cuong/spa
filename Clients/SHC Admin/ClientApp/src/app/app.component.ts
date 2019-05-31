@@ -12,7 +12,6 @@ import { Observable } from 'rxjs';
 import { SignalRAspNetCoreHelper } from '@shared/helpers/SignalRAspNetCoreHelper';
 import { Title } from '@angular/platform-browser';
 import { MAT_DIALOG_DATA, MatButton, MatDialog, MatDialogRef } from '@angular/material';
-import { TaskComponent } from './login-session/task/task.component';
 //import { PagedListingComponentBase } from '@shared/paged-listing-component-base';
 //import { TaskComponent } from './sms-template-task/task/task.component';
 import { DataService } from '@shared/service-proxies/service-data';
