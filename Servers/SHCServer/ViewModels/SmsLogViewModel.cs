@@ -47,6 +47,7 @@ namespace SHCServer.ViewModels
                 .Select((s, h) => h).FirstOrDefault();
 
             SmsTemplateContent = smsTemplate != null ? smsTemplate.SmsContent : "";
+            SmsTemplateName = smsTemplate != null ? smsTemplate.SmsTemplateName : "";
         }
 
         public int Id { set; get; }
@@ -61,6 +62,7 @@ namespace SHCServer.ViewModels
         public string ResultMessage { set; get; }
         public string healthfacilitiesName { set; get; }
         public string SmsTemplateContent { get; set; }
+        public string SmsTemplateName { get; set; }
 
         public string SentDay { get; set; }
         public string SentMonth { get; set; }

@@ -123,7 +123,7 @@
             </ng-container>
             <ng-container matColumnDef="type">
                 <th mat-header-cell *matHeaderCellDef class="min-w-50 text-center"> {{l('Loại tin')}} </th>
-                <td mat-cell *matCellDef="let element"> {{element.logType == 1 ? 'Gửi chủ động' : 'Gửi tự động'}} </td>
+                <td mat-cell *matCellDef="let element" class="text-left"> {{element.logType == 1 ? 'Gửi chủ động' : 'Gửi tự động'}} </td>
             </ng-container>
 
             <ng-container matColumnDef="content">
@@ -136,15 +136,15 @@
             </ng-container>
             <ng-container matColumnDef="status">
                 <th mat-header-cell *matHeaderCellDef class="min-w-70 text-center"> {{l('Kết quả')}} </th>
-                <td mat-cell *matCellDef="let element" class="text-center"> {{element.status == 1 ? 'Thành công' : 'Lỗi'}} </td>
+                <td mat-cell *matCellDef="let element" class="text-left"> {{element.status == 1 ? 'Thành công' : 'Lỗi'}} </td>
             </ng-container>
             <ng-container matColumnDef="messageError">
                 <th mat-header-cell *matHeaderCellDef class="min-w-100 text-center"> {{l('Nội dung lỗi')}} </th>
-                <td mat-cell *matCellDef="let element" class="text-center"> {{element.resultMessage}} </td>
+                <td mat-cell *matCellDef="let element" class="text-left"> {{element.resultMessage}} </td>
             </ng-container>
             <ng-container matColumnDef="telco">
                 <th mat-header-cell *matHeaderCellDef class="min-w-70 text-center"> {{l('Telco')}} </th>
-                <td mat-cell *matCellDef="let element" class="text-center"> {{element.telco}} </td>
+                <td mat-cell *matCellDef="let element" class="text-left"> {{element.telco}} </td>
             </ng-container>
 
             <ng-container matColumnDef="_smsTemplateContent">
