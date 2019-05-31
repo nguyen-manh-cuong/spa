@@ -88,6 +88,10 @@ export class packagedistributeTaskComponent extends AppComponentBase implements 
         this._frmpackagedistribute = this._formBuilder.group(this._context);
     }
 
+    getSelectedOptions(selected) {
+        this._frmpackagedistribute.controls['healthFacilitiesId'].setValue(selected);
+    }
+
     submit() {
         const yearNow = new Date().getFullYear();
         if(this._frmpackagedistribute.controls['yearStart'].value == this._frmpackagedistribute.controls['yearEnd'].value){

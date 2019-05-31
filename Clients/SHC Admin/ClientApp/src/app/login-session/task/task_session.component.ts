@@ -19,10 +19,10 @@ import { LoginService } from '../../../auth/login/login.service';
 
 @Component({
     selector: 'app-task',
-    templateUrl: './task.component.html',
-    styleUrls: ['./task.component.scss']
+    templateUrl: './task_session.component.html',
+    styleUrls: ['./task_session.component.scss']
 })
-export class TaskComponent extends AppComponentBase implements OnInit {
+export class TaskSessionComponent extends AppComponentBase implements OnInit {
     frmLogin: FormGroup;
     submitted = false;
     saving = true;
@@ -38,7 +38,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
         injector: Injector,
         private _dataService: DataService,
         private _formBuilder: FormBuilder,
-        public dialogRef: MatDialogRef<TaskComponent>,
+        public dialogRef: MatDialogRef<TaskSessionComponent>,
         @Inject(MAT_DIALOG_DATA) public obj,
         private router: Router,
         private _sanitizer: DomSanitizer,

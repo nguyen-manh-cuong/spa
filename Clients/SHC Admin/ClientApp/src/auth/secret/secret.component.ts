@@ -52,7 +52,7 @@ export class SecretComponent extends AppComponentBase implements OnInit {
 
     
     capchaInput(event) {
-        event.target.value = this.replace_space(this.replace_alias(event.target.value));
+        event.target.value = this.replace_alias(this.replace_space(event.target.value));
         if (this._capcha.code != event.target.value) {
             this.frmSecret.controls['capcha'].setErrors({'capcha':true});
         }
@@ -60,6 +60,7 @@ export class SecretComponent extends AppComponentBase implements OnInit {
 
     replace_alias(str) {
         str = str.replace(/[^A-Za-z0-9]+/ig, ""); 
+
         str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
         str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
         str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i");
@@ -74,6 +75,7 @@ export class SecretComponent extends AppComponentBase implements OnInit {
         str = str.replace(/Ù|Ú|Ụ|Ủ|Ũ|Ư|Ừ|Ứ|Ự|Ử|Ữ/g, "U");
         str = str.replace(/Ỳ|Ý|Ỵ|Ỷ|Ỹ/g, "Y");
         str = str.replace(/Đ/g, "D");
+
         return str;
     }
 
@@ -101,6 +103,7 @@ export class SecretComponent extends AppComponentBase implements OnInit {
                 text: "Mã xác nhận không chính xác",
                 type: "warning",
                 timer: 3000
+            }).then(()=>{
             })
         } else {
             this._dataService.create("users", Object.assign({
@@ -110,6 +113,8 @@ export class SecretComponent extends AppComponentBase implements OnInit {
                 secretCode: secret
             })).subscribe(() => {
                 this.continue = true;
+            },err=>{
+                this.getCapcha();
             });
         }
     }

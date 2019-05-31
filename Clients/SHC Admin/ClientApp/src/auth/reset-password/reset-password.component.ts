@@ -100,22 +100,30 @@ export class ResetComponent extends AppComponentBase implements OnInit {
         }
     }
 
+    secretCodeInput($event){
+        $event.target.value=this.replace_space($event.target.value);
+    }
+
     submit() {
         if (this.frmReset.controls['newPassword'].value != this.frmReset.controls['confirmPassword'].value) {
+            this.getCapcha();
             return swal({
                 title: "Đổi mật khẩu không thành công",
                 text: "Xác nhận mật khẩu mới không đúng",
                 type: "warning",
                 timer: 3000
+            }).then(()=>{
             });
         }
 
         if (this.frmReset.controls['capcha'].value != this._capcha.code) {
+            this.getCapcha();
             return swal({
                 title: "Đổi mật khẩu không thành công",
                 text: "Mã xác nhận không chính xác",
                 type: "warning",
                 timer: 3000
+            }).then(()=>{
             })
         } else {
             this._dataService.update("users", Object.assign(
@@ -132,6 +140,8 @@ export class ResetComponent extends AppComponentBase implements OnInit {
                         timer: 3000
                     });
                     return this.router.navigate(["/auth/login"]);
+                },err=>{
+                    this.getCapcha();
                 });
         }
     }
