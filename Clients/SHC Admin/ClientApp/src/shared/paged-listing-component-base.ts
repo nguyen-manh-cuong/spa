@@ -191,7 +191,7 @@ export abstract class PagedListingComponentBase<EntityDto> extends AppComponentB
 
         this.dialogSession = TaskSessionComponent;
 
-        this.startTimer();
+        //this.startTimer();
 
         //this.dataSources.sort = this.sort;
         if (this.sort) {
