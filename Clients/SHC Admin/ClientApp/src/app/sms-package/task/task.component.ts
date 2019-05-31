@@ -223,12 +223,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
             index: this._details.length
         }];
         params.name = _.trim(params.name);//temp
-        
-        for (var i = 0; i < params.name.length; i++) {
-            if (params.name.substring(i, i + 1) == ' ' && params.name.substring(i, i + 2) == ' ') {
-                params.name = params.name.substring(i, i + 1);
-            }
-        }
+
 
         params.details = this._details.concat(detail);
         params.userId = this.appSession.userId;
@@ -236,6 +231,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
         if (this.packageData) {
             params.id = this.packageData.id;
         }
+
 
         this._isNew ?
             this._dataService.create(this.api, params).subscribe(() => {
