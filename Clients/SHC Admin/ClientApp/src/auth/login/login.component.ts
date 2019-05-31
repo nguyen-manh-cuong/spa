@@ -45,7 +45,7 @@ export class LoginComponent extends AppComponentBase implements OnInit {
         this.frmLogin = this._formBuilder.group({
             userNameOrEmailAddress: [localStorage.getItem('userName'), Validators.required], //this.loginService.authenticateModel.userNameOrEmailAddress
             password: [localStorage.getItem('password'), Validators.required], //this.loginService.authenticateModel.password
-            codeCapcha: ['', [Validators.required]],
+            codeCapcha: [''],
             isRemberMeChecked: [false]
         });
         this.dataService = this._dataService;
@@ -82,6 +82,8 @@ export class LoginComponent extends AppComponentBase implements OnInit {
     }
 
     login(): void {
+        console.log('login')
+
         let numLoginFail = 1;
         let lockedTime = 0;
 
