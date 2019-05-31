@@ -21,6 +21,7 @@ export class IndexComponent extends PagedListingComponentBase<IUser> implements 
     displayedColumns = ['orderNumber', 'name', 'description', 'quantity', 'cost', 'status', 'task'];
     status = [{ id: 2, name: 'Tất cả'}, { id: 1, name: 'Hiệu lực'}, { id: 0, name: 'Không hiệu lực'}];
     dialogDetail: any;
+    dialogSession: any;
     permission: any;
 
     constructor(injector: Injector, private _dataService: DataService, public dialog: MatDialog, private _formBuilder: FormBuilder, private router: Router) {
@@ -35,11 +36,17 @@ export class IndexComponent extends PagedListingComponentBase<IUser> implements 
         this.dialogComponent = TaskComponent;
         this.dialogDetail = DetailComponent;
         this.permission = getPermission(abp.nav.menus['mainMenu'].items, this.router.url);
+
     }
 
     detail(obj): void {
-        const dialogRef = this.dialog.open(this.dialogDetail, { minWidth: 'calc(100vw/2)', maxWidth: 'calc(100vw - 300px)', data: obj ? obj : null });
-        dialogRef.afterClosed().subscribe(() => this.paginator._changePageSize(this.paginator.pageSize));
+        if (this.isShowLogin) {
+            const dialogRef = this.dialog.open(this.dialogSession, { minWidth: 'calc(100vw/2)', maxWidth: 'calc(100vw - 300px)', data: obj ? obj : null });
+            dialogRef.afterClosed().subscribe(() => this.paginator._changePageSize(this.paginator.pageSize));
+        } else {
+            const dialogRef = this.dialog.open(this.dialogDetail, { minWidth: 'calc(100vw/2)', maxWidth: 'calc(100vw - 300px)', data: obj ? obj : null });
+            dialogRef.afterClosed().subscribe(() => this.paginator._changePageSize(this.paginator.pageSize));
+        }
     }
 
     showMessage(title: string, content: string, type: string) {

@@ -5,7 +5,8 @@ import {
     OnChanges,
     Output,
     ViewChild,
-    DoCheck
+    DoCheck,
+    ElementRef
 } from '@angular/core';
 import { DataService } from '@shared/service-proxies/service-data';
 import { FormControl } from '@angular/forms';
@@ -15,7 +16,7 @@ import { FormControl } from '@angular/forms';
     template: `
   <mat-form-field appearance="{{appearance}}" class="{{class}}">
     <mat-select #selectElem [attr.disabled]="disabled" [placeholder]="placeholder" [formControl]="formControl" [multiple]="multiple"
-    [(ngModel)]="selectedValue" (selectionChange)="onSelectionChange($event)">
+    [(ngModel)]="selectedValue" (openedChange)="openedChange($event)" (selectionChange)="onSelectionChange($event)">
     <div class="box-search">
         <mat-checkbox *ngIf="multiple" color="primary" class="box-select-all" [(ngModel)]="selectAllChecked"
         (change)="toggleSelectAll($event)"></mat-checkbox>
@@ -106,12 +107,14 @@ export class SelectAutocompleteComponent implements OnChanges, DoCheck {
     selectionChange: EventEmitter<any> = new EventEmitter();
 
     @ViewChild('selectElem') selectElem;
+    @ViewChild('searchInput') searchInput:ElementRef;
 
     filteredOptions: Array<any> = [];
     selectedValue: Array<any> = [];
     selectedName: Array<any> = [];
     selectAllChecked = false;
     displayString = '';
+    isMultiple = false;
     constructor(private _dataService: DataService) { }
 
     ngOnChanges() {
@@ -120,6 +123,13 @@ export class SelectAutocompleteComponent implements OnChanges, DoCheck {
             this.selectedValue = this.selectedOptions;
         } else if (this.formControl.value) {
             this.selectedValue = this.formControl.value;
+        }
+    }
+
+    openedChange(opened: boolean) {
+        if (this.filteredOptions.length == 0 && !opened) {
+            this.filteredOptions = this.options;
+            this.searchInput.nativeElement.value = '';
         }
     }
 
@@ -154,11 +164,7 @@ export class SelectAutocompleteComponent implements OnChanges, DoCheck {
         if (value.length) {
             if (!isNaN(value)) {
                 this._dataService.getAll(this.apiSearch, "{code:" + value + "}").subscribe(resp => {
-                    this.options = resp.items;
-                    this.filteredOptions = this.options.filter(
-                        item => item[this.code].toLowerCase().indexOf(value.toLowerCase()) > -1
-                    );
-                    this.selectAllChecked = true;
+                    this.filteredOptions = resp.items;
                     this.filteredOptions.forEach(item => {
                         if (this.selectedValue.indexOf(item[this.value]) > -1) {
                             this.selectAllChecked = false;
@@ -166,12 +172,8 @@ export class SelectAutocompleteComponent implements OnChanges, DoCheck {
                     });
                 });
             } else {
-                this._dataService.getAll(this.apiSearch, JSON.stringify({name: value})).subscribe(resp => {
-                    this.options = resp.items;
-                    this.filteredOptions = this.options.filter(
-                        item => item[this.display].toLowerCase().indexOf(value.toLowerCase()) > -1
-                    );
-                    this.selectAllChecked = true;
+                this._dataService.getAll(this.apiSearch, JSON.stringify({ name: value })).subscribe(resp => {
+                    this.filteredOptions = resp.items;
                     this.filteredOptions.forEach(item => {
                         if (this.selectedValue.indexOf(item[this.value]) > -1) {
                             this.selectAllChecked = false;
@@ -180,6 +182,7 @@ export class SelectAutocompleteComponent implements OnChanges, DoCheck {
                 });
             }
         }
+           
         
     }
 
@@ -198,28 +201,28 @@ export class SelectAutocompleteComponent implements OnChanges, DoCheck {
 
     onDisplayString() {
         this.displayString = '';
-        if (this.selectedName && this.selectedName.length) {
+        if (this.selectedValue && this.selectedValue.length) {
             let displayOption = [];
-            if (this.multiple) {
+            if (this.isMultiple) {
                 // Multi select display
                 for (let i = 0; i < this.labelCount; i++) {
-                    displayOption[i] = this.options.find(
-                        option => option === this.selectedName[i]
+                    displayOption[i] = this.selectedName.find(
+                        option => option[this.value] === this.selectedValue[i]
                     );
                 }
-                if (displayOption.length) {
+                if (displayOption.length && displayOption[0] != undefined) {
                     for (let i = 0; i < displayOption.length; i++) {
-                        this.displayString += displayOption[i][this.display] + ',';
+                         this.displayString += displayOption[i][this.display] + ',';
                     }
                     this.displayString = this.displayString.slice(0, -1);
-                    if (this.selectedName.length > 1) {
-                        this.displayString += ` (+${this.selectedName.length - this.labelCount} cơ sở khác)`;
+                    if (this.selectedValue.length > 1) {
+                        this.displayString += ` (+${this.selectedValue.length - this.labelCount} cơ sở khác)`;
                     }
                 }
             } else {
                 // Single select display
-                displayOption = this.options.filter(
-                    option => option.value === this.selectedName
+                displayOption = this.filteredOptions.filter(
+                    option => option[this.value] === this.selectedValue[0]
                 );
                 if (displayOption.length) {
                     this.displayString = displayOption[0][this.display];
@@ -231,23 +234,20 @@ export class SelectAutocompleteComponent implements OnChanges, DoCheck {
 
     onSelectionChange(val) {
         this.selectedName = [];
-        const filteredValues = this.getFilteredOptionsValues();
-        let count = 0;
-        if (this.multiple) {
-            this.selectedValue.filter(item => {
-                if (filteredValues.indexOf(item) > -1) {
-                    count++;
-                }
-            });
-            this.selectAllChecked = count === this.filteredOptions.length;
-        }
+
         this.selectedValue = val.value;
+        if (this.selectedValue.length > 1) {
+            this.isMultiple = true;
+        } else {
+            this.isMultiple = false;
+        }
+
         for (var i = 0; i < this.selectedValue.length; i++) {
-            this.selectedName.push(this.options.find(
+            this.selectedName.push(this.filteredOptions.find(
                 item => item[this.value] == this.selectedValue[i]
             ));
         }
-
+        this.selectAllChecked = this.selectedValue.length > 0;
         this.selectionChange.emit(this.selectedValue);
     }
 
