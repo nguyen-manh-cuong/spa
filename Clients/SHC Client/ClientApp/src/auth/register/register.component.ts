@@ -10,6 +10,7 @@ import * as _ from 'lodash';
 import * as moment from 'moment';
 import swal from 'sweetalert2';
 import { FileValidator } from 'ngx-material-file-input';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-register',
@@ -52,7 +53,7 @@ export class RegisterComponent implements OnInit {
     @ViewChild("fullName") fullName: ElementRef;
     @ViewChild("imageData") imageData: ElementRef;
 
-    constructor(private _sanitizer: DomSanitizer, private _dataService: DataService, private _formBuilder: FormBuilder, private _location: Location, ) { }
+    constructor(private _sanitizer: DomSanitizer, private _dataService: DataService, private _formBuilder: FormBuilder, private _router: Router) { }
 
     ngOnInit() {
         this._user = new CreateUserDto();
@@ -237,7 +238,7 @@ export class RegisterComponent implements OnInit {
                     //if (result.value) {
                     //this._location.back();
                     //}
-                    this._location.back();
+                    this._router.navigateByUrl('/');
                 });
             }, err => console.log('err: ' + err))
     }

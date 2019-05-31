@@ -57,7 +57,7 @@ namespace SHCServer.Controllers
                     return StatusCode(406, _excep.Throw("Khôi phục mật khẩu không thành công","Tài khoản này chưa có email liên kết"));
                 }
 
-                if(!SendMail(user.Email, obj.SecretCode))
+                if(!SendMail(user.Email, obj.SecretCode,user.UserName))
                 {
                     return StatusCode(500, _excep.Throw("Có lỗi xảy ra khi gửi mã bí mật"));
                 }
@@ -129,7 +129,7 @@ namespace SHCServer.Controllers
             return Json(new ActionResultDto());
         }
 
-        public bool SendMail(string sendTo, string secretCode)
+        public bool SendMail(string sendTo, string secretCode,string user)
         {
             string userName = "configshc@gmail.com";
             string password = "Abc@123456";
@@ -141,9 +141,9 @@ namespace SHCServer.Controllers
 
                 MailMessage message = new MailMessage(userName, sendTo);
 
-                message.Subject = "Mã bí mật quên mật khẩu Smart Health Care";
-
-                message.Body = "Mã bí mật của bạn là: "+ secretCode;
+                message.Subject = "[SHC] Thay đổi mật khẩu";
+                                                                                                 
+                message.Body = "Xin chào " + user + "\nChúng tôi vừa nhận được yêu cầu thay đổi mật khẩu từ phía bạn"+ "\nVui lòng sử dụng mã bí mật để thay đổi mật khẩu: " + secretCode + "\nĐể bảo mật, bạn vui lòng thay đổi mật khẩu sau khi đăng nhập và không tiết lộ cho bất kỳ cá nhân nào.";
 
                 mailclient.Send(message);
 
