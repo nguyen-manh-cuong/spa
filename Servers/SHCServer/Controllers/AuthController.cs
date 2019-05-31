@@ -256,7 +256,7 @@ namespace SHCServer.Controllers
         [Route("api/Register")]
         public object Register([FromForm] UserInputViewModel obj)
         {
-            var User = _context.Query<User>();
+            var User = _contextmdmdb.Query<UserMDM>();
 
             if (User.Where(u => u.UserName == obj.UserName).Count() > 0)
             {
@@ -270,15 +270,15 @@ namespace SHCServer.Controllers
             {
                 return StatusCode(406, _excep.Throw("Đăng ký không thành công.", "Số điện thoại đã tồn tại!"));
             }
-            if (obj.Identification != "null" && !string.IsNullOrEmpty(obj.Identification) && User.Where(u => u.Identification == obj.Identification).Count() > 0)
-            {
-                return StatusCode(406, _excep.Throw("Đăng ký không thành công.", "Số CMND đã tồn tại!"));
-            }
+            //if (obj.Identification != "null" && !string.IsNullOrEmpty(obj.Identification) && User.Where(u => u.Identification == obj.Identification).Count() > 0)
+            //{
+            //    return StatusCode(406, _excep.Throw("Đăng ký không thành công.", "Số CMND đã tồn tại!"));
+            //}
 
             try
             {
-                _context.Session.BeginTransaction();
-                _context.Insert(() => new User
+                _contextmdmdb.Session.BeginTransaction();
+                _contextmdmdb.Insert(() => new UserMDM
                 {
                     UserName = obj.UserName,
                     Password = Utils.HashPassword(obj.Password),
@@ -296,21 +296,23 @@ namespace SHCServer.Controllers
                     DistrictCode = obj.DistrictCode,
                     WardCode = obj.WardCode,
 
-                    Register = obj.Register,
-                    Identification = obj.Identification,
-                    Insurrance = obj.Insurrance,
-                    WorkPlace = obj.WorkPlace,
-                    HealthFacilitiesName = obj.HealthFacilitiesName,
-                    Specialist = obj.Specialist
+                    //Register = obj.Register,
+                    //Identification = obj.Identification,
+                    //Insurrance = obj.Insurrance,
+                    //WorkPlace = obj.WorkPlace,
+                    //HealthFacilitiesName = obj.HealthFacilitiesName,
+                    //Specialist = obj.Specialist
                 });
 
-                User user = _context.Query<User>().Where(u => u.UserName == obj.UserName).FirstOrDefault();
+                UserMDM user = _contextmdmdb.Query<UserMDM>().Where(u => u.UserName == obj.UserName).FirstOrDefault();
+
+                _context.Session.BeginTransaction();
 
                 if (user != null && obj.AccountType != 1)
                 {
                     _context.Insert(() => new UsersServices
                     {
-                        UserId = user.Id,
+                        UserId = user.UserId,
                         IsUsingCall = obj.isUsingCall != null ? obj.isUsingCall : false,
                         IsUsingDoctor = obj.isUsingDoctor != null ? obj.isUsingDoctor : false,
                         IsUsingExamination = obj.isUsingExamination != null ? obj.isUsingExamination : false,
@@ -332,7 +334,7 @@ namespace SHCServer.Controllers
                         {
                             _context.Insert(() => new UsersAttach
                             {
-                                UserId = user.Id,
+                                UserId = user.UserId,
                                 Path = "/uploads/" + uniqueFileName,
                                 Type = "1"
                             });
@@ -341,7 +343,7 @@ namespace SHCServer.Controllers
                         {
                             _context.Insert(() => new UsersAttach
                             {
-                                UserId = user.Id,
+                                UserId = user.UserId,
                                 Path = "/uploads/" + uniqueFileName,
                                 Type = "2"
                             });
@@ -351,11 +353,13 @@ namespace SHCServer.Controllers
                 }
 
                 _context.Session.CommitTransaction();
+                _contextmdmdb.Session.CommitTransaction();
                 return Json(new ActionResultDto());
             }
             catch (Exception e)
             {
                 if (_context.Session.IsInTransaction) _context.Session.RollbackTransaction();
+                if (_contextmdmdb.Session.IsInTransaction) _contextmdmdb.Session.RollbackTransaction();
                 return StatusCode(500, _excep.Throw("Đăng ký không thành công.", e.Message.ToString()));
             }
         }
