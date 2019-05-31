@@ -43,7 +43,7 @@ export class IndexComponent extends PagedListingComponentBase<ISmsLogs> implemen
         defaultOpen: false
     }
 
-    displayedColumns = this.appSession.user.accountType != 0 ? ['orderNumber', 'phoneNumber', 'type', 'content', 'sentDate', 'status', 'messageError', 'telco', '_smsTemplateContent'] : ['orderNumber', 'healthfacilitiesName', 'phoneNumber', 'type', 'content', 'sentDate', 'status', 'messageError', 'telco'];
+    displayedColumns = this.appSession.user.accountType != 0 ? ['orderNumber', 'phoneNumber', 'type', 'content', 'sentDate', 'status', 'messageError', 'telco', '_smsTemplateContent'] : ['orderNumber', 'healthfacilitiesName', 'phoneNumber', 'type', 'content', 'sentDate', 'status', 'messageError', 'telco', '_smsTemplateContent'];
 
     _smsTemplate: ISmsTemplate[] = [];
     _healthfacilities: IHealthfacilities[] = [];
@@ -70,7 +70,7 @@ export class IndexComponent extends PagedListingComponentBase<ISmsLogs> implemen
         super(injector);
     }
 
-    ngOnInit() {
+    ngOnInit() {        
         this.api = 'smslog';
         this.frmSearch = this._formBuilder.group({
             healthfacilities: [],
@@ -138,6 +138,7 @@ export class IndexComponent extends PagedListingComponentBase<ISmsLogs> implemen
       }
 
     customSearch() {
+        
         //if(!this.endTime.nativeElement.value || !this.startTime.nativeElement.value){
         //    return swal({
         //        title:'Thông báo', 
