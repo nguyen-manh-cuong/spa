@@ -33,7 +33,8 @@ export class LoginComponent extends AppComponentBase implements OnInit {
         private router: Router,
         private _sanitizer: DomSanitizer,
         private _dataService: DataService,
-        private http: HttpClient, injector: Injector,
+        private http: HttpClient,
+        injector: Injector,
         public loginService: LoginService,
         private _formBuilder: FormBuilder,
         private _sessionService: AbpSessionService) {
@@ -71,7 +72,6 @@ export class LoginComponent extends AppComponentBase implements OnInit {
     _capcha: { code: string, data: any } = { code: '', data: '' };
 
     onHandleLoginInput(event) {
-        console.log(event.target.value);
         this._dataService.get('auth', JSON.stringify({ 'userName': event.target.value }), null, null, null).subscribe(data => {
             if (data.items != undefined) {
                 if (data.items.counter < 10) {
