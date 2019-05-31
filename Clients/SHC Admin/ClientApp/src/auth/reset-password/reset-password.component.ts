@@ -65,8 +65,11 @@ export class ResetComponent extends AppComponentBase implements OnInit {
 
     capchaInput(event) {
         event.target.value = this.replace_space(this.replace_alias(event.target.value));
+        if (event.target.value == '') {
+            return this.frmReset.controls['capcha'].setErrors({ 'required': true });
+        }
         if (this._capcha.code != event.target.value) {
-            this.frmReset.controls['capcha'].setErrors({'capcha':true});
+            this.frmReset.controls['capcha'].setErrors({ 'capcha': true });
         }
     }
 
@@ -100,8 +103,11 @@ export class ResetComponent extends AppComponentBase implements OnInit {
         }
     }
 
-    secretCodeInput($event){
-        $event.target.value=this.replace_space($event.target.value);
+    secretCodeInput($event) {
+        $event.target.value = this.replace_space($event.target.value);
+        if ($event.target.value == '') {
+            this.frmReset.controls['secretCode'].setErrors({ 'required': true });
+        }
     }
 
     submit() {
@@ -112,7 +118,7 @@ export class ResetComponent extends AppComponentBase implements OnInit {
                 text: "Xác nhận mật khẩu mới không đúng",
                 type: "warning",
                 timer: 3000
-            }).then(()=>{
+            }).then(() => {
             });
         }
 
@@ -123,7 +129,7 @@ export class ResetComponent extends AppComponentBase implements OnInit {
                 text: "Mã xác nhận không chính xác",
                 type: "warning",
                 timer: 3000
-            }).then(()=>{
+            }).then(() => {
             })
         } else {
             this._dataService.update("users", Object.assign(
@@ -140,7 +146,7 @@ export class ResetComponent extends AppComponentBase implements OnInit {
                         timer: 3000
                     });
                     return this.router.navigate(["/auth/login"]);
-                },err=>{
+                }, err => {
                     this.getCapcha();
                 });
         }

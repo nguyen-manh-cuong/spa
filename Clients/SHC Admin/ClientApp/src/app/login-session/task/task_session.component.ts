@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import { Component, Inject, Injector, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, Inject, Injector, OnInit, ViewChild, AfterViewInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef, MatInput } from '@angular/material';
 import { AppComponentBase } from '@shared/app-component-base';
@@ -20,7 +20,8 @@ import { LoginService } from '../../../auth/login/login.service';
 @Component({
     selector: 'app-task',
     templateUrl: './task_session.component.html',
-    styleUrls: ['./task_session.component.scss']
+    styleUrls: ['./task_session.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class TaskSessionComponent extends AppComponentBase implements OnInit {
     frmLogin: FormGroup;
@@ -49,8 +50,7 @@ export class TaskSessionComponent extends AppComponentBase implements OnInit {
         super(injector);
     }
 
-    ngOnInit() {
-        
+    ngOnInit(): void {
         this.frmLogin = this._formBuilder.group({
             userNameOrEmailAddress: [localStorage.getItem('userName'), Validators.required], //this.loginService.authenticateModel.userNameOrEmailAddress
             password: [localStorage.getItem('password'), Validators.required], //this.loginService.authenticateModel.password
@@ -81,18 +81,16 @@ export class TaskSessionComponent extends AppComponentBase implements OnInit {
     _capcha: { code: string, data: any } = { code: '', data: '' };
 
     onHandleLoginInput(event) {
-        console.log(event.target.value);
         this._dataService.get('auth', JSON.stringify({ 'userName': event.target.value }), null, null, null).subscribe(data => {
             if (data.items != undefined) {
-                let numLoginFail = data.items.counter;
-                this.numberLoginFail = numLoginFail;
+                if (data.items.counter < 10) {
+                    this.numberLoginFail = data.items.counter;
+                }
             }
         });
     }
 
     login(): void {
-        console.log(112, localStorage.getItem('userName'));
-
         let numLoginFail = 1;
         let lockedTime = 0;
 
@@ -106,24 +104,9 @@ export class TaskSessionComponent extends AppComponentBase implements OnInit {
                 });
             }
 
-
-            numLoginFail = data.items.counter + 1;
-            this.numberLoginFail = numLoginFail;
-            lockedTime = (moment(new Date(data.items.lockedTime)).valueOf() - moment(Date.now()).valueOf()) / (1000 * 60);
-
-            if (lockedTime > 0 && lockedTime <= 60) {
-                this.getCapcha();
-                return swal({
-                    title: this.l('Notification'),
-                    text: this.l('Đăng nhập không thành công. Vui lòng trở lại sau 60 phút'),
-                    type: 'warning',
-                    timer: 3000
-                });
-            }
-
             if (data.items.status != 2 || data.items.mdmStatus != 1 || moment(new Date(data.items.expriredDate)).valueOf() < moment(Date.now()).valueOf()) {
                 this._dataService.get('auth', JSON.stringify({
-                    'userName': this.frmLogin.controls['userNameOrEmailAddress'].value, 'counter': numLoginFail, 'lockedTime': lockedTime
+                    'userName': this.frmLogin.controls['userNameOrEmailAddress'].value
                 }), null, null, null).subscribe(data => {
                     return swal({
                         title: this.l('Notification'),
@@ -135,7 +118,24 @@ export class TaskSessionComponent extends AppComponentBase implements OnInit {
                 return;
             }
 
-            if (numLoginFail >= 5) {
+            lockedTime = (moment(Date.now()).valueOf() - moment(new Date(data.items.lockedTime)).valueOf()) / (1000 * 60);
+            if (data.lockedTime < 1 && data.lockedTime > 0) {
+                this.numberLoginFail = 0;
+                this.userNameOrEmail.nativeElement.focus();
+                this.frmLogin.controls['userNameOrEmailAddress'].setValue('');
+                this.frmLogin.controls['password'].setValue('');
+                return swal({
+                    title: this.l('Notification'),
+                    text: this.l('Đăng nhập không thành công. Vui lòng trở lại sau 60 phút'),
+                    type: 'warning',
+                    timer: 3000
+                });
+            }
+
+            numLoginFail = data.items.counter + 1;
+            this.numberLoginFail = numLoginFail;
+
+            if (numLoginFail > 5) {
                 if (this.frmLogin.controls['codeCapcha'].value != this._capcha.code) {
                     this.capcha = true;
                     this.codeCapcha.nativeElement.focus();
@@ -153,7 +153,9 @@ export class TaskSessionComponent extends AppComponentBase implements OnInit {
 
             this.submitted = true;
             if (this.frmLogin.invalid) { return; }
+
             this.loginService.authenticateModel = Object.assign(this.loginService.authenticateModel, this.frmLogin.value);
+
             this.loginService.authenticate((success) => {
                 if (this.frmLogin.controls['isRemberMeChecked'].value) {
                     localStorage.setItem('userName', this.frmLogin.controls['userNameOrEmailAddress'].value);
@@ -177,9 +179,7 @@ export class TaskSessionComponent extends AppComponentBase implements OnInit {
                     }
                 });
 
-
-
-                if (numLoginFail < 5) {
+                if (numLoginFail <= 5) {
                     return swal({
                         title: this.l('Notification'),
                         text: this.l(`Đăng nhập không thành công. Tên đăng nhập hoặc mật khẩu không chính xác. Bạn còn ${5 - numLoginFail} lần thử`),
@@ -189,12 +189,11 @@ export class TaskSessionComponent extends AppComponentBase implements OnInit {
                 } else {
                     return swal({
                         title: this.l('Notification'),
-                        text: this.l(`Mã xác nhận không trùng khớp. Bạn còn ${10 - numLoginFail} lần thử`),
+                        text: this.l(`Đăng nhập không thành công. Tên đăng nhập hoặc mật khẩu không chính xác. Bạn còn ${10 - numLoginFail} lần thử`),
                         type: 'warning',
                         timer: 3000
                     });
                 }
-
             });
         });
     }
@@ -207,7 +206,7 @@ export class TaskSessionComponent extends AppComponentBase implements OnInit {
         if (value.length == 4) this._capcha.code != value ? this.capcha = true : this.capcha = false;
     }
 
-    //resetPassWordClick() {
-    //    this.router.navigate(['/auth/reset-password']);
-    //}
+    resetPassWordClick() {
+        this.router.navigate(['/auth/reset-password']);
+    }
 }

@@ -15,6 +15,7 @@ import swal from 'sweetalert2';
 import { analyzeAndValidateNgModules } from '@angular/compiler';
 import * as moment from 'moment';
 import {MomentDateAdapter} from '@angular/material-moment-adapter';
+import { AppConsts } from './AppConsts';
 
 export class PagedResultDto {
     items: any[];

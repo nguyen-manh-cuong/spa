@@ -58,6 +58,13 @@ export class SecretComponent extends AppComponentBase implements OnInit {
         }
     }
 
+    infoInput($event){
+        $event.target.value = this.replace_space($event.target.value);
+        if($event.target.value==''){
+            this.frmSecret.controls['info'].setErrors({'required':true});
+        }
+    }
+
     replace_alias(str) {
         str = str.replace(/[^A-Za-z0-9]+/ig, ""); 
 
