@@ -82,8 +82,6 @@ export class LoginComponent extends AppComponentBase implements OnInit {
     }
 
     login(): void {
-        console.log('login')
-
         let numLoginFail = 1;
         let lockedTime = 0;
 
@@ -103,14 +101,14 @@ export class LoginComponent extends AppComponentBase implements OnInit {
                 }), null, null, null).subscribe(data => {
                     return swal({
                         title: this.l('Notification'),
-                        text: this.l('Đăng nhập không thành công. Tài khoản chưa được kích họat hoặc bị khóa'),
+                        text: this.l('Đăng nhập không thành công. Tài khoản chưa được kích hoạt hoặc bị khóa'),
                         type: 'warning',
                         timer: 3000
                     });
                 });
                 return;
             }
-            
+
             lockedTime = (moment(Date.now()).valueOf() - moment(new Date(data.items.lockedTime)).valueOf()) / (1000 * 60);
             if (data.lockedTime < 1 && data.lockedTime > 0) {
                 this.numberLoginFail = 0;
@@ -126,7 +124,12 @@ export class LoginComponent extends AppComponentBase implements OnInit {
             }
 
             numLoginFail = data.items.counter + 1;
-            this.numberLoginFail = numLoginFail;
+
+            if (numLoginFail >= 10) {
+                this.numberLoginFail = 0;
+            } else {
+                this.numberLoginFail = numLoginFail;
+            }
 
             if (numLoginFail > 5) {
                 if (this.frmLogin.controls['codeCapcha'].value != this._capcha.code) {
@@ -134,13 +137,25 @@ export class LoginComponent extends AppComponentBase implements OnInit {
                     this.codeCapcha.nativeElement.focus();
                     this.frmLogin.controls['codeCapcha'].setValue('');
                     this._dataService.get('auth', JSON.stringify({ 'userName': this.frmLogin.controls['userNameOrEmailAddress'].value, 'counter': numLoginFail, 'lockedTime': lockedTime }), null, null, null).subscribe(data => { });
-
-                    return swal({
-                        title: this.l('Notification'),
-                        text: this.l(`Mã xác nhận không trùng khớp. Bạn còn ${10 - numLoginFail} lần thử`),
-                        type: 'warning',
-                        timer: 3000
-                    });
+                    if (10 - numLoginFail === 0) {
+                        this.userNameOrEmail.nativeElement.focus();
+                        this.frmLogin.controls['userNameOrEmailAddress'].setValue('');
+                        this.frmLogin.controls['password'].setValue('');
+                        return swal({
+                            title: this.l('Notification'),
+                            text: this.l('Đăng nhập không thành công. Vui lòng trở lại sau 60 phút'),
+                            type: 'warning',
+                            timer: 3000
+                        });
+                    }
+                    else {
+                        return swal({
+                            title: this.l('Notification'),
+                            text: this.l(`Mã xác nhận không trùng khớp. Bạn còn ${10 - numLoginFail} lần thử`),
+                            type: 'warning',
+                            timer: 3000
+                        });
+                    }
                 }
             }
 
@@ -150,7 +165,7 @@ export class LoginComponent extends AppComponentBase implements OnInit {
             this.loginService.authenticateModel = Object.assign(this.loginService.authenticateModel, this.frmLogin.value);
 
             this.loginService.authenticate((success) => {
-               
+
 
                 if (success) {
                     if (this.frmLogin.controls['isRemberMeChecked'].value) {
@@ -181,10 +196,22 @@ export class LoginComponent extends AppComponentBase implements OnInit {
                         type: 'warning',
                         timer: 3000
                     });
-                } else {
+                }
+                else if (10 === numLoginFail) {
+                    this.userNameOrEmail.nativeElement.focus();
+                    this.frmLogin.controls['userNameOrEmailAddress'].setValue('');
+                    this.frmLogin.controls['password'].setValue('');
                     return swal({
                         title: this.l('Notification'),
-                        text: this.l(`Đăng nhập không thành công. Tên đăng nhập hoặc mật khẩu không chính xác. Bạn còn ${10 - numLoginFail} lần thử`),
+                        text: this.l('Đăng nhập không thành công. Vui lòng trở lại sau 60 phút'),
+                        type: 'warning',
+                        timer: 3000
+                    });
+                }
+                else {
+                    return swal({
+                        title: this.l('Notification'),
+                        text: (10 - numLoginFail === 0) ? this.l('Đăng nhập không thành công. Vui lòng trở lại sau 60 phút') : this.l(`Đăng nhập không thành công. Tên đăng nhập hoặc mật khẩu không chính xác. Bạn còn ${10 - numLoginFail} lần thử`),
                         type: 'warning',
                         timer: 3000
                     });

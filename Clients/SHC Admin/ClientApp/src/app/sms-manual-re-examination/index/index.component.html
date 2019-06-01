@@ -8,7 +8,7 @@
             </mat-slide-toggle>
         </div>
         <div class="col-9">
-            <mat-paginator #paginator [pageSizeOptions]="pageSizeOptions" [length]="totalItems" [pageSize]="pageSize"
+            <mat-paginator (page)="clearSelection()" #paginator [pageSizeOptions]="pageSizeOptions" [length]="totalItems" [pageSize]="pageSize"
                 showFirstLastButtons></mat-paginator>
         </div>
     </div>

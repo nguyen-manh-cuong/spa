@@ -156,11 +156,13 @@ namespace SHCServer.Controllers
         [Route("api/Auth")]
         public IActionResult Login(int skipCount = 0, int maxResultCount = 10, string sorting = null, string filter = null)
         {
-            string query = @"select 
+            string query = @"SELECT 
                                     ui.*,
                                     u.Status as MdmStatus
-                                from smarthealthcare.sys_users ui
-                                inner join mdm.sys_users u on ui.Id = u.UserId";
+                                FROM smarthealthcare.sys_users ui
+                                INNER JOIN mdm.sys_users u
+                                ON ui.Id = u.UserId
+                                AND ui.IsDelete = 0";
             List<string> clause = new List<string>();
             List<DbParam> param = new List<DbParam>();
 
@@ -183,7 +185,7 @@ namespace SHCServer.Controllers
                 {
                     Id = Convert.ToInt32(reader["Id"]),
                     Counter = Convert.ToInt32(reader["Counter"]),
-                    LockedTime = reader["LockedTime"] != DBNull.Value ? Convert.ToDateTime(reader["LockedTime"]) : (DateTime.Parse("9999/12/12 00:01")),
+                    LockedTime = reader["LockedTime"] != DBNull.Value ? Convert.ToDateTime(reader["LockedTime"]) : (DateTime.Parse("9999/12/12 23:59:59")),
                     Status = Convert.ToInt32(reader["Status"]),
                     ExpriredDate = reader["ExpriredDate"] != DBNull.Value ? Convert.ToDateTime(reader["ExpriredDate"]) : DateTime.Now,
                     MdmStatus = Convert.ToInt32(reader["MdmStatus"])
@@ -196,7 +198,10 @@ namespace SHCServer.Controllers
             }
             var currentUser = lst.FirstOrDefault();
 
-            TimeSpan span = (TimeSpan)(currentUser.LockedTime - DateTime.Now);
+            DateTime lockedTime = DateTime.Parse(currentUser.LockedTime.ToString("dd/MM/yyyy HH:mm:ss"));
+            DateTime nowTime = DateTime.Parse(DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss"));
+
+            TimeSpan span = lockedTime - nowTime;
             double totalMinutes = span.TotalMinutes;
 
             if (totalMinutes >= 1 || totalMinutes <= 0)
