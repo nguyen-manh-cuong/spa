@@ -263,7 +263,15 @@ export class SelectAutocompleteComponent implements OnChanges, DoCheck {
                 item => item[this.value] == this.selectedValue[i]
             ));
         }
-        this.selectAllChecked = this.selectedValue.length > 0;
+
+        if (this.apiSearch.length === this.selectedValue.length) {
+            this.selectAllChecked = true;
+        }
+        else if (this.apiSearch.length > this.selectedValue.length) {
+            this.selectAllChecked = false;
+        }
+
+        //this.selectAllChecked = this.selectedValue.length > 0;
         this.selectionChange.emit(this.selectedValue);
     }
 }

@@ -95,6 +95,7 @@ export class IndexComponent extends AppComponentBase implements OnInit {
     // update databsae
     resetPassword() {
         if (this.frmResetPassword.controls['NewPassword'].value != this.frmResetPassword.controls['RePassword'].value) {
+            this.getCapcha();
             return swal({
                 title: 'Thông báo',
                 text: 'Đổi mật khẩu không thành công. Xác nhận khẩu mới không đúng',
@@ -116,7 +117,9 @@ export class IndexComponent extends AppComponentBase implements OnInit {
                 timer: 3000
             });
             this._authService.logout();
-        }, err => { });
+        }, err => {
+            this.getCapcha();
+        });
     }
 
 
