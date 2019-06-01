@@ -22,7 +22,7 @@ import { FormControl } from '@angular/forms';
         (change)="toggleSelectAll($event)"></mat-checkbox>
         <input #searchInput type="text" [ngClass]="{'pl-1': !multiple}" (input)="filterItem(searchInput.value)"  placeholder="Tìm kiếm...">
         <div class="box-search-icon" (click)="filterItem(''); searchInput.value = ''">
-          <button mat-icon-button class="search-button">
+          <button mat-icon-button class="search-button" >
             <mat-icon class="mat-24" aria-label="Search icon">clear</mat-icon>
           </button>
         </div>
@@ -182,6 +182,16 @@ export class SelectAutocompleteComponent implements OnChanges, DoCheck {
                 });
             }
         }
+        else {
+            this._dataService.getAll(this.apiSearch, JSON.stringify({ name: '' })).subscribe(resp => {
+                this.filteredOptions = resp.items;
+                this.filteredOptions.forEach(item => {
+                    if (this.selectedValue.indexOf(item[this.value]) > -1) {
+                        this.selectAllChecked = false;
+                    }
+                });
+            });
+        }
            
         
     }
@@ -250,5 +260,4 @@ export class SelectAutocompleteComponent implements OnChanges, DoCheck {
         this.selectAllChecked = this.selectedValue.length > 0;
         this.selectionChange.emit(this.selectedValue);
     }
-
 }
