@@ -210,7 +210,7 @@ export abstract class PagedListingComponentBase<EntityDto> extends AppComponentB
                 }),
                 map((data: any) => {
                     setTimeout(() => this.isTableLoading = false, 500);
-                    this.startTimer();
+                   // this.startTimer();
                     this.totalItems = data.totalCount;
                     return data.items;
                 }),

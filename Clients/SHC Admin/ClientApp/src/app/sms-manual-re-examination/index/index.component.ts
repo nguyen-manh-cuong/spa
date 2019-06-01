@@ -121,6 +121,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
             this.healthfacilities.setValue(null);
         }
 
+
         setTimeout(() => {
             this.endTime.nativeElement.value = moment(new Date().setDate(new Date().getDate() + 3)).format("DD/MM/YYYY");
             this.startTime.nativeElement.value = moment(new Date().setDate(new Date().getDate())).format("DD/MM/YYYY");
@@ -524,5 +525,9 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
                     abp.ui.clearBusy('#main-container');
                 }, err => { });
         });
+    }
+
+    clearSelection(){
+        this.selection.clear();
     }
 }
