@@ -185,7 +185,7 @@ namespace SHCServer.Controllers
                 {
                     Id = Convert.ToInt32(reader["Id"]),
                     Counter = Convert.ToInt32(reader["Counter"]),
-                    LockedTime = reader["LockedTime"] != DBNull.Value ? Convert.ToDateTime(reader["LockedTime"]) : (DateTime.Parse("9999/12/12 00:01")),
+                    LockedTime = reader["LockedTime"] != DBNull.Value ? Convert.ToDateTime(reader["LockedTime"]) : (DateTime.Parse("9999/12/12 23:59:59")),
                     Status = Convert.ToInt32(reader["Status"]),
                     ExpriredDate = reader["ExpriredDate"] != DBNull.Value ? Convert.ToDateTime(reader["ExpriredDate"]) : DateTime.Now,
                     MdmStatus = Convert.ToInt32(reader["MdmStatus"])
@@ -198,7 +198,10 @@ namespace SHCServer.Controllers
             }
             var currentUser = lst.FirstOrDefault();
 
-            TimeSpan span = (TimeSpan)(currentUser.LockedTime - DateTime.Now);
+            DateTime lockedTime = DateTime.Parse(currentUser.LockedTime.ToString("dd/MM/yyyy HH:mm:ss"));
+            DateTime nowTime = DateTime.Parse(DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss"));
+
+            TimeSpan span = lockedTime - nowTime;
             double totalMinutes = span.TotalMinutes;
 
             if (totalMinutes >= 1 || totalMinutes <= 0)
