@@ -318,10 +318,13 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     changeDate(value: any, type: number) {
         if (this.startTime.nativeElement.value && moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').isValid() && this.endTime.nativeElement.value && moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').isValid()) {
             if (type == 2) {
-                return this.endTime.nativeElement.value = moment(
+                this.endTime.nativeElement.value = moment(
                     new Date(
                         moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').toDate().setDate(
                             moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').toDate().getDate() + Number(value)))).format("DD/MM/YYYY");
+
+                return this.frmSearch.controls['endTime'].setValue(new Date(
+                    moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').toDate()));
             }
 
             var days = (moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').valueOf() - moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').valueOf()) / (1000 * 60 * 60 * 24);
@@ -527,7 +530,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
         });
     }
 
-    clearSelection(){
+    clearSelection() {
         this.selection.clear();
     }
 }
