@@ -297,7 +297,7 @@ namespace SHCServer
             {
                 Code = 0,
                 Message = content.Message,
-                Result = "Time out",
+                Result = "Không kết nối được",
                 PhoneNumber = content.PhoneNumber,
                 HealthFacilitiesId = content.HealthFacilitiesId,
                 SmsTemplateId = content.SmsTemplateId,
