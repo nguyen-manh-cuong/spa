@@ -108,7 +108,7 @@ export class LoginComponent extends AppComponentBase implements OnInit {
                 });
                 return;
             }
-            
+
             lockedTime = (moment(Date.now()).valueOf() - moment(new Date(data.items.lockedTime)).valueOf()) / (1000 * 60);
             if (data.lockedTime < 1 && data.lockedTime > 0) {
                 this.numberLoginFail = 0;
@@ -131,21 +131,31 @@ export class LoginComponent extends AppComponentBase implements OnInit {
                 this.numberLoginFail = numLoginFail;
             }
 
-            
-
             if (numLoginFail > 5) {
                 if (this.frmLogin.controls['codeCapcha'].value != this._capcha.code) {
                     this.capcha = true;
                     this.codeCapcha.nativeElement.focus();
                     this.frmLogin.controls['codeCapcha'].setValue('');
                     this._dataService.get('auth', JSON.stringify({ 'userName': this.frmLogin.controls['userNameOrEmailAddress'].value, 'counter': numLoginFail, 'lockedTime': lockedTime }), null, null, null).subscribe(data => { });
-
-                    return swal({
-                        title: this.l('Notification'),
-                        text: this.l(`Mã xác nhận không trùng khớp. Bạn còn ${10 - numLoginFail} lần thử`),
-                        type: 'warning',
-                        timer: 3000
-                    });
+                    if (10 - numLoginFail === 0) {
+                        this.userNameOrEmail.nativeElement.focus();
+                        this.frmLogin.controls['userNameOrEmailAddress'].setValue('');
+                        this.frmLogin.controls['password'].setValue('');
+                        return swal({
+                            title: this.l('Notification'),
+                            text: this.l('Đăng nhập không thành công. Vui lòng trở lại sau 60 phút'),
+                            type: 'warning',
+                            timer: 3000
+                        });
+                    }
+                    else {
+                        return swal({
+                            title: this.l('Notification'),
+                            text: this.l(`Mã xác nhận không trùng khớp. Bạn còn ${10 - numLoginFail} lần thử`),
+                            type: 'warning',
+                            timer: 3000
+                        });
+                    }
                 }
             }
 
@@ -155,7 +165,7 @@ export class LoginComponent extends AppComponentBase implements OnInit {
             this.loginService.authenticateModel = Object.assign(this.loginService.authenticateModel, this.frmLogin.value);
 
             this.loginService.authenticate((success) => {
-               
+
 
                 if (success) {
                     if (this.frmLogin.controls['isRemberMeChecked'].value) {
@@ -186,10 +196,22 @@ export class LoginComponent extends AppComponentBase implements OnInit {
                         type: 'warning',
                         timer: 3000
                     });
-                } else {
+                }
+                else if (10 === numLoginFail) {
+                    this.userNameOrEmail.nativeElement.focus();
+                    this.frmLogin.controls['userNameOrEmailAddress'].setValue('');
+                    this.frmLogin.controls['password'].setValue('');
                     return swal({
                         title: this.l('Notification'),
-                        text: this.l(`Đăng nhập không thành công. Tên đăng nhập hoặc mật khẩu không chính xác. Bạn còn ${10 - numLoginFail} lần thử`),
+                        text: this.l('Đăng nhập không thành công. Vui lòng trở lại sau 60 phút'),
+                        type: 'warning',
+                        timer: 3000
+                    });
+                }
+                else {
+                    return swal({
+                        title: this.l('Notification'),
+                        text: (10 - numLoginFail === 0) ? this.l('Đăng nhập không thành công. Vui lòng trở lại sau 60 phút') : this.l(`Đăng nhập không thành công. Tên đăng nhập hoặc mật khẩu không chính xác. Bạn còn ${10 - numLoginFail} lần thử`),
                         type: 'warning',
                         timer: 3000
                     });
