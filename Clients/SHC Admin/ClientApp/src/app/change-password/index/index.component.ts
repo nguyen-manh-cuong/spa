@@ -28,10 +28,10 @@ export class IndexComponent extends AppComponentBase implements OnInit {
     ngOnInit() {
         const validationRule = new ValidationRule();
         this.frmResetPassword = this._formBuilder.group({
-            Password: [this._obj.Password],
-            NewPassword: [this._obj.NewPassword, [this.validateRule.passwordStrong, Validators.required, this.validateRule.hasValue]],
+            Password: [this._obj.Password, [Validators.required]],
+            NewPassword: [this._obj.NewPassword, [this.validateRule.passwordValidate, Validators.required, this.validateRule.hasValue]],
             UserName: this.appSession.user.userName,
-            RePassword: [],
+            RePassword: ['', [this.validateRule.passwordValidate, Validators.required, this.validateRule.hasValue]],
             capcha: ['', [Validators.required]]
         })
         this.getCapcha();
@@ -51,6 +51,7 @@ export class IndexComponent extends AppComponentBase implements OnInit {
     }
 
     capchaInput(event) {
+        // khong cho phep nhap khoang trang
         event.target.value = this.replace_space(this.replace_alias(event.target.value));
         if ((this._capcha.code != event.target.value) && (this.frmResetPassword.controls['capcha'].value != "")) {
             this.frmResetPassword.controls['capcha'].setErrors({ 'capcha': true });
@@ -59,6 +60,13 @@ export class IndexComponent extends AppComponentBase implements OnInit {
     newPasswordInput(event) {
         event.target.value = this.replace_space(event.target.value);
     }
+    passwordInput(event) {
+        event.target.value = this.replace_space(event.target.value);
+    }
+    repasswordInput(event) {
+        event.target.value = this.replace_space(event.target.value);
+    }
+
 
     replace_alias(str) {
         str = str.replace(/[^A-Za-z0-9]+/ig, "");
@@ -96,6 +104,7 @@ export class IndexComponent extends AppComponentBase implements OnInit {
         }
         if (this.frmResetPassword.controls['capcha'].value != this._capcha.code) {
             this.capcha = true;
+            this.getCapcha();
             return;
         }
         // call api
