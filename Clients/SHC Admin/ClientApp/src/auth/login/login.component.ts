@@ -7,7 +7,7 @@ import { AppComponentBase } from '@shared/app-component-base';
 import { LoginService } from './login.service';
 import { Router, Route } from '@angular/router';
 import { DataService } from '@shared/service-proxies/service-data';
-import { DomSanitizer } from '@angular/platform-browser';
+import { DomSanitizer, Title } from '@angular/platform-browser';
 import * as moment from 'moment';
 import swal from 'sweetalert2';
 
@@ -37,7 +37,8 @@ export class LoginComponent extends AppComponentBase implements OnInit {
         injector: Injector,
         public loginService: LoginService,
         private _formBuilder: FormBuilder,
-        private _sessionService: AbpSessionService) {
+        private _sessionService: AbpSessionService,
+        private titleService: Title ) {
         super(injector);
     }
 
@@ -54,7 +55,9 @@ export class LoginComponent extends AppComponentBase implements OnInit {
         setTimeout(() => {
             this.userNameOrEmail.nativeElement.focus();
         }, 1000);
-    }
+
+        this.titleService.setTitle("VIETTEL GATEWAY");
+    }   
 
     get f() { return this.frmLogin.controls; }
     get multiTenancySideIsTeanant(): boolean {

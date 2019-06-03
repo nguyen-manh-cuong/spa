@@ -45,7 +45,9 @@
             <!-- 2 -->
             <div class="col-md-3 position-relative col-time">
                 <label class="position-absolute lbl-time">{{l('Ngày gửi từ')}}</label>
-                <angular2-date-picker [(ngModel)]="startDate"
+                <angular2-date-picker
+                                      #startTime
+                                      [(ngModel)]="startDate"
                                       [settings]="settings"
                                       [ngModelOptions]="{standalone: true}">
                 </angular2-date-picker>
@@ -58,7 +60,7 @@
             </div>
             <div class="col-md-3 position-relative col-time">
                 <label class="position-absolute lbl-time">{{l('Đến ngày')}}</label>
-                <angular2-date-picker [(ngModel)]="endDate" [settings]="settings" [ngModelOptions]="{standalone: true}"></angular2-date-picker>
+                <angular2-date-picker #endTime [(ngModel)]="endDate" [settings]="settings" [ngModelOptions]="{standalone: true}"></angular2-date-picker>
                 <!--<mat-form-field appearance="outline" class="w-100">
             <mat-label>{{l('Đến ngày')}}</mat-label>
             <input matInput #endTime [matDatepicker]="picker1" mask="0*" required maxlength="10">

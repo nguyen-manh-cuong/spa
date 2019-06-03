@@ -56,8 +56,8 @@ export class IndexComponent extends PagedListingComponentBase<ISmsLogs> implemen
     healthfacilities = new FormControl();
     smsTemplate = new FormControl();
 
-    //@ViewChild("startTime") startTime;
-    //@ViewChild("endTime") endTime;
+    @ViewChild("startTime") startTime;
+    @ViewChild("endTime") endTime;
     startDate = new Date();
     endDate = new Date();
 
@@ -171,14 +171,13 @@ export class IndexComponent extends PagedListingComponentBase<ISmsLogs> implemen
         //var startTime = moment(this.startTime.nativeElement.value + '00:00:00', 'DD/MM/YYYY hh:mm:ss').add(7, 'hours').toDate();
         //var endTime = moment(this.endTime.nativeElement.value + '23:59:59:', 'DD/MM/YYYY hh:mm:ss').add(7, 'hours').toDate();
 
-
         this._startDate = moment(this.startDate).format('DD/MM/YYYY HH:mm');
         this._endDate = moment(this.endDate).format('DD/MM/YYYY HH:mm');
 
         var startDate = moment(this.startDate).valueOf();
         var endDate = moment(this.endDate).valueOf();
 
-        if (endDate < startDate) {
+        if (endDate < startDate || moment(this.startTime.date).valueOf() > moment(this.endTime.date).valueOf()) {
             return swal(this.l('Notification'), this.l('FromDateMustBeGreaterThanOrEqualToDate'), 'warning');
         }
 

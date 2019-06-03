@@ -40,8 +40,8 @@ export class RegisterComponent implements OnInit {
 
     _specialist: any = [];
     _context: any;
-    _idCardUrls: Array<{ url: string, file: any, name: string }>;
-    _certificateUrls: Array<{ url: string, file: any, name: string }>;
+    _idCardUrls: Array<{ url: string, file: any, name: string , displayName:string}>;
+    _certificateUrls: Array<{ url: string, file: any, name: string,displayName:string }>;
     _user: CreateUserDto;
     _invaliBirthday = false;
 
@@ -344,7 +344,7 @@ export class RegisterComponent implements OnInit {
                 if (file.type == 'image/jpeg' || file.type == 'image/png') {
                     if (type == 'idCard') {
                         reader.onload = (e: any) => {
-                            this._idCardUrls.push({ url: "/assets/images/212328-200.png", file: file, name: this.replace_alias(file.name) });
+                            this._idCardUrls.push({ url: "/assets/images/212328-200.png", file: file, name: this.replace_alias(file.name), displayName:this.ruleFileName(file.name) });
                             console.log(this._idCardUrls);
                         }
                         this.arrayIdCard.push(file);
@@ -352,7 +352,7 @@ export class RegisterComponent implements OnInit {
 
                     if (type == 'certificate') {
                         reader.onload = (e: any) => {
-                            this._certificateUrls.push({ url: "/assets/images/212328-200.png", file: file, name: this.replace_alias(file.name) });
+                            this._certificateUrls.push({ url: "/assets/images/212328-200.png", file: file, name: this.replace_alias(file.name),displayName:this.ruleFileName(file.name) });
                         }
                         this.arrayCertificate.push(file);
                     }
@@ -361,14 +361,14 @@ export class RegisterComponent implements OnInit {
                 if (file.type == 'application/pdf') {
                     if (type == 'idCard') {
                         reader.onload = (e: any) => {
-                            this._idCardUrls.push({ url: "/assets/images/24-512.png", file: file, name: this.replace_alias(file.name) });
+                            this._idCardUrls.push({ url: "/assets/images/24-512.png", file: file, name: this.replace_alias(file.name),displayName:this.ruleFileName(file.name) });
                         }
                         this.arrayIdCard.push(file);
                     }
 
                     if (type == 'certificate') {
                         reader.onload = (e: any) => {
-                            this._certificateUrls.push({ url: "/assets/images/24-512.png", file: file, name: this.replace_alias(file.name) });
+                            this._certificateUrls.push({ url: "/assets/images/24-512.png", file: file, name: this.replace_alias(file.name),displayName:this.ruleFileName(file.name) });
                         }
                         this.arrayCertificate.push(file);
                     }
@@ -384,6 +384,12 @@ export class RegisterComponent implements OnInit {
 
             this.frmUser.controls['cmnd'].setValue({ files: this.arrayIdCard });
             this.frmUser.controls['gp'].setValue({ files: this.arrayCertificate });
+        }
+    }
+
+    ruleFileName(name){
+        if(name.length>30){
+            return name.substring(0,27) + "...pdf";
         }
     }
 
