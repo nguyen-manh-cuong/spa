@@ -92,8 +92,8 @@ export class packagedistributeIndexComponent extends PagedListingComponentBase<I
             cancelButtonText: this.l('Cancel'),
             buttonsStyling: false
         }).then((result) => {
+            console.log(result)
             if (result.value) {
-                if (obj.quantity == obj.smsPackageUsed.quantityused) {
                     this.dataService.delete(this.api, obj[id ? id : 'id']).subscribe(e => {
                         this.paginator._changePageSize(this.paginator.pageSize);
                         this.paginator.pageIndex = 0;
@@ -104,15 +104,6 @@ export class packagedistributeIndexComponent extends PagedListingComponentBase<I
                             timer: 3000
                         });
                     });
-                }
-                else {
-                    swal({
-                        title: this.l('ErrorDelete'),
-                        text: this.l('ErrorDeletedInSystem', obj[key]),
-                        type: 'error',
-                        timer: 3000
-                    });
-                }
             }
         });
     }
