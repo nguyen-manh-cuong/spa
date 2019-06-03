@@ -212,7 +212,7 @@ export class DatePicker implements OnInit, ControlValueAccessor {
     setTimeView() {
         this.date.setMinutes(this.minValue);
         this.date.setHours(this.hourValue);
-
+ 
         this.date = new Date(this.date);
         this.timeView = !this.timeView;
     }
