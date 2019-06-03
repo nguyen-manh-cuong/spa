@@ -19,6 +19,11 @@ form:not(.task-form) .mat-form-field-appearance-outline .mat-form-field-suffix {
     background-color: #fff;
     width: 116px;
 }
+.lbl-note{font-size: 13px; font-style: italic;margin-bottom: 15px;}
+.mat-form-field-new-password .mat-form-field-wrapper {
+    margin-bottom: 5px !important;
+    padding-bottom: 0;
+}
 @media (min-width: 1366px) {
     .min-h-400 {
         min-height: 400px;
