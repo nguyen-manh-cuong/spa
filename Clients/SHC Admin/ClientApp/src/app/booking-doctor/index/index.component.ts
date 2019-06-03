@@ -76,14 +76,22 @@ import { Router } from '@angular/router';
       }
     }
 
+    viewRender(view, element) {
+     console.log('new date range start : ', view.start, 'new date range end : ', view.end);
+    }
+
     search(){
       if(((!this.appSession.user.healthFacilitiesId && this.healthfacilities.value) || (this.appSession.user.healthFacilitiesId))  && this.frmSearch.controls['doctor'].value){
-        !this.appSession.user.healthFacilitiesId ? this.frmSearch.controls['healthfacilities'].setValue(this.healthfacilities.value.healthFacilitiesId) : "";
-        
+          !this.appSession.user.healthFacilitiesId ? this.frmSearch.controls['healthfacilities'].setValue(this.healthfacilities.value.healthFacilitiesId) : "";
+          console.log(81, new Date().getFullYear + "-" + this.frmSearch.controls['month'].value);
+
+
+          this.calendarComponent.now = '2018-02-07';
+          this.calendarComponent.getApi();         
         this.dataService
         .get("bookingdoctor", JSON.stringify(_.omitBy(this.frmSearch.value, _.isNil)), '', null, null)
         .subscribe(resp => {
-          this.calendarEvents = resp.items;
+            this.calendarEvents = resp.items;
         });
       } else{
         this.appSession.user.healthFacilitiesId == null ? this.frmSearch.controls['healthfacilities'].setValue(null) : '';
@@ -139,7 +147,8 @@ import { Router } from '@angular/router';
     }
 
     //calendar
-    handleEvent (obj: any) {
+    handleEvent(obj: any) {
+        console.log(110, obj);
       if(obj.view.type == "listWeek"){
         var des = obj.event.extendedProps.description ? obj.event.extendedProps.description : "";
         obj.el.innerHTML = obj.el.innerHTML.split("<a>")[0] + des + "</a></td>";

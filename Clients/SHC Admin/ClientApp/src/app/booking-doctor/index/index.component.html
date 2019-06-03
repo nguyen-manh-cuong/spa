@@ -63,19 +63,21 @@
 
     <div class='app-calendar content'>
         <full-calendar
-        #calendar
-        defaultView="dayGridMonth"
-        [header]="{
-            left: 'prev, next today',
-            center: 'title',
-            right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
-        }"
-        [locales]="viLocale"
-        [plugins]="calendarPlugins"
-        [weekends]="calendarWeekends"
-        [events]="calendarEvents"
-        [eventLimit]="4" 
-        (eventRender)="handleEvent($event)"></full-calendar>
+            #calendar
+            defaultView="dayGridMonth"
+            [header]="{
+                left: 'prev, next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+            }"
+            [editable]="true"
+            [locales]="viLocale"
+            [plugins]="calendarPlugins"
+            [weekends]="calendarWeekends"
+            [events]="calendarEvents"
+            [eventLimit]="4" 
+            (eventRender)="handleEvent($event)"
+        ></full-calendar>
     </div><hr>
 
     <div>
