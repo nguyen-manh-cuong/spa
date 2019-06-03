@@ -48,7 +48,7 @@ export class BookingIPCCComponent extends AppComponentBase implements OnInit {
   };
 
   type: any;
-  
+  @ViewChild('dp') dp;
   @ViewChild("examinationDate") examinationDate;
 
   constructor(
@@ -185,7 +185,23 @@ export class BookingIPCCComponent extends AppComponentBase implements OnInit {
           confirmButtonText: 'OK',
           timer : 3000
         }).then(() => {
-          this.router.navigateByUrl('/app/bookingIPCC');
+          this.frmBooking = this._formBuilder.group({
+            //1
+            bookingUser: ['', [Validators.required, this.validateRule.hasValue]], phoneNumber: ['', [Validators.required, this.validateRule.hasValue, this.validateRule.topPhoneNumber]],
+            //2 
+            bookingRepresent: ['', [Validators.required, this.validateRule.hasValue]], phoneRepresent: ['', [Validators.required, this.validateRule.hasValue, this.validateRule.topPhoneNumber]], emailRepresent: [, [this.validateRule.email]],       
+            bookingType: [1], email: [, [this.validateRule.email]], relationshipId: [1, Validators.required],
+            gender: [1], birthDay: [], birthMonth: [], birthYear: [, Validators.required], address: [],
+            provinceCode: [], districtCode: [], reason: ['', [Validators.required, this.validateRule.hasValue]],
+            //3
+            provinceCodeExamination: [, Validators.required], districtCodeExamination: [, Validators.required],
+              specialists: [],
+              healthFacilitiesId: [,],
+            //4
+            examinationDate: [, [Validators.required, this.validateRule.dateInvalid]], examinationTime: [, Validators.required], doctorId: [], ticketId: []
+          });
+          this.dp.clearDate();
+          //this.router.navigateByUrl('/app/bookingIPCC');
         });
       }, err => {})
   }

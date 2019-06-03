@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
 import { IHealthfacilities } from '@shared/Interfaces';
 import { debounceTime, tap, switchMap, finalize } from 'rxjs/operators';
 import { DataService } from '@shared/service-proxies/service-data';
-import { DomSanitizer } from '@angular/platform-browser';
+import { DomSanitizer, Title } from '@angular/platform-browser';
 import swal from 'sweetalert2';
 
 @Component({
@@ -33,13 +33,16 @@ export class SecretComponent extends AppComponentBase implements OnInit {
         private http: HttpClient, injector: Injector,
         private _formBuilder: FormBuilder,
         private _router: Router,
-        private _sessionService: AbpSessionService) {
+        private _sessionService: AbpSessionService,
+        private titleService:Title) {
         super(injector);
+        
     }
 
     ngOnInit(): void {
         this.frmSecret = this._formBuilder.group({ info: ['', [Validators.required]], capcha: ['', [Validators.required]] });
         this.getCapcha();
+        this.titleService.setTitle("VIETTEL GATEWAY | Quên mật khẩu");
     }
 
     getCapcha() {
