@@ -18,11 +18,10 @@ import { FormControl } from '@angular/forms';
     <mat-select #selectElem [attr.disabled]="disabled" [placeholder]="placeholder" [formControl]="formControl" [multiple]="multiple"
     [(ngModel)]="selectedValue" (openedChange)="openedChange($event)" (selectionChange)="onSelectionChange($event)">
     <div class="box-search">
-        <mat-checkbox *ngIf="multiple" color="primary" class="box-select-all" [(ngModel)]="selectAllChecked"
-        (change)="toggleSelectAll($event)"></mat-checkbox>
-        <input #searchInput type="text" [ngClass]="{'pl-1': !multiple}" (input)="filterItem(searchInput.value)"  placeholder="Tìm kiếm...">
+        <mat-checkbox *ngIf="multiple" color="primary" class="box-select-all" [(ngModel)]="selectAllChecked" (change)="toggleSelectAll($event)"></mat-checkbox>
+        <input #searchInput type="text" [ngClass]="{'pl-1': !multiple}" (input)="filterItem(searchInput.value)" placeholder="Tìm kiếm...">
         <div class="box-search-icon" (click)="filterItem(''); searchInput.value = ''">
-          <button mat-icon-button class="search-button" >
+          <button mat-icon-button class="search-button">
             <mat-icon class="mat-24" aria-label="Search icon">clear</mat-icon>
           </button>
         </div>
@@ -126,10 +125,24 @@ export class SelectAutocompleteComponent implements OnChanges, DoCheck {
         }
     }
 
-    openedChange(opened: boolean) {
+    openedChange(opened: boolean) {;
         if (this.filteredOptions.length == 0 && !opened) {
             this.filteredOptions = this.options;
             this.searchInput.nativeElement.value = '';
+        }
+
+        if (opened) {
+            if (this.selectAllChecked) {
+                this.isMultiple = true;
+                this.filteredOptions.forEach(option => {
+                    if (this.selectedValue.indexOf(option[this.value]) === -1) {
+                        this.selectedValue = this.selectedValue.concat([option[this.value]]);
+                    }
+                    if (this.selectedName.indexOf(option[this.value]) === -1) {
+                        this.selectedName = this.selectedName.concat([option]);
+                    }
+                });
+            }
         }
     }
 
@@ -140,8 +153,6 @@ export class SelectAutocompleteComponent implements OnChanges, DoCheck {
     }
 
     toggleDropdown() {
-        console.log('selectedValue', this.selectedValue);
-        console.log('selectedName', this.selectedName);
         this.selectElem.toggle();
     }
 
@@ -164,18 +175,76 @@ export class SelectAutocompleteComponent implements OnChanges, DoCheck {
     };
 
     filterItem(value) {
-        if (value.length) {
-            if (!isNaN(value)) {
-                this._dataService.getAll(this.apiSearch, "{code:" + value + "}").subscribe(resp => {
+        if (this.selectAllChecked) {
+            if (value.length) {
+
+                if (!isNaN(value)) {
+                    this._dataService.getAll(this.apiSearch, "{code:" + value + "}").subscribe(resp => {
+                        this.filteredOptions = resp.items;
+                        this.filteredOptions.forEach(option => {
+                            if (this.selectedValue.indexOf(option[this.value]) === -1) {
+                                this.selectedValue = this.selectedValue.concat([option[this.value]]);
+                            }
+                            if (this.selectedName.indexOf(option[this.value]) === -1) {
+                                this.selectedName = this.selectedName.concat([option]);
+                            }
+                        });
+                    });
+                } else {
+                    this._dataService.getAll(this.apiSearch, JSON.stringify({ name: value })).subscribe(resp => {
+                        this.filteredOptions = resp.items;
+                        this.filteredOptions.forEach(option => {
+                            if (this.selectedValue.indexOf(option[this.value]) === -1) {
+                                this.selectedValue = this.selectedValue.concat([option[this.value]]);
+                            }
+                            if (this.selectedName.indexOf(option[this.value]) === -1) {
+                                this.selectedName = this.selectedName.concat([option]);
+                            }
+                        });
+                    });
+                }
+            }
+            else {
+                this._dataService.getAll(this.apiSearch, JSON.stringify({ name: '' })).subscribe(resp => {
                     this.filteredOptions = resp.items;
-                    this.filteredOptions.forEach(item => {
-                        if (this.selectedValue.indexOf(item[this.value]) > -1) {
-                            this.selectAllChecked = false;
+                    this.filteredOptions.forEach(option => {
+                        if (this.selectedValue.indexOf(option[this.value]) === -1) {
+                            this.selectedValue = this.selectedValue.concat([option[this.value]]);
+                        }
+                        if (this.selectedName.indexOf(option[this.value]) === -1) {
+                            this.selectedName = this.selectedName.concat([option]);
                         }
                     });
                 });
-            } else {
-                this._dataService.getAll(this.apiSearch, JSON.stringify({ name: value })).subscribe(resp => {
+            }
+        }
+        else {
+            if (value.length) {
+
+                if (!isNaN(value)) {
+                    this._dataService.getAll(this.apiSearch, "{code:" + value + "}").subscribe(resp => {
+                        this.filteredOptions = resp.items;
+                        this.filteredOptions.forEach(item => {
+                            console.log(1200, this.selectedValue);
+                            console.log(1300, item);
+                            if (this.selectedValue.indexOf(item[this.value]) > -1) {
+                                this.selectAllChecked = false;
+                            }
+                        });
+                    });
+                } else {
+                    this._dataService.getAll(this.apiSearch, JSON.stringify({ name: value })).subscribe(resp => {
+                        this.filteredOptions = resp.items;
+                        this.filteredOptions.forEach(item => {
+                            if (this.selectedValue.indexOf(item[this.value]) > -1) {
+                                this.selectAllChecked = false;
+                            }
+                        });
+                    });
+                }
+            }
+            else {
+                this._dataService.getAll(this.apiSearch, JSON.stringify({ name: '' })).subscribe(resp => {
                     this.filteredOptions = resp.items;
                     this.filteredOptions.forEach(item => {
                         if (this.selectedValue.indexOf(item[this.value]) > -1) {
@@ -184,16 +253,6 @@ export class SelectAutocompleteComponent implements OnChanges, DoCheck {
                     });
                 });
             }
-        }
-        else {
-            this._dataService.getAll(this.apiSearch, JSON.stringify({ name: '' })).subscribe(resp => {
-                this.filteredOptions = resp.items;
-                this.filteredOptions.forEach(item => {
-                    if (this.selectedValue.indexOf(item[this.value]) > -1) {
-                        this.selectAllChecked = false;
-                    }
-                });
-            });
         }
     }
 
@@ -206,6 +265,7 @@ export class SelectAutocompleteComponent implements OnChanges, DoCheck {
         const filteredValues = [];
         this.filteredOptions.forEach(option => {
             filteredValues.push(option.value);
+            console.log(option.value)
         });
         return filteredValues;
     }
@@ -225,10 +285,6 @@ export class SelectAutocompleteComponent implements OnChanges, DoCheck {
                     for (let i = 0; i < displayOption.length; i++) {
                          this.displayString += displayOption[i][this.display] + ',';
                     }
-
-                    console.log(113, this.displayString);
-                    console.log(114, this.labelCount);
-                    console.log(115, this.selectedValue.length);
 
                     this.displayString = this.displayString.slice(0, -1);
                     if (this.selectedValue.length > 1) {
@@ -250,7 +306,7 @@ export class SelectAutocompleteComponent implements OnChanges, DoCheck {
 
     onSelectionChange(val) {
         this.selectedName = [];
-
+        console.log(11202, val);
         this.selectedValue = val.value;
         if (this.selectedValue.length > 1) {
             this.isMultiple = true;
@@ -264,10 +320,10 @@ export class SelectAutocompleteComponent implements OnChanges, DoCheck {
             ));
         }
 
-        if (this.apiSearch.length === this.selectedValue.length) {
+        if (this.filteredOptions.length === this.selectedValue.length) {
             this.selectAllChecked = true;
         }
-        else if (this.apiSearch.length > this.selectedValue.length) {
+        else if (this.filteredOptions.length > this.selectedValue.length) {
             this.selectAllChecked = false;
         }
 

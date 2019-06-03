@@ -72,10 +72,19 @@ export class LoginComponent extends AppComponentBase implements OnInit {
     _capcha: { code: string, data: any } = { code: '', data: '' };
 
     onHandleLoginInput(event) {
+        console.log('Now: ' + moment(Date.now()).format('DD/MM/YYYY HH:mm:ss'));
         this._dataService.get('auth', JSON.stringify({ 'userName': event.target.value }), null, null, null).subscribe(data => {
             if (data.items != undefined) {
                 if (data.items.counter < 10) {
                     this.numberLoginFail = data.items.counter;
+                }
+
+                let lockedTime = (moment(Date.now()).valueOf() - moment(new Date(data.items.lockedTime)).valueOf()) / (1000 * 60);
+                console.log('Lock: ' + moment(new Date(data.items.lockedTime)).format('DD/MM/YYYY HH:mm:ss'));
+                if (lockedTime >= 0) {
+                    if (data.items.counter >= 10) {
+                        this._dataService.get('auth', JSON.stringify({ 'userName': this.frmLogin.controls['userNameOrEmailAddress'].value, 'counter': -1 }), null, null, null).subscribe(data => { });
+                    }
                 }
             }
         });
@@ -110,7 +119,7 @@ export class LoginComponent extends AppComponentBase implements OnInit {
             }
 
             lockedTime = (moment(Date.now()).valueOf() - moment(new Date(data.items.lockedTime)).valueOf()) / (1000 * 60);
-            if (data.lockedTime < 1 && data.lockedTime > 0) {
+            if (lockedTime < 0) {
                 this.numberLoginFail = 0;
                 this.userNameOrEmail.nativeElement.focus();
                 this.frmLogin.controls['userNameOrEmailAddress'].setValue('');
