@@ -20,8 +20,8 @@ form:not(.task-form) .mat-form-field-appearance-outline .mat-form-field-suffix {
     width: 116px;
 }
 .lbl-note{font-size: 13px; font-style: italic;margin-bottom: 15px;}
-.mat-form-field-password .mat-form-field-wrapper {
-    margin-bottom: 0!important;
+.mat-form-field-new-password .mat-form-field-wrapper {
+    margin-bottom: 5px !important;
     padding-bottom: 0;
 }
 @media (min-width: 1366px) {
