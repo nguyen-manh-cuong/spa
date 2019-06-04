@@ -26,11 +26,12 @@
                     <div class="d-flex position-relative" [ngClass]="{'has-error': this.capcha}">
                         <label class="col required min-width-100 lbl-capcha position-absolute {{this.capcha ? 'text-danger' : ''}}">Mã xác nhận<span class="text-danger">*</span></label>
                         <input type="text" name="prof_place" formControlName="codeCapcha" #codeCapcha mask="A*" maxlength="4" (change)="validateCapcha($event.target.value)" class="col form-control validate mr-2">
+                        <mat-icon matSuffix *ngIf="frmLogin.controls['codeCapcha'].value == null || frmLogin.controls['codeCapcha'].value == ''" matTooltipClass="bg-danger text-light" matTooltip="Không được để trống" color="warn">info</mat-icon>
                     </div>
                     <div class="mr-2"><img [src]="_capcha.data" width="162" height="39" alt="" /></div>
                     <div type="button" class="btn-refresh" (click)="getCapcha()"><i class="fa fa-refresh" aria-hidden="true"></i></div>
                 </div>
-                <small *ngIf="this.capcha" class="help-block" style="color: red;margin-left: 114px;">Mã xác nhận không khớp</small>
+                <!--<small *ngIf="this.capcha" class="help-block" style="color: red;margin-left: 114px;">Mã xác nhận không khớp</small>-->
 
             </div>
 

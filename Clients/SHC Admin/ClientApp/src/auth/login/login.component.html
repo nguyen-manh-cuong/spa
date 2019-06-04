@@ -53,16 +53,21 @@
                             <mat-label>Mã xác nhận <span class="text-danger">*</span></mat-label>
                             <input formControlName="codeCapcha" matInput autocomplete="off" #codeCapcha>
                             <validation matSuffix [control]="frmLogin.controls['codeCapcha']"></validation>
+                            <mat-icon matSuffix *ngIf="frmLogin.controls['codeCapcha'].value == null || frmLogin.controls['codeCapcha'].value == ''" matTooltipClass="bg-danger text-light" matTooltip="Không được để trống" color="warn">info</mat-icon>
                         </mat-form-field>
                     </div>
                 </div>
                 <div class="col-md-5 mt-1 pl-0">
                     <div class="mr-2"><img [src]="_capcha.data" width="162" height="39" alt="" /></div>
                 </div>
-                <div class="col-md-1 mt-1"><div type="button" class="btn-refresh" (click)="getCapcha()"><i class="fa fa-refresh" aria-hidden="true"></i></div></div>
+                <div class="col-md-1 mt-1">
+                <div type="button" class="btn-refresh" (click)="getCapcha()">
+                    <i class="fa fa-refresh" aria-hidden="true"></i>
+                </div>
+                </div>
             </div>
             <!--<small *ngIf="this.capcha" class="help-block" style="color: red;margin-left: 114px;">Mã xác nhận không khớp</small>-->
-            <mat-icon matSuffix *ngIf="frmLogin.controls['codeCapcha'].invalid" matTooltipClass="bg-danger text-light" matTooltip="Không được để trống" color="warn">info</mat-icon>
+            
         </div>
 
             <div class="row">

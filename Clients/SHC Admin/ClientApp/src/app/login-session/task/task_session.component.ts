@@ -54,7 +54,7 @@ export class TaskSessionComponent extends AppComponentBase implements OnInit {
         this.frmLogin = this._formBuilder.group({
             userNameOrEmailAddress: [localStorage.getItem('userName'), Validators.required], //this.loginService.authenticateModel.userNameOrEmailAddress
             password: [localStorage.getItem('password'), Validators.required], //this.loginService.authenticateModel.password
-            codeCapcha: [''],
+            codeCapcha: ['', Validators.required],
             isRemberMeChecked: [false]
         });
         this.dataService = this._dataService;
@@ -81,10 +81,19 @@ export class TaskSessionComponent extends AppComponentBase implements OnInit {
     _capcha: { code: string, data: any } = { code: '', data: '' };
 
     onHandleLoginInput(event) {
+        console.log('Now: ' + moment(Date.now()).format('DD/MM/YYYY HH:mm:ss'));
         this._dataService.get('auth', JSON.stringify({ 'userName': event.target.value }), null, null, null).subscribe(data => {
             if (data.items != undefined) {
                 if (data.items.counter < 10) {
                     this.numberLoginFail = data.items.counter;
+                }
+
+                let lockedTime = (moment(Date.now()).valueOf() - moment(new Date(data.items.lockedTime)).valueOf()) / (1000 * 60);
+                console.log('Lock: ' + moment(new Date(data.items.lockedTime)).format('DD/MM/YYYY HH:mm:ss'));
+                if (lockedTime >= 0) {
+                    if (data.items.counter >= 10) {
+                        this._dataService.get('auth', JSON.stringify({ 'userName': this.frmLogin.controls['userNameOrEmailAddress'].value, 'counter': -1 }), null, null, null).subscribe(data => { });
+                    }
                 }
             }
         });
@@ -110,7 +119,7 @@ export class TaskSessionComponent extends AppComponentBase implements OnInit {
                 }), null, null, null).subscribe(data => {
                     return swal({
                         title: this.l('Notification'),
-                        text: this.l('Đăng nhập không thành công. Tài khoản chưa được kích họat hoặc bị khóa'),
+                        text: this.l('Đăng nhập không thành công. Tài khoản chưa được kích hoạt hoặc bị khóa'),
                         type: 'warning',
                         timer: 3000
                     });
@@ -119,7 +128,7 @@ export class TaskSessionComponent extends AppComponentBase implements OnInit {
             }
 
             lockedTime = (moment(Date.now()).valueOf() - moment(new Date(data.items.lockedTime)).valueOf()) / (1000 * 60);
-            if (data.lockedTime < 1 && data.lockedTime > 0) {
+            if (lockedTime < 0) {
                 this.numberLoginFail = 0;
                 this.userNameOrEmail.nativeElement.focus();
                 this.frmLogin.controls['userNameOrEmailAddress'].setValue('');
@@ -133,7 +142,12 @@ export class TaskSessionComponent extends AppComponentBase implements OnInit {
             }
 
             numLoginFail = data.items.counter + 1;
-            this.numberLoginFail = numLoginFail;
+
+            if (numLoginFail >= 10) {
+                this.numberLoginFail = 0;
+            } else {
+                this.numberLoginFail = numLoginFail;
+            }
 
             if (numLoginFail > 5) {
                 if (this.frmLogin.controls['codeCapcha'].value != this._capcha.code) {
@@ -141,6 +155,25 @@ export class TaskSessionComponent extends AppComponentBase implements OnInit {
                     this.codeCapcha.nativeElement.focus();
                     this.frmLogin.controls['codeCapcha'].setValue('');
                     this._dataService.get('auth', JSON.stringify({ 'userName': this.frmLogin.controls['userNameOrEmailAddress'].value, 'counter': numLoginFail, 'lockedTime': lockedTime }), null, null, null).subscribe(data => { });
+                    if (10 - numLoginFail === 0) {
+                        this.userNameOrEmail.nativeElement.focus();
+                        this.frmLogin.controls['userNameOrEmailAddress'].setValue('');
+                        this.frmLogin.controls['password'].setValue('');
+                        return swal({
+                            title: this.l('Notification'),
+                            text: this.l('Đăng nhập không thành công. Vui lòng trở lại sau 60 phút'),
+                            type: 'warning',
+                            timer: 3000
+                        });
+                    }
+                    else {
+                        return swal({
+                            title: this.l('Notification'),
+                            text: this.l(`Mã xác nhận không trùng khớp. Bạn còn ${10 - numLoginFail} lần thử`),
+                            type: 'warning',
+                            timer: 3000
+                        });
+                    }
                 }
             }
 
@@ -150,8 +183,9 @@ export class TaskSessionComponent extends AppComponentBase implements OnInit {
             this.loginService.authenticateModel = Object.assign(this.loginService.authenticateModel, this.frmLogin.value);
 
             this.loginService.authenticate((success) => {
+
+
                 if (success) {
-                    localStorage.setItem('isLoggedIn', "true");
                     if (this.frmLogin.controls['isRemberMeChecked'].value) {
                         localStorage.setItem('userName', this.frmLogin.controls['userNameOrEmailAddress'].value);
                         localStorage.setItem('password', this.frmLogin.controls['password'].value);
@@ -160,9 +194,7 @@ export class TaskSessionComponent extends AppComponentBase implements OnInit {
                         localStorage.removeItem('password');
                     }
 
-                    this._dataService.get('auth', JSON.stringify({ 'userName': this.frmLogin.controls['userNameOrEmailAddress'].value, 'counter': -1 }), null, null, null).subscribe(() => {
-                        this.dialogRef.close();
-                    });
+                    this._dataService.get('auth', JSON.stringify({ 'userName': this.frmLogin.controls['userNameOrEmailAddress'].value, 'counter': -1 }), null, null, null).subscribe(data => { });
                 }
 
             }, error => {
@@ -182,10 +214,22 @@ export class TaskSessionComponent extends AppComponentBase implements OnInit {
                         type: 'warning',
                         timer: 3000
                     });
-                } else {
+                }
+                else if (10 === numLoginFail) {
+                    this.userNameOrEmail.nativeElement.focus();
+                    this.frmLogin.controls['userNameOrEmailAddress'].setValue('');
+                    this.frmLogin.controls['password'].setValue('');
                     return swal({
                         title: this.l('Notification'),
-                        text: this.l(`Đăng nhập không thành công. Tên đăng nhập hoặc mật khẩu không chính xác. Bạn còn ${10 - numLoginFail} lần thử`),
+                        text: this.l('Đăng nhập không thành công. Vui lòng trở lại sau 60 phút'),
+                        type: 'warning',
+                        timer: 3000
+                    });
+                }
+                else {
+                    return swal({
+                        title: this.l('Notification'),
+                        text: (10 - numLoginFail === 0) ? this.l('Đăng nhập không thành công. Vui lòng trở lại sau 60 phút') : this.l(`Đăng nhập không thành công. Tên đăng nhập hoặc mật khẩu không chính xác. Bạn còn ${10 - numLoginFail} lần thử`),
                         type: 'warning',
                         timer: 3000
                     });
