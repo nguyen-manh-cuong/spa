@@ -2,7 +2,7 @@ import * as _ from 'lodash';
 import swal from 'sweetalert2';
 
 import { ActivatedRouteSnapshot, ActivationEnd, NavigationEnd, NavigationError, NavigationStart, Router } from '@angular/router';
-import { AfterViewInit, ChangeDetectorRef, Component, Injector, OnInit, ViewContainerRef, ViewEncapsulation } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, Injector, OnInit, ViewEncapsulation } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { filter, map } from 'rxjs/operators';
 import { TaskSessionComponent } from '@app/login-session/task/task_session.component';
@@ -23,9 +23,9 @@ import { HealthfacilitiesListComponent } from './healthfacilities-list/healthfac
     styleUrls: ['./app.component.scss'],
     encapsulation: ViewEncapsulation.None
 })
+
 export class AppComponent extends AppComponentBase implements OnInit, AfterViewInit {
 
-    private viewContainerRef: ViewContainerRef;
     private title = 'Viettel Gateway';
     public pateTitle = '';
     sub: Subscription;
@@ -34,6 +34,7 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
 
     isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset).pipe(map(result => result.matches));
     shownLoginName: string = '';
+    numberOfClicks = 0;
 
     languages: abp.localization.ILanguageInfo[];
     currentLanguage: abp.localization.ILanguageInfo;
@@ -123,7 +124,7 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
 
         this.dialogSession = TaskSessionComponent;
 
-        //this.startTimer();
+        this.startTimer();
 
         if(this.appSession.user.accountType != 0){
             var healthFacilities = (abp.session as any).healthFacilities;
