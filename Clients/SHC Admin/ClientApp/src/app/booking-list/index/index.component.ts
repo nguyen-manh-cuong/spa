@@ -153,6 +153,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
     }
 
     onSelectHealthFacilities(value: any) {
+        console.log(value);
         if (value.healthFacilitiesId) {
             this.dataService.getAll('doctor', '{healthFacilitiesId:' + value.healthFacilitiesId + '}', '{FullName: "asc"}').subscribe(resp => { this._doctors = resp.items });
         } else {
