@@ -57,6 +57,7 @@ export class LoginComponent extends AppComponentBase implements OnInit {
         }, 1000);
 
         this.titleService.setTitle("VIETTEL GATEWAY");
+        localStorage.removeItem('isLoggedIn');
     }   
 
     get f() { return this.frmLogin.controls; }
@@ -75,7 +76,6 @@ export class LoginComponent extends AppComponentBase implements OnInit {
     _capcha: { code: string, data: any } = { code: '', data: '' };
 
     onHandleLoginInput(event) {
-        console.log('Now: ' + moment(Date.now()).format('DD/MM/YYYY HH:mm:ss'));
         this._dataService.get('auth', JSON.stringify({ 'userName': event.target.value }), null, null, null).subscribe(data => {
             if (data.items != undefined) {
                 if (data.items.counter < 10) {
@@ -83,7 +83,6 @@ export class LoginComponent extends AppComponentBase implements OnInit {
                 }
 
                 let lockedTime = (moment(Date.now()).valueOf() - moment(new Date(data.items.lockedTime)).valueOf()) / (1000 * 60);
-                console.log('Lock: ' + moment(new Date(data.items.lockedTime)).format('DD/MM/YYYY HH:mm:ss'));
                 if (lockedTime >= 0) {
                     if (data.items.counter >= 10) {
                         this._dataService.get('auth', JSON.stringify({ 'userName': this.frmLogin.controls['userNameOrEmailAddress'].value, 'counter': -1 }), null, null, null).subscribe(data => { });
@@ -174,15 +173,10 @@ export class LoginComponent extends AppComponentBase implements OnInit {
                     }
                 }
             }
-            console.log(7, 'Login test');
             this.submitted = true;
             if (this.frmLogin.invalid) { return; }
-            console.log(8, 'Login test');
             this.loginService.authenticateModel = Object.assign(this.loginService.authenticateModel, this.frmLogin.value);
-            console.log(9, 'Login test');
             this.loginService.authenticate((success) => {
-
-                console.log(11, 'Login test success');
                 if (success) {
                     if (this.frmLogin.controls['isRemberMeChecked'].value) {
                         localStorage.setItem('userName', this.frmLogin.controls['userNameOrEmailAddress'].value);
@@ -196,7 +190,6 @@ export class LoginComponent extends AppComponentBase implements OnInit {
                 }
 
             }, error => {
-                    console.log(11, 'Login test fail');
                 this._dataService.get('auth', JSON.stringify({
                     'userName': this.frmLogin.controls['userNameOrEmailAddress'].value, 'counter': numLoginFail, 'lockedTime': lockedTime
                 }), null, null, null).subscribe(data => {
