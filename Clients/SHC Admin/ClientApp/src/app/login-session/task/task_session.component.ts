@@ -54,7 +54,7 @@ export class TaskSessionComponent extends AppComponentBase implements OnInit {
         this.frmLogin = this._formBuilder.group({
             userNameOrEmailAddress: [localStorage.getItem('userName'), Validators.required], //this.loginService.authenticateModel.userNameOrEmailAddress
             password: [localStorage.getItem('password'), Validators.required], //this.loginService.authenticateModel.password
-            codeCapcha: ['', Validators.required],
+            codeCapcha: [''],
             isRemberMeChecked: [false]
         });
         this.dataService = this._dataService;
@@ -177,8 +177,17 @@ export class TaskSessionComponent extends AppComponentBase implements OnInit {
                 }
             }
 
+
+            console.log(1, this.appSession.user.userName);
+            console.log(2, this.appSession.user.email);
+            console.log(3, this.frmLogin.controls['userNameOrEmailAddress'].value);
+
             this.submitted = true;
             if (this.frmLogin.invalid) { return; }
+
+            if (this.appSession.user.userName != this.frmLogin.controls['userNameOrEmailAddress'].value && this.appSession.user.email != this.frmLogin.controls['userNameOrEmailAddress'].value) {
+                localStorage.removeItem('isLoggedIn');
+            }
 
             this.loginService.authenticateModel = Object.assign(this.loginService.authenticateModel, this.frmLogin.value);
 
@@ -193,8 +202,8 @@ export class TaskSessionComponent extends AppComponentBase implements OnInit {
                         localStorage.removeItem('userName');
                         localStorage.removeItem('password');
                     }
-
-                    this._dataService.get('auth', JSON.stringify({ 'userName': this.frmLogin.controls['userNameOrEmailAddress'].value, 'counter': -1 }), null, null, null).subscribe(data => { });
+                    this._dataService.get('auth', JSON.stringify({ 'userName': this.frmLogin.controls['userNameOrEmailAddress'].value, 'counter': -1 }), null, null, null).subscribe(() => { this.dialogRef.close();});
+                    
                 }
 
             }, error => {
