@@ -57,6 +57,7 @@ export class LoginComponent extends AppComponentBase implements OnInit {
         }, 1000);
 
         this.titleService.setTitle("VIETTEL GATEWAY");
+        localStorage.removeItem('isLoggedIn');
     }   
 
     get f() { return this.frmLogin.controls; }

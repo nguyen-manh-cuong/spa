@@ -18,7 +18,7 @@ import { Router } from '@angular/router';
 })
 export class IndexComponent extends PagedListingComponentBase<ISmsTemplate> implements OnInit, AfterViewInit {
 
-    displayedColumns = ['orderNumber', 'smsTemplateName', 'messageType', 'smsContent', 'isActive', 'organizationName', 'task'];
+    displayedColumns = ['orderNumber','code', 'smsTemplateName', 'messageType', 'smsContent', 'isActive', 'organizationName', 'task'];
     permission: any;
     _status = [{ id: 2, name: "Tất cả" }, { id: 1, name: "Hiệu lực" }, { id: 0, name: "Không hiệu lực" }]
 

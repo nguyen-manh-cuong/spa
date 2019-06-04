@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using SHCServer.Models;
-using SHCServer.ViewModels;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using SHCServer.Models;
+using SHCServer.ViewModels;
+using System;
+using System.Collections.Generic;
 using Viettel;
 using Viettel.MySql;
 
@@ -31,23 +27,27 @@ namespace SHCServer.Controllers
             int checkGetList = 0;
             var objs = _context.Query<SmsTemplate>()
                                .Where(g => g.IsDelete == false)
-                               .Select(sms => new {
+                               .Select(sms => new
+                               {
                                    sms.Id,
                                    sms.SmsTemplateName,
+                                   sms.SmsTemplateCode,
                                    sms.MessageType,
                                    sms.SmsContent,
                                    sms.IsActive,
                                    sms.OrganizationName,
                                    sms.ApplyAllSystem,
                                    sms.HealthFacilitiesId,
-                                   users = _context.Query<HealthFacilitiesConfigs>().Where(h => h.Values == sms.Id).Count() });
+                                   users = _context.Query<HealthFacilitiesConfigs>().Where(h => h.Values == sms.Id).Count()
+                               });
             if (filter != null)
             {
                 foreach (var (key, value) in JsonConvert.DeserializeObject<Dictionary<string, string>>(filter))
                 {
                     if (!Utils.PropertyExists<SmsTemplate>(key) && string.IsNullOrEmpty(value)) continue;
 
-                    if (string.Equals(key, "smsTemplateName")) {
+                    if (string.Equals(key, "smsTemplateName"))
+                    {
                         var query = value.Replace(@"%", "\\%").Replace(@"_", "\\_").Trim();
                         objs = objs.Where(o => o.SmsTemplateName.Contains(query) || o.SmsContent.Contains(query));
                     }
@@ -82,6 +82,55 @@ namespace SHCServer.Controllers
         {
             string sql = $"SELECT * FROM smarthealthcare.sms_template where BINARY SmsTemplateName = '{sms.SmsTemplateName}' " +
                 $"and {sms.IsDelete} = false";
+
+            SmsTemplate genSmsCode;
+            string smsTemplateCode = "";
+            if (sms.HealthFacilitiesId == null)
+            {
+                genSmsCode = _context.Query<SmsTemplate>().Where(s => s.IsDelete == false && s.HealthFacilitiesId == null).OrderByDesc(s => s.CreateDate).FirstOrDefault();
+                if (genSmsCode != null)
+                {
+                    if (genSmsCode.SmsTemplateCode != null)
+                    {
+                        if (int.Parse(genSmsCode.SmsTemplateCode.Substring(8, 2)) < 10)
+                            smsTemplateCode = genSmsCode.SmsTemplateCode.Substring(0, 8) + "0" + (int.Parse(genSmsCode.SmsTemplateCode.Substring(8, 2)) + 1).ToString();
+                        else
+                            smsTemplateCode = genSmsCode.SmsTemplateCode.Substring(0, 8) + (int.Parse(genSmsCode.SmsTemplateCode.Substring(8, 2)) + 1).ToString();
+                    }
+                    else
+                    {
+                        smsTemplateCode = "SMSADMIN" + "00";
+                    }
+                }
+                else
+                {
+                    smsTemplateCode = "SMSADMIN" + "00";
+                }
+            }
+            else
+            {
+                var healthFacilities = _context.Query<HealthFacilities>().Where(h => h.IsDelete == false && h.HealthFacilitiesId == sms.HealthFacilitiesId).FirstOrDefault();
+                genSmsCode = _context.Query<SmsTemplate>().Where(s => s.IsDelete == false && s.HealthFacilitiesId == sms.HealthFacilitiesId).OrderByDesc(s => s.CreateDate).FirstOrDefault();
+                if (genSmsCode != null)
+                {
+                    if (genSmsCode.SmsTemplateCode != null)
+                        if (int.Parse(genSmsCode.SmsTemplateCode.Substring(8, 2)) < 10)
+                            smsTemplateCode = genSmsCode.SmsTemplateCode.Substring(0, 8) + "0" + (int.Parse(genSmsCode.SmsTemplateCode.Substring(8, 2)) + 1).ToString();
+                        else
+                            smsTemplateCode = genSmsCode.SmsTemplateCode.Substring(0, 8) + (int.Parse(genSmsCode.SmsTemplateCode.Substring(8, 2)) + 1).ToString();
+                    else
+                    {
+                        smsTemplateCode = "SMS" + healthFacilities.Code + "00";
+                    }
+                }
+                else
+                {
+                    smsTemplateCode = "SMS" + healthFacilities.Code + "00";
+                }
+            }
+
+            sms.SmsTemplateCode = smsTemplateCode;
+
             //if (sms.HealthFacilitiesId != null)
             //{
             //    sql = sql + $" and (HealthFacilitiesId = {sms.HealthFacilitiesId} or HealthFacilitiesId = null)";
@@ -183,7 +232,8 @@ namespace SHCServer.Controllers
                 //if (_context.Query<SmsLogs>().Where(g => g.SmsTemplateId == sms.Id && g.Status == 1).Count() > 0)
                 //    return StatusCode(500, _excep.Throw("Sửa mẫu tin nhắn không thành công.", "Mẫu tin nhắn đã được sử dụng !"));
 
-                _context.Update<SmsTemplate>(g => g.Id == sms.Id, a => new SmsTemplate {
+                _context.Update<SmsTemplate>(g => g.Id == sms.Id, a => new SmsTemplate
+                {
                     SmsTemplateName = sms.SmsTemplateName,
                     MessageType = sms.MessageType,
                     SmsContent = sms.SmsContent,
@@ -204,7 +254,6 @@ namespace SHCServer.Controllers
                 return Json(new ActionResultDto { Error = e.Message });
             }
         }
-
 
         [HttpDelete]
         [Route("api/sms-templates")]

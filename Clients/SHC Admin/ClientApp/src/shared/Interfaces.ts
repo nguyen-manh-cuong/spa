@@ -204,6 +204,7 @@ export interface ISmsPackageUsed {
 export interface ISmsTemplate {
     id: number,
     smsTemplateName: string;
+    smsTemplateCode:string;
     messageType: number;
     smsContent: string;
     status: boolean;

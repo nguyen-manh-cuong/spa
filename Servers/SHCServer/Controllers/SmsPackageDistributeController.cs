@@ -44,21 +44,33 @@ namespace SHCServer.Controllers
             if (filters.fromYear != "" && Convert.ToInt32(filters.fromYear) > 0) fromYear = filters.fromYear;
             if (filters.monthStart != 13 && filters.monthStart > 0) monthStart = filters.monthStart;
             if (filters.monthEnd != 13 && filters.monthEnd > 0) monthEnd = filters.monthEnd;
-            if (monthStart > 0)
+
+            if (monthStart > 0 && monthEnd > 0 && toYear != null && toYear != "" && fromYear != null && fromYear != "")
             {
-                objs = objs.Where(o => o.MonthStart >= monthStart);
+                objs = objs.Where(o =>
+                (o.YearStart > int.Parse(fromYear) && o.YearEnd < int.Parse(toYear)) ||
+                (o.YearStart > int.Parse(fromYear) && o.YearEnd == int.Parse(toYear) && o.MonthEnd <= monthEnd) ||
+                (o.YearStart == int.Parse(fromYear) && o.YearEnd < int.Parse(toYear) && o.MonthStart >= monthStart) ||
+                (o.YearStart == int.Parse(fromYear) && o.MonthStart >= monthStart && o.MonthEnd <= monthEnd && o.YearEnd == int.Parse(toYear)));
             }
-            if (monthEnd > 0)
+            else
             {
-                objs = objs.Where(o => o.MonthEnd <= monthEnd);
-            }
-            if (toYear != null && toYear != "")
-            {
-                objs = objs.Where(o => o.YearEnd <= int.Parse(toYear));
-            }
-            if (fromYear != null && fromYear != "")
-            {
-                objs = objs.Where(o => o.YearStart >= int.Parse(fromYear));
+                if (monthStart > 0)
+                {
+                    objs = objs.Where(o => o.MonthStart >= monthStart);
+                }
+                if (monthEnd > 0)
+                {
+                    objs = objs.Where(o => o.MonthEnd <= monthEnd);
+                }
+                if (toYear != null && toYear != "")
+                {
+                    objs = objs.Where(o => o.YearEnd <= int.Parse(toYear));
+                }
+                if (fromYear != null && fromYear != "")
+                {
+                    objs = objs.Where(o => o.YearStart >= int.Parse(fromYear));
+                }
             }
 
             if (filters.Status != null && filters.Status != 2) objs = objs.Where(o => o.IsActive == (filters.Status == 1 ? true : false));
@@ -76,13 +88,12 @@ namespace SHCServer.Controllers
                 }
             }
 
-
             var rs = objs.OrderByDesc(p => p.Id).GroupBy(p => new { p.HealthFacilitiesId, p.SmsBrandsId, p.SmsPackageId, p.YearEnd, p.YearStart, p.MonthEnd, p.MonthStart })
-                .Select(p => new PackageDistributeViewModel(p, _connectionString) {
+                .Select(p => new PackageDistributeViewModel(p, _connectionString)
+                {
                     Amount = objs.Where(o => o.HealthFacilitiesId == p.HealthFacilitiesId && o.SmsBrandsId == p.SmsBrandsId && o.SmsPackageId == p.SmsPackageId
                     && o.YearEnd == p.YearEnd && o.MonthEnd == p.MonthEnd && o.YearStart == p.YearStart).Count(),
-
-             });
+                });
 
             return Json(new ActionResultDto { Result = new { Items = rs.TakePage(skipCount == 0 ? 1 : skipCount + 1, maxResultCount).ToList(), TotalCount = rs.Count() } });
         }
@@ -117,7 +128,7 @@ namespace SHCServer.Controllers
                 pu.SmsPackageId = obj.SmsPackageId;
                 pu.HealthFacilitiesId = obj.HealthFacilitiesId[i];
                 pu.Quantityused = package.Quantity;
-                pu.CreateDate = DateTime.Now; 
+                pu.CreateDate = DateTime.Now;
                 pu.CreateUserId = obj.UserId;
 
                 //if (_context.Query<SmsPackagesDistribute>().Where(g => g.HealthFacilitiesId == pd.HealthFacilitiesId && g.SmsPackageId == obj.SmsPackageId && g.IsDelete == false).Count() > 0)
@@ -212,8 +223,8 @@ namespace SHCServer.Controllers
         public int GetTotal(string startDate, string endDate)
         {
             string query = @"SELECT count(*) as Total
-                                FROM smarthealthcare.sms_packages_distribute 
-                                WHERE 
+                                FROM smarthealthcare.sms_packages_distribute
+                                WHERE
 	                                STR_TO_DATE(CONCAT(MonthStart, '/', YearStart), '%m/%Y') >= STR_TO_DATE(@StartDate, '%m/%Y') AND
                                     STR_TO_DATE(CONCAT(MonthEnd, '/', YearEnd), '%m/%Y') <= STR_TO_DATE(@EndDate, '%m/%Y')";
 
