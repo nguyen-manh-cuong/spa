@@ -13,8 +13,9 @@ import { standardized } from './helpers/utils';
 import swal from 'sweetalert2';
 import { analyzeAndValidateNgModules } from '@angular/compiler';
 import * as moment from 'moment';
-import {MomentDateAdapter} from '@angular/material-moment-adapter';
+import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import { AppConsts } from './AppConsts';
+import { createNewHosts } from '@angularclass/hmr';
 
 export class PagedResultDto {
     items: any[];
@@ -93,17 +94,22 @@ export abstract class PagedListingComponentBase<EntityDto> extends AppComponentB
         const birthday = moment(strBirthday, 'DD-MM-YYYY').valueOf();
         // Ngày hiện tại
         const yearNow = new Date().getFullYear();
-        const monthNow = new Date().getMonth() + 1;
-        const dateNow = moment(new Date()).valueOf();
+        const monthNow = new Date().getMonth();
+        const dateNow = new Date().getDate();
         var time1 = (dateNow - birthday) / (1000 * 24 * 60 * 60);
 
         const strNow = dateNow.toString().concat('-', monthNow.toString(), '-', yearNow.toString());
         var time = new Date().getTime() - new Date(birthday).getTime();
         // Convert thời gian (milliseconds) sang ngày
         var duration = moment.duration(time, 'milliseconds');
+        console.log(yearNow, monthNow, dateNow)
+        console.log(year, month, date)
+        const monthDifference = moment([yearNow, monthNow, dateNow]).diff(moment([year, month - 1, date]), 'months', true);
+        console.log(monthDifference);
         // Làm tròn
         var days = Math.floor(duration.asDays());
-        var months = Math.floor(duration.asMonths() + 1);
+        var months = Math.floor(monthDifference);
+        console.log(months)
         var years = Math.floor(duration.asYears());
 
         var ageString = "";
@@ -134,6 +140,21 @@ export abstract class PagedListingComponentBase<EntityDto> extends AppComponentB
 
 
         // so sanh ngay
+        //if (days == 0) {
+        //    ageString = "1 Ngày";
+        //}
+        //else {
+        //    if (days <= 90) {
+        //        ageString = days + " Ngày tuổi";
+        //    }
+        //    else if (days <= 2160) {
+        //        ageString = months + " Tháng tuổi";
+        //    }
+        //    else if (days > 2160) {
+        //        ageString = years + " Tuổi";
+        //    }
+        //}
+
         if (days == 0) {
             ageString = "1 Ngày";
         }
@@ -141,10 +162,10 @@ export abstract class PagedListingComponentBase<EntityDto> extends AppComponentB
             if (days <= 90) {
                 ageString = days + " Ngày tuổi";
             }
-            else if (days <= 2160) {
+            else if (months <= 72) {
                 ageString = months + " Tháng tuổi";
             }
-            else if (days > 2160) {
+            else if (months > 72) {
                 ageString = years + " Tuổi";
             }
         }
@@ -195,9 +216,9 @@ export abstract class PagedListingComponentBase<EntityDto> extends AppComponentB
                     setTimeout(() => this.isTableLoading = false, 500);
                     return of([]);
                 })
-        ).subscribe(data => {
-            this.dataSources.data = data;
-        });
+            ).subscribe(data => {
+                this.dataSources.data = data;
+            });
         this.setTableHeight();
     }
 
@@ -209,7 +230,7 @@ export abstract class PagedListingComponentBase<EntityDto> extends AppComponentB
         });
     }
 
-  
+
 
     deleteDialog(obj: EntityDto, key: string, id?: number | string) {
         swal({

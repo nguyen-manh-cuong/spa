@@ -1,4 +1,4 @@
-<mat-card style="width: 400px;" class="mat-elevation-z8">
+<mat-card style="width: 450px;" class="mat-elevation-z8">
     <mat-card-header class="d-flex flex-column justify-content-center">
         <h4 class="header blue lighter bigger mt-0" style="text-align:center">
             <img src="assets/images/logo-viettel_03.png">
@@ -51,9 +51,9 @@
                     <div class="d-flex position-relative" [ngClass]="{'has-error': this.capcha}">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>Mã xác nhận <span class="text-danger">*</span></mat-label>
-                            <input formControlName="codeCapcha" matInput autocomplete="off" #codeCapcha>
+                            <input formControlName="codeCapcha" matInput autocomplete="off" #codeCapcha maxlength="4" (input)="capchaInput($event)">
                             <validation matSuffix [control]="frmLogin.controls['codeCapcha']"></validation>
-                            <mat-icon matSuffix *ngIf="frmLogin.controls['codeCapcha'].value == null || frmLogin.controls['codeCapcha'].value == ''" matTooltipClass="bg-danger text-light" matTooltip="Không được để trống" color="warn">info</mat-icon>
+                            <mat-icon matSuffix *ngIf="(frmLogin.controls['codeCapcha'].value == null || frmLogin.controls['codeCapcha'].value == '') && (numberLoginFail > 5)" matTooltipClass="bg-danger text-light" matTooltip="Không được để trống" color="warn">info</mat-icon>
                         </mat-form-field>
                     </div>
                 </div>
@@ -78,7 +78,7 @@
                 </div>
                 <div class="col-md-6">
                     <div class="d-flex justify-content-center">
-                        <button mat-raised-button color="primary" class="w-100" (click)="login()" [disabled]="frmLogin.controls['userNameOrEmailAddress'].invalid || frmLogin.controls['password'].invalid" [buttonBusy]="true" [busyText]="'xxx'">{{l("Login_Button_Login")}}</button>
+                        <button mat-raised-button color="primary" class="w-100" (click)="login()" [disabled]="frmLogin.controls['userNameOrEmailAddress'].invalid || frmLogin.controls['password'].invalid || (frmLogin.controls['codeCapcha'].value == null || frmLogin.controls['codeCapcha'].value == '') && (numberLoginFail >= 5)" [buttonBusy]="true" [busyText]="'xxx'">{{l("Login_Button_Login")}}</button>
                     </div>
                 </div>
             </div>
@@ -88,6 +88,6 @@
         </h4>
     </mat-card-content>
     <mat-card-actions class=" m-l--24 m-r--24 m-b--24 p-2" style="background-color: gray">
-        <a mat-button class="w-50 m-0 text-white" href="https://www.mozilla.org/vi/firefox/new/" target="_blank">Link tải firefox</a><a mat-button class="w-50 m-0 text-white" href="https://www.mozilla.org/vi/firefox/new/" target="_blank">Link tải Teamviewer</a>
+        <a mat-button class="w-50 m-0 text-white" href="https://www.mozilla.org/vi/firefox/new/" target="_blank">Link tải firefox</a><a mat-button class="w-50 m-0 text-white" href="https://www.teamviewer.com/vi/" target="_blank">Link tải Teamviewer</a>
     </mat-card-actions>
 </mat-card>
