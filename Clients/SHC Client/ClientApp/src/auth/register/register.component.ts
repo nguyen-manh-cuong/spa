@@ -390,6 +390,8 @@ export class RegisterComponent implements OnInit {
     ruleFileName(name){
         if(name.length>30){
             return name.substring(0,27) + "...pdf";
+        }else{
+            return name;
         }
     }
 

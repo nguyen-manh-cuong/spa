@@ -93,7 +93,7 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
     public startTimer() {
         var isShowLoginDialog = false;
 
-        var source = timer(0, 600000);
+        var source = timer(0, 6000000);
         this.sub = source.subscribe((val) => {
             console.log(val);
             console.log(isShowLoginDialog);
@@ -101,10 +101,10 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
             if (val >= 1) {
                 localStorage.setItem('isLoggedIn', "false");
             }
-            if (localStorage.getItem('isLoggedIn') == "false" && isShowLoginDialog == false && this.) {
+            if (localStorage.getItem('isLoggedIn') == "false" && isShowLoginDialog == false) {
                 isShowLoginDialog = true;
                 this.sub.unsubscribe();
-                const dialogRef = this._dialog.open(this.dialogSession, { minWidth: '400px', maxWidth: '400px)', disableClose: true, data: null });
+                const dialogRef = this._dialog.open(this.dialogSession, { minWidth: '400px', maxWidth: '400px)', panelClass: 'cdk-overlay-pane-login', disableClose: true, data: null });
                 dialogRef.afterClosed().subscribe(() => {
                     isShowLoginDialog = false;
                     this.refreshTimer();
@@ -116,7 +116,7 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
     refreshTimer(): void {
         
         this.sub.unsubscribe();
-        this.startTimer();
+        //this.startTimer();
     }
 
     ngOnInit(): void {
@@ -150,9 +150,9 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
                     }).subscribe(resp => {}, err => {});
                 }
 
-                if(check == true) this._dialog.open(HealthfacilitiesListComponent, { minWidth: 'calc(100vw/3)', maxWidth: 'calc(100vw - 300px)', disableClose: true, data: healthFacilities ? healthFacilities : null});
+                if (check == true) this._dialog.open(HealthfacilitiesListComponent, { minWidth: 'calc(100vw/3)', maxWidth: 'calc(100vw - 300px)', panelClass: 'cdk-overlay-pane-login', disableClose: true, data: healthFacilities ? healthFacilities : null});
             } else{
-                this._dialog.open(HealthfacilitiesListComponent, { minWidth: 'calc(100vw/3)', maxWidth: 'calc(100vw - 300px)', disableClose: true, data: []});
+                this._dialog.open(HealthfacilitiesListComponent, { minWidth: 'calc(100vw/3)', maxWidth: 'calc(100vw - 300px)', panelClass: 'cdk-overlay-pane-login', disableClose: true, data: []});
             }
         }
 
@@ -212,8 +212,8 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
             });
     }
 
-    openCustomDialog(): void {
-        const dialogRef = this._dialog.open(this.dialogComponent, { minWidth: '400px', maxWidth: '400px'});
-        dialogRef.afterClosed();
-    }
+    //openCustomDialog(): void {
+    //    const dialogRef = this._dialog.open(this.dialogComponent, { minWidth: '400px', maxWidth: '400px', panelClass: 'cdk-overlay-pane-login'});
+    //    dialogRef.afterClosed();
+    //}
 }

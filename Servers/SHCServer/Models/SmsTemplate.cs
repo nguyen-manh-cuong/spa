@@ -17,6 +17,7 @@ namespace SHCServer.Models
         public SmsTemplate(SmsTemplateInputViewModel sms)
         {
             SmsTemplateName = sms.SmsTemplateName;
+            SmsTemplateCode = sms.SmsTemplateCode;
             MessageType = sms.MessageType;
             SmsContent = sms.SmsContent;
             IsActive = sms.IsActive;
@@ -36,6 +37,8 @@ namespace SHCServer.Models
         public int Id { set; get; }
 
         public string SmsTemplateName { set; get; }
+
+        public string SmsTemplateCode { get; set; }
 
         public int? MessageType { set; get; }
 
