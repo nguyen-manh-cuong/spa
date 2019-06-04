@@ -61,7 +61,8 @@
                 </div>
                 <div class="col-md-1 mt-1"><div type="button" class="btn-refresh" (click)="getCapcha()"><i class="fa fa-refresh" aria-hidden="true"></i></div></div>
             </div>
-            <small *ngIf="this.capcha" class="help-block" style="color: red;margin-left: 114px;">Mã xác nhận không khớp</small>
+            <!--<small *ngIf="this.capcha" class="help-block" style="color: red;margin-left: 114px;">Mã xác nhận không khớp</small>-->
+            <mat-icon matSuffix *ngIf="frmLogin.controls['codeCapcha'].invalid" matTooltipClass="bg-danger text-light" matTooltip="Không được để trống" color="warn">info</mat-icon>
         </div>
 
             <div class="row">
