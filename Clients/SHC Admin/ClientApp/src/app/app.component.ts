@@ -114,7 +114,7 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
 
         this.dialogSession = TaskSessionComponent;
 
-        this.startTimer();
+        //this.startTimer();
 
         if(this.appSession.user.accountType != 0){
             var healthFacilities = (abp.session as any).healthFacilities;

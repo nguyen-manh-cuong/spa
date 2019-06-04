@@ -77,11 +77,13 @@ export class LoginService {
             initialUrl = AppConsts.appBaseUrl;
         }
 
-        console.log(localStorage.getItem('isLoggedIn'));
-        if (localStorage.getItem('isLoggedIn') == null) {
-            localStorage.setItem('isLoggedIn', "true");
-            location.href = initialUrl;
-        }
+        // console.log(localStorage.getItem('isLoggedIn'));
+        // if (localStorage.getItem('isLoggedIn') == null) {
+        //     localStorage.setItem('isLoggedIn', "true");
+        //     location.href = initialUrl;
+        // }
+
+        location.href = initialUrl;
 
     }
 
