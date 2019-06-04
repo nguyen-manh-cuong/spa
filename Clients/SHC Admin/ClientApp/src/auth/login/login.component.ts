@@ -57,6 +57,7 @@ export class LoginComponent extends AppComponentBase implements OnInit {
         }, 1000);
 
         this.titleService.setTitle("VIETTEL GATEWAY");
+        localStorage.removeItem('isLoggedIn');
     }   
 
     get f() { return this.frmLogin.controls; }
@@ -170,15 +171,11 @@ export class LoginComponent extends AppComponentBase implements OnInit {
                     }
                 }
             }
-            console.log(7, 'Login test');
             this.submitted = true;
             if (this.frmLogin.invalid) { return; }
-            console.log(8, 'Login test');
             this.loginService.authenticateModel = Object.assign(this.loginService.authenticateModel, this.frmLogin.value);
-            console.log(9, 'Login test');
             this.loginService.authenticate((success) => {
 
-                console.log(11, 'Login test success');
                 if (success) {
                     if (this.frmLogin.controls['isRemberMeChecked'].value) {
                         localStorage.setItem('userName', this.frmLogin.controls['userNameOrEmailAddress'].value);
