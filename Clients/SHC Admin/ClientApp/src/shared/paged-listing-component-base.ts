@@ -102,14 +102,10 @@ export abstract class PagedListingComponentBase<EntityDto> extends AppComponentB
         var time = new Date().getTime() - new Date(birthday).getTime();
         // Convert thời gian (milliseconds) sang ngày
         var duration = moment.duration(time, 'milliseconds');
-        console.log(yearNow, monthNow, dateNow)
-        console.log(year, month, date)
         const monthDifference = moment([yearNow, monthNow, dateNow]).diff(moment([year, month - 1, date]), 'months', true);
-        console.log(monthDifference);
         // Làm tròn
         var days = Math.floor(duration.asDays());
         var months = Math.floor(monthDifference);
-        console.log(months)
         var years = Math.floor(duration.asYears());
 
         var ageString = "";
