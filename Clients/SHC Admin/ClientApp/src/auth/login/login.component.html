@@ -1,4 +1,4 @@
-<mat-card style="width: 400px;" class="mat-elevation-z8">
+<mat-card style="width: 450px;" class="mat-elevation-z8">
     <mat-card-header class="d-flex flex-column justify-content-center">
         <h4 class="header blue lighter bigger mt-0" style="text-align:center">
             <img src="assets/images/logo-viettel_03.png">
@@ -51,7 +51,7 @@
                     <div class="d-flex position-relative" [ngClass]="{'has-error': this.capcha}">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>Mã xác nhận <span class="text-danger">*</span></mat-label>
-                            <input formControlName="codeCapcha" matInput autocomplete="off" #codeCapcha>
+                            <input formControlName="codeCapcha" matInput autocomplete="off" #codeCapcha maxlength="4" (input)="capchaInput($event)">
                             <validation matSuffix [control]="frmLogin.controls['codeCapcha']"></validation>
                             <mat-icon matSuffix *ngIf="frmLogin.controls['codeCapcha'].value == null || frmLogin.controls['codeCapcha'].value == ''" matTooltipClass="bg-danger text-light" matTooltip="Không được để trống" color="warn">info</mat-icon>
                         </mat-form-field>
