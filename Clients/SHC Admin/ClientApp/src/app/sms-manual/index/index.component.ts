@@ -138,7 +138,6 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
             this.selection.clear() :
             this.dataSources.data.forEach((row: IMedicalHealthcareHistories) => {
                 this.selection.select(row)
-                console.log(row);
             });
     }
 

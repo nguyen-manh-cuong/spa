@@ -31,10 +31,11 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
     sub: Subscription;
     dialogComponent: any;
     dialogSession: any;
+    oddNumberOfClick = 0;
+    evenNumberOfClick = 0;
 
     isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset).pipe(map(result => result.matches));
     shownLoginName: string = '';
-    numberOfClicks = 0;
 
     languages: abp.localization.ILanguageInfo[];
     currentLanguage: abp.localization.ILanguageInfo;
@@ -93,13 +94,26 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
     public startTimer() {
         var isShowLoginDialog = false;
 
-        var source = timer(0, 6000000);
+        var source = timer(0, 20000);
         this.sub = source.subscribe((val) => {
-            console.log(val);
-            console.log(isShowLoginDialog);
-            console.log(localStorage.getItem('isLoggedIn'));
-            if (val >= 1) {
-                localStorage.setItem('isLoggedIn', "false");
+
+            if (val % 2 == 0) {
+                this.evenNumberOfClick = this.numberOfClicks;
+            }
+
+            if (val % 2 == 1) {
+                this.oddNumberOfClick = this.numberOfClicks;
+            }
+
+            //console.log(val);
+            //console.log(this.oddNumberOfClick);
+            //console.log(this.evenNumberOfClick);
+            //console.log(this.numberOfClicks);
+            //console.log(localStorage.getItem('isLoggedIn'));
+            //console.log(isShowLoginDialog);
+
+            if (val >= 1 && this.evenNumberOfClick == this.oddNumberOfClick) {
+                    localStorage.setItem('isLoggedIn', "false");
             }
             if (localStorage.getItem('isLoggedIn') == "false" && isShowLoginDialog == false) {
                 isShowLoginDialog = true;
@@ -113,10 +127,10 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
         });
     }
 
-    refreshTimer(): void {
+    public refreshTimer(): void {
         
         this.sub.unsubscribe();
-        //this.startTimer();
+        this.startTimer();
     }
 
     ngOnInit(): void {

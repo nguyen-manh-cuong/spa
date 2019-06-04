@@ -54,7 +54,6 @@ export class DetailComponent extends AppComponentBase implements OnInit, AfterVi
                         sentSmsDate: item.sentDate,
                         status: item.status == 1 ? 'Thành công' : 'Lỗi'
                     }
-                    console.log(item);
                     this.smsArr.push(obj);
                 }
                 this.dataSource.data = this.smsArr;
