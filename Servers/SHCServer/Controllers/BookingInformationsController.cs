@@ -206,7 +206,7 @@ namespace SHCServer.Controllers
         public IActionResult GetByGroup(int skipCount = 0, int maxResultCount = 10, string sorting = null, string filter = null)
         {
             var objs = _context.Query<BookingInformations>().Where(b => b.BookingServiceType == 1);
-            var check = 0;
+            //var check = 0;
 
             if (filter != null)
             {
@@ -216,7 +216,7 @@ namespace SHCServer.Controllers
                     {
                         if (!string.IsNullOrEmpty(value))
                         {
-                            check = 1;
+                            //check = 1;
                             objs = objs.Where(b => b.HealthFacilitiesId.ToString() == value.Trim() || b.HealthFacilitiesId.ToString() == null);
                         }
                     }
@@ -245,7 +245,7 @@ namespace SHCServer.Controllers
 
                 }
             }
-            if (check == 0) return Json(new ActionResultDto { Result = new { Items = new List<BookingInformationsViewModel>() } });
+            //if (check == 0) return Json(new ActionResultDto { Result = new { Items = new List<BookingInformationsViewModel>() } });
             if (sorting != null)
             {
                 foreach (var (key, value) in JsonConvert.DeserializeObject<Dictionary<string, string>>(sorting))
