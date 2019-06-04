@@ -77,7 +77,7 @@ namespace SHCServer.Controllers
             }
 
 
-            var rs = objs.OrderByDesc(p => p.Id).GroupBy(p => new { p.HealthFacilitiesId, p.SmsBrandsId, p.SmsPackageId, p.YearEnd, p.YearStart, p.MonthEnd, p.MonthStart })
+            var rs = objs.OrderByDesc(p => p.Id)
                 .Select(p => new PackageDistributeViewModel(p, _connectionString) {
                     Amount = objs.Where(o => o.HealthFacilitiesId == p.HealthFacilitiesId && o.SmsBrandsId == p.SmsBrandsId && o.SmsPackageId == p.SmsPackageId
                     && o.YearEnd == p.YearEnd && o.MonthEnd == p.MonthEnd && o.YearStart == p.YearStart).Count(),
