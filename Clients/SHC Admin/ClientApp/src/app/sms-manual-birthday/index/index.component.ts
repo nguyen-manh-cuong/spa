@@ -6,7 +6,7 @@ import { FormBuilder, FormControl } from '@angular/forms';
 import { PagedListingComponentBase } from '@shared/paged-listing-component-base';
 import { startWith, map, finalize, debounceTime, tap, switchMap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
-import { MatDialog } from '@angular/material';
+import { MatDialog, throwMatDialogContentAlreadyAttachedError } from '@angular/material';
 import { TaskComponent } from '@app/sms-template-task/task/task.component';
 
 import swal from 'sweetalert2';
@@ -110,7 +110,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
             fromDay: [32],
             fromMonth: [13],
             sex: [],
-            about: 3, 
+            about: 3,
             type: 'cmsn'
         });
 
@@ -127,13 +127,13 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
         this.dialogComponent = TaskComponent;
         this.dataService.getAll('provinces').subscribe(resp => this._provinces = resp.items);
 
-        if(this.appSession.user.healthFacilitiesId){
+        if (this.appSession.user.healthFacilitiesId) {
             this.dataService.getAll('doctors', String(this.appSession.user.healthFacilitiesId)).subscribe(resp => this._doctors = resp.items);
             this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId);
-          } else{
+        } else {
             this.filterOptions();
             this.healthfacilities.setValue(null);
-          }
+        }
     }
 
     isAllSelected() {
@@ -176,29 +176,29 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     filterOptions() {
         this.healthfacilities.valueChanges
             .pipe(
-              debounceTime(500),
-              tap(() => this.isLoading = true),
-              switchMap(value => this.filter(value))
+                debounceTime(500),
+                tap(() => this.isLoading = true),
+                switchMap(value => this.filter(value))
             )
             .subscribe(data => {
                 this._healthfacilities = data.items;
             });
-      }
-  
-      filter(value: any){
-        var fValue = typeof value === 'string'  ? value : (value ? value.name : '')
+    }
+
+    filter(value: any) {
+        var fValue = typeof value === 'string' ? value : (value ? value.name : '')
         this._healthfacilities = [];
-  
+
         return this.dataService
             .get("healthfacilities", JSON.stringify({
-                name : isNaN(fValue) ? fValue : "",
-                code : !isNaN(fValue) ? fValue : ""
+                name: isNaN(fValue) ? fValue : "",
+                code: !isNaN(fValue) ? fValue : ""
             }), '', null, null)
             .pipe(
                 finalize(() => this.isLoading = false)
             )
     }
-    
+
 
     // displayProvinceFn(h?: IProvince): string | undefined {
     //     return h ? h.name : undefined;
@@ -349,10 +349,39 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
 
 
 
-    
+
 
     customSearch() {
         this.healthfacilities.value ? this.frmSearch.controls['healthfacilities'].setValue(this.healthfacilities.value.healthFacilitiesId) : (this.appSession.user.healthFacilitiesId == null ? this.frmSearch.controls['healthfacilities'].setValue(null) : '');
+        if (
+            (this.frmSearch.controls['fromMonth'].value == 2 && this.frmSearch.controls['fromDay'].value > 28) ||
+            (this.frmSearch.controls['fromMonth'].value == 4 && this.frmSearch.controls['fromDay'].value > 30) ||
+            (this.frmSearch.controls['fromMonth'].value == 6 && this.frmSearch.controls['fromDay'].value > 30) ||
+            (this.frmSearch.controls['fromMonth'].value == 9 && this.frmSearch.controls['fromDay'].value > 30) ||
+            (this.frmSearch.controls['fromMonth'].value == 11 && this.frmSearch.controls['fromDay'].value > 30)
+        ) {
+            return swal({
+                title: "Thông báo",
+                text: "Ngày sinh từ không đúng định dạng",
+                type: "warning",
+                timer: 3000
+            });
+        }
+
+        if (
+            (this.frmSearch.controls['toMonth'].value == 2 && this.frmSearch.controls['toDay'].value > 28) ||
+            (this.frmSearch.controls['toMonth'].value == 4 && this.frmSearch.controls['toDay'].value > 30) ||
+            (this.frmSearch.controls['toMonth'].value == 6 && this.frmSearch.controls['toDay'].value > 30) ||
+            (this.frmSearch.controls['toMonth'].value == 9 && this.frmSearch.controls['toDay'].value > 30) ||
+            (this.frmSearch.controls['toMonth'].value == 11 && this.frmSearch.controls['toDay'].value > 30)
+        ) {
+            return swal({
+                title: "Thông báo",
+                text: "Ngày sinh từ không đúng định dạng",
+                type: "warning",
+                timer: 3000
+            });
+        }
         // this.frmSearch.controls['provinceCode'].setValue(this._provinceCode);
         // this.frmSearch.controls['districtCode'].setValue(this._districtCode);
         // this.frmSearch.controls['wardCode'].setValue(this._wardCode);
@@ -360,11 +389,12 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     }
 
     showMess(type: number) {
-        if(type == 1 ) swal({
-            title:'Thông báo', 
-            text:'Chưa chọn bệnh nhân', 
-            type:'warning',
-            timer:3000});
+        if (type == 1) swal({
+            title: 'Thông báo',
+            text: 'Chưa chọn bệnh nhân',
+            type: 'warning',
+            timer: 3000
+        });
     }
 
     openCustomDialog(): void {
@@ -400,15 +430,16 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
                 content: '',
                 objectType: 1
             })
-            .subscribe(resp => {
-                swal({
-                    title:'Thông báo', 
-                    html: resp, 
-                    type:'error',
-                    timer:3000});
-                this.selection = new SelectionModel<IMedicalHealthcareHistories>(true, []);
-                abp.ui.clearBusy('#main-container');
-            }, err => {});
-        });   
+                .subscribe(resp => {
+                    swal({
+                        title: 'Thông báo',
+                        html: resp,
+                        type: 'error',
+                        timer: 3000
+                    });
+                    this.selection = new SelectionModel<IMedicalHealthcareHistories>(true, []);
+                    abp.ui.clearBusy('#main-container');
+                }, err => { });
+        });
     }
 }

@@ -149,12 +149,15 @@ export class LoginComponent extends AppComponentBase implements OnInit {
             if (numLoginFail > 5) {
                 if (this.frmLogin.controls['codeCapcha'].value != this._capcha.code) {
                     this.capcha = true;
-                    this.codeCapcha.nativeElement.focus();
+                    if (this.codeCapcha != undefined) {
+                        this.codeCapcha.nativeElement.focus();
+                    }
                     this.frmLogin.controls['codeCapcha'].setValue('');
                     this._dataService.get('auth', JSON.stringify({ 'userName': this.frmLogin.controls['userNameOrEmailAddress'].value, 'counter': numLoginFail, 'lockedTime': lockedTime }), null, null, null).subscribe(data => { });
                     if (10 - numLoginFail === 0) {
                         this.userNameOrEmail.nativeElement.focus();
                         this.frmLogin.controls['userNameOrEmailAddress'].setValue('');
+
                         this.frmLogin.controls['password'].setValue('');
                         return swal({
                             title: this.l('Notification'),
