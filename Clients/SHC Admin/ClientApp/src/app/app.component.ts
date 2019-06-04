@@ -92,7 +92,7 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
     public startTimer() {
         var isShowLoginDialog = false;
 
-        var source = timer(0, 60000);
+        var source = timer(0, 6000000);
         this.sub = source.subscribe((val) => {
             console.log(val);
             console.log(isShowLoginDialog);

@@ -77,7 +77,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
     }
 
     ngOnInit() {
-        this.api = 'bookinglist';              
+        this.api = 'bookinglist';
         this.frmSearch = this._formBuilder.group({
             healthfacilities: [],
             doctor: [],
@@ -96,11 +96,11 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
         this.dialogReasonReject = ReasonComponent;
         this.permission = getPermission(abp.nav.menus['mainMenu'].items, this.router.url);
 
-        if(this.appSession.user.healthFacilitiesId) {
-            this.dataService.getAll('doctors', String(this.appSession.user.healthFacilitiesId)).subscribe(resp => {this._doctors = resp.items;});
-            this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId);       
+        if (this.appSession.user.healthFacilitiesId) {
+            this.dataService.getAll('doctors', String(this.appSession.user.healthFacilitiesId)).subscribe(resp => { this._doctors = resp.items; });
+            this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId);
         }
-        else{
+        else {
             this.filterOptions();
             this.healthfacilities.setValue(null);
         }
@@ -129,13 +129,13 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
     }
 
     filter(value: any) {
-        let fValue = typeof value === 'string'  ? value : (value ? value.name : '')
+        let fValue = typeof value === 'string' ? value : (value ? value.name : '')
         this._healthfacilities = [];
 
         return this.dataService
             .get('healthfacilities', JSON.stringify({
-                name : isNaN(fValue) ? fValue : '',
-                code : !isNaN(fValue) ? fValue : ''
+                name: isNaN(fValue) ? fValue : '',
+                code: !isNaN(fValue) ? fValue : ''
             }), '', null, null)
             .pipe(
                 finalize(() => this.isLoading = false)
@@ -153,9 +153,8 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
     }
 
     onSelectHealthFacilities(value: any) {
-        console.log(value);
         if (value.healthFacilitiesId) {
-            this.dataService.getAll('doctor', '{healthFacilitiesId:' + value.healthFacilitiesId + '}', '{FullName: "asc"}').subscribe(resp => { this._doctors = resp.items });
+            this.dataService.getAll('doctor', '{healthfacilitiesId:' + value.healthFacilitiesId + '}', '{FullName: "asc"}').subscribe(resp => { this._doctors = resp.items });
         } else {
             this._doctors = null;
         }
@@ -237,61 +236,62 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
         this.flagDisabled = true;
         switch (type) {
             case 0:
-            this._isDateTimeEnable = true;
+                this._isDateTimeEnable = true;
                 this.startTime.nativeElement.value = moment(new Date()).format('DD/MM/YYYY');
                 this.endTime.nativeElement.value = moment(new Date()).format('DD/MM/YYYY');
                 break;
             case 1:
-            this._isDateTimeEnable = true;
+                this._isDateTimeEnable = true;
                 this.startTime.nativeElement.value = moment(new Date()).add(-1, 'day').format('DD/MM/YYYY');
                 this.endTime.nativeElement.value = moment(new Date()).format('DD/MM/YYYY');
                 break;
             case 2:
-            this._isDateTimeEnable = true;
+                this._isDateTimeEnable = true;
                 this.startTime.nativeElement.value = moment(new Date()).startOf('week').format('DD/MM/YYYY');
                 this.endTime.nativeElement.value = moment(new Date()).endOf('week').format('DD/MM/YYYY');
                 break;
             case 3:
-            this._isDateTimeEnable = true;
+                this._isDateTimeEnable = true;
                 this.startTime.nativeElement.value = moment(new Date()).add(-1, 'week').startOf('week').format('DD/MM/YYYY');
                 this.endTime.nativeElement.value = moment(new Date()).add(-1, 'week').endOf('week').format('DD/MM/YYYY');
                 break;
             case 4:
-            this._isDateTimeEnable = true;
+                this._isDateTimeEnable = true;
                 this.startTime.nativeElement.value = moment(new Date()).startOf('month').format('DD/MM/YYYY');
                 this.endTime.nativeElement.value = moment(new Date()).endOf('month').format('DD/MM/YYYY');
                 break;
             case 5:
-            this._isDateTimeEnable = true;
+                this._isDateTimeEnable = true;
                 this.startTime.nativeElement.value = moment(new Date()).add(-1, 'month').startOf('month').format('DD/MM/YYYY');
                 this.endTime.nativeElement.value = moment(new Date()).add(-1, 'month').endOf('month').format('DD/MM/YYYY');
                 break;
             case 6:
-            this._isDateTimeEnable = true;
-                var quarterAdjustment = (moment().month() % 3) + 1;
+                this._isDateTimeEnable = true;
+                var quarterAdjustment = ((moment().month() + 1) % 3);
                 var lastQuarterEndDate = moment().subtract({ months: quarterAdjustment }).endOf('month');
+
                 this.endTime.nativeElement.value = lastQuarterEndDate.format('DD/MM/YYYY');
                 this.startTime.nativeElement.value = lastQuarterEndDate.clone().subtract({ months: 2 }).startOf('month').format('DD/MM/YYYY');
                 break;
             case 7:
-            this._isDateTimeEnable = true;
-                var quarterAdjustment = (moment().month() % 3) + 4;
+                this._isDateTimeEnable = true;
+                var quarterAdjustment = ((moment().month() + 1)  % 3) + 3;
                 var lastQuarterEndDate = moment().subtract({ months: quarterAdjustment }).endOf('month');
                 this.endTime.nativeElement.value = lastQuarterEndDate.format('DD/MM/YYYY');
                 this.startTime.nativeElement.value = lastQuarterEndDate.clone().subtract({ months: 2 }).startOf('month').format('DD/MM/YYYY');
                 break;
             case 8:
-            this._isDateTimeEnable = true;
+                this._isDateTimeEnable = true;
                 this.startTime.nativeElement.value = moment(new Date()).startOf('year').format('DD/MM/YYYY');
                 this.endTime.nativeElement.value = moment(new Date()).endOf('year').format('DD/MM/YYYY');
                 break;
             case 9:
-            this._isDateTimeEnable = true;
+                this._isDateTimeEnable = true;
                 this.startTime.nativeElement.value = moment(new Date()).add(-1, 'year').startOf('year').format('DD/MM/YYYY');
                 this.endTime.nativeElement.value = moment(new Date()).add(-1, 'year').endOf('year').format('DD/MM/YYYY');
                 break;
             case 10:
-            this._isDateTimeEnable = false;
+                this._isDateTimeEnable = false;
                 this.flagDisabled = false;
                 break;
         }
@@ -357,7 +357,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
                 type: 'warning',
                 timer: 3000
             });
-          }
+        }
         if (!moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').isValid()) {
             this.startTime.nativeElement.focus();
             return swal({
@@ -365,7 +365,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
                 text: 'Từ ngày không đúng định dạng',
                 type: 'warning'
             });
-          }
+        }
         if (!moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').isValid()) {
             this.endTime.nativeElement.focus();
             return swal({
@@ -382,19 +382,19 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
                 type: 'warning',
                 timer: 3000
             });
-          }
+        }
         this.startTime.nativeElement.value ? this.frmSearch.controls['startTime'].setValue(moment(this.startTime.nativeElement.value + '00:00:00', 'DD/MM/YYYY hh:mm:ss').add(7, 'hours').toDate()) : '';
         this.endTime.nativeElement.value ? this.frmSearch.controls['endTime'].setValue(moment(this.endTime.nativeElement.value + '23:59:59', 'DD/MM/YYYY hh:mm:ss').add(7, 'hours').toDate()) : '';
         var req = omitBy(this.frmSearch.value, isNil);
         this.btnSearchClicks$.next();
     }
 
-    checkPermission(isEdit: boolean): boolean{
-        if(isEdit){
+    checkPermission(isEdit: boolean): boolean {
+        if (isEdit) {
             return true;
-        } else{
+        } else {
             this.displayedColumns = ['orderNumber', 'code', 'patient', 'gender', 'phone', 'year', 'description', 'doctor', 'examinationDate', 'status', '_bookingServiceType'];
             return false;
         }
-      }
+    }
 }
