@@ -141,13 +141,6 @@ export class TaskSessionComponent extends AppComponentBase implements OnInit {
                     this.codeCapcha.nativeElement.focus();
                     this.frmLogin.controls['codeCapcha'].setValue('');
                     this._dataService.get('auth', JSON.stringify({ 'userName': this.frmLogin.controls['userNameOrEmailAddress'].value, 'counter': numLoginFail, 'lockedTime': lockedTime }), null, null, null).subscribe(data => { });
-
-                    return swal({
-                        title: this.l('Notification'),
-                        text: this.l(`Mã xác nhận không trùng khớp. Bạn còn ${10 - numLoginFail} lần thử`),
-                        type: 'warning',
-                        timer: 3000
-                    });
                 }
             }
 
@@ -158,6 +151,7 @@ export class TaskSessionComponent extends AppComponentBase implements OnInit {
 
             this.loginService.authenticate((success) => {
                 if (success) {
+                    localStorage.setItem('isLoggedIn', "true");
                     if (this.frmLogin.controls['isRemberMeChecked'].value) {
                         localStorage.setItem('userName', this.frmLogin.controls['userNameOrEmailAddress'].value);
                         localStorage.setItem('password', this.frmLogin.controls['password'].value);
@@ -166,7 +160,9 @@ export class TaskSessionComponent extends AppComponentBase implements OnInit {
                         localStorage.removeItem('password');
                     }
 
-                    this._dataService.get('auth', JSON.stringify({ 'userName': this.frmLogin.controls['userNameOrEmailAddress'].value, 'counter': -1 }), null, null, null).subscribe(data => { });
+                    this._dataService.get('auth', JSON.stringify({ 'userName': this.frmLogin.controls['userNameOrEmailAddress'].value, 'counter': -1 }), null, null, null).subscribe(() => {
+                        this.dialogRef.close();
+                    });
                 }
 
             }, error => {

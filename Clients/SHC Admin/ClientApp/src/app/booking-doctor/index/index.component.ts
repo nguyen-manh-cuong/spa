@@ -30,11 +30,11 @@ import { Router } from '@angular/router';
     styleUrls: ['./index.component.scss'],
     encapsulation: ViewEncapsulation.None
 })
-  export class IndexComponent extends AppComponentBase implements OnInit {   
+export class IndexComponent extends AppComponentBase implements OnInit {
     _healthfacilities = [];
     _doctors = [];
     _months = _.range(1, 13);
-    _status = [{ id: 3, name: 'Tất cả'}, { id: 0, name: 'Chờ duyệt'}, { id: 1, name: 'Đã duyệt'}, { id: 2, name: 'Đã hủy'}];
+    _status = [{ id: 3, name: 'Tất cả' }, { id: 0, name: 'Chờ duyệt' }, { id: 1, name: 'Đã duyệt' }, { id: 2, name: 'Đã hủy' }];
 
     healthfacilities = new FormControl();
     filteredOptions: Observable<IHealthfacilities[]>;
@@ -49,108 +49,126 @@ import { Router } from '@angular/router';
     calendarEvents: EventInput[] = [];
     permission: any;
 
-    @ViewChild('calendar') calendarComponent: FullCalendarComponent; 
- 
+    currentMonth: number;
+
+    @ViewChild('calendar') calendarComponent: FullCalendarComponent;
+
     constructor(injector: Injector, private _dataService: DataService, public dialog: MatDialog, private _formBuilder: FormBuilder, private router: Router) {
-      super(injector);
+        super(injector);
     }
 
     ngOnInit() {
-      this.frmSearch = this._formBuilder.group({ 
-          healthfacilities: [], 
-          doctor: [], 
-          month: [new Date().getMonth() + 1],
-          status: [3] });
+        this.frmSearch = this._formBuilder.group({
+            healthfacilities: [],
+            doctor: [],
+            month: [new Date().getMonth() + 1],
+            status: [3]
+        });
+        this.currentMonth = moment().month() + 1;
+        this.dataService = this._dataService;
+        this.dialogTask = TaskComponent;
+        this.calendarComponent.locale = viLocale;
+        this.permission = getPermission(abp.nav.menus['mainMenu'].items, this.router.url);
 
-      this.dataService = this._dataService;
-      this.dialogTask = TaskComponent;
-      this.calendarComponent.locale = viLocale;
-      this.permission = getPermission(abp.nav.menus['mainMenu'].items, this.router.url);
-
-      if(this.appSession.user.healthFacilitiesId){
-        this.dataService.getAll('doctors', String(this.appSession.user.healthFacilitiesId)).subscribe(resp => this._doctors = resp.items);
-        this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId);
-      } else{
-        this.filterOptions();
-        this.healthfacilities.setValue(null);
-      }
+        if (this.appSession.user.healthFacilitiesId) {
+            this.dataService.getAll('doctors', String(this.appSession.user.healthFacilitiesId)).subscribe(resp => this._doctors = resp.items);
+            this.frmSearch.controls['healthfacilities'].setValue(this.appSession.user.healthFacilitiesId);
+        } else {
+            this.filterOptions();
+            this.healthfacilities.setValue(null);
+        }
     }
 
-    search(){
-      if(((!this.appSession.user.healthFacilitiesId && this.healthfacilities.value) || (this.appSession.user.healthFacilitiesId))  && this.frmSearch.controls['doctor'].value){
-        !this.appSession.user.healthFacilitiesId ? this.frmSearch.controls['healthfacilities'].setValue(this.healthfacilities.value.healthFacilitiesId) : "";
-        
-        this.dataService
-        .get("bookingdoctor", JSON.stringify(_.omitBy(this.frmSearch.value, _.isNil)), '', null, null)
-        .subscribe(resp => {
-          this.calendarEvents = resp.items;
-        });
-      } else{
-        this.appSession.user.healthFacilitiesId == null ? this.frmSearch.controls['healthfacilities'].setValue(null) : '';
-        swal({
-          title: this.l('Notification'),
-          text: this.l('HealthfacilitiesAndDoctorNotNull'),
-          type: 'warning',
-          timer: 3000
-        });
-      }    
+    search() {
+        let calendarApi = this.calendarComponent.getApi();
+        var searchMonth = this.frmSearch.controls['month'].value;
+
+        if (searchMonth < this.currentMonth) {
+            for (let i = 0; i < (this.currentMonth - searchMonth); i++) {
+                calendarApi.prev();
+            }
+            this.currentMonth = searchMonth;
+        } else {
+            for (let i = 0; i < (searchMonth - this.currentMonth); i++) {
+                calendarApi.next();
+            }
+            this.currentMonth = searchMonth;
+        }
+
+        if (((!this.appSession.user.healthFacilitiesId && this.healthfacilities.value) || (this.appSession.user.healthFacilitiesId)) && this.frmSearch.controls['doctor'].value) {
+            !this.appSession.user.healthFacilitiesId ? this.frmSearch.controls['healthfacilities'].setValue(this.healthfacilities.value.healthFacilitiesId) : "";
+
+            this.dataService
+                .get("bookingdoctor", JSON.stringify(_.omitBy(this.frmSearch.value, _.isNil)), '', null, null)
+                .subscribe(resp => {
+                    this.calendarEvents = resp.items;
+                });
+        } else {
+            this.appSession.user.healthFacilitiesId == null ? this.frmSearch.controls['healthfacilities'].setValue(null) : '';
+            swal({
+                title: this.l('Notification'),
+                text: this.l('HealthfacilitiesAndDoctorNotNull'),
+                type: 'warning',
+                timer: 3000
+            });
+        }
     }
 
     //dialog detail 
-    openDialog(obj): void{
-      this.dialog.open(this.dialogTask, { minWidth: 'calc(100vw/2)', maxWidth: 'calc(100vw - 300px)', data: obj ? obj : null });
-      //dialogRef.afterClosed().subscribe(() => this.paginator._changePageSize(this.paginator.pageSize));
+    openDialog(obj): void {
+        this.dialog.open(this.dialogTask, { minWidth: 'calc(100vw/2)', maxWidth: 'calc(100vw - 300px)', data: obj ? obj : null });
+        //dialogRef.afterClosed().subscribe(() => this.paginator._changePageSize(this.paginator.pageSize));
     }
 
     //filter autocomplete
     displayFn(h?: IHealthfacilities): string | undefined {
-      return h ? h.name : undefined;
+        return h ? h.name : undefined;
     }
 
     filterOptions() {
-      this.healthfacilities.valueChanges
-          .pipe(
-            debounceTime(500),
-            tap(() => this.isLoading = true),
-            switchMap(value => this.filter(value))
-          )
-          .subscribe(data => {
-              this._healthfacilities = data.items;
-          });
+        this.healthfacilities.valueChanges
+            .pipe(
+                debounceTime(500),
+                tap(() => this.isLoading = true),
+                switchMap(value => this.filter(value))
+            )
+            .subscribe(data => {
+                this._healthfacilities = data.items;
+            });
     }
 
-    filter(value: any){
-      var fValue = typeof value === 'string'  ? value : (value ? value.name : '')
-      this._healthfacilities = [];
+    filter(value: any) {
+        var fValue = typeof value === 'string' ? value : (value ? value.name : '')
+        this._healthfacilities = [];
 
-      return this.dataService
-          .get("healthfacilities", JSON.stringify({
-              name : isNaN(fValue) ? fValue : "",
-              code : !isNaN(fValue) ? fValue : ""
-          }), '', null, null)
-          .pipe(
-              finalize(() => this.isLoading = false)
-          )
+        return this.dataService
+            .get("healthfacilities", JSON.stringify({
+                name: isNaN(fValue) ? fValue : "",
+                code: !isNaN(fValue) ? fValue : ""
+            }), '', null, null)
+            .pipe(
+                finalize(() => this.isLoading = false)
+            )
     }
 
     onSelectHealthFacilities(obj: any) {
-      this._doctors = [];
-      this.dataService.getAll('doctors', obj.healthFacilitiesId).subscribe(resp => this._doctors = resp.items);
+        this._doctors = [];
+        this.dataService.getAll('doctors', obj.healthFacilitiesId).subscribe(resp => this._doctors = resp.items);
     }
 
     //calendar
-    handleEvent (obj: any) {
-      if(obj.view.type == "listWeek"){
-        var des = obj.event.extendedProps.description ? obj.event.extendedProps.description : "";
-        obj.el.innerHTML = obj.el.innerHTML.split("<a>")[0] + des + "</a></td>";
-      }
+    handleEvent(obj: any) {
+        if (obj.view.type == "listWeek") {
+            var des = obj.event.extendedProps.description ? obj.event.extendedProps.description : "";
+            obj.el.innerHTML = obj.el.innerHTML.split("<a>")[0] + des + "</a></td>";
+        }
     }
 
     //filter
     toggedFilter() {
-      const _filter = $('form.form-filter');
-      if (_filter.length <= 0) { return; }
-      this.showFilter = !this.showFilter;
-      _filter.css({ 'height': this.showFilter ? 'auto' : 0, 'overflow': this.showFilter ? 'auto' : 'hidden' });
-  }
+        const _filter = $('form.form-filter');
+        if (_filter.length <= 0) { return; }
+        this.showFilter = !this.showFilter;
+        _filter.css({ 'height': this.showFilter ? 'auto' : 0, 'overflow': this.showFilter ? 'auto' : 'hidden' });
+    }
 }

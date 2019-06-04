@@ -47,13 +47,6 @@ export class LoginService {
             // Successfully logged in
             //console.log(111, authenticateResult.accessToken);
 
-            abp.utils.setCookieValue(
-                'Abp.UserLogin.Expried',
-                "60000",
-                new Date(new Date().getTime() + 1 * 60000), // 1 minutes
-                abp.appPath
-            );
-
             this.login(authenticateResult.accessToken, authenticateResult.encryptedAccessToken, authenticateResult.expireInSeconds, this.rememberMe);
         } else {
             // Unexpected result!
@@ -84,7 +77,12 @@ export class LoginService {
             initialUrl = AppConsts.appBaseUrl;
         }
 
-        location.href = initialUrl;
+        console.log(localStorage.getItem('isLoggedIn'));
+        if (localStorage.getItem('isLoggedIn') == null) {
+            localStorage.setItem('isLoggedIn', "true");
+            location.href = initialUrl;
+        }
+
     }
 
     private clear(): void {

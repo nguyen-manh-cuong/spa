@@ -5,10 +5,11 @@ import { ActivatedRouteSnapshot, ActivationEnd, NavigationEnd, NavigationError, 
 import { AfterViewInit, ChangeDetectorRef, Component, Injector, OnInit, ViewContainerRef, ViewEncapsulation } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { filter, map } from 'rxjs/operators';
+import { TaskSessionComponent } from '@app/login-session/task/task_session.component';
 
 import { AppAuthService } from '@shared/auth/app-auth.service';
 import { AppComponentBase } from '@shared/app-component-base';
-import { Observable } from 'rxjs';
+import { Observable, timer } from 'rxjs';
 import { SignalRAspNetCoreHelper } from '@shared/helpers/SignalRAspNetCoreHelper';
 import { Title } from '@angular/platform-browser';
 import { MAT_DIALOG_DATA, MatButton, MatDialog, MatDialogRef } from '@angular/material';
@@ -28,6 +29,7 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
     private title = 'Viettel Gateway';
     public pateTitle = '';
     dialogComponent: any;
+    dialogSession: any;
 
     isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset).pipe(map(result => result.matches));
     shownLoginName: string = '';
@@ -41,7 +43,7 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
         private _authService: AppAuthService,
         private router: Router,
         private titleService: Title,
-        private _dialog: MatDialog,
+        public _dialog: MatDialog,
         private _dataService: DataService
     ) {
         super(injector);
@@ -86,8 +88,33 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
         });
     }
 
+    public startTimer() {
+        var isShowLoginDialog = false;
+
+        var source = timer(1000, 20000);
+        source.subscribe((val) => {
+            console.log(val);
+            console.log(isShowLoginDialog);
+            console.log(localStorage.getItem('isLoggedIn'));
+            if (val >= 1) {
+                localStorage.setItem('isLoggedIn', "false");
+            }
+            if (localStorage.getItem('isLoggedIn') == "false" && isShowLoginDialog == false) {
+                isShowLoginDialog = true;
+                const dialogRef = this._dialog.open(this.dialogSession, { minWidth: '400px', maxWidth: '400px)', disableClose: true, data: null });
+                dialogRef.afterClosed().subscribe(() => {
+                    isShowLoginDialog = false;
+                });
+            }
+        });
+    }
+
     ngOnInit(): void {
         // SignalRAspNetCoreHelper.initSignalR();
+
+        this.dialogSession = TaskSessionComponent;
+
+        this.startTimer();
 
         if(this.appSession.user.accountType != 0){
             var healthFacilities = (abp.session as any).healthFacilities;
@@ -154,6 +181,7 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
 
     logout(): void {
         localStorage.removeItem('logCount');
+        localStorage.removeItem('isLoggedIn');
         this._authService.logout();
     }
 

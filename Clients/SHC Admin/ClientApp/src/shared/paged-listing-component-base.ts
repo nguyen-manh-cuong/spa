@@ -2,8 +2,7 @@ import { AfterViewInit, Component, Injector, OnInit, ViewChild } from '@angular/
 import { MatDialog, MatPaginator, MatTableDataSource, MatSort } from '@angular/material';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { isEmpty, isNil, isNull, omitBy, zipObject } from 'lodash';
-import { merge, of, Subscription, Observable } from 'rxjs';
-import { TaskSessionComponent } from '@app/login-session/task/task_session.component';
+import { merge, of, Subscription, Observable, timer } from 'rxjs';
 
 import { AppComponentBase } from 'shared/app-component-base';
 import { DataService } from './service-proxies/service-data';
@@ -62,7 +61,6 @@ export abstract class PagedListingComponentBase<EntityDto> extends AppComponentB
     dataService: DataService;
 
     dialog: MatDialog;
-    dialogSession: any;
     dialogComponent: any;
 
     isShow = false;
@@ -91,15 +89,15 @@ export abstract class PagedListingComponentBase<EntityDto> extends AppComponentB
 
     convertAge(date: number, month: number, year: number) {
         // ngày sinh nhật
-        var strBirthday =  date.toString().concat('-', month.toString(), '-',  year.toString()); 
+        var strBirthday = date.toString().concat('-', month.toString(), '-', year.toString());
         const birthday = moment(strBirthday, 'DD-MM-YYYY').valueOf();
         // Ngày hiện tại
         const yearNow = new Date().getFullYear();
         const monthNow = new Date().getMonth() + 1;
         const dateNow = moment(new Date()).valueOf();
-        var time1 = (dateNow -birthday)/(1000*24*60*60);
+        var time1 = (dateNow - birthday) / (1000 * 24 * 60 * 60);
 
-        const strNow = dateNow.toString().concat('-', monthNow.toString(), '-',  yearNow.toString());       
+        const strNow = dateNow.toString().concat('-', monthNow.toString(), '-', yearNow.toString());
         var time = new Date().getTime() - new Date(birthday).getTime();
         // Convert thời gian (milliseconds) sang ngày
         var duration = moment.duration(time, 'milliseconds');
@@ -134,30 +132,30 @@ export abstract class PagedListingComponentBase<EntityDto> extends AppComponentB
         this._age.months = monthAge;
         this._age.days = dateAge;
 
-        
+
         // so sanh ngay
-        if(days == 0){
+        if (days == 0) {
             ageString = "1 Ngày";
         }
-        else{
-            if(days <= 90){
+        else {
+            if (days <= 90) {
                 ageString = days + " Ngày tuổi";
-             }       
-             else if(days <= 2160){
-                 ageString = months + " Tháng tuổi";            
-             }
-             else if(days > 2160){
-                 ageString = years + " Tuổi";
-             }
+            }
+            else if (days <= 2160) {
+                ageString = months + " Tháng tuổi";
+            }
+            else if (days > 2160) {
+                ageString = years + " Tuổi";
+            }
         }
-        
+
         // if (this._age.years > 0)
         //     ageString = this._age.years + "T";
         // else if ((this._age.years == 0) && (this._age.months == 0) && (this._age.days > 0))
         //     ageString = this._age.days + "NG";
         // else if ((this._age.years == 0) && (this._age.months > 0) && (this._age.days >= 0))
         //     ageString = this._age.months + "TH";
-        
+
         return ageString;
     }
 
@@ -169,27 +167,7 @@ export abstract class PagedListingComponentBase<EntityDto> extends AppComponentB
         this.setTableHeight();
     }
 
-    public startTimer() {
-        if (this.timerSubscription) {
-            this.timerSubscription.unsubscribe();
-        }
-
-        const cookieUserLogin = abp.utils.getCookieValue('Abp.UserLogin.Expried');
-
-        if (cookieUserLogin == null) {
-            const dialogRef = this.dialog.open(this.dialogSession, { minWidth: '400px', maxWidth: '400px)', disableClose: true, data: null });
-            dialogRef.afterClosed().subscribe(() => {
-                this.paginator.pageIndex = 0;
-                this.paginator._changePageSize(this.paginator.pageSize);
-            });
-        }
-
-
-    }
-
     ngAfterViewInit(): void {
-
-        this.dialogSession = TaskSessionComponent;
 
         //this.dataSources.sort = this.sort;
         if (this.sort) {
@@ -210,7 +188,6 @@ export abstract class PagedListingComponentBase<EntityDto> extends AppComponentB
                 }),
                 map((data: any) => {
                     setTimeout(() => this.isTableLoading = false, 500);
-                   // this.startTimer();
                     this.totalItems = data.totalCount;
                     return data.items;
                 }),
