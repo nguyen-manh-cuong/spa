@@ -75,6 +75,7 @@ namespace SHCServer.ViewModels
         public int? Id { set; get; }
 
         public string SmsTemplateName { set; get; }
+        public string SmsTemplateCode { get; set; }
 
         public int? HealthFacilitiesId { set; get; }
 

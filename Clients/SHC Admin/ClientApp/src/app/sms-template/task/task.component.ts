@@ -23,7 +23,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     api: string = 'sms-templates';
 
     _frm: FormGroup;
-    _smstemplates: ISmsTemplate | any = { smsTemplateName: '', messageType: '', messageContent: '', isActive: '', applyAllSystem: '', id: 0 };
+    _smstemplates: ISmsTemplate | any = { smsTemplateCode: '', smsTemplateName: '', messageType: '', messageContent: '', isActive: '', applyAllSystem: '', id: 0 };
     _users: Array<IUser> = [];
     _selection = new SelectionModel<IUser>(true, []);
     _context: any;
@@ -51,6 +51,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
         }
 
         this._context = {
+            smsTemplateCode: [this._smstemplates.smsTemplateCode],
             smsTemplateName: [this._smstemplates.smsTemplateName, [Validators.required, validationRule.hasValue]],
             messageType: [this._smstemplates.messageType,],
             smsContent: [this._smstemplates.smsContent, [Validators.required, validationRule.hasValue]],
@@ -61,6 +62,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
             userId: []
         };
         this._frm = this._formBuilder.group(this._context);
+        console.log(this._frm);
     }
 
     ngAfterViewInit(): void {
@@ -70,8 +72,9 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     }
 
     lengthSmsContent = 0;
-    inputSmsContent() {
+    inputSmsContent($event) {
         this.lengthSmsContent = this._frm.value.smsContent.toString().length;
+        this.cursorIndex = $event.target.selectionStart;
         //this.cursorIndex=this.lengthSmsContent;
     }
 

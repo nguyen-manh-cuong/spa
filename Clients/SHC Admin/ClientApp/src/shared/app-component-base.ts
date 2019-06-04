@@ -1,4 +1,4 @@
-import { ElementRef, Injector } from '@angular/core';
+import { ElementRef, Injector, HostListener } from '@angular/core';
 
 import { AbpMultiTenancyService } from '@abp/multi-tenancy/abp-multi-tenancy.service';
 import { AppConsts } from '@shared/AppConsts';
@@ -23,6 +23,14 @@ export abstract class AppComponentBase {
     multiTenancy: AbpMultiTenancyService;
     appSession: AppSessionService;
     elementRef: ElementRef;
+
+    numberOfClicks = 0;
+
+    @HostListener('document:click', ['$event'])
+
+    public documentClick(event: Event) {
+        return event;
+    }
 
     _age = { years: 0, months: 0, days: 0 };
 
