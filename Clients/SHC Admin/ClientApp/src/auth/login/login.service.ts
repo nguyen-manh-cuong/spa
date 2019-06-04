@@ -58,6 +58,7 @@ export class LoginService {
 
     private login(accessToken: string, encryptedAccessToken: string, expireInSeconds: number, rememberMe?: boolean): void {
 
+        console.log('dang nhap thanh cong');
         const tokenExpireDate = rememberMe ? (new Date(new Date().getTime() + 1000 * expireInSeconds)) : undefined;
 
         this._tokenService.setToken(
@@ -77,13 +78,13 @@ export class LoginService {
             initialUrl = AppConsts.appBaseUrl;
         }
 
-        // console.log(localStorage.getItem('isLoggedIn'));
-        // if (localStorage.getItem('isLoggedIn') == null) {
-        //     localStorage.setItem('isLoggedIn', "true");
-        //     location.href = initialUrl;
-        // }
+         console.log(localStorage.getItem('isLoggedIn'));
+         if (localStorage.getItem('isLoggedIn') == null) {
+             localStorage.setItem('isLoggedIn', "true");
+             location.href = initialUrl;
+         }
 
-        location.href = initialUrl;
+        //location.href = initialUrl;
 
         //location.href = initialUrl;
 
