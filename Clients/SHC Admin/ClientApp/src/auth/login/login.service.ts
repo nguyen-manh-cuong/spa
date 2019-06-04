@@ -85,6 +85,8 @@ export class LoginService {
 
         //location.href = initialUrl;
 
+        //location.href = initialUrl;
+
     }
 
     private clear(): void {
