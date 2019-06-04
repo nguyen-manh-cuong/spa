@@ -180,6 +180,7 @@ export class LoginComponent extends AppComponentBase implements OnInit {
             if (this.frmLogin.invalid) { return; }
             this.loginService.authenticateModel = Object.assign(this.loginService.authenticateModel, this.frmLogin.value);
             this.loginService.authenticate((success) => {
+
                 if (success) {
                     if (this.frmLogin.controls['isRemberMeChecked'].value) {
                         localStorage.setItem('userName', this.frmLogin.controls['userNameOrEmailAddress'].value);

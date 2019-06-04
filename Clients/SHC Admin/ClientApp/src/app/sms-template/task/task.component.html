@@ -1,72 +1,96 @@
 <form [formGroup]="_frm" class="container p-relative" novalidate id="form-dialog">
-  <div class="p-absolute t-5 r-5">
-      <button mat-icon-button mat-dialog-close style="z-index: 9;" [matTooltipPosition]="'left'" matTooltip="Đóng">
-          <mat-icon>close</mat-icon>
-      </button>
-  </div>
-  <mat-tab-group>
-    <mat-tab>
-      <ng-template mat-tab-label>
-        {{_isNew ? l("CreateNew") : l("Edit")}} {{ll("PackageTemplateSMS")}}
-      </ng-template>
-      <div class="pt-4">
-        <div class="row">
-          <div class="col-md-12" [ngClass]="{'disabled': _isUsedSuccess}">
-            <mat-form-field appearance="outline" class="w-100">
-              <mat-label>{{l("PackageTemplateName")}}</mat-label>
-              <input [readonly]="_isUsedSuccess" #txtName="matInput" formControlName="smsTemplateName" matInput autocomplete required maxlength="255">
-              <validation matSuffix [control]="_frm.controls['smsTemplateName']"></validation>
-            </mat-form-field>
-          </div>
-          <div class="col-md-8" [ngClass]="{'disabled': _isUsedSuccess}">
-            <mat-form-field appearance="outline" class="w-100">
-              <mat-label>{{l("PackageTemplateMessageType")}}</mat-label>
-              <mat-select formControlName="messageType" tabindex="-1">
-                <mat-option *ngIf="_messageType.length" class="text-center" [innerHTML]="'<div class=\'text-center border-bottom w-100\'>'+ l('Bỏ chọn') +'</div>'"></mat-option>
-                <mat-option *ngFor="let o of _messageType" [value]="o.id">{{ o.name }}</mat-option>
-              </mat-select>
-            </mat-form-field>
-          </div>
-          <div class="col-md-4 disabled" [ngClass]="{'disabled': _isUsedSuccess}">
-            <mat-form-field appearance="outline" class="w-100">
-              <mat-label>{{l("PackageTemplateHeadNumberType")}}</mat-label>
-              <input readonly matInput autocomplete value="VTT_CSKH">
-            </mat-form-field>
-          </div>
-          <div class="col-md-12" [ngClass]="{'disabled': _isUsedSuccess}">
-              <mat-form-field appearance="outline" class="w-100">
-                  <mat-label>{{l("PackageTemplateMessageContent")}}</mat-label>
-                  <textarea [readonly]="_isUsedSuccess" formControlName="smsContent" rows="5" matInput required maxlength="500" (keyup)="inputSmsContent($event)" (click)="cussorPointer($event.target.selectionStart, $event.target.value)"></textarea>
-                  <validation matSuffix [control]="_frm.controls['smsContent']"></validation>
-              </mat-form-field>
-          </div>
-          <div class="col-md-12" [ngClass]="{'disabled': _isUsedSuccess}">
-            <mat-form-field appearance="outline" class="w-100">
-              <mat-label>{{l("PackageTemplateParameterValues")}}</mat-label>
-              <mat-chip-list>
-                  <mat-chip (click)="changeSelected(1)">Phòng khám</mat-chip>
-                  <mat-chip (click)="changeSelected(2)">Ngày sinh</mat-chip>
-                  <mat-chip (click)="changeSelected(3)">Họ tên</mat-chip>
-                  <mat-chip (click)="changeSelected(4)">Email</mat-chip>
-                  <mat-chip (click)="changeSelected(5)">Giới tính</mat-chip>
-                  <mat-chip (click)="changeSelected(6)">Ngày hiện tại</mat-chip>
-                  <mat-chip (click)="changeSelected(7)">Ngày tái khám</mat-chip>
-                  <mat-chip (click)="changeSelected(8)">Phòng ban</mat-chip>
-                  <mat-chip (click)="changeSelected(9)">Tên dịch vụ</mat-chip>
-                  <mat-chip (click)="changeSelected(10)">Tên thuôc</mat-chip>
-              </mat-chip-list>
-            </mat-form-field>
-          </div>
-          <div class="col-md-12">
-            <mat-checkbox formControlName="isActive">{{l("Using")}}</mat-checkbox>
-          </div>
-          <div class="col-md-12" *ngIf="!appSession.user.healthFacilitiesId" [ngClass]="{'disabled': _isUsedSuccess}">
-            <mat-checkbox formControlName="applyAllSystem">{{l("PackageTemplateApplyAllSystem")}}</mat-checkbox>
-          </div>
-        </div>
-      </div>
-    </mat-tab>
-  </mat-tab-group>
-  <div class="text-right mb-3"><button class="mr-3" mat-raised-button color="primary" mat-dialog-close>{{l("Close")}}</button><button
-      mat-raised-button color="primary" [disabled]="_frm.invalid" (click)="submit()">{{l("Save")}}</button></div>
+    <div class="p-absolute t-5 r-5">
+        <button mat-icon-button mat-dialog-close style="z-index: 9;" [matTooltipPosition]="'left'" matTooltip="Đóng">
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+    <mat-tab-group>
+        <mat-tab>
+            <ng-template mat-tab-label>
+                {{_isNew ? l("CreateNew") : l("Edit")}} {{ll("PackageTemplateSMS")}}
+            </ng-template>
+            <div class="pt-4">
+                <div class="row">
+                    <div *ngIf="!_isNew" class="col-md-6 disabled">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l("PackageTemplateCode")}}</mat-label>
+                            <input readonly formControlName="smsTemplateCode"
+                                matInput autocomplete maxlength="255">
+                            <validation matSuffix [control]="_frm.controls['smsTemplateCode']"></validation>
+                        </mat-form-field>
+                    </div>
+                    <div *ngIf="!_isNew" class="col-md-6" [ngClass]="{'disabled': _isUsedSuccess}">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l("PackageTemplateName")}}</mat-label>
+                            <input [readonly]="_isUsedSuccess" #txtName="matInput" formControlName="smsTemplateName"
+                                matInput autocomplete required maxlength="255">
+                            <validation matSuffix [control]="_frm.controls['smsTemplateName']"></validation>
+                        </mat-form-field>
+                    </div>
+                    <div *ngIf="_isNew" class="col-md-12" [ngClass]="{'disabled': _isUsedSuccess}">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l("PackageTemplateName")}}</mat-label>
+                            <input [readonly]="_isUsedSuccess" #txtName="matInput" formControlName="smsTemplateName"
+                                matInput autocomplete required maxlength="255">
+                            <validation matSuffix [control]="_frm.controls['smsTemplateName']"></validation>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-8" [ngClass]="{'disabled': _isUsedSuccess}">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l("PackageTemplateMessageType")}}</mat-label>
+                            <mat-select formControlName="messageType" tabindex="-1">
+                                <mat-option *ngIf="_messageType.length" class="text-center"
+                                    [innerHTML]="'<div class=\'text-center border-bottom w-100\'>'+ l('Bỏ chọn') +'</div>'">
+                                </mat-option>
+                                <mat-option *ngFor="let o of _messageType" [value]="o.id">{{ o.name }}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-4 disabled" [ngClass]="{'disabled': _isUsedSuccess}">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l("PackageTemplateHeadNumberType")}}</mat-label>
+                            <input readonly matInput autocomplete value="VTT_CSKH">
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-12" [ngClass]="{'disabled': _isUsedSuccess}">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l("PackageTemplateMessageContent")}}</mat-label>
+                            <textarea [readonly]="_isUsedSuccess" formControlName="smsContent" rows="5" matInput
+                                required maxlength="500" (keyup)="inputSmsContent($event)"
+                                (click)="cussorPointer($event.target.selectionStart, $event.target.value)"></textarea>
+                            <validation matSuffix [control]="_frm.controls['smsContent']"></validation>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-12" [ngClass]="{'disabled': _isUsedSuccess}">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l("PackageTemplateParameterValues")}}</mat-label>
+                            <mat-chip-list>
+                                <mat-chip (click)="changeSelected(1)">Phòng khám</mat-chip>
+                                <mat-chip (click)="changeSelected(2)">Ngày sinh</mat-chip>
+                                <mat-chip (click)="changeSelected(3)">Họ tên</mat-chip>
+                                <mat-chip (click)="changeSelected(4)">Email</mat-chip>
+                                <mat-chip (click)="changeSelected(5)">Giới tính</mat-chip>
+                                <mat-chip (click)="changeSelected(6)">Ngày hiện tại</mat-chip>
+                                <mat-chip (click)="changeSelected(7)">Ngày tái khám</mat-chip>
+                                <mat-chip (click)="changeSelected(8)">Phòng ban</mat-chip>
+                                <mat-chip (click)="changeSelected(9)">Tên dịch vụ</mat-chip>
+                                <mat-chip (click)="changeSelected(10)">Tên thuôc</mat-chip>
+                            </mat-chip-list>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-12">
+                        <mat-checkbox formControlName="isActive">{{l("Using")}}</mat-checkbox>
+                    </div>
+                    <div class="col-md-12" *ngIf="!appSession.user.healthFacilitiesId"
+                        [ngClass]="{'disabled': _isUsedSuccess}">
+                        <mat-checkbox formControlName="applyAllSystem">{{l("PackageTemplateApplyAllSystem")}}
+                        </mat-checkbox>
+                    </div>
+                </div>
+            </div>
+        </mat-tab>
+    </mat-tab-group>
+    <div class="text-right mb-3"><button class="mr-3" mat-raised-button color="primary"
+            mat-dialog-close>{{l("Close")}}</button><button mat-raised-button color="primary" [disabled]="_frm.invalid"
+            (click)="submit()">{{l("Save")}}</button></div>
 </form>
