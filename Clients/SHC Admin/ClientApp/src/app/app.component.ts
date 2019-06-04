@@ -113,6 +113,7 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
     }
 
     refreshTimer(): void {
+        
         this.sub.unsubscribe();
         this.startTimer();
     }
