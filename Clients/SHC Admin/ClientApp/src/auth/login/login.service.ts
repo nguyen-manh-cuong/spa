@@ -58,6 +58,7 @@ export class LoginService {
 
     private login(accessToken: string, encryptedAccessToken: string, expireInSeconds: number, rememberMe?: boolean): void {
 
+        console.log('dang nhap thanh cong');
         const tokenExpireDate = rememberMe ? (new Date(new Date().getTime() + 1000 * expireInSeconds)) : undefined;
 
         this._tokenService.setToken(
