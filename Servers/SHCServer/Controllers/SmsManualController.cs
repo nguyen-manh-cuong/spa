@@ -76,13 +76,13 @@ namespace SHCServer.Controllers
                     }
                     if (string.Equals(key, "startTime"))
                     {
-                        var startTime = DateTime.Parse(value).ToString("yyyy-MM-dd");
+                        var startTime = DateTime.Parse(value).AddHours(7).ToString("yyyy-MM-dd") +" 00:00:01";
                         clause.Add("and h.ReExaminationDate >= @ReExaminationDate");
                         param.Add(DbParam.Create("@ReExaminationDate", startTime));
                     }
                     if (string.Equals(key, "endTime"))
                     {
-                        var endTime = DateTime.Parse(value).ToString("yyyy-MM-dd") + " 23:59:59";
+                        var endTime = DateTime.Parse(value).AddHours(7).ToString("yyyy-MM-dd") + " 23:59:59";
                         clause.Add("and h.ReExaminationDate <= @ReExaminationDateEnd");
                         param.Add(DbParam.Create("@ReExaminationDateEnd", endTime));
                     }

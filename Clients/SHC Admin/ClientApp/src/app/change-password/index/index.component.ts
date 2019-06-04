@@ -98,7 +98,7 @@ export class IndexComponent extends AppComponentBase implements OnInit {
             this.getCapcha();
             return swal({
                 title: 'Thông báo',
-                text: 'Đổi mật khẩu không thành công. Xác nhận khẩu mới không đúng',
+                text: 'Đổi mật khẩu không thành công. Xác nhận mật khẩu mới không đúng',
                 type: 'warning',
                 timer: 3000
             });

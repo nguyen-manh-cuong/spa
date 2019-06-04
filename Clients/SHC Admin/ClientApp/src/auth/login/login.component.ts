@@ -7,7 +7,7 @@ import { AppComponentBase } from '@shared/app-component-base';
 import { LoginService } from './login.service';
 import { Router, Route } from '@angular/router';
 import { DataService } from '@shared/service-proxies/service-data';
-import { DomSanitizer } from '@angular/platform-browser';
+import { DomSanitizer, Title } from '@angular/platform-browser';
 import * as moment from 'moment';
 import swal from 'sweetalert2';
 
@@ -37,7 +37,8 @@ export class LoginComponent extends AppComponentBase implements OnInit {
         injector: Injector,
         public loginService: LoginService,
         private _formBuilder: FormBuilder,
-        private _sessionService: AbpSessionService) {
+        private _sessionService: AbpSessionService,
+        private titleService: Title ) {
         super(injector);
     }
 
@@ -54,7 +55,9 @@ export class LoginComponent extends AppComponentBase implements OnInit {
         setTimeout(() => {
             this.userNameOrEmail.nativeElement.focus();
         }, 1000);
-    }
+
+        this.titleService.setTitle("VIETTEL GATEWAY");
+    }   
 
     get f() { return this.frmLogin.controls; }
     get multiTenancySideIsTeanant(): boolean {
@@ -72,10 +75,19 @@ export class LoginComponent extends AppComponentBase implements OnInit {
     _capcha: { code: string, data: any } = { code: '', data: '' };
 
     onHandleLoginInput(event) {
+        console.log('Now: ' + moment(Date.now()).format('DD/MM/YYYY HH:mm:ss'));
         this._dataService.get('auth', JSON.stringify({ 'userName': event.target.value }), null, null, null).subscribe(data => {
             if (data.items != undefined) {
                 if (data.items.counter < 10) {
                     this.numberLoginFail = data.items.counter;
+                }
+
+                let lockedTime = (moment(Date.now()).valueOf() - moment(new Date(data.items.lockedTime)).valueOf()) / (1000 * 60);
+                console.log('Lock: ' + moment(new Date(data.items.lockedTime)).format('DD/MM/YYYY HH:mm:ss'));
+                if (lockedTime >= 0) {
+                    if (data.items.counter >= 10) {
+                        this._dataService.get('auth', JSON.stringify({ 'userName': this.frmLogin.controls['userNameOrEmailAddress'].value, 'counter': -1 }), null, null, null).subscribe(data => { });
+                    }
                 }
             }
         });
@@ -110,7 +122,7 @@ export class LoginComponent extends AppComponentBase implements OnInit {
             }
 
             lockedTime = (moment(Date.now()).valueOf() - moment(new Date(data.items.lockedTime)).valueOf()) / (1000 * 60);
-            if (data.lockedTime < 1 && data.lockedTime > 0) {
+            if (lockedTime < 0) {
                 this.numberLoginFail = 0;
                 this.userNameOrEmail.nativeElement.focus();
                 this.frmLogin.controls['userNameOrEmailAddress'].setValue('');
