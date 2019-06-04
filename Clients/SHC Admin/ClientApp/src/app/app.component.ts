@@ -9,7 +9,7 @@ import { TaskSessionComponent } from '@app/login-session/task/task_session.compo
 
 import { AppAuthService } from '@shared/auth/app-auth.service';
 import { AppComponentBase } from '@shared/app-component-base';
-import { Observable, timer } from 'rxjs';
+import { Observable, timer, Subscription } from 'rxjs';
 import { SignalRAspNetCoreHelper } from '@shared/helpers/SignalRAspNetCoreHelper';
 import { Title } from '@angular/platform-browser';
 import { MAT_DIALOG_DATA, MatButton, MatDialog, MatDialogRef } from '@angular/material';
@@ -28,6 +28,7 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
     private viewContainerRef: ViewContainerRef;
     private title = 'Viettel Gateway';
     public pateTitle = '';
+    sub: Subscription;
     dialogComponent: any;
     dialogSession: any;
 
@@ -91,8 +92,8 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
     public startTimer() {
         var isShowLoginDialog = false;
 
-        var source = timer(1000, 20000);
-        source.subscribe((val) => {
+        var source = timer(0, 20000);
+        this.sub = source.subscribe((val) => {
             console.log(val);
             console.log(isShowLoginDialog);
             console.log(localStorage.getItem('isLoggedIn'));
@@ -101,12 +102,19 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
             }
             if (localStorage.getItem('isLoggedIn') == "false" && isShowLoginDialog == false) {
                 isShowLoginDialog = true;
+                this.sub.unsubscribe();
                 const dialogRef = this._dialog.open(this.dialogSession, { minWidth: '400px', maxWidth: '400px)', disableClose: true, data: null });
                 dialogRef.afterClosed().subscribe(() => {
                     isShowLoginDialog = false;
+                    this.refreshTimer();
                 });
             }
         });
+    }
+
+    refreshTimer(): void {
+        this.sub.unsubscribe();
+        this.startTimer();
     }
 
     ngOnInit(): void {
