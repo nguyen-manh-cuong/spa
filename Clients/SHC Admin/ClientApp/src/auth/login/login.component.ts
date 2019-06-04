@@ -46,7 +46,7 @@ export class LoginComponent extends AppComponentBase implements OnInit {
         this.frmLogin = this._formBuilder.group({
             userNameOrEmailAddress: [localStorage.getItem('userName'), Validators.required], //this.loginService.authenticateModel.userNameOrEmailAddress
             password: [localStorage.getItem('password'), Validators.required], //this.loginService.authenticateModel.password
-            codeCapcha: ['', Validators.required],
+            codeCapcha: [''],
             isRemberMeChecked: [false]
         });
         this.dataService = this._dataService;
@@ -142,7 +142,7 @@ export class LoginComponent extends AppComponentBase implements OnInit {
             } else {
                 this.numberLoginFail = numLoginFail;
             }
-
+            
             if (numLoginFail > 5) {
                 if (this.frmLogin.controls['codeCapcha'].value != this._capcha.code) {
                     this.capcha = true;
@@ -170,15 +170,15 @@ export class LoginComponent extends AppComponentBase implements OnInit {
                     }
                 }
             }
-
+            console.log(7, 'Login test');
             this.submitted = true;
             if (this.frmLogin.invalid) { return; }
-
+            console.log(8, 'Login test');
             this.loginService.authenticateModel = Object.assign(this.loginService.authenticateModel, this.frmLogin.value);
-
+            console.log(9, 'Login test');
             this.loginService.authenticate((success) => {
 
-
+                console.log(11, 'Login test success');
                 if (success) {
                     if (this.frmLogin.controls['isRemberMeChecked'].value) {
                         localStorage.setItem('userName', this.frmLogin.controls['userNameOrEmailAddress'].value);
@@ -192,6 +192,7 @@ export class LoginComponent extends AppComponentBase implements OnInit {
                 }
 
             }, error => {
+                    console.log(11, 'Login test fail');
                 this._dataService.get('auth', JSON.stringify({
                     'userName': this.frmLogin.controls['userNameOrEmailAddress'].value, 'counter': numLoginFail, 'lockedTime': lockedTime
                 }), null, null, null).subscribe(data => {
