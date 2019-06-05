@@ -94,7 +94,7 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
     public startTimer() {
         var isShowLoginDialog = false;
 
-        var source = timer(0, 20000);
+        var source = timer(0, 60000);
         this.sub = source.subscribe((val) => {
 
             if (val % 2 == 0) {
@@ -104,13 +104,6 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
             if (val % 2 == 1) {
                 this.oddNumberOfClick = this.numberOfClicks;
             }
-
-            //console.log(val);
-            //console.log(this.oddNumberOfClick);
-            //console.log(this.evenNumberOfClick);
-            //console.log(this.numberOfClicks);
-            //console.log(localStorage.getItem('isLoggedIn'));
-            //console.log(isShowLoginDialog);
 
             if (val >= 1 && this.evenNumberOfClick == this.oddNumberOfClick) {
                     localStorage.setItem('isLoggedIn', "false");
