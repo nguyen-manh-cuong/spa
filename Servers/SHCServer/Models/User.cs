@@ -25,7 +25,6 @@ namespace SHCServer.Models
 
         // Location
         public string ProvinceCode { get; set; }
-
         public string DistrictCode { get; set; }
         public string WardCode { get; set; }
         public string Address { get; set; }
@@ -45,7 +44,7 @@ namespace SHCServer.Models
         public DateTime? LockedTime { get; set; }
         public DateTime? ExpriredDate { get; set; }
         public int? Counter { get; set; }
-
+        public int? UserId { get; set; }
     }
 
     [Table("sys_users")]
