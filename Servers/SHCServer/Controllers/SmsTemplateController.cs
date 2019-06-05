@@ -38,7 +38,7 @@ namespace SHCServer.Controllers
                                    sms.OrganizationName,
                                    sms.ApplyAllSystem,
                                    sms.HealthFacilitiesId,
-                                   users = _context.Query<HealthFacilitiesConfigs>().Where(h => h.Values == sms.Id).Count()
+                                   users = _context.Query<HealthFacilitiesConfigs>().Where(h => h.Values == sms.SmsTemplateCode).Count()
                                });
             if (filter != null)
             {

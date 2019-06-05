@@ -512,7 +512,8 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
             this._dataService.create('infosms', {
                 lstMedicalHealthcareHistories: this.selection.selected,
                 healthFacilitiesId: this.appSession.user.healthFacilitiesId,
-                smsTemplateId: resp.items.values,
+                //smsTemplateId: resp.items.values,
+                smsTemplateCode: resp.items.values,
                 type: 1,
                 content: '',
                 objectType: 1

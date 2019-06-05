@@ -94,7 +94,7 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
     public startTimer() {
         var isShowLoginDialog = false;
 
-        var source = timer(0, 20000);
+        var source = timer(0, 60000);
         this.sub = source.subscribe((val) => {
 
             if (val % 2 == 0) {
@@ -104,13 +104,6 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
             if (val % 2 == 1) {
                 this.oddNumberOfClick = this.numberOfClicks;
             }
-
-            //console.log(val);
-            //console.log(this.oddNumberOfClick);
-            //console.log(this.evenNumberOfClick);
-            //console.log(this.numberOfClicks);
-            //console.log(localStorage.getItem('isLoggedIn'));
-            //console.log(isShowLoginDialog);
 
             if (val >= 1 && this.evenNumberOfClick == this.oddNumberOfClick) {
                     localStorage.setItem('isLoggedIn', "false");
@@ -204,9 +197,24 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
     }
 
     logout(): void {
-        localStorage.removeItem('logCount');
-        localStorage.removeItem('isLoggedIn');
-        this._authService.logout();
+        swal({
+            title: this.l('Thông báo'),
+            html: this.l('Bạn có chắc không? Tài khoản sẽ đăng xuất'),
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonClass: 'mat-raised-button mat-primary bg-danger',
+            cancelButtonClass: 'mat-button',
+            confirmButtonText: this.l('Đồng ý'),
+            cancelButtonText: this.l('Cancel'),
+            buttonsStyling: false
+        }).then((result) => {
+            if (result.value) {
+                localStorage.removeItem('logCount');
+                localStorage.removeItem('isLoggedIn');
+                this._authService.logout();
+            }
+        })
+      
     }
 
     onResize(event) {

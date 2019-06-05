@@ -48,6 +48,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
                     lstMedicalHealthcareHistories: this.data.selection.selected,
                     healthFacilitiesId: this.appSession.user.healthFacilitiesId,
                     smsTemplateId: this._template.id,
+                    smsTemplateCode: this._template.smsTemplateCode,
                     content: this._frm.controls['smsContent'].value,
                     type: this.data.type,
                     objectType: this.data.objectType

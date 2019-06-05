@@ -1,33 +1,79 @@
-<form id="form-dialog" class="container p-relative" novalidate>
-  <div class="p-absolute t-5 r-5">
-    <button *ngIf="appSession.user.healthFacilities" mat-icon-button mat-dialog-close style="z-index: 9;" [matTooltipPosition]="'left'" matTooltip="Đóng">
-        <mat-icon>close</mat-icon>
-    </button>
-  </div>
-  <mat-tab-group>
-    <mat-tab>
-      <ng-template mat-tab-label>
-        {{_checkLength > 1 ? "Chọn phòng khám" : "Thông báo"}}
-      </ng-template>
 
-      <div class="pt-4" *ngIf="_checkLength > 1">
-        <div class="mat-cell pl-2 pr-2 disabled divdisabled" *ngIf="appSession.user.healthFacilities">
-          <input type="checkbox" class="mycheckbox" [checked]="true" tabindex="-1">
-          <span class="myspan">{{appSession.user.healthFacilities ? appSession.user.healthFacilities.name : ""}}</span> 
-        </div>
-        <div *ngFor="let el of _usersHealthfacilities; index as i" class="mat-cell pl-2 pr-2" [hidden]="appSession.user.healthFacilities && (appSession.user.healthFacilities.healthFacilitiesId == el.healthFacilitiesId)">
-          <input type="checkbox" class="mycheckbox" id="{{i}}" (change)="getHealthFacilities(el, i, $event)" [checked]="i == _checked">
-          <span class="myspan">{{el.name}}</span> 
-        </div>
-      </div>
+    <div class="container p-relative custom-form">
 
-      <div class="pt-4" *ngIf="_checkLength == 0">
-        <h2>Tài khoản chưa được phân cho đơn vị nào.</h2>
-        <h2>Vui lòng liên hệ CSKH: 123456789x để được hỗ trợ.</h2>
-      </div>
-    </mat-tab>
-  </mat-tab-group>
-  <div class="text-right mb-3" *ngIf="_checkLength > 1">
-    <button type="button" mat-raised-button color="primary" [disabled]="_checked == -1" (click)="updateDefault()">{{l("Xác nhận")}}</button>
-  </div>
-</form>
+
+
+        <div class="p-absolute t-5 r-5">
+            <button mat-icon-button mat-dialog-close style="z-index: 9;" [matTooltipPosition]="'left'" matTooltip="Đóng">
+                <mat-icon>close</mat-icon>
+            </button>
+        </div>
+
+        <div>
+            <!--<ng-template mat-tab-label>{{l("Chọn đơn vị")}}</ng-template>-->
+                <div class="pt-4">
+
+                    <div class="row">
+                        <div class="col-md-8">
+                            <mat-form-field appearance="outline" class="w-100">
+                                <mat-label>{{l("Nhập tên đơn vị")}}</mat-label>
+                                <input #nameHealthFacilities formControlName="code" matInput>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-4">
+                            <button #btnSearch mat-stroked-button color="primary" (click)="onHandleSearch()" class="w-100 mb-4">
+                                <mat-icon class="mr-2">search</mat-icon>{{l("Search")}}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+        </div>
+
+        <form class="" id="form-dialog" novalidate>
+
+            <mat-tab-group scroll-able>
+                <mat-tab>
+
+                    <div>
+                        <mat-paginator [length]="totalItems"
+                                       [pageSize]="pageSize"
+                                       [pageSizeOptions]="pageSizeOptions"
+                                       showFirstLastButtons>
+                        </mat-paginator>
+                    </div>
+
+                    <div class="content">
+                        <div class="table-content">   <!--style="height: calc(100vh - 245px);"-->
+
+                            <table mat-table [dataSource]="dataSource" class="w-100 task">
+                                <ng-container matColumnDef="colSelect">
+                                    <th mat-header-cell *matHeaderCellDef class="max-w-50 text-center"> {{l('Chọn')}} </th>
+                                    <td mat-cell *matCellDef="let row" class="max-w-50 p-t-8 text-center">
+                                        <!--<mat-checkbox (click)="onHandleCheckBox(row)" [checked]="onSelect(row)"> </mat-checkbox>-->
+
+                                        <mat-radio-button class="example-radio-button"  (click)="onSelect(row)">
+                                        </mat-radio-button>
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="colHel">
+                                    <th mat-header-cell *matHeaderCellDef class="min-w-100 text-center"> {{l('Tên đơn vị')}} </th>
+                                    <td mat-cell *matCellDef="let element" class="min-w-100 text-center"> {{ element.name }} </td>
+                                </ng-container>
+                                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                                <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="fadeIn animated"></tr>
+                            </table>
+                        </div>
+                    </div>
+                </mat-tab>
+            </mat-tab-group>
+            <div class="row">
+                <div class="col-md-4">
+                </div>
+                <div class="col-md-8">
+                    <div class="text-right mb-3"><button class="mr-3" mat-raised-button color="primary" mat-dialog-close (click)="updateDefault()">{{l("Chọn")}}</button></div>
+                </div>
+            </div>
+        </form>
+
+    </div>

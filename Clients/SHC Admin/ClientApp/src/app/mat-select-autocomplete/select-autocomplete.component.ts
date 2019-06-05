@@ -225,8 +225,6 @@ export class SelectAutocompleteComponent implements OnChanges, DoCheck {
                     this._dataService.getAll(this.apiSearch, "{code:" + value + "}").subscribe(resp => {
                         this.filteredOptions = resp.items;
                         this.filteredOptions.forEach(item => {
-                            console.log(1200, this.selectedValue);
-                            console.log(1300, item);
                             if (this.selectedValue.indexOf(item[this.value]) > -1) {
                                 this.selectAllChecked = false;
                             }
@@ -265,7 +263,6 @@ export class SelectAutocompleteComponent implements OnChanges, DoCheck {
         const filteredValues = [];
         this.filteredOptions.forEach(option => {
             filteredValues.push(option.value);
-            console.log(option.value)
         });
         return filteredValues;
     }
@@ -306,7 +303,6 @@ export class SelectAutocompleteComponent implements OnChanges, DoCheck {
 
     onSelectionChange(val) {
         this.selectedName = [];
-        console.log(11202, val);
         this.selectedValue = val.value;
         if (this.selectedValue.length > 1) {
             this.isMultiple = true;
