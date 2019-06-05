@@ -105,13 +105,6 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
                 this.oddNumberOfClick = this.numberOfClicks;
             }
 
-            //console.log(val);
-            //console.log(this.oddNumberOfClick);
-            //console.log(this.evenNumberOfClick);
-            //console.log(this.numberOfClicks);
-            //console.log(localStorage.getItem('isLoggedIn'));
-            //console.log(isShowLoginDialog);
-
             if (val >= 1 && this.evenNumberOfClick == this.oddNumberOfClick) {
                     localStorage.setItem('isLoggedIn', "false");
             }

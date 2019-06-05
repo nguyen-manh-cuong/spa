@@ -62,7 +62,6 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
             userId: []
         };
         this._frm = this._formBuilder.group(this._context);
-        console.log(this._frm);
     }
 
     ngAfterViewInit(): void {
