@@ -190,9 +190,24 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
     }
 
     logout(): void {
-        localStorage.removeItem('logCount');
-        localStorage.removeItem('isLoggedIn');
-        this._authService.logout();
+        swal({
+            title: this.l('Thông báo'),
+            html: this.l('Bạn có chắc không? Tài khoản sẽ đăng xuất'),
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonClass: 'mat-raised-button mat-primary bg-danger',
+            cancelButtonClass: 'mat-button',
+            confirmButtonText: this.l('Đồng ý'),
+            cancelButtonText: this.l('Cancel'),
+            buttonsStyling: false
+        }).then((result) => {
+            if (result.value) {
+                localStorage.removeItem('logCount');
+                localStorage.removeItem('isLoggedIn');
+                this._authService.logout();
+            }
+        })
+      
     }
 
     onResize(event) {
