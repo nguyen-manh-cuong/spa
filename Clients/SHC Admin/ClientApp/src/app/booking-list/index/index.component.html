@@ -69,23 +69,22 @@
             </div>
             <div class="col-md-4">
                         <mat-form-field appearance="outline" class="w-100"
-                                        [ngClass]="{'mat-form-field-invalid': (frmSearch.get('time').value==10 && !startTime.value) || (frmSearch.get('time').value==10 && (startTime.value > endTime.value))}">
+                                        [ngClass]="{'mat-form-field-invalid': CompareTime()}">
                             <mat-label>{{l('Từ ngày')}}</mat-label>
                             <input readonly style="cursor: pointer; background-color: white;" disabled (click)="picker.open()" [disabled]="_isDateTimeEnable" matInput #startTime [matDatepicker]="picker" mask="0*"
                                    required  [disabled]="type == 10"
                                    [required]="frmSearch.get('time').value==10 && !startTime.value">
                             <mat-datepicker-toggle matSuffix [for]="picker" class="t-2"></mat-datepicker-toggle>
                             <mat-datepicker #picker></mat-datepicker>
-                            <mat-icon class="icon-alert" matSuffix
+                            <!-- <mat-icon class="icon-alert" matSuffix
                                       *ngIf="frmSearch.get('time').value==10 && !startTime.value" class="text-danger"
-                                      matTooltip="{{l('Không được để trống')}}">info</mat-icon>
+                                      matTooltip="{{l('Không được để trống')}}">info</mat-icon> -->
                             <mat-icon matSuffix
-                                      *ngIf="frmSearch.get('time').value==10 && (startTime.value > endTime.value)"
+                                      *ngIf="CompareTime()"
                                       class="text-danger" matTooltip="{{l('Từ ngày không được lớn hơn Đến ngày')}}">info</mat-icon>
                         </mat-form-field>
             </div>
-            <div class="col-md-4" id="cbo-endTime"
-                 [ngClass]="{'mat-form-field-invalid':(frmSearch.get('time').value==10 && !startTime.value) || (frmSearch.get('time').value==10 && (startTime.value > endTime.value))}">
+            <div class="col-md-4" id="cbo-endTime">
                 <mat-form-field appearance="outline" class="icon-alert w-100">
                     <mat-label>{{l('Đến ngày')}}</mat-label>
                     <input readonly
@@ -100,11 +99,11 @@
                            maxlength="10">
                     <mat-datepicker-toggle matSuffix [for]="picker1" class="t-2"></mat-datepicker-toggle>
                     <mat-datepicker #picker1></mat-datepicker>
-                    <mat-icon matSuffix *ngIf="frmSearch.get('time').value==10 && !endTime.value" class="text-danger"
+                    <!-- <mat-icon matSuffix *ngIf="frmSearch.get('time').value==10 && !endTime.value" class="text-danger"
                               matTooltip="{{l('Không được để trống')}}">info</mat-icon>
                     <mat-icon class="icon-alert" matSuffix
                               *ngIf="frmSearch.get('time').value==10 && (startTime.value > endTime.value)"
-                              class="text-danger" matTooltip="{{l('Đến ngày không được nhỏ hơn Từ ngày')}}">info</mat-icon>
+                              class="text-danger" matTooltip="{{l('Đến ngày không được nhỏ hơn Từ ngày')}}">info</mat-icon> -->
                 </mat-form-field>
             </div>
                 <div class="col-md-4">
