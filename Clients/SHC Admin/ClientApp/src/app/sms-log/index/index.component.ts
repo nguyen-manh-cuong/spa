@@ -225,8 +225,8 @@ export class IndexComponent extends PagedListingComponentBase<ISmsLogs> implemen
         }
 
         this.smsTemplate.value ? this.frmSearch.controls['smsTemplate'].setValue(this.smsTemplate.value) : '';
-        this.frmSearch.controls['startTime'].setValue(this._startDate);
-        this.frmSearch.controls['endTime'].setValue(this._endDate);
+        this.frmSearch.controls['startTime'].setValue(moment(this.startTime.date).format('DD/MM/YYYY HH:mm'));
+        this.frmSearch.controls['endTime'].setValue(moment(this.endTime.date).format('DD/MM/YYYY HH:mm'));
         this.btnSearchClicks$.next();
     }
 }

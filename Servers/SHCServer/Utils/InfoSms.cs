@@ -26,6 +26,7 @@ namespace SHCServer
                 smsLog.Status = resp.Code == 0 ? 0 : 1;
                 smsLog.HealthFacilitiesId = resp.HealthFacilitiesId;
                 smsLog.SmsTemplateId = resp.SmsTemplateId;
+                //smsLog.SmsTemplateCode = resp.SmsTemplateCode;
                 smsLog.SmsPackagesDistributeId = resp.SmsPackagesDistributeId;
                 smsLog.SentDate = DateTime.Now;
                 smsLog.LogType = 1;

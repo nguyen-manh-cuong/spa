@@ -18,6 +18,7 @@ namespace SHCServer.Models
         public int Id { set; get; }
         public int HealthFacilitiesId { set; get; }
         public int SmsTemplateId { set; get; }
+        //public string SmsTemplateCode { get; set; }
         public int SmsPackagesDistributeId { set; get; }
         public string PhoneNumber { set; get; }
         public string Message { set; get; }
