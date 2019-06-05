@@ -21,7 +21,7 @@ export class IndexComponent extends AppComponentBase implements OnInit {
     frmResetPassword: FormGroup;
     _obj: any = { NewPassword: '', OldPassword: '', UserName: '' }
     validateRule = new ValidationRule();
-
+    @ViewChild('password') password;
     //contructor
     constructor(injector: Injector, private _dataService: DataService, private _formBuilder: FormBuilder, private _sanitizer: DomSanitizer, private _authService: AppAuthService, private titleService: Title) { super(injector); }
 
@@ -51,11 +51,15 @@ export class IndexComponent extends AppComponentBase implements OnInit {
     }
 
     capchaInput(event) {
+        console.log()
         // khong cho phep nhap khoang trang
         event.target.value = this.replace_space(this.replace_alias(event.target.value));
-        if ((this._capcha.code != event.target.value) && (this.frmResetPassword.controls['capcha'].value != "")) {
+        if ((this._capcha.code != event.target.value) && this.frmResetPassword.controls['capcha'].value) {
             this.frmResetPassword.controls['capcha'].setErrors({ 'capcha': true });
         }
+    }
+    capchaClick(event) {
+        console.log(event.target.value);
     }
     newPasswordInput(event) {
         event.target.value = this.replace_space(event.target.value);
@@ -106,8 +110,8 @@ export class IndexComponent extends AppComponentBase implements OnInit {
         }
         if (this.frmResetPassword.controls['capcha'].value != this._capcha.code) {
             this.capcha = true;
-            this.getCapcha();
-            this.frmResetPassword.controls['capcha'].setValue('');
+            this.frmResetPassword.controls['capcha'].setValue('');            
+            this.getCapcha();            
             return;
         }
         // call api
@@ -120,8 +124,11 @@ export class IndexComponent extends AppComponentBase implements OnInit {
             });
             this._authService.logout();
         }, err => {
-            this.getCapcha();
             this.frmResetPassword.controls['capcha'].setValue('');
+            this.password.nativeElement.focus();
+            console.log('hoav', this.frmResetPassword.controls['capcha'])
+            this.frmResetPassword.controls['capcha'].setErrors({capcha: false});
+            this.getCapcha();            
         });
     }
 
