@@ -92,7 +92,6 @@ export class packagedistributeIndexComponent extends PagedListingComponentBase<I
             cancelButtonText: this.l('Cancel'),
             buttonsStyling: false
         }).then((result) => {
-            console.log(result)
             if (result.value) {
                     this.dataService.delete(this.api, obj[id ? id : 'id']).subscribe(e => {
                         this.paginator._changePageSize(this.paginator.pageSize);

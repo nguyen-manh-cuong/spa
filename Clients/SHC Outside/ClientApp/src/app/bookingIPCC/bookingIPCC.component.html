@@ -195,7 +195,7 @@
               <div class="form-group" [ngClass]="{'has-error': frmBooking.get('examinationTime').invalid && (frmBooking.get('examinationTime').dirty || frmBooking.get('examinationTime').touched)}">
                 <label for="examinationTime" class="col-sm-2 col-lg-4 control-label">Chọn giờ khám <span class="text-danger">*</span></label>
                 <div class="col-sm-10 col-lg-6">
-                  <input style="font-size: 14px;" formControlName="examinationTime" mask="Hh:m0" type="text" class="form-control" id="examinationTime">
+                  <input style="font-size: 14px;" (blur)="onblur($event)" formControlName="examinationTime" mask="Hh:m0" type="text" class="form-control" id="examinationTime">
                   <small *ngIf="frmBooking.controls['examinationTime'].value == null && (frmBooking.controls['examinationTime'].touched || frmBooking.controls['examinationTime'].dirty)" class="help-block" style="color: red;">Bạn cần chọn thời gian khám</small>
                 </div>
               </div>

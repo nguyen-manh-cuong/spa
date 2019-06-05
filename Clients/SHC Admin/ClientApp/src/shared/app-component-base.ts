@@ -29,7 +29,7 @@ export abstract class AppComponentBase {
     @HostListener('document:click', ['$event'])
 
     public documentClick(event: Event) {
-        return event;
+        this.numberOfClicks++;
     }
 
     _age = { years: 0, months: 0, days: 0 };

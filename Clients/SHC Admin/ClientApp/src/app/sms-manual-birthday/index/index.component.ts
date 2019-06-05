@@ -354,7 +354,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     customSearch() {
         this.healthfacilities.value ? this.frmSearch.controls['healthfacilities'].setValue(this.healthfacilities.value.healthFacilitiesId) : (this.appSession.user.healthFacilitiesId == null ? this.frmSearch.controls['healthfacilities'].setValue(null) : '');
         if (
-            (this.frmSearch.controls['fromMonth'].value == 2 && this.frmSearch.controls['fromDay'].value > 28) ||
+            (this.frmSearch.controls['fromMonth'].value == 2 && this.frmSearch.controls['fromDay'].value > 29) ||
             (this.frmSearch.controls['fromMonth'].value == 4 && this.frmSearch.controls['fromDay'].value > 30) ||
             (this.frmSearch.controls['fromMonth'].value == 6 && this.frmSearch.controls['fromDay'].value > 30) ||
             (this.frmSearch.controls['fromMonth'].value == 9 && this.frmSearch.controls['fromDay'].value > 30) ||
@@ -369,7 +369,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
         }
 
         if (
-            (this.frmSearch.controls['toMonth'].value == 2 && this.frmSearch.controls['toDay'].value > 28) ||
+            (this.frmSearch.controls['toMonth'].value == 2 && this.frmSearch.controls['toDay'].value > 29) ||
             (this.frmSearch.controls['toMonth'].value == 4 && this.frmSearch.controls['toDay'].value > 30) ||
             (this.frmSearch.controls['toMonth'].value == 6 && this.frmSearch.controls['toDay'].value > 30) ||
             (this.frmSearch.controls['toMonth'].value == 9 && this.frmSearch.controls['toDay'].value > 30) ||
@@ -425,7 +425,8 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
             this._dataService.create('infosms', {
                 lstMedicalHealthcareHistories: this.selection.selected,
                 healthFacilitiesId: this.appSession.user.healthFacilitiesId,
-                smsTemplateId: resp.items.values,
+                //smsTemplateId: resp.items.values,
+                smsTemplateCode:resp.items.values,
                 type: 2,
                 content: '',
                 objectType: 1

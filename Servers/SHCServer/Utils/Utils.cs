@@ -22,6 +22,7 @@ namespace SHCServer
         public string Result { set; get; }
         public int HealthFacilitiesId { set; get; }
         public int SmsTemplateId { set; get; }
+        public string SmsTemplateCode { get; set; }
         public int SmsPackagesDistributeId { set; get; }
         public int SmsPackageUsedId { set; get; }
         public int? PatientHistoriesId { set; get; }
@@ -38,6 +39,7 @@ namespace SHCServer
         public string Message { set; get; }
         public int HealthFacilitiesId { set; get; }
         public int SmsTemplateId { set; get; }
+        public string SmsTemplateCode { get; set; }
         public int SmsPackagesDistributeId { set; get; }
         public int SmsPackageUsedId { set; get; }
         public int? PatientHistoriesId { set; get; }

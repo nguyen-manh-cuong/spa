@@ -30,7 +30,7 @@ namespace SHCServer.ViewModels
             OrganizationCode = obj.OrganizationCode;
             HealthFacilitiesConfigs = context.JoinQuery<SmsTemplate, HealthFacilitiesConfigs>((t, h) => new object[]
                        {
-                            JoinType.InnerJoin, t.Id == h.Values
+                            JoinType.InnerJoin, t.SmsTemplateCode == h.Values
                        })
                         .Where((t, h) => t.Id == obj.Id)
                         .Select((t, h) => h).Count();

@@ -16,7 +16,7 @@ namespace SHCServer.Models
         [AutoIncrement]
         public int Id { set; get; }
         public int? HealthFacilitiesId { set; get; }
-        public int Values { set; get; }
+        public string Values { set; get; }
         public string Code { set; get; }
     }
 }

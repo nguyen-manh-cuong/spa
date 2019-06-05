@@ -188,7 +188,6 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
 
     openCustomDialog(obj): void {
         this.selectionData.select(obj);
-        console.log(this.selectionData);
         const dialogRef = this.dialog.open(this.dialogSendComponent, { minWidth: 'calc(100vw/2)', maxWidth: 'calc(100vw - 300px)', disableClose: true, data: { selection: this.selectionData, type: 1 } });
 
         dialogRef.afterClosed().subscribe(() => {
