@@ -41,12 +41,13 @@ export class HealthfacilitiesListComponent extends AppComponentBase implements O
 
     ngOnInit() {
         this.dataService = this._dataService;
-        if (this.data.length > 0) {
+        if (this.data) {
             this._usersHealthfacilities = this.data;
             this._checkLength = this.data.length;
             this.dataSource.data = this.data;
             this.totalItems = this.data.length;
             console.log(1001, this.data)
+         
         }
        
     }
@@ -78,17 +79,12 @@ export class HealthfacilitiesListComponent extends AppComponentBase implements O
         this._healthFacilities = value;
     }
 
-
-    onHandleChange() {
-        //this._healthFacilities = null;
-    }
-
     onHandleSearch() {
         if (this.nameHealthFacilities.nativeElement.value) {
             let arrTemp = [];
            
             for (var i = 0; i < this.data.length; i++) {
-                if (this.data[i].name.toLowerCase().search(this.nameHealthFacilities.nativeElement.value.trim().toLowerCase()) !== -1) {
+                if ((this.data[i].name.toLowerCase().search(this.nameHealthFacilities.nativeElement.value.trim().toLowerCase()) !== -1) || (this.data[i].code == this.nameHealthFacilities.nativeElement.value.trim())) {
                     arrTemp.push(this.data[i]);
                 }
             }
@@ -100,6 +96,9 @@ export class HealthfacilitiesListComponent extends AppComponentBase implements O
     }
 
     ngAfterViewInit(): void {
-        this.dataSource.paginator = this.paginator;
+        if (this.data) {
+            this.dataSource.paginator = this.paginator;
+        }
+       
     }
 }

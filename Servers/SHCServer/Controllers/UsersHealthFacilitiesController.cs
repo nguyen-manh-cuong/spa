@@ -26,9 +26,16 @@ namespace SHCServer.Controllers
         [Route("api/usershealthfacilities")]
         public IActionResult GetHealthFacilitiesForUser(string filter = null)
         {
-            var objs = _context
-                .JoinQuery<UserHealthFacilities, HealthFacilities>((uh, h) => new object[] { JoinType.InnerJoin, uh.HealthFacilitiesId == h.HealthFacilitiesId })
-                .Where((uh, h) => uh.IsDelete == false);
+            string query = @"select *
+                                from smarthealthcare.sys_users_healthfacilities uh
+                                inner join smarthealthcare.cats_healthfacilities h on uh.HealthFacilitiesId = h.HealthFacilitiesId";
+            List<string> clause = new List<string>();
+            List<DbParam> param = new List<DbParam>();
+            List<UserHealthfacilitiesViewModel> lst = new List<UserHealthfacilitiesViewModel>();
+
+            //var objs = _context
+            //    .JoinQuery<UserHealthFacilities, HealthFacilities>((uh, h) => new object[] { JoinType.InnerJoin, uh.HealthFacilitiesId == h.HealthFacilitiesId })
+            //    .Where((uh, h) => uh.IsDelete == false);
 
             if (filter != null)
             {
@@ -36,12 +43,31 @@ namespace SHCServer.Controllers
                 {
                     if (string.Equals(key, "userId"))
                     {
-                        objs = objs.Where((uh, h) => uh.UserId == int.Parse(value));
+                        //objs = objs.Where((uh, h) => uh.UserId == int.Parse(value));
+                        clause.Add("and uh.UserId = @userId");
+                        param.Add(DbParam.Create("@userId", int.Parse(value)));
                     }
                 }
             }
 
-            return Json(new ActionResultDto { Result = new { Items = objs.Select((uh, u) => new UserHealthfacilitiesViewModel(uh, u)).ToList() }});
+            clause.Add("where uh.IsDelete = 0 group by h.Code");
+
+            var str = $"{query} {string.Join(" ", clause)}";
+            var reader = _context.Session.ExecuteReader($"{query} {string.Join(" ", clause)}", param);
+
+            while (reader.Read())
+            {
+                lst.Add(new UserHealthfacilitiesViewModel()
+                {
+                    Code = reader["Code"].ToString(),
+                    HealthFacilitiesId = Convert.ToInt32(reader["HealthFacilitiesId"]),
+                    Name = reader["Name"].ToString(),
+                    IsDefault = Convert.ToBoolean(reader["IsDefault"]),
+                    Address = reader["Address"].ToString(),
+                });
+            }
+            //objs.Select((uh, u) => new UserHealthfacilitiesViewModel(uh, u)).Distinct().ToList() 
+            return Json(new ActionResultDto { Result = new { Items = lst}});
         }
 
         [HttpPut]
