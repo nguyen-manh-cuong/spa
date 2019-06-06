@@ -21,7 +21,7 @@
         <div class="row m-0 pt-3">
             <div class="col-md-3">
                 <mat-form-field appearance="outline" class="w-100">
-                    <mat-label>{{l('PackageDistributemonthStart')}}</mat-label>
+                    <mat-label>{{l('Từ tháng')}}</mat-label>
                     <mat-select formControlName="monthStart" (selectionChange)="onSelectMonthStart($event.value)">
                         <mat-option *ngFor="let o of _month" [value]="o.id">{{ o.name }}</mat-option>
                     </mat-select>
