@@ -663,11 +663,11 @@ namespace SHCServer.Controllers
 
             if (mhh.BirthDate != null && mhh.BirthMonth != null)
             {
-                birthDay = mhh.BirthDate.ToString() + mhh.BirthMonth.ToString() + mhh.BirthYear.ToString();
+                birthDay = mhh.BirthDate.ToString() +"/"+ mhh.BirthMonth.ToString() +"/"+ mhh.BirthYear.ToString();
             }
             else if (mhh.BirthMonth != null)
             {
-                birthDay = mhh.BirthMonth.ToString() + mhh.BirthYear.ToString();
+                birthDay = mhh.BirthMonth.ToString() +"/"+ mhh.BirthYear.ToString();
             }
             else
             {
