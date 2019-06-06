@@ -197,19 +197,36 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
     }
 
     logout(): void {
-        localStorage.removeItem('logCount');
-        localStorage.removeItem('isLoggedIn');
-        this._authService.logout();
+        swal({
+            title: this.l('Thông báo'),
+            html: this.l('Bạn có chắc không? Tài khoản sẽ đăng xuất'),
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonClass: 'mat-raised-button mat-primary bg-danger',
+            cancelButtonClass: 'mat-button',
+            confirmButtonText: this.l('Đồng ý'),
+            cancelButtonText: this.l('Cancel'),
+            buttonsStyling: false
+        }).then((result) => {
+            if (result.value) {
+                localStorage.removeItem('logCount');
+                localStorage.removeItem('isLoggedIn');
+                this._authService.logout();
+            }
+        })
+      
     }
 
     onResize(event) {
         // exported from $.AdminBSB.activateAll
     }
 
-    getHealthfacility(){
+    getHealthfacility() {
+        console.log(2021, abp.session.userId);
         this._dataService
             .get("usershealthfacilities", JSON.stringify({userId : abp.session.userId}), '', null, null)
             .subscribe(resp => {
+                console.log(12, resp);
                 if(resp && resp.items && resp.items.length){
                     if(resp.items.length != 1) this._dialog.open(HealthfacilitiesListComponent, { minWidth: 'calc(100vw/3)', maxWidth: 'calc(100vw - 300px)', disableClose: true, data: resp.items});
                     else{

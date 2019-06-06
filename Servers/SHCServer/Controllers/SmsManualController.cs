@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using SHCServer.Models;
-using SHCServer.ViewModels;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using SHCServer.Models;
+using SHCServer.ViewModels;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
 using Viettel;
 using Viettel.MySql;
-using System.Globalization;
 
 namespace SHCServer.Controllers
 {
@@ -28,14 +28,14 @@ namespace SHCServer.Controllers
         [Route("api/smsmanual")]
         public IActionResult GetAll(int skipCount = 0, int maxResultCount = 10, string sorting = null, string filter = null)
         {
-            string query = @"select 
+            string query = @"select
 	                                PatientHistoriesId,
 	                                HealthFacilitiesId,
 	                                HealthInsuranceNumber,
 	                                DoctorId,
 	                                ReExaminationDate,
 	                                IsReExamination,
-	                                IsBirthDay,	
+	                                IsBirthDay,
                                     p.PatientId,
 	                                p.Code,
                                     p.FullName,
@@ -76,13 +76,13 @@ namespace SHCServer.Controllers
                     }
                     if (string.Equals(key, "startTime"))
                     {
-                        var startTime = DateTime.Parse(value).AddHours(7).ToString("yyyy-MM-dd") +" 00:00:01";
+                        var startTime = DateTime.Parse(value).ToString("yyyy-MM-dd") + " 00:00:01";
                         clause.Add("and h.ReExaminationDate >= @ReExaminationDate");
                         param.Add(DbParam.Create("@ReExaminationDate", startTime));
                     }
                     if (string.Equals(key, "endTime"))
                     {
-                        var endTime = DateTime.Parse(value).AddHours(7).ToString("yyyy-MM-dd") + " 23:59:59";
+                        var endTime = DateTime.Parse(value).ToString("yyyy-MM-dd") + " 23:59:59";
                         clause.Add("and h.ReExaminationDate <= @ReExaminationDateEnd");
                         param.Add(DbParam.Create("@ReExaminationDateEnd", endTime));
                     }
@@ -222,7 +222,7 @@ namespace SHCServer.Controllers
                 //        clause.Add("AND p.BirthDate <= @ToDay");
                 //    }
                 //}
-                if(data.ContainsKey("type") && (data["type"].ToString() == "cmsn"))
+                if (data.ContainsKey("type") && (data["type"].ToString() == "cmsn"))
                 {
                     if (data.ContainsKey("fromMonth") && data["fromMonth"].ToString() != "13" && int.Parse(data["fromMonth"].ToString()) <= int.Parse(data["toMonth"].ToString()) || data["fromMonth"].ToString() == "13")
                     {
@@ -286,17 +286,20 @@ namespace SHCServer.Controllers
             {
                 foreach (var (key, value) in JsonConvert.DeserializeObject<Dictionary<string, string>>(sorting))
                 {
-                        switch (key)
-                        {
-                            case "id":
-                                clause.Add("ORDER BY p.PatientId " + value);
-                                break;
-                            case "fullName":
-                                clause.Add("ORDER BY SUBSTR(p.FullName, INSTR(p.FullName, ' ')) " + value);
-                                break;
-                            case "ReExaminationDate":
-                                clause.Add("ORDER BY ReExaminationDate " + value);
-                                break;
+                    switch (key)
+                    {
+                        case "id":
+                            clause.Add("ORDER BY p.PatientId " + value);
+                            break;
+
+                        case "fullName":
+                            clause.Add("ORDER BY SUBSTR(p.FullName, INSTR(p.FullName, ' ')) " + value);
+                            break;
+
+                        case "ReExaminationDate":
+                            clause.Add("ORDER BY ReExaminationDate " + value);
+                            break;
+
                         case "birthday":
                             clause.Add("ORDER BY p.BirthDate " + value + " ,p.BirthMonth, p.BirthYear");
                             break;
@@ -348,7 +351,9 @@ namespace SHCServer.Controllers
             }
 
             return Json(new ActionResultDto { Result = new { Items = lst, TotalCount = total } });
+
             #region old
+
             //var objs = _context.JoinQuery<MedicalHealthcareHistories, Patient>((mhh, p) => new object[] { JoinType.InnerJoin, mhh.PatientId == p.PatientId });
 
             //bool male = false;
@@ -424,7 +429,6 @@ namespace SHCServer.Controllers
 
             //var _objs = objs.Select((mhh, p) => new MedicalHealthcareHistoriesViewModel(mhh, _connectionString));
 
-
             ////if (sorting != null)
             ////{
             ////    foreach (var (key, value) in JsonConvert.DeserializeObject<Dictionary<string, string>>(sorting))
@@ -436,7 +440,8 @@ namespace SHCServer.Controllers
 
             //return Json(new ActionResultDto { Result = new { Items = _objs.TakePage(skipCount == 0 ? 1 : skipCount + 1, maxResultCount).ToList(), TotalCount = _objs.Count() } });
             ////return Json(new ActionResultDto { Result = new { Items = objs.Select((mhh, p) => new MedicalHealthcareHistoriesViewModel(mhh, _connectionString)).TakePage(skipCount == 0 ? 1 : skipCount + 1, maxResultCount).ToList(), TotalCount = objs.Select((mhh, p) => new MedicalHealthcareHistoriesViewModel()).Count() } });
-            #endregion
+
+            #endregion old
         }
 
         [HttpPost]
@@ -445,25 +450,27 @@ namespace SHCServer.Controllers
         {
             //danh sach goi sms su dung
             var packages = _context.Query<SmsPackagesDistribute>().Where(pd => pd.HealthFacilitiesId == infoInput.healthFacilitiesId && pd.YearEnd >= DateTime.Now.Year && pd.MonthEnd >= DateTime.Now.Month && pd.IsDelete == false && pd.IsActive == true).Select(u => new PackageDistributeViewModel(u, _connectionString)).ToList();
-            if (packages.Count == 0) {
+            if (packages.Count == 0)
+            {
                 SaveInfoSmsError(_connectionString, infoInput, "Không thể gửi tin do không sử dụng gói sms nào");
 
                 if (infoInput.type == 4) return Json(new ActionResultDto { Result = "" });
                 else return StatusCode(406, _excep.Throw(406, "Không thể gửi tin do số lượng tin nhắn vượt quá gói SMS hiện tại. Mời bạn mua thêm gói SMS"));
-            } 
-            
+            }
+
             long totalSms = 0;
             int totalSmsSend = infoInput.lstMedicalHealthcareHistories.Count;
 
             foreach (var s in packages)
             {
-                if(s.SmsPackageUsed != null)
+                if (s.SmsPackageUsed != null)
                 {
                     totalSms += s.SmsPackageUsed.Quantityused;
                 }
             }
 
-            if (totalSms < totalSmsSend) {
+            if (totalSms < totalSmsSend)
+            {
                 SaveInfoSmsError(_connectionString, infoInput, "Không thể gửi tin do số lượng tin nhắn vượt quá gói SMS hiện tại");
 
                 if (infoInput.type == 4) return Json(new ActionResultDto { Result = "" });
@@ -474,6 +481,7 @@ namespace SHCServer.Controllers
             string code = "";
             string content = "";
             int templateId = 0;
+            string templateCode = "";
             int indexM = 0;
             int indexUsed = 0;
 
@@ -482,9 +490,11 @@ namespace SHCServer.Controllers
                 case 1:
                     code = "A01.SMSTAIKHAM";
                     break;
+
                 case 2:
                     code = "A02.SMSSINHNHAT";
                     break;
+
                 case 4:
                     code = "A06.SMSDATKHAM";
                     break;
@@ -493,13 +503,19 @@ namespace SHCServer.Controllers
             if (string.IsNullOrEmpty(infoInput.content))
             {
                 var config = _context.Query<HealthFacilitiesConfigs>().Where(hp => hp.Code == code && hp.HealthFacilitiesId == infoInput.healthFacilitiesId).FirstOrDefault();
-                templateId = config != null ? config.Values : 0;
-                var template = _context.Query<SmsTemplate>().Where(t => t.Id == templateId).FirstOrDefault();
+                //templateId = config != null ? config.Values : 0;
+                templateCode = config != null ? config.Values : "";
+                var sms = _context.Query<SmsTemplate>().Where(t => t.SmsTemplateCode == config.Values).FirstOrDefault();
+                templateId = sms != null ? sms.Id : 0;
+
+                //var template = _context.Query<SmsTemplate>().Where(t => t.Id == templateId).FirstOrDefault();
+                var template = _context.Query<SmsTemplate>().Where(t => t.SmsTemplateCode == templateCode).FirstOrDefault();
                 content = template != null ? template.SmsContent : "";
             }
             else
             {
                 templateId = infoInput.smsTemplateId.Value;
+                templateCode = infoInput.SmsTemplateCode;
                 content = infoInput.content;
             }
             //danh sach sms content
@@ -508,7 +524,7 @@ namespace SHCServer.Controllers
             foreach (var m in infoInput.lstMedicalHealthcareHistories)
             {
                 indexM++;
-                if(packages[indexUsed].SmsPackageUsed != null && indexM > packages[indexUsed].SmsPackageUsed.Quantityused)
+                if (packages[indexUsed].SmsPackageUsed != null && indexM > packages[indexUsed].SmsPackageUsed.Quantityused)
                 {
                     indexM = 0;
                     indexUsed++;
@@ -521,6 +537,7 @@ namespace SHCServer.Controllers
 
                 scontent.HealthFacilitiesId = infoInput.healthFacilitiesId.Value;
                 scontent.SmsTemplateId = templateId;
+                scontent.SmsTemplateCode = templateCode;
                 scontent.SmsPackagesDistributeId = packages[indexUsed].Id;
                 scontent.SmsPackageUsedId = packages[indexUsed].SmsPackageUsed != null ? packages[indexUsed].SmsPackageUsed.SmsPackageUsedId : 0;
                 scontent.PatientHistoriesId = m.PatientHistoriesId;
@@ -555,7 +572,6 @@ namespace SHCServer.Controllers
 
             foreach (var s in packages)
             {
-                
                 totalSms += s.SmsPackageUsed != null ? s.SmsPackageUsed.Quantityused : 0;
             }
 
@@ -570,6 +586,7 @@ namespace SHCServer.Controllers
             string code = "";
             string content = "";
             int templateId = 0;
+            string templateCode = "";
             int indexM = 0;
             int indexUsed = 0;
 
@@ -578,9 +595,11 @@ namespace SHCServer.Controllers
                 case 1:
                     code = "A01.SMSTAIKHAM";
                     break;
+
                 case 2:
                     code = "A02.SMSSINHNHAT";
                     break;
+
                 case 4:
                     code = "A06.SMSDATKHAM";
                     break;
@@ -589,13 +608,16 @@ namespace SHCServer.Controllers
             if (string.IsNullOrEmpty(infoInput.content))
             {
                 var config = _context.Query<HealthFacilitiesConfigs>().Where(hp => hp.Code == code).FirstOrDefault();
-                templateId = config != null ? config.Values : 0;
-                var template = _context.Query<SmsTemplate>().Where(t => t.Id == templateId).FirstOrDefault();
+                //templateId = config != null ? config.Values : 0;
+                templateCode = config != null ? config.Values : "";
+                //var template = _context.Query<SmsTemplate>().Where(t => t.Id == templateId).FirstOrDefault();
+                var template = _context.Query<SmsTemplate>().Where(t => t.SmsTemplateCode == templateCode).FirstOrDefault();
                 content = template != null ? template.SmsContent : "";
             }
             else
             {
-                templateId = infoInput.smsTemplateId.Value;
+                //templateId = infoInput.smsTemplateId.Value;
+                templateCode = infoInput.SmsTemplateCode;
                 content = infoInput.content;
             }
             //danh sach sms content
@@ -617,6 +639,7 @@ namespace SHCServer.Controllers
 
                 scontent.HealthFacilitiesId = infoInput.healthFacilitiesId.Value;
                 scontent.SmsTemplateId = templateId;
+                scontent.SmsTemplateCode = templateCode;
                 scontent.SmsPackagesDistributeId = packages[indexUsed].Id;
                 scontent.SmsPackageUsedId = packages[indexUsed].SmsPackageUsed != null ? packages[indexUsed].SmsPackageUsed.SmsPackageUsedId : 0;
                 scontent.PatientHistoriesId = 0;
@@ -634,13 +657,28 @@ namespace SHCServer.Controllers
         }
 
         public static string ReplaceContentBookingSms(string content, BookingInformationsViewModel mhh, string packageName)
-        {       
+        {
             string _content = content;
+            string birthDay = "";
+
+            if (mhh.BirthDate != null && mhh.BirthMonth != null)
+            {
+                birthDay = mhh.BirthDate.ToString() + "/" + mhh.BirthMonth.ToString() + "/" + mhh.BirthYear.ToString();
+            }
+            else if (mhh.BirthMonth != null)
+            {
+                birthDay = mhh.BirthMonth.ToString() + "/" + mhh.BirthYear.ToString();
+            }
+            else
+            {
+                birthDay = mhh.BirthYear.ToString();
+            }
+
             if (!string.IsNullOrEmpty(content))
             {
                 _content = _content
                     .Replace("<PHONGKHAM>", packageName)
-                    .Replace("<NGAYSINH>", mhh.BirthYear != 0 ? mhh.BirthYear.ToString() : "")
+                    .Replace("<NGAYSINH>", birthDay)
                     .Replace("<HOTEN>", mhh.BookingUser)
                     .Replace("<EMAIL>", mhh.Email)
                     .Replace("<GIOITINH>", mhh.Gender == 1 ? "Nam" : "Nữ")
@@ -702,11 +740,15 @@ namespace SHCServer.Controllers
         public static string RepalaceContentSms(string content, MedicalHealthcareHistoriesViewModel mhh, string packageName)
         {
             string _content = content;
+            string birthDay = "";
+
+            birthDay = mhh.BirthDate.ToString() + "/" + mhh.BirthMonth.ToString() + "/" + mhh.BirthYear.ToString();
+
             if (!string.IsNullOrEmpty(content))
             {
                 _content = _content
                     .Replace("<PHONGKHAM>", packageName)
-                    .Replace("<NGAYSINH>", mhh.BirthYear != 0 ? mhh.BirthYear.ToString() : "")
+                    .Replace("<NGAYSINH>", birthDay)
                     .Replace("<HOTEN>", mhh.FullName)
                     .Replace("<EMAIL>", mhh.Email)
                     .Replace("<GIOITINH>", mhh.Gender == 1 ? "Nam" : "Nữ")

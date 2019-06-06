@@ -197,7 +197,7 @@ export class LoginComponent extends AppComponentBase implements OnInit {
                 this._dataService.get('auth', JSON.stringify({
                     'userName': this.frmLogin.controls['userNameOrEmailAddress'].value, 'counter': numLoginFail, 'lockedTime': lockedTime
                 }), null, null, null).subscribe(data => {
-
+                        
                     if (numLoginFail > 4) {
                         this.getCapcha();
                     }
