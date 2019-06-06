@@ -342,7 +342,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
             if (parseInt(this.ageFist.nativeElement.value) > parseInt(this.ageLast.nativeElement.value)) {
                 return swal({
                     title: 'Thông báo',
-                    text: 'Tuổi từ phải nhỏ hơn tuổi đến',
+                    text: 'Đến tuổi phải lớn hơn hoặc bằng từ tuổi',
                     type: 'warning',
                     timer: 3000
                 });

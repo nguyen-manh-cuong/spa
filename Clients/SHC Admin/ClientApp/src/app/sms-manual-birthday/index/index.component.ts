@@ -377,7 +377,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
         ) {
             return swal({
                 title: "Thông báo",
-                text: "Ngày sinh từ không đúng định dạng",
+                text: "Ngày sinh đến không đúng định dạng",
                 type: "warning",
                 timer: 3000
             });
