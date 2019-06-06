@@ -532,7 +532,7 @@ namespace SHCServer.Controllers
 
                 SmsContent scontent = new SmsContent();
                 scontent.SmsBrand = packages[indexUsed].SmsBrand;
-                scontent.Message = RepalaceContentSms(content, m, packages[indexUsed].PackageName);
+                scontent.Message = RepalaceContentSms(content, m, packages[indexUsed].HealthFacilitiesName);
                 scontent.PhoneNumber = m.PhoneNumber;
 
                 scontent.HealthFacilitiesId = infoInput.healthFacilitiesId.Value;
@@ -677,7 +677,7 @@ namespace SHCServer.Controllers
             if (!string.IsNullOrEmpty(content))
             {
                 _content = _content
-                    .Replace("<PHONGKHAM>", packageName)
+                    .Replace("<PHONGKHAM>", mhh.HealthFacilitiesName)
                     .Replace("<NGAYSINH>", birthDay)
                     .Replace("<HOTEN>", mhh.BookingUser)
                     .Replace("<EMAIL>", mhh.Email)
@@ -737,7 +737,7 @@ namespace SHCServer.Controllers
             _context.InsertRange(lstSmsLog);
         }
 
-        public static string RepalaceContentSms(string content, MedicalHealthcareHistoriesViewModel mhh, string packageName)
+        public static string RepalaceContentSms(string content, MedicalHealthcareHistoriesViewModel mhh, string healthFacilitiesName)
         {
             string _content = content;
             string birthDay = "";
@@ -747,7 +747,7 @@ namespace SHCServer.Controllers
             if (!string.IsNullOrEmpty(content))
             {
                 _content = _content
-                    .Replace("<PHONGKHAM>", packageName)
+                    .Replace("<PHONGKHAM>", healthFacilitiesName)
                     .Replace("<NGAYSINH>", birthDay)
                     .Replace("<HOTEN>", mhh.FullName)
                     .Replace("<EMAIL>", mhh.Email)
