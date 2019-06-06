@@ -116,3 +116,6 @@ input:read-only{
 .noscroll{
     overflow: hidden!important;
 }
+.frm-doctor-task .mat-tab-body-wrapper {
+    max-height: unset;
+}
