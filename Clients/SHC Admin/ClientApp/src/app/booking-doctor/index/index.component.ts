@@ -48,7 +48,6 @@ export class IndexComponent extends AppComponentBase implements OnInit {
     calendarPlugins = [listPlugin, dayGridPlugin, timeGrigPlugin, interactionPlugin];
     calendarEvents: EventInput[] = [];
     permission: any;
-
     currentMonth: number;
 
     @ViewChild('calendar') calendarComponent: FullCalendarComponent;
@@ -107,7 +106,7 @@ export class IndexComponent extends AppComponentBase implements OnInit {
             this.appSession.user.healthFacilitiesId == null ? this.frmSearch.controls['healthfacilities'].setValue(null) : '';
             swal({
                 title: this.l('Notification'),
-                text: this.l('HealthfacilitiesAndDoctorNotNull'),
+                text: this.l('Bác sỹ không được để trống'),
                 type: 'warning',
                 timer: 3000
             });
@@ -153,7 +152,7 @@ export class IndexComponent extends AppComponentBase implements OnInit {
 
     onSelectHealthFacilities(obj: any) {
         this.frmSearch.controls['doctor'].setValue('');
-        this._doctors = null;
+        this._doctors = [];
         this.dataService.getAll('doctors', obj.healthFacilitiesId).subscribe(resp => this._doctors = resp.items);
     }
 

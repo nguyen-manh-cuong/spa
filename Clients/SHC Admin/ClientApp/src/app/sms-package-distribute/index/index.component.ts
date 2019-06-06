@@ -58,10 +58,10 @@ export class packagedistributeIndexComponent extends PagedListingComponentBase<I
 
         this.dialogComponent = packagedistributeTaskComponent;
         this.frmSearch = this._formBuilder.group({
-            monthStart: [13,],
-            monthEnd: [13,],
-            toYear: ['', [Validators.maxLength(4), Validators.min(0), Validators.max(9999), Validators.pattern('[0-9]*')]],
-            fromYear: ['', [Validators.maxLength(4), Validators.min(0), Validators.max(9999), Validators.pattern('[0-9]*')]],
+            monthStart: [(new Date()).getMonth() + 1,],
+            monthEnd: [(new Date()).getMonth() + 1,],
+            toYear: [(new Date()).getFullYear(), [Validators.maxLength(4), Validators.min(0), Validators.max(9999), Validators.pattern('[0-9]*')]],
+            fromYear: [(new Date()).getFullYear(), [Validators.maxLength(4), Validators.min(0), Validators.max(9999), Validators.pattern('[0-9]*')]],
             HealthFacilitiesId: [this.appSession.user.healthFacilities ? [this.appSession.user.healthFacilitiesId] : '',],
             Status: [2,],
         });

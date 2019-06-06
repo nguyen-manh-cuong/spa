@@ -55,7 +55,7 @@ export class HealthfacilitiesListComponent extends AppComponentBase implements O
             this.appSession.user.healthFacilitiesId = this._healthFacilities.healthFacilitiesId;
             this.appSession.user.healthFacilities = this._healthFacilities; 
             this.dialogRef.close();
-            //window.location.reload();
+            window.location.reload();
         }, err => { this.dialogRef.close() });
     }
 
@@ -70,21 +70,26 @@ export class HealthfacilitiesListComponent extends AppComponentBase implements O
     }
 
     onSelect(value) {
-        console.log(1003, value.healthFacilitiesId);
         this._healthFacilities = value;
     }
 
+    onHandleChange() {
+        this._healthFacilities = null;
+    }
+
     onHandleSearch() {
-        console.log(1004, this.nameHealthFacilities.nativeElement.value);
-        this.dataSource.data = null;
         if (this.nameHealthFacilities.nativeElement.value) {
             let arrTemp = [];
+           
             for (var i = 0; i < this.data.length; i++) {
-                if (this.data[i].name === this.nameHealthFacilities.nativeElement.value.trim()) {
+                if (this.data[i].name.toLowerCase().search(this.nameHealthFacilities.nativeElement.value.trim().toLowerCase()) !== -1) {
                     arrTemp.push(this.data[i]);
                 }
             }
             this.dataSource.data = arrTemp;
+        }
+        else {
+            this.dataSource.data = this.data;
         }
     }
 
