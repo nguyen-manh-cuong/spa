@@ -136,8 +136,7 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
         if(this.appSession.user.accountType != 0){
             var healthFacilities = (abp.session as any).healthFacilities;
             var check = true;
-
-            if(healthFacilities && healthFacilities.length){
+            if (healthFacilities && healthFacilities.length) {
                 if(healthFacilities.length > 1){
                     for (let index = 0; index < healthFacilities.length; index++) {
                         if(healthFacilities[index].isDefault == true) {
@@ -158,8 +157,13 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
                 }
 
                 if (check == true) this._dialog.open(HealthfacilitiesListComponent, { minWidth: 'calc(100vw/3)', maxWidth: 'calc(100vw - 300px)', panelClass: 'cdk-overlay-pane-login', disableClose: true, data: healthFacilities ? healthFacilities : null});
-            } else{
-                this._dialog.open(HealthfacilitiesListComponent, { minWidth: 'calc(100vw/3)', maxWidth: 'calc(100vw - 300px)', panelClass: 'cdk-overlay-pane-login', disableClose: true, data: []});
+            } else {
+                //this._dialog.open(HealthfacilitiesListComponent, { minWidth: 'calc(100vw/3)', maxWidth: 'calc(100vw - 300px)', panelClass: 'cdk-overlay-pane-login', disableClose: true, data: null});
+                swal('Thông báo', 'Tài khoản chưa được phân cho đơn vị nào. Vui lòng liên hệ CSKH: 123456789x để được hỗ trợ.', 'warning').then((result) => {
+                        localStorage.removeItem('logCount');
+                        localStorage.removeItem('isLoggedIn');
+                        this._authService.logout();
+                });
             }
         }
 
@@ -226,7 +230,7 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
         this._dataService
             .get("usershealthfacilities", JSON.stringify({userId : abp.session.userId}), '', null, null)
             .subscribe(resp => {
-                console.log(12, resp);
+                console.log(12, resp.items);
                 if(resp && resp.items && resp.items.length){
                     if(resp.items.length != 1) this._dialog.open(HealthfacilitiesListComponent, { minWidth: 'calc(100vw/3)', maxWidth: 'calc(100vw - 300px)', disableClose: true, data: resp.items});
                     else{
