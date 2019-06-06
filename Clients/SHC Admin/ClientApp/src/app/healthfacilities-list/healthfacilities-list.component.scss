@@ -21,5 +21,14 @@
 .form-healthfacilites .mat-form-field-healfacilities .mat-form-field-wrapper {
     padding-bottom: 0px;
 }
-.col-checkbox{max-width:40px!important;min-width:40px!important;}
+.mat-form-field-healfacilities .mat-form-field-infix {
+    padding: .4em 0!important;
+}
+.mat-form-field-healfacilities .mat-form-field-label-wrapper {
+    top: -24px;
+}
+.col-checkbox {
+    max-width: 40px !important;
+    min-width: 40px !important;
+}
 
