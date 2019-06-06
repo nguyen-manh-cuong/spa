@@ -226,7 +226,7 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
         this._dataService
             .get("usershealthfacilities", JSON.stringify({userId : abp.session.userId}), '', null, null)
             .subscribe(resp => {
-                console.log(2020, resp);
+                console.log(12, resp);
                 if(resp && resp.items && resp.items.length){
                     if(resp.items.length != 1) this._dialog.open(HealthfacilitiesListComponent, { minWidth: 'calc(100vw/3)', maxWidth: 'calc(100vw - 300px)', disableClose: true, data: resp.items});
                     else{
