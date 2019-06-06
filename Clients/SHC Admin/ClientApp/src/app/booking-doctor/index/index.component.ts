@@ -50,6 +50,8 @@ export class IndexComponent extends AppComponentBase implements OnInit {
     permission: any;
     currentMonth: number;
 
+    checkCalendar: number;
+
     @ViewChild('calendar') calendarComponent: FullCalendarComponent;
 
     constructor(injector: Injector, private _dataService: DataService, public dialog: MatDialog, private _formBuilder: FormBuilder, private router: Router) {
@@ -79,21 +81,32 @@ export class IndexComponent extends AppComponentBase implements OnInit {
 
     search() {
         let calendarApi = this.calendarComponent.getApi();
-        var searchMonth = this.frmSearch.controls['month'].value;
 
-        this.currentMonth = calendarApi.state.currentDate.getMonth() + 1;
+        if (calendarApi.view.type == "dayGridMonth") {
+            var searchMonth = this.frmSearch.controls['month'].value;
 
-        if (searchMonth < this.currentMonth) {
-            for (let i = 0; i < (this.currentMonth - searchMonth); i++) {
-                calendarApi.prev();
+            this.currentMonth = calendarApi.state.currentDate.getMonth() + 1;
+
+            if (searchMonth < this.currentMonth) {
+                for (let i = 0; i < (this.currentMonth - searchMonth); i++) {
+                    calendarApi.prev();
+                }
+                this.currentMonth = searchMonth;
+            } else {
+                for (let i = 0; i < (searchMonth - this.currentMonth); i++) {
+                    calendarApi.next();
+                }
+                this.currentMonth = searchMonth;
             }
-            this.currentMonth = searchMonth;
-        } else {
-            for (let i = 0; i < (searchMonth - this.currentMonth); i++) {
-                calendarApi.next();
-            }
-            this.currentMonth = searchMonth;
         }
+
+        if (calendarApi.view.type == "timeGridWeek") {
+            calendarApi.gotoDate(new Date().setMonth(this.frmSearch.controls['month'].value - 1));
+        }
+        if (calendarApi.view.type == "timeGridDay") {
+            calendarApi.gotoDate(new Date(new Date().setDate(1)).setMonth(this.frmSearch.controls['month'].value - 1));
+        }
+
 
         if (((!this.appSession.user.healthFacilitiesId && this.healthfacilities.value) || (this.appSession.user.healthFacilitiesId)) && this.frmSearch.controls['doctor'].value) {
             !this.appSession.user.healthFacilitiesId ? this.frmSearch.controls['healthfacilities'].setValue(this.healthfacilities.value.healthFacilitiesId) : "";

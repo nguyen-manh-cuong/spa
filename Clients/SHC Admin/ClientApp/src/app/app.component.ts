@@ -56,36 +56,36 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
                 // Show loading indicator
                 this.isTableLoading = true;
             }
- 
+
             if (event instanceof NavigationEnd) {
                 // Hide loading indicator
                 //const menu = abp.nav.menus['mainMenu'].items.find((e: any) => e.route === event.url);
- 
+
                 var menu;
                 abp.nav.menus['mainMenu'].items.forEach(el => {
-                    if(el.route === this.router.url && el.items.length == 0){
+                    if (el.route === this.router.url && el.items.length == 0) {
                         menu = el;
-                    } else{
+                    } else {
                         if (el.items.length > 0) {
                             el.items.forEach(eli => {
-                                if(eli.route + '/index' === this.router.url) menu = eli;
-                                if(eli.route + '/packageindex' === this.router.url) menu = eli;
+                                if (eli.route + '/index' === this.router.url) menu = eli;
+                                if (eli.route + '/packageindex' === this.router.url) menu = eli;
                             });
                         }
                     }
                 });
- 
+
                 if (menu) {
                     this.titleService.setTitle(`${this.title} | ${this.l(menu.name)}`);
                     this.pateTitle = this.l(menu.name);
                 }
- 
+
                 this.isTableLoading = false;
             }
- 
+
             if (event instanceof NavigationError) {
                 // Hide loading indicator
- 
+
                 // Present error to user
             }
         });
@@ -106,7 +106,7 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
             }
 
             if (val >= 1 && this.evenNumberOfClick == this.oddNumberOfClick) {
-                    localStorage.setItem('isLoggedIn', "false");
+                localStorage.setItem('isLoggedIn', "false");
             }
             if (localStorage.getItem('isLoggedIn') == "false" && isShowLoginDialog == false) {
                 isShowLoginDialog = true;
@@ -121,7 +121,7 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
     }
 
     public refreshTimer(): void {
-        
+
         this.sub.unsubscribe();
         this.startTimer();
     }
@@ -133,36 +133,36 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
 
         this.startTimer();
 
-        if(this.appSession.user.accountType != 0){
+        if (this.appSession.user.accountType != 0) {
             var healthFacilities = (abp.session as any).healthFacilities;
             var check = true;
             if (healthFacilities && healthFacilities.length) {
-                if(healthFacilities.length > 1){
+                if (healthFacilities.length > 1) {
                     for (let index = 0; index < healthFacilities.length; index++) {
-                        if(healthFacilities[index].isDefault == true) {
+                        if (healthFacilities[index].isDefault == true) {
                             this.appSession.user.healthFacilitiesId = healthFacilities[index].healthFacilitiesId;
                             this.appSession.user.healthFacilities = healthFacilities[index];
                             check = false;
                             break;
                         }
                     }
-                } else{
+                } else {
                     check = false;
                     this.appSession.user.healthFacilitiesId = healthFacilities[0].healthFacilitiesId;
                     this.appSession.user.healthFacilities = healthFacilities[0];
                     this._dataService.update('usershealthfacilities', {
                         userId: abp.session.userId,
                         healthFacilitiesId: healthFacilities[0].healthFacilitiesId
-                    }).subscribe(resp => {}, err => {});
+                    }).subscribe(resp => { }, err => { });
                 }
 
-                if (check == true) this._dialog.open(HealthfacilitiesListComponent, { minWidth: 'calc(100vw/3)', maxWidth: 'calc(100vw - 300px)', panelClass: 'cdk-overlay-pane-login', disableClose: true, data: healthFacilities ? healthFacilities : null});
+                if (check == true) this._dialog.open(HealthfacilitiesListComponent, { minWidth: 'calc(100vw/3)', maxWidth: 'calc(100vw - 300px)', panelClass: 'cdk-overlay-pane-login', disableClose: true, data: healthFacilities ? healthFacilities : null });
             } else {
                 //this._dialog.open(HealthfacilitiesListComponent, { minWidth: 'calc(100vw/3)', maxWidth: 'calc(100vw - 300px)', panelClass: 'cdk-overlay-pane-login', disableClose: true, data: null});
                 swal('Thông báo', 'Tài khoản chưa được phân cho đơn vị nào. Vui lòng liên hệ CSKH: 123456789x để được hỗ trợ.', 'warning').then((result) => {
-                        localStorage.removeItem('logCount');
-                        localStorage.removeItem('isLoggedIn');
-                        this._authService.logout();
+                    localStorage.removeItem('logCount');
+                    localStorage.removeItem('isLoggedIn');
+                    this._authService.logout();
                 });
             }
         }
@@ -218,7 +218,7 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
                 this._authService.logout();
             }
         })
-      
+
     }
 
     onResize(event) {
@@ -228,13 +228,18 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
     getHealthfacility() {
         console.log(2021, abp.session.userId);
         this._dataService
-            .get("usershealthfacilities", JSON.stringify({userId : abp.session.userId}), '', null, null)
+            .get("usershealthfacilities", JSON.stringify({ userId: abp.session.userId }), '', null, null)
             .subscribe(resp => {
                 console.log(12, resp.items);
-                if(resp && resp.items && resp.items.length){
-                    if(resp.items.length != 1) this._dialog.open(HealthfacilitiesListComponent, { minWidth: 'calc(100vw/3)', maxWidth: 'calc(100vw - 300px)', disableClose: true, data: resp.items});
-                    else{
-                        swal('Thông báo', 'Tài khoản của bạn chỉ có 1 CSYT', 'warning');
+                if (resp && resp.items && resp.items.length) {
+                    if (resp.items.length != 1) this._dialog.open(HealthfacilitiesListComponent, { minWidth: 'calc(100vw/3)', maxWidth: 'calc(100vw - 300px)', disableClose: true, data: resp.items });
+                    else {
+                        swal({
+                            title: 'Thông báo',
+                            text: 'Tài khoản của bạn chỉ có 1 CSYT',
+                            type: 'warning',
+                            timer: 3000
+                        });
                     }
                 }
             });

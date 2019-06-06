@@ -432,7 +432,11 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
 
 
         if (((moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').valueOf() - moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').valueOf()) / (1000 * 60 * 60 * 24)) < 0) {
-            swal(this.l('Notification'), this.l('FromDateMustBeGreaterThanOrEqualToDate'), 'warning');
+            swal({
+                title:this.l('Notification'), 
+                text:this.l('FromDateMustBeGreaterThanOrEqualToDate'), 
+                type: 'warning',
+                timer:3000});
             return true;
         }
 
