@@ -64,7 +64,6 @@ export class IndexComponent extends AppComponentBase implements OnInit {
             month: [new Date().getMonth() + 1],
             status: [3]
         });
-        this.currentMonth = moment().month() + 1;
         this.dataService = this._dataService;
         this.dialogTask = TaskComponent;
         this.calendarComponent.locale = viLocale;
@@ -82,6 +81,8 @@ export class IndexComponent extends AppComponentBase implements OnInit {
     search() {
         let calendarApi = this.calendarComponent.getApi();
         var searchMonth = this.frmSearch.controls['month'].value;
+
+        this.currentMonth = calendarApi.state.currentDate.getMonth() + 1;
 
         if (searchMonth < this.currentMonth) {
             for (let i = 0; i < (this.currentMonth - searchMonth); i++) {
