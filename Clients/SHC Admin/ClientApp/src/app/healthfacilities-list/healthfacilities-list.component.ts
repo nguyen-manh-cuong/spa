@@ -35,7 +35,7 @@ export class HealthfacilitiesListComponent extends AppComponentBase implements O
     @ViewChild('nameHealthFacilities') nameHealthFacilities;
     @ViewChild(MatPaginator) paginator: MatPaginator;
 
-    constructor(injector: Injector, private _dataService: DataService, public dialogRef: MatDialogRef<HealthfacilitiesListComponent>, @Inject(MAT_DIALOG_DATA) public data) { super(injector); }
+    constructor(injector: Injector, private _dataService: DataService, public dialogRef: MatDialogRef<HealthfacilitiesListComponent>, @Inject(MAT_DIALOG_DATA) public data) { super(injector); console.log(10021, data)}
 
     ngOnInit() {
         this.dataService = this._dataService;
@@ -73,8 +73,9 @@ export class HealthfacilitiesListComponent extends AppComponentBase implements O
         this._healthFacilities = value;
     }
 
+
     onHandleChange() {
-        this._healthFacilities = null;
+        //this._healthFacilities = null;
     }
 
     onHandleSearch() {
