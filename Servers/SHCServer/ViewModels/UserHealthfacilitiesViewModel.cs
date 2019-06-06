@@ -20,10 +20,12 @@ namespace SHCServer.ViewModels
             Name = h.Name;
             Address = h.Address;
             IsDefault = uh.IsDefault;
+            Code = h.Code;
         }
 
         public int HealthFacilitiesId { set; get; }
         public string Name { set; get; }
+        public string Code { get; set; }
         public string Address { set; get; }
         public bool IsDefault { set; get; }
 }
