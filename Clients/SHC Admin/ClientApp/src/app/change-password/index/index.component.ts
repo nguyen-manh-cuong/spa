@@ -51,7 +51,6 @@ export class IndexComponent extends AppComponentBase implements OnInit {
     }
 
     capchaInput(event) {
-        console.log()
         // khong cho phep nhap khoang trang
         event.target.value = this.replace_space(this.replace_alias(event.target.value));
         if ((this._capcha.code != event.target.value) && this.frmResetPassword.controls['capcha'].value) {
@@ -59,7 +58,10 @@ export class IndexComponent extends AppComponentBase implements OnInit {
         }
     }
     capchaClick(event) {
-        console.log(event.target.value);
+        if (event.target.value == '') {
+            console.log('vao day')
+            this.frmResetPassword.controls['capcha'].setErrors({ 'required': true });
+        }
     }
     newPasswordInput(event) {
         event.target.value = this.replace_space(event.target.value);
@@ -70,8 +72,6 @@ export class IndexComponent extends AppComponentBase implements OnInit {
     repasswordInput(event) {
         event.target.value = this.replace_space(event.target.value);
     }
-
-
     replace_alias(str) {
         str = str.replace(/[^A-Za-z0-9]+/ig, "");
         str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
@@ -126,8 +126,7 @@ export class IndexComponent extends AppComponentBase implements OnInit {
         }, err => {
             this.frmResetPassword.controls['capcha'].setValue('');
             this.password.nativeElement.focus();
-            console.log('hoav', this.frmResetPassword.controls['capcha'])
-            this.frmResetPassword.controls['capcha'].setErrors({capcha: false});
+            this.frmResetPassword.controls['capcha'].setErrors(null);
             this.getCapcha();            
         });
     }

@@ -26,7 +26,7 @@
                         </mat-form-field>
                         <div class="row">
                             <div class="col-md-6">
-                                <mat-form-field appearance="outline" class="w-100" [ngClass]="{'mat-form-field-invalid':capcha}">
+                                <mat-form-field appearance="outline" class="w-100">
                                     <mat-label>{{l("ResetCapcha")}}</mat-label>
                                     <input (input)="capchaInput($event)" (click) ="capchaClick($event)" maxlength="4" formControlName="capcha" matInput autocomplete="off"
                                            [required]="true" class="form-control">
