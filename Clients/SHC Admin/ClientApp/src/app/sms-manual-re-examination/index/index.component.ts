@@ -4,8 +4,8 @@ import { IMedicalHealthcareHistories, IHealthfacilities, IProvince, IDistrict, I
 import { DataService } from '@shared/service-proxies/service-data';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { PagedListingComponentBase } from '@shared/paged-listing-component-base';
-import { startWith, map, ignoreElements, debounceTime, tap, switchMap, finalize } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { startWith, map, ignoreElements, debounceTime, tap, switchMap, finalize, catchError } from 'rxjs/operators';
+import { Observable, merge, of } from 'rxjs';
 import { TaskComponent } from '@app/sms-template-task/task/task.component';
 
 import * as moment from 'moment';
@@ -15,8 +15,9 @@ import { MatDialog, MatInput, MatDatepicker } from '@angular/material';
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { startTimeRange } from '@angular/core/src/profile/wtf_impl';
-import { getPermission } from '@shared/helpers/utils';
+import { getPermission, standardized } from '@shared/helpers/utils';
 import { Router } from '@angular/router';
+import { zipObject, omitBy, isNil } from 'lodash';
 export const MY_FORMATS = {
     parse: {
         dateInput: 'DD/MM/YYYY',
@@ -74,6 +75,8 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     filteredWardOptions: Observable<IWard[]>;
     wardCode = new FormControl();
     _wardCode: string;
+    _checkboxSelected: number[] = [];
+
 
     @ViewChild("birthday") birthday;
     @ViewChild("endTime") endTime;
@@ -131,6 +134,18 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
             this.startTime.nativeElement.focus();
             this.endTime.nativeElement.focus();
         });
+
+        this.selection.onChange.subscribe(se => {
+            se.added.forEach(e => {
+                this._checkboxSelected.push(e.patientHistoriesId);
+            });
+            se.removed.forEach(e => {
+                this._checkboxSelected = this._checkboxSelected.filter(ef => ef !== e.patientHistoriesId);
+            });
+            console.log(this._checkboxSelected)
+        });
+
+        
     }
 
     isAllSelected() {
@@ -139,21 +154,18 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
         return numSelected === numRows;
     }
 
-    checkElement(row) {
-        if (this._patients.indexOf(row) != -1) {
-            this._patients.splice(row);
-        } else {
-            this._patients.push(row);
-        }
-        console.log(this._patients);
+    //checkElement(row) {
+    //    if (this._patients.indexOf(row) != -1) {
+    //        this._patients.splice(row);
+    //    } else {
+    //        this._patients.push(row);
+    //    }
 
-        localStorage.setItem('savePatientReExamination', JSON.stringify(this._patients));
-        console.log(localStorage.getItem('savePatientReExamination'));
-    }
+    //    localStorage.setItem('savePatientReExamination', JSON.stringify(this._patients));
+    //}
 
 
     masterToggle() {
-        console.log('vao day k ta');
         this.isAllSelected() ?
             this.selection.clear() :
             this.dataSources.data.forEach((row: IMedicalHealthcareHistories) => {
@@ -379,6 +391,44 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
             )
     }
 
+    ngAfterViewInit(): void {
+        const self = this;
+        //this.dataSources.sort = this.sort;
+        //if (this.sort) {
+        //    this.sort.sortChange.subscribe(() => {
+        //        this.paginator.pageIndex = 0
+        //    });
+        //}
+
+        //this.btnSearchClicks$.subscribe(() => this.paginator.pageIndex = 0);
+
+        merge(this.sort.sortChange, this.paginator.page, this.btnSearchClicks$)
+            .pipe(
+                startWith({}),
+                switchMap(() => {
+                    setTimeout(() => this.isTableLoading = true, 0);
+                    const sort = this.sort.active ? zipObject([this.sort.active], [this.sort.direction]) : {};
+                    return this.dataService.get(this.api, JSON.stringify(standardized(omitBy(this.frmSearch.value, isNil), this.ruleSearch)), JSON.stringify(sort), this.paginator.pageIndex, this.paginator.pageSize);
+                }),
+                map((data: any) => {
+                    setTimeout(() => this.isTableLoading = false, 500);
+                    this.totalItems = data.totalCount;
+                    return data.items;
+                }),
+                catchError(() => {
+                    setTimeout(() => this.isTableLoading = false, 500);
+                    return of([]);
+                })
+            ).subscribe(data => {
+                this.dataSources.data = data;
+                this.dataSources.data.forEach((e: IMedicalHealthcareHistories) => {
+                    if (self._checkboxSelected.indexOf(e.patientHistoriesId) >= 0) {
+                        self.selection.select(e);
+                    }
+                });
+            });
+    }
+
 
     customSearch() {
         if (!this.endTime.nativeElement.value) {
@@ -549,9 +599,5 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
                     abp.ui.clearBusy('#main-container');
                 }, err => { });
         });
-    }
-
-    clearSelection() {
-        this.selection.clear();
     }
 }
