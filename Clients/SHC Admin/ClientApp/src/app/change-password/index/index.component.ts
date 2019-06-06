@@ -96,11 +96,14 @@ export class IndexComponent extends AppComponentBase implements OnInit {
         return str;
     }
 
+    checkOldPassword = true;
+
     // update databsae
     resetPassword() {
         if (this.frmResetPassword.controls['NewPassword'].value != this.frmResetPassword.controls['RePassword'].value) {
             this.getCapcha();
             this.frmResetPassword.controls['capcha'].setValue('');
+            console.log(1, 'test password');
             return swal({
                 title: 'Thông báo',
                 text: 'Đổi mật khẩu không thành công. Xác nhận mật khẩu mới không đúng',
@@ -116,6 +119,7 @@ export class IndexComponent extends AppComponentBase implements OnInit {
         }
         // call api
         this._dataService.update(this.api, Object.assign(this.frmResetPassword.value)).subscribe(() => {
+            this.checkOldPassword = true;
             swal({
                 title: this.l('Đổi mật khẩu thành công'),
                 text: '',
@@ -124,6 +128,7 @@ export class IndexComponent extends AppComponentBase implements OnInit {
             });
             this._authService.logout();
         }, err => {
+                this.checkOldPassword = false;
             this.frmResetPassword.controls['capcha'].setValue('');
             this.password.nativeElement.focus();
             this.frmResetPassword.controls['capcha'].setErrors(null);

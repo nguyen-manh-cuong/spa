@@ -237,7 +237,8 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
                 swal({
                     title: this.l('SaveSuccess'),
                     text: '',
-                    type: 'success'
+                    type: 'success',
+                    timer: 3000
                 });
                 this.dialogRef.close();
             }, err => { }) :

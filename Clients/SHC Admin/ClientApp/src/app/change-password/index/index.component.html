@@ -7,9 +7,9 @@
             <mat-card class="shadow-none ml-auto mr-auto max-w-470">
                 <mat-card-content class="shadow-none">
                     <form [formGroup]="frmResetPassword" novalidate class="form-change-password">
-                        <mat-form-field appearance="outline" class="w-100">
+                        <mat-form-field appearance="outline" class="w-100" [ngClass]="{'mat-form-field-invalid': !checkOldPassword }">
                             <mat-label>{{l("Mật khẩu hiện tại")}}</mat-label>
-                            <input formControlName="Password" #password matInput type="password" (input) ="passwordInput($event)" [required]="true" maxlength="255" minlength="8" class="form-control">
+                            <input formControlName="Password" #password matInput type="password" (input)="passwordInput($event)" [required]="true" maxlength="255" minlength="8" class="form-control">
                             <validation matSuffix [control]="frmResetPassword.controls['Password']"></validation>
                         </mat-form-field>
                         <mat-form-field appearance="outline" class="w-100 mat-form-field-new-password">
