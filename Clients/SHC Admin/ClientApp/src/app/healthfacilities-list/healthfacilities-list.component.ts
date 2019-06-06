@@ -22,7 +22,7 @@ export class HealthfacilitiesListComponent extends AppComponentBase implements O
     public totalItems: number;
 
     _frm: FormGroup;
-    _usersHealthfacilities;
+    _usersHealthfacilities: any = [];
     _checkLength: number;
     _checked: number = -1;
     _healthFacilities: IHealthfacilities;
@@ -30,20 +30,25 @@ export class HealthfacilitiesListComponent extends AppComponentBase implements O
     dataSource = new MatTableDataSource();
     dataService: DataService;
 
+    
+
     displayedColumns = ['colSelect', 'colHel'];
 
     @ViewChild('nameHealthFacilities') nameHealthFacilities;
     @ViewChild(MatPaginator) paginator: MatPaginator;
 
-    constructor(injector: Injector, private _dataService: DataService, public dialogRef: MatDialogRef<HealthfacilitiesListComponent>, @Inject(MAT_DIALOG_DATA) public data) { super(injector); }
+    constructor(injector: Injector, private _dataService: DataService, public dialogRef: MatDialogRef<HealthfacilitiesListComponent>, @Inject(MAT_DIALOG_DATA) public data) { super(injector);}
 
     ngOnInit() {
         this.dataService = this._dataService;
-        this._usersHealthfacilities = this.data;
-        this._checkLength = this.data.length;
-        this.dataSource.data = this.data;
-        this.totalItems = this.data.length;
-        console.log(1001, this.data)
+        if (this.data.length > 0) {
+            this._usersHealthfacilities = this.data;
+            this._checkLength = this.data.length;
+            this.dataSource.data = this.data;
+            this.totalItems = this.data.length;
+            console.log(1001, this.data)
+        }
+       
     }
 
     updateDefault() {
@@ -73,8 +78,9 @@ export class HealthfacilitiesListComponent extends AppComponentBase implements O
         this._healthFacilities = value;
     }
 
+
     onHandleChange() {
-        this._healthFacilities = null;
+        //this._healthFacilities = null;
     }
 
     onHandleSearch() {
