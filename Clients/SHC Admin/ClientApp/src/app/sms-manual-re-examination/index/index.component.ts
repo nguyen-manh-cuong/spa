@@ -64,6 +64,8 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     filteredProvinceOptions: Observable<IProvince[]>;
     provinceCode = new FormControl();
     _provinceCode: string;
+    _patients = [];
+    _stringPatients = "";
 
     filteredDistrictOptions: Observable<IDistrict[]>;
     districtCode = new FormControl();
@@ -137,7 +139,21 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
         return numSelected === numRows;
     }
 
+    checkElement(row) {
+        if (this._patients.indexOf(row) != -1) {
+            this._patients.splice(row);
+        } else {
+            this._patients.push(row);
+        }
+        console.log(this._patients);
+
+        localStorage.setItem('savePatientReExamination', JSON.stringify(this._patients));
+        console.log(localStorage.getItem('savePatientReExamination'));
+    }
+
+
     masterToggle() {
+        console.log('vao day k ta');
         this.isAllSelected() ?
             this.selection.clear() :
             this.dataSources.data.forEach((row: IMedicalHealthcareHistories) => {
