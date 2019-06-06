@@ -1,16 +1,10 @@
 
 <div class="container p-relative custom-form form-healthfacilites">
-    <div class="p-absolute t-5 r-5">
-        <button mat-icon-button mat-dialog-close style="z-index: 9;" [matTooltipPosition]="'left'" matTooltip="Đóng">
-            <mat-icon>close</mat-icon>
-        </button>
-    </div>
-
-    <form class="pt-5">
-        <!--<ng-template mat-tab-label>{{l("Chọn đơn vị")}}</ng-template>-->
+    <form class="pt-3">
+        <div class="mb-3 border-bottom pb-1">{{l("Chọn đơn vị")}}</div>
         <div class="row">
-            <div class="col-md-8">
-                <mat-form-field appearance="outline" class="w-100">
+            <div class="col-md-8 pr-0">
+                <mat-form-field appearance="outline" class="w-100 mat-form-field-healfacilities">
                     <mat-label>{{l("Nhập tên đơn vị")}}</mat-label>
                     <input #nameHealthFacilities formControlName="code" matInput>
                 </mat-form-field>
@@ -36,16 +30,16 @@
                 <!--style="height: calc(100vh - 245px);"-->
                 <table mat-table [dataSource]="dataSource" class="w-100 task">
                     <ng-container matColumnDef="colSelect">
-                        <th mat-header-cell *matHeaderCellDef class="text-center col-checkbox"> {{l('Chọn')}} </th>
-                        <td mat-cell *matCellDef="let row" class="p-t-8 text-center col-checkbox">
+                        <th mat-header-cell *matHeaderCellDef class="text-center col-checkbox border-left"> {{l('Chọn')}} </th>
+                        <td mat-cell *matCellDef="let row" class="p-t-8 text-center col-checkbox border-left">
                             <!--<mat-checkbox (click)="onHandleCheckBox(row)" [checked]="onSelect(row)"> </mat-checkbox>-->
                             <mat-radio-button class="example-radio-button" (click)="onSelect(row)">
                             </mat-radio-button>
                         </td>
                     </ng-container>
                     <ng-container matColumnDef="colHel">
-                        <th mat-header-cell *matHeaderCellDef> {{l('Tên đơn vị')}} </th>
-                        <td mat-cell *matCellDef="let element"> {{ element.name }} </td>
+                        <th mat-header-cell *matHeaderCellDef class="pl-2 border-right"> {{l('Tên đơn vị')}} </th>
+                        <td mat-cell *matCellDef="let element" class="pl-2 border-right"> {{ element.name }} </td>
                     </ng-container>
                     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                     <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="fadeIn animated"></tr>
