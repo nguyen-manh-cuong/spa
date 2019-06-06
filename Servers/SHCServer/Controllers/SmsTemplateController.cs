@@ -13,11 +13,13 @@ namespace SHCServer.Controllers
 {
     public class SMSController : BaseController
     {
+        private readonly string _connectionString;
         public SMSController(IOptions<Audience> settings, IConfiguration configuration)
         {
             _excep = new FriendlyException();
             _settings = settings;
             _context = new MySqlContext(new MySqlConnectionFactory(configuration.GetConnectionString("DefaultConnection")));
+            _connectionString = configuration.GetConnectionString("DefaultConnection");
         }
 
         [HttpGet]
@@ -25,6 +27,7 @@ namespace SHCServer.Controllers
         public IActionResult Get(int skipCount = 0, int maxResultCount = 10, string sorting = null, string filter = null)
         {
             int checkGetList = 0;
+
             var objs = _context.Query<SmsTemplate>()
                                .Where(g => g.IsDelete == false)
                                .Select(sms => new
@@ -38,7 +41,8 @@ namespace SHCServer.Controllers
                                    sms.OrganizationName,
                                    sms.ApplyAllSystem,
                                    sms.HealthFacilitiesId,
-                                   users = _context.Query<HealthFacilitiesConfigs>().Where(h => h.Values == sms.SmsTemplateCode).Count()
+                                   users = _context.Query<HealthFacilitiesConfigs>().Where(h => h.Values == sms.SmsTemplateCode).Count(),
+                                   healthFacilitiesName = _context.Query<HealthFacilities>().Where(h =>sms.HealthFacilitiesId!=null && h.HealthFacilitiesId == sms.HealthFacilitiesId).FirstOrDefault().Name
                                });
             if (filter != null)
             {

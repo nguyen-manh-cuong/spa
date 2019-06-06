@@ -161,7 +161,7 @@ namespace SHCServer.Controllers
                                     u.Status as MdmStatus
                                 FROM smarthealthcare.sys_users ui
                                 INNER JOIN mdm.sys_users u
-                                ON ui.Id = u.UserId
+                                ON ui.UserId = u.UserId
                                 AND ui.IsDelete = 0";
             List<string> clause = new List<string>();
             List<DbParam> param = new List<DbParam>();
@@ -285,10 +285,18 @@ namespace SHCServer.Controllers
                     //HealthFacilitiesName = obj.HealthFacilitiesName,
                     //Specialist = obj.Specialist
                 });
+                _contextmdmdb.Session.CommitTransaction();
 
                 UserMDM user = _contextmdmdb.Query<UserMDM>().Where(u => u.UserName == obj.UserName).FirstOrDefault();
+                int userId = user != null ? user.UserId : 0;
 
                 _context.Session.BeginTransaction();
+
+                _context.Insert(() => new User
+                {
+                    UserId = userId,
+                    ExpriredDate = DateTime.Now.AddMonths(2)
+                });
 
                 if (user != null && obj.AccountType != 1)
                 {
@@ -335,7 +343,7 @@ namespace SHCServer.Controllers
                 }
 
                 _context.Session.CommitTransaction();
-                _contextmdmdb.Session.CommitTransaction();
+                
                 return Json(new ActionResultDto());
             }
             catch (Exception e)

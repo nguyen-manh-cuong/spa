@@ -153,7 +153,7 @@ export class IndexComponent extends AppComponentBase implements OnInit {
 
     onSelectHealthFacilities(obj: any) {
         this.frmSearch.controls['doctor'].setValue('');
-        this._doctors = null;
+        this._doctors = [];
         this.dataService.getAll('doctors', obj.healthFacilitiesId).subscribe(resp => this._doctors = resp.items);
     }
 

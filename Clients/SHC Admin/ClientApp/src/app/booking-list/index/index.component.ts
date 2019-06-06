@@ -150,6 +150,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
         }
 
         this._doctors = null;
+
     }
 
     onSelectHealthFacilities(value: any) {
@@ -159,6 +160,13 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
             this._doctors = null;
         }
         this.frmSearch.controls['healthfacilities'].setValue(value.healthFacilitiesId);
+    }
+
+    CompareTime() {
+        if(((moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').valueOf() - moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').valueOf()) / (1000 * 60 * 60 * 24)) < 0){
+            return true;
+        }
+        return false;
     }
 
     getGender(status: number) {
@@ -274,7 +282,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
                 break;
             case 7:
                 this._isDateTimeEnable = true;
-                var quarterAdjustment = ((moment().month() + 1)  % 3) + 3;
+                var quarterAdjustment = ((moment().month() + 1) % 3) + 3;
                 var lastQuarterEndDate = moment().subtract({ months: quarterAdjustment }).endOf('month');
                 this.endTime.nativeElement.value = lastQuarterEndDate.format('DD/MM/YYYY');
                 this.startTime.nativeElement.value = lastQuarterEndDate.clone().subtract({ months: 2 }).startOf('month').format('DD/MM/YYYY');
