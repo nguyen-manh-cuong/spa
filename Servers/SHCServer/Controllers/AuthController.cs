@@ -209,7 +209,7 @@ namespace SHCServer.Controllers
                         _context.Update<User>(c => c.Id == currentUser.Id, x => new User()
                         {
                             Counter = currentUser.Counter + 1,
-                            LockedTime = DateTime.Now.AddMinutes(2) //AddHours(14)
+                            LockedTime = DateTime.Now.AddHours(14).AddMinutes(2) //AddHours(14)
                         });
                     }
                     else if (int.Parse(data["counter"].ToString()) == -1)
