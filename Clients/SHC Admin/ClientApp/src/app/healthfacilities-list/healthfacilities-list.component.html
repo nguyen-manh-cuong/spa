@@ -1,6 +1,6 @@
 
 <div class="container p-relative custom-form form-healthfacilites">
-    <form class="pt-3">
+    <div class="pt-3">
         <div class="mb-3 border-bottom pb-1">{{l("Chọn đơn vị")}}</div>
         <div class="row">
             <div class="col-md-8 pr-0">
@@ -15,14 +15,13 @@
                 </button>
             </div>
         </div>
-    </form>
+    </div>
 
     <form class="" id="form-dialog" novalidate>
         <div>
             <mat-paginator [length]="totalItems"
                            [pageSize]="pageSize"
                            [pageSizeOptions]="pageSizeOptions"
-                           (page)="onHandleChange($event)"
                            showFirstLastButtons>
             </mat-paginator>
         </div>
@@ -33,7 +32,7 @@
                         <th mat-header-cell *matHeaderCellDef class="text-center col-checkbox border-left"> {{l('Chọn')}} </th>
                         <td mat-cell *matCellDef="let row" class="p-t-8 text-center col-checkbox border-left">
                             <!--<mat-checkbox (click)="onHandleCheckBox(row)" [checked]="onSelect(row)"> </mat-checkbox>-->
-                            <mat-radio-button class="example-radio-button"  (click)="onSelect(row)">
+                            <mat-radio-button class="example-radio-button" [checked]="row.isDefault"  (click)="onSelect(row)">
                             </mat-radio-button>
                         </td>
                     </ng-container>
@@ -45,7 +44,7 @@
                     <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="fadeIn animated"></tr>
                 </table>
             </div>
-                <button class="ml-auto d-block mb-3" [disabled]="!this._healthFacilities" mat-raised-button color="primary" mat-dialog-close (click)="updateDefault()">{{l("Chọn")}}</button>
+                <button class="ml-auto d-block mb-3" mat-raised-button color="primary" mat-dialog-close (click)="updateDefault()">{{l("Chọn")}}</button>
     </form>
 
 </div>
