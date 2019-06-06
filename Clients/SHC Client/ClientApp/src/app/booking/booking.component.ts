@@ -68,9 +68,9 @@ export class BookingComponent extends AppComponentBase implements OnInit, AfterV
 
     slideConfig = {
         "slidesToShow": 4,
-        "slidesToScroll": 1,
+        "slidesToScroll": 2,
         "nextArrow": '<div class="nav-btn next-slide"></div>',
-        "prevArrow": false,
+        "prevArrow": '<div class="nav-btn pre-slide"></div>',
         "infinite": false
     };
 
