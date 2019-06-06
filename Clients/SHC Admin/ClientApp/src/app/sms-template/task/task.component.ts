@@ -33,6 +33,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     dataService: DataService;
 
     @ViewChild("txtName") txtName: MatInput;
+    @ViewChild("messageContent") messageContent;
 
     constructor(injector: Injector, private _dataService: DataService, private _formBuilder: FormBuilder, public dialogRef: MatDialogRef<TaskComponent>, @Inject(MAT_DIALOG_DATA) public smstemplate: ISmsTemplate) { super(injector); }
 
@@ -67,7 +68,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     ngAfterViewInit(): void {
         setTimeout(() => {
             this.txtName.focus();
-        }, 500);
+        }, 1000);
     }
 
     lengthSmsContent = 0;
@@ -131,6 +132,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
                         return;
                     }
                     this._frm.controls['smsContent'].setValue(this.strFirts + ' <PHONGKHAM>' + this.strSecond);
+                    this.cursorIndex = this.cursorIndex + 12;
                 }
                 break;
             case 2:
@@ -150,6 +152,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
                         return;
                     }
                     this._frm.controls['smsContent'].setValue(this.strFirts + ' <NGAYSINH>' + this.strSecond);
+                    this.cursorIndex = this.cursorIndex + 11;
                 }
                 break;
             case 3:
@@ -169,6 +172,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
                         return;
                     }
                     this._frm.controls['smsContent'].setValue(this.strFirts + ' <HOTEN>' + this.strSecond);
+                    this.cursorIndex = this.cursorIndex + 8;
                 }
                 break;
             case 4:
@@ -188,6 +192,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
                         return;
                     }
                     this._frm.controls['smsContent'].setValue(this.strFirts + ' <EMAIL>' + this.strSecond);
+                    this.cursorIndex = this.cursorIndex + 8;
                 }
                 break;
             case 5:
@@ -207,6 +212,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
                         return;
                     }
                     this._frm.controls['smsContent'].setValue(this.strFirts + ' <GIOITINH>' + this.strSecond);
+                    this.cursorIndex = this.cursorIndex + 11;
                 }
                 break;
             case 6:
@@ -226,6 +232,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
                         return;
                     }
                     this._frm.controls['smsContent'].setValue(this.strFirts + ' <NGAYHIENTAI>' + this.strSecond);
+                    this.cursorIndex = this.cursorIndex + 14;
                 }
                 break;
             case 7:
@@ -245,6 +252,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
                         return;
                     }
                     this._frm.controls['smsContent'].setValue(this.strFirts + ' <NGAYTAIKHAM>' + this.strSecond);
+                    this.cursorIndex = this.cursorIndex + 14;
                 }
                 break;
             case 8:
@@ -264,6 +272,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
                         return;
                     }
                     this._frm.controls['smsContent'].setValue(this.strFirts + ' <PHONGBAN>' + this.strSecond);
+                    this.cursorIndex = this.cursorIndex + 11;
                 }
                 break;
             case 9:
@@ -283,6 +292,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
                         return;
                     }
                     this._frm.controls['smsContent'].setValue(this.strFirts + ' <TENDICHVU>' + this.strSecond);
+                    this.cursorIndex = this.cursorIndex + 12;
                 }
                 break;
             case 10:
@@ -302,9 +312,19 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
                         return;
                     }
                     this._frm.controls['smsContent'].setValue(this.strFirts + ' <TENTHUOC>' + this.strSecond);
+                    this.cursorIndex = this.cursorIndex + 11;
                 }
                 break;
         }
+        setTimeout(() => {
+            if (this.cursorIndex) {
+                this.messageContent.nativeElement.focus();
+                this.messageContent.nativeElement.selectionStart = this.cursorIndex;
+                this.messageContent.nativeElement.selectionEnd = this.cursorIndex;
+            }
+            else
+                this.messageContent.nativeElement.focus();
+        }, 300);
     }
     cussorPointer(e, value) {
         // string 
