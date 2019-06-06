@@ -7,15 +7,17 @@ import { PagedListingComponentBase } from '@shared/paged-listing-component-base'
 import { MatDialog } from '@angular/material/dialog';
 import { TaskComponent } from '@app/sms-template-task/task/task.component';
 import { DetailComponent } from './../detail/detail.component';
-import { Observable } from 'rxjs';
+import { Observable, merge, of } from 'rxjs';
 import { MatPaginator, MatSort } from '@angular/material';
-import { startWith, map, finalize, switchMap, debounceTime, tap } from 'rxjs/operators';
+import { startWith, map, finalize, switchMap, debounceTime, tap, catchError } from 'rxjs/operators';
 
 import * as moment from 'moment';
 import swal from 'sweetalert2';
 
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+import { zipObject, isNil, omitBy } from 'lodash';
+import { standardized } from '@shared/helpers/utils';
 
 export const MY_FORMATS = {
     parse: {
@@ -72,6 +74,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     filteredWardOptions: Observable<IWard[]>;
     wardCode = new FormControl();
     _wardCode: string;
+    _checkboxSelected: number[] = [];
 
     @ViewChild("birthday") birthday;
     @ViewChild("ageFist") ageFist;
@@ -125,6 +128,15 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
         }
 
         this.dialogDetail = DetailComponent;
+
+        this.selection.onChange.subscribe(se => {
+            se.added.forEach(e => {
+                this._checkboxSelected.push(e.patientHistoriesId);
+            });
+            se.removed.forEach(e => {
+                this._checkboxSelected = this._checkboxSelected.filter(ef => ef !== e.patientHistoriesId);
+            });
+        });
     }
 
     isAllSelected() {
@@ -188,6 +200,36 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
             .pipe(
                 finalize(() => this.isLoading = false)
             )
+    }
+
+    ngAfterViewInit(): void {
+        const self = this;
+        merge(this.sort.sortChange, this.paginator.page, this.btnSearchClicks$)
+            .pipe(
+                startWith({}),
+                switchMap(() => {
+                    setTimeout(() => this.isTableLoading = true, 0);
+                    const sort = this.sort.active ? zipObject([this.sort.active], [this.sort.direction]) : {};
+                    return this.dataService.get(this.api, JSON.stringify(standardized(omitBy(this.frmSearch.value, isNil), this.ruleSearch)), JSON.stringify(sort), this.paginator.pageIndex, this.paginator.pageSize);
+                }),
+                map((data: any) => {
+                    setTimeout(() => this.isTableLoading = false, 500);
+                    this.totalItems = data.totalCount;
+                    return data.items;
+                }),
+                catchError(() => {
+                    setTimeout(() => this.isTableLoading = false, 500);
+                    return of([]);
+                })
+            ).subscribe(data => {
+                this.dataSources.data = data;
+                this.dataSources.data.forEach((e: IMedicalHealthcareHistories) => {
+                    if (self._checkboxSelected.indexOf(e.patientHistoriesId) >= 0) {
+                        self.selection.select(e);
+                    }
+                })
+            });
+
     }
 
     // displayProvinceFn(h?: IProvince): string | undefined {

@@ -5,8 +5,8 @@ import { DataService } from '@shared/service-proxies/service-data';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { PagedListingComponentBase } from '@shared/paged-listing-component-base';
 import { DetailComponent } from '../detail/detail.component';
-import { startWith, map, finalize, switchMap, tap, debounceTime } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { startWith, map, finalize, switchMap, tap, debounceTime, catchError } from 'rxjs/operators';
+import { Observable, merge, of } from 'rxjs';
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import { SelectionModel } from '@angular/cdk/collections';
 
@@ -14,7 +14,8 @@ import swal from 'sweetalert2';
 import * as moment from 'moment';
 import * as _ from 'lodash';
 import { Router } from '@angular/router';
-import { getPermission } from '@shared/helpers/utils';
+import { getPermission, standardized } from '@shared/helpers/utils';
+import { zipObject, omitBy, isNil } from 'lodash';
 
 export const MY_FORMATS = {
     parse: {
@@ -53,6 +54,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingDoctorsCal
     selection = new SelectionModel<IBookingDoctorsCalendarsView>(true, []);
     isLoading = false;
     permission: any;
+    _checkboxSelected: number[] = [];
 
     @ViewChild("startTime") startTime;
     @ViewChild("endTime") endTime;
@@ -92,6 +94,15 @@ export class IndexComponent extends PagedListingComponentBase<IBookingDoctorsCal
             // this.endTime.nativeElement.focus();
             this.getDate(this.startTime.nativeElement.value, this.endTime.nativeElement.value);
         }, 1000);
+
+        this.selection.onChange.subscribe(se => {
+            se.added.forEach(e => {
+                this._checkboxSelected.push(e.doctorId);
+            });
+            se.removed.forEach(e => {
+                this._checkboxSelected = this._checkboxSelected.filter(ef => ef !== e.doctorId);
+            });
+        });
     }
 
     //dialog detail
@@ -129,7 +140,46 @@ export class IndexComponent extends PagedListingComponentBase<IBookingDoctorsCal
             .pipe(
                 finalize(() => this.isLoading = false)
             )
-      }
+    }
+
+    ngAfterViewInit(): void {
+        const self = this;
+        //this.dataSources.sort = this.sort;
+        //if (this.sort) {
+        //    this.sort.sortChange.subscribe(() => {
+        //        this.paginator.pageIndex = 0
+        //    });
+        //}
+
+        this.btnSearchClicks$.subscribe(() => this.paginator.pageIndex = 0);
+
+        merge(this.sort.sortChange, this.paginator.page, this.btnSearchClicks$)
+            .pipe(
+                startWith({}),
+                switchMap(() => {
+                    setTimeout(() => this.isTableLoading = true, 0);
+                    const sort = this.sort.active ? zipObject([this.sort.active], [this.sort.direction]) : {};
+                    return this.dataService.get(this.api, JSON.stringify(standardized(omitBy(this.frmSearch.value, isNil), this.ruleSearch)), JSON.stringify(sort), this.paginator.pageIndex, this.paginator.pageSize);
+                }),
+                map((data: any) => {
+                    setTimeout(() => this.isTableLoading = false, 500);
+                    this.totalItems = data.totalCount;
+                    return data.items;
+                }),
+                catchError(() => {
+                    setTimeout(() => this.isTableLoading = false, 500);
+                    return of([]);
+                })
+            ).subscribe(data => {
+                this.dataSources.data = data;
+                this.dataSources.data.forEach((e: IBookingDoctorsCalendarsView) => {
+                    if (self._checkboxSelected.indexOf(e.doctorId) >= 0) {
+                        self.selection.select(e);
+                    }
+                })
+            });
+        this.setTableHeight();
+    }
                                                                                                                                                                                             
     //selected checkbox table
     isAllSelected() {

@@ -4,8 +4,8 @@ import { IHealthfacilities, IMedicalHealthcareHistories } from '@shared/Interfac
 import { DataService } from '@shared/service-proxies/service-data';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { PagedListingComponentBase } from '@shared/paged-listing-component-base';
-import { startWith, map, finalize, debounceTime, tap, switchMap } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { startWith, map, finalize, debounceTime, tap, switchMap, catchError } from 'rxjs/operators';
+import { Observable, merge, of } from 'rxjs';
 import { MatDialog, throwMatDialogContentAlreadyAttachedError } from '@angular/material';
 import { TaskComponent } from '@app/sms-template-task/task/task.component';
 
@@ -14,6 +14,8 @@ import * as moment from 'moment';
 
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+import { zipObject, isNil, omitBy } from 'lodash';
+import { standardized } from '@shared/helpers/utils';
 
 export const MY_FORMATS = {
     parse: {
@@ -87,6 +89,8 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     _months = [{ id: 13, name: 'Tất cả' }, { id: 1, name: 'Tháng 1' }, { id: 2, name: 'Tháng 2' }, { id: 3, name: 'Tháng 3' }, { id: 4, name: 'Tháng 4' }, { id: 5, name: 'Tháng 5' }, { id: 6, name: 'Tháng 6' }, { id: 7, name: 'Tháng 7' }, { id: 8, name: 'Tháng 8' }, { id: 9, name: 'Tháng 9' }, { id: 10, name: 'Tháng 10' }, { id: 11, name: 'Tháng 11' }, { id: 12, name: 'Tháng 12' },];
     _days = [{ id: 32, name: 'Tất cả' }];
 
+    _checkboxSelected: number[] = [];
+
     constructor(injector: Injector, private _dataService: DataService, public dialog: MatDialog, private _formBuilder: FormBuilder) {
         super(injector);
     }
@@ -134,6 +138,15 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
             this.filterOptions();
             this.healthfacilities.setValue(null);
         }
+
+        this.selection.onChange.subscribe(se => {
+            se.added.forEach(e => {
+                this._checkboxSelected.push(e.patientHistoriesId);
+            });
+            se.removed.forEach(e => {
+                this._checkboxSelected = this._checkboxSelected.filter(ef => ef !== e.patientHistoriesId);
+            });
+        });
     }
 
     isAllSelected() {
@@ -146,8 +159,9 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
         this.isAllSelected() ?
             this.selection.clear() :
             this.dataSources.data.forEach((row: IMedicalHealthcareHistories) => {
-                this.selection.select(row)
+                this.selection.select(row);
             });
+        
     }
 
     onSelectHealthFacilities(obj: any) {
@@ -199,7 +213,44 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
             )
     }
 
+    ngAfterViewInit(): void {
+        const self = this;
+        //this.dataSources.sort = this.sort;
+        if (this.sort) {
+            this.sort.sortChange.subscribe(() => {
+                this.paginator.pageIndex = 0
+            });
+        }
 
+        this.btnSearchClicks$.subscribe(() => this.paginator.pageIndex = 0);
+
+        merge(this.sort.sortChange, this.paginator.page, this.btnSearchClicks$)
+            .pipe(
+                startWith({}),
+                switchMap(() => {
+                    setTimeout(() => this.isTableLoading = true, 0);
+                    const sort = this.sort.active ? zipObject([this.sort.active], [this.sort.direction]) : {};
+                    return this.dataService.get(this.api, JSON.stringify(standardized(omitBy(this.frmSearch.value, isNil), this.ruleSearch)), JSON.stringify(sort), this.paginator.pageIndex, this.paginator.pageSize);
+                }),
+                map((data: any) => {
+                    setTimeout(() => this.isTableLoading = false, 500);
+                    this.totalItems = data.totalCount;
+                    return data.items;
+                }),
+                catchError(() => {
+                    setTimeout(() => this.isTableLoading = false, 500);
+                    return of([]);
+                })
+            ).subscribe(data => {
+                this.dataSources.data = data;
+                this.dataSources.data.forEach((e: IMedicalHealthcareHistories) => {
+                    if (self._checkboxSelected.indexOf(e.patientHistoriesId) >= 0) {
+                        self.selection.select(e);
+                    }
+                })
+            });
+        this.setTableHeight();
+    }
     // displayProvinceFn(h?: IProvince): string | undefined {
     //     return h ? h.name : undefined;
     // }
