@@ -49,7 +49,7 @@ export class IndexComponent extends PagedListingComponentBase<ISmsTemplate> impl
 
         swal({
             title: 'Thông báo',
-            text: message,
+            html: message,
             type: 'warning',
             timer: 3000
         })
