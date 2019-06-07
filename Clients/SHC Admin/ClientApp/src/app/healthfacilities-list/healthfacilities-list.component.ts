@@ -84,7 +84,7 @@ export class HealthfacilitiesListComponent extends AppComponentBase implements O
             let arrTemp = [];
            
             for (var i = 0; i < this.data.length; i++) {
-                if ((this.data[i].name.toLowerCase().search(this.nameHealthFacilities.nativeElement.value.trim().toLowerCase()) !== -1) || (this.data[i].code == this.nameHealthFacilities.nativeElement.value.trim())) {
+                if ((this.data[i].name.toLowerCase().search(this.nameHealthFacilities.nativeElement.value.trim().toLowerCase()) !== -1) || (this.data[i].code.search(this.nameHealthFacilities.nativeElement.value.trim()) !== -1)) {
                     arrTemp.push(this.data[i]);
                 }
             }
