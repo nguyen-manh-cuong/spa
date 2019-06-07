@@ -123,14 +123,14 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
     public refreshTimer(): void {
 
         this.sub.unsubscribe();
-        //this.startTimer();
+        this.startTimer();
     }
 
     ngOnInit(): void {
         // SignalRAspNetCoreHelper.initSignalR();
 
         this.dialogSession = TaskSessionComponent;
-        //this.startTimer();
+        this.startTimer();
 
         if (this.appSession.user.accountType != 0) {
             var healthFacilities = (abp.session as any).healthFacilities;
@@ -242,6 +242,10 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
                     }
                 }
             });
+    }
+
+    changePassword(){
+        this.router.navigate(["/app/change-password/index"]);
     }
 
     //openCustomDialog(): void {

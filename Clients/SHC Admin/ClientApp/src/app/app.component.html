@@ -59,8 +59,8 @@
                 <button mat-menu-item (click)="logout()">
                     <mat-icon>input</mat-icon> Đăng xuất
                 </button>
-                <a mat-menu-item  href="/app/change-password/index">
-                    <mat-icon>vpn_key</mat-icon>Cập nhật thông tin
+                <a mat-menu-item (click)="changePassword()">
+                    <mat-icon>account_circle</mat-icon>Cập nhật thông tin
                 </a>
             </mat-menu>
             <button mat-button class="align-self-stretch" (click)="rdrawer.toggle()">
