@@ -35,7 +35,7 @@ export class IndexComponent extends AppComponentBase implements OnInit {
     _doctors = [];
     _months = _.range(1, 13);
     _status = [{ id: 3, name: 'Tất cả' }, { id: 0, name: 'Chờ duyệt' }, { id: 1, name: 'Đã duyệt' }, { id: 2, name: 'Đã hủy' }];
-
+    viLocale: viLocale;
     healthfacilities = new FormControl();
     filteredOptions: Observable<IHealthfacilities[]>;
     dataService: DataService;

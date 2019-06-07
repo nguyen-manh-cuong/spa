@@ -272,7 +272,7 @@ namespace SHCServer
                     return new SmsRespone
                     {
                         Code = result != null ? result.result1 : 0,
-                        Result = result != null ? result.message : "Không kết nối được",
+                        Result = "Không kết nối được",
                         Message = content.Message,
                         PhoneNumber = content.PhoneNumber,
                         HealthFacilitiesId = content.HealthFacilitiesId,
