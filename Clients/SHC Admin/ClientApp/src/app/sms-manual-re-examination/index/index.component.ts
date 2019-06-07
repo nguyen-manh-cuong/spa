@@ -18,6 +18,7 @@ import { startTimeRange } from '@angular/core/src/profile/wtf_impl';
 import { getPermission, standardized } from '@shared/helpers/utils';
 import { Router } from '@angular/router';
 import { zipObject, omitBy, isNil } from 'lodash';
+import * as _ from 'lodash';
 export const MY_FORMATS = {
     parse: {
         dateInput: 'DD/MM/YYYY',
@@ -54,6 +55,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     _status = [{ id: 0, name: 'Tất cả' }, { id: 1, name: 'Đã gửi SMS' }, { id: 2, name: 'Chưa gửi SMS' }];
     _sex = [{ id: 0, name: 'Tất cả' }, { id: 1, name: 'Nam' }, { id: 2, name: 'Nữ' }, { id: 3, name: 'Không xác định' }];
     //_currentYear = new Date().getFullYear();
+    _checkboxSelected: number[] = [];
 
     isLoading = false;
     selection = new SelectionModel<IMedicalHealthcareHistories>(true, []);
@@ -75,8 +77,8 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     filteredWardOptions: Observable<IWard[]>;
     wardCode = new FormControl();
     _wardCode: string;
-    _checkboxSelected: number[] = [];
-
+    //_checkboxSelected: number[] = [];
+    _isAllSelected: boolean = false;
 
     @ViewChild("birthday") birthday;
     @ViewChild("endTime") endTime;
@@ -137,7 +139,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
 
         this.selection.onChange.subscribe(se => {
             se.added.forEach(e => {
-                this._checkboxSelected.push(e.patientHistoriesId);
+                if (this._checkboxSelected.indexOf(e.patientHistoriesId) < 0) this._checkboxSelected.push(e.patientHistoriesId);
             });
             se.removed.forEach(e => {
                 this._checkboxSelected = this._checkboxSelected.filter(ef => ef !== e.patientHistoriesId);
@@ -145,7 +147,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
             console.log(this._checkboxSelected)
         });
 
-        
+
     }
 
     isAllSelected() {
@@ -166,11 +168,15 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
 
 
     masterToggle() {
-        this.isAllSelected() ?
-            this.selection.clear() :
+        if (this.isAllSelected()) {
+            this.selection.clear();
+            this._checkboxSelected = [];
+        }
+        else {
             this.dataSources.data.forEach((row: IMedicalHealthcareHistories) => {
                 this.selection.select(row)
-            });
+            }); 
+        }
     }
 
     onSelectHealthFacilities(obj: any) {
@@ -421,9 +427,11 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
                 })
             ).subscribe(data => {
                 this.dataSources.data = data;
+                var lstSelected = [];
                 this.dataSources.data.forEach((e: IMedicalHealthcareHistories) => {
                     if (self._checkboxSelected.indexOf(e.patientHistoriesId) >= 0) {
                         self.selection.select(e);
+                        lstSelected.push(e.patientHistoriesId);
                     }
                 });
             });
@@ -483,10 +491,11 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
 
         if (((moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').valueOf() - moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').valueOf()) / (1000 * 60 * 60 * 24)) < 0) {
             swal({
-                title:this.l('Notification'), 
-                text:this.l('FromDateMustBeGreaterThanOrEqualToDate'), 
+                title: this.l('Notification'),
+                text: this.l('FromDateMustBeGreaterThanOrEqualToDate'),
                 type: 'warning',
-                timer:3000});
+                timer: 3000
+            });
             return true;
         }
 
@@ -561,6 +570,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     }
 
     sendSms() {
+        console.log(this.selection.selected);
 
         this._isRequest = true;
         setTimeout(() => this._isRequest = false, 3000)
@@ -580,7 +590,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
 
             abp.ui.setBusy('#main-container');
             this._dataService.create('infosms', {
-                lstMedicalHealthcareHistories: this.selection.selected,
+                lstMedicalHealthcareHistories: _.uniqBy(this.selection.selected, e => e.patientHistoriesId),
                 healthFacilitiesId: this.appSession.user.healthFacilitiesId,
                 //smsTemplateId: resp.items.values,
                 smsTemplateCode: resp.items.values,
@@ -595,7 +605,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
                         type: 'error',
                         timer: 3000
                     });
-                    this.selection = new SelectionModel<IMedicalHealthcareHistories>(true, []);
+                    this.selection.clear();
                     abp.ui.clearBusy('#main-container');
                 }, err => { });
         });

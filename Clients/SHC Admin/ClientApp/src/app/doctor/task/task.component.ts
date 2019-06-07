@@ -228,8 +228,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   @ViewChild("certificationDatePicker") certificationDatePicker;
 
   ngOnInit() {
-    this.uploadBaseUrl = AppConsts.uploadBaseUrl;
-
+    this.uploadBaseUrl = AppConsts.remoteServiceBaseUrl.substring(0, AppConsts.remoteServiceBaseUrl.indexOf("9008") + 4) + "/wwwroot";
     this.dataService = this._dataService;
 
     this.getProvinces();
@@ -356,7 +355,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     if (this.obj) {
       if (this.obj.specialist) {
         this.obj.specialist.forEach((e: any) => {
-          if(e.specialistCode!=null){
+          if (e.specialistCode != null) {
             this._specialistChip.push(e);
             this._speciaList.push(e.specialistCode);
           }
@@ -400,7 +399,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   //Base//
 
   certificationInput($event) {
-    if ($event.target.value && $event.target.value.trim()!='') {
+    if ($event.target.value && $event.target.value.trim() != '') {
       this._certificationInputCheck = false;
     }
     else {
@@ -415,7 +414,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     if ($event.key == "v") {
       this._certificationInputCheck = false;
     }
-    if ($event.key == "x" && this.certification.elementNative.value == "" && this.certification.elementNative.value.trim()!='') {
+    if ($event.key == "x" && this.certification.elementNative.value == "" && this.certification.elementNative.value.trim() != '') {
       this.certificationDatePicker.nativeElement.value = "";
       this._frm.controls['certificationDate'].setValue(null);
     }

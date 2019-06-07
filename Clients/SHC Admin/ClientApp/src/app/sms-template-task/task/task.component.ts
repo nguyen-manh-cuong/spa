@@ -63,7 +63,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
                 }, err => { this.dialogRef.close() });
             } else {
                 this._dataService.create('infosms', {
-                    lstMedicalHealthcareHistories: this.data.selection.selected,
+                    lstMedicalHealthcareHistories: _.uniqBy(this.data.selection.selected, (e: any) => e.patientHistoriesId),
                     healthFacilitiesId: this.appSession.user.healthFacilitiesId,
                     smsTemplateId: this._template.id,
                     content: this._frm.controls['smsContent'].value,
