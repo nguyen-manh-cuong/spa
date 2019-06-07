@@ -53,6 +53,7 @@ export class IndexComponent extends AppComponentBase implements OnInit {
     checkCalendar: number;
 
     @ViewChild('calendar') calendarComponent: FullCalendarComponent;
+    @ViewChild('healthfacilities') healthfacility;
 
     constructor(injector: Injector, private _dataService: DataService, public dialog: MatDialog, private _formBuilder: FormBuilder, private router: Router) {
         super(injector);
@@ -80,7 +81,17 @@ export class IndexComponent extends AppComponentBase implements OnInit {
     }
 
     search() {
+        if (this.frmSearch.controls['healthfacilities'].value == null) {
+            return swal({
+                title: this.l('Notification'),
+                text: this.l('Đơn vị và Bác sỹ không được để trống'),
+                type: 'warning',
+                timer: 3000
+            });
+        }
+
         let calendarApi = this.calendarComponent.getApi();
+
 
         if (calendarApi.view.type == "dayGridMonth") {
             var searchMonth = this.frmSearch.controls['month'].value;
@@ -117,7 +128,7 @@ export class IndexComponent extends AppComponentBase implements OnInit {
                     this.calendarEvents = resp.items;
                 });
         } else {
-            this.appSession.user.healthFacilitiesId == null ? this.frmSearch.controls['healthfacilities'].setValue(null) : '';
+            //this.appSession.user.healthFacilitiesId == null ? this.frmSearch.controls['healthfacilities'].setValue(null) : '';
             swal({
                 title: this.l('Notification'),
                 text: this.l('Bác sỹ không được để trống'),
@@ -165,6 +176,7 @@ export class IndexComponent extends AppComponentBase implements OnInit {
     }
 
     onSelectHealthFacilities(obj: any) {
+        this.frmSearch.controls['healthfacilities'].setValue(obj.healthFacilitiesId);
         this.frmSearch.controls['doctor'].setValue('');
         this._doctors = [];
         this.dataService.getAll('doctors', obj.healthFacilitiesId).subscribe(resp => this._doctors = resp.items);

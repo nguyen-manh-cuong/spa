@@ -29,7 +29,7 @@
                             <mat-label>Mã xác nhận <span class="text-danger">*</span></mat-label>
                             <input formControlName="codeCapcha" matInput autocomplete="off" #codeCapcha>
                             <validation matSuffix [control]="frmLogin.controls['codeCapcha']"></validation>
-                            <mat-icon matSuffix *ngIf="frmLogin.controls['codeCapcha'].value == null || frmLogin.controls['codeCapcha'].value == ''" matTooltipClass="bg-danger text-light" matTooltip="Không được để trống" color="warn">info</mat-icon>
+                            <mat-icon matSuffix *ngIf="(frmLogin.controls['codeCapcha'].value == null || frmLogin.controls['codeCapcha'].value == '') && (numberLoginFail > 5)" matTooltipClass="bg-danger text-light" matTooltip="Không được để trống" color="warn">info</mat-icon>
                         </mat-form-field>
                     </div>
                 </div>
@@ -54,7 +54,7 @@
                 </div>
                 <div class="col-md-6">
                     <div class="d-flex justify-content-center">
-                        <button mat-raised-button color="primary" class="w-100" (click)="login()" [disabled]="frmLogin.invalid" [buttonBusy]="true" [busyText]="'xxx'">{{l("Login_Button_Login")}}</button>
+                        <button mat-raised-button color="primary" class="w-100" (click)="login()" [disabled]="frmLogin.controls['userNameOrEmailAddress'].invalid || frmLogin.controls['password'].invalid || (frmLogin.controls['codeCapcha'].value == null || frmLogin.controls['codeCapcha'].value == '') && (numberLoginFail >= 5)" [buttonBusy]="true" [busyText]="'xxx'">{{l("Login_Button_Login")}}</button>
                     </div>
                 </div>
             </div>
