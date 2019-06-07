@@ -21,7 +21,11 @@ export class IndexComponent extends AppComponentBase implements OnInit {
     frmResetPassword: FormGroup;
     _obj: any = { NewPassword: '', OldPassword: '', UserName: '' }
     validateRule = new ValidationRule();
+    checkOldPassword = true;
+    ckeckPasswordOldNew = false;
+
     @ViewChild('password') password;
+
     //contructor
     constructor(injector: Injector, private _dataService: DataService, private _formBuilder: FormBuilder, private _sanitizer: DomSanitizer, private _authService: AppAuthService, private titleService: Title) { super(injector); }
 
@@ -59,19 +63,33 @@ export class IndexComponent extends AppComponentBase implements OnInit {
     }
     capchaClick(event) {
         if (event.target.value == '') {
-            console.log('vao day')
             this.frmResetPassword.controls['capcha'].setErrors({ 'required': true });
         }
     }
+
+    onPaste() {
+        this.checkOldPassword = true;
+    }
+
     newPasswordInput(event) {
         event.target.value = this.replace_space(event.target.value);
+        if (event.target.value && event.target.value === this.frmResetPassword.controls['Password'].value) {
+            this.ckeckPasswordOldNew = true;
+        }
+        else {
+            this.ckeckPasswordOldNew = false;
+        }
     }
+
     passwordInput(event) {
         event.target.value = this.replace_space(event.target.value);
+        this.checkOldPassword = true;
     }
+
     repasswordInput(event) {
         event.target.value = this.replace_space(event.target.value);
     }
+
     replace_alias(str) {
         str = str.replace(/[^A-Za-z0-9]+/ig, "");
         str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
@@ -96,14 +114,12 @@ export class IndexComponent extends AppComponentBase implements OnInit {
         return str;
     }
 
-    checkOldPassword = true;
-
     // update databsae
     resetPassword() {
+
         if (this.frmResetPassword.controls['NewPassword'].value != this.frmResetPassword.controls['RePassword'].value) {
             this.getCapcha();
             this.frmResetPassword.controls['capcha'].setValue('');
-            console.log(1, 'test password');
             return swal({
                 title: 'Thông báo',
                 text: 'Đổi mật khẩu không thành công. Xác nhận mật khẩu mới không đúng',
@@ -113,8 +129,8 @@ export class IndexComponent extends AppComponentBase implements OnInit {
         }
         if (this.frmResetPassword.controls['capcha'].value != this._capcha.code) {
             this.capcha = true;
-            this.frmResetPassword.controls['capcha'].setValue('');            
-            this.getCapcha();            
+            this.frmResetPassword.controls['capcha'].setValue('');
+            this.getCapcha();
             return;
         }
         // call api
@@ -128,11 +144,12 @@ export class IndexComponent extends AppComponentBase implements OnInit {
             });
             this._authService.logout();
         }, err => {
-                this.checkOldPassword = false;
+            this.checkOldPassword = false;
             this.frmResetPassword.controls['capcha'].setValue('');
             this.password.nativeElement.focus();
+
             this.frmResetPassword.controls['capcha'].setErrors(null);
-            this.getCapcha();            
+            this.getCapcha();
         });
     }
 
