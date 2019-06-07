@@ -224,9 +224,9 @@ export class TaskComponent extends AppComponentBase implements OnInit {
         } 
     }
 
-    private greaterThanCurrentDate = false;
-    private fromDateMustBeGreaterThanOrEqualToDate = false;
-    private withinSevenDay = false;
+    greaterThanCurrentDate = false;
+    fromDateMustBeGreaterThanOrEqualToDate = false;
+    withinSevenDay = false;
 
     checkDate(): boolean{
         var toDay = new Date();
