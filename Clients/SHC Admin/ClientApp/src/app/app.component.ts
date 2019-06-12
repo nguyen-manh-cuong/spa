@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+﻿import * as _ from 'lodash';
 import swal from 'sweetalert2';
 
 import { ActivatedRouteSnapshot, ActivationEnd, NavigationEnd, NavigationError, NavigationStart, Router } from '@angular/router';
@@ -94,7 +94,7 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
     public startTimer() {
         var isShowLoginDialog = false;
 
-        var source = timer(0, 60000);
+        var source = timer(0, 1800000);
         this.sub = source.subscribe((val) => {
 
             if (val % 2 == 0) {

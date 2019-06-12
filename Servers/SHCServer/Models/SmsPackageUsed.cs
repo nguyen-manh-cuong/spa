@@ -19,7 +19,7 @@ namespace SHCServer.Models
         public int HealthFacilitiesId { set; get; }
         public int SmsPackageId { set; get; }
         public long Quantityused { set; get; }
-
+        public bool IsDelete { get; set; }
         public DateTime? CreateDate { get; set; }
         public int? CreateUserId { get; set; }
         public DateTime? UpdateDate { get; set; }
