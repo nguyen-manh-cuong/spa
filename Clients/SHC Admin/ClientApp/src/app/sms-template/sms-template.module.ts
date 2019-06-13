@@ -8,6 +8,8 @@ import { UtilsModule } from '@shared/utils/utils.module';
 import { TemplateRoutingModule } from './sms-template-routing.module';
 import { TaskComponent } from './task/task.component';
 import { ValidationModule } from '@app/validation/validation.module';
+import { DetailComponent } from './detail/detail.component';
+
 @NgModule({
   imports: [
     CommonModule,
@@ -17,7 +19,7 @@ import { ValidationModule } from '@app/validation/validation.module';
     UtilsModule,
     ValidationModule
   ],
-  declarations: [TemplateComponent, IndexComponent, TaskComponent],
-  entryComponents: [TaskComponent]
+  declarations: [TemplateComponent, IndexComponent, TaskComponent,DetailComponent],
+    entryComponents: [TaskComponent, DetailComponent]
 })
 export class TemplateModule { }
