@@ -31,7 +31,7 @@ namespace SHCServer.ViewModels
             SmsBrand = context.Query<SmsBrand>().Where(sb => sb.SmsBrandId == obj.SmsBrandId && sb.IsDelete == false && sb.IsActive == true).FirstOrDefault();
 
             SmsPackageUsed = context.Query<SmsPackageUsed>()
-                .Where(spu => spu.HealthFacilitiesId == obj.HealthFacilitiesId && spu.IsDelete==false)
+                //.Where(spu => spu.SmsPackageDistributeId == obj.Sms && spu.IsDelete==false)
                 .OrderByDesc(spu=>spu.CreateDate).ToList();
             //Lấy tổng số sms còn lại 
 

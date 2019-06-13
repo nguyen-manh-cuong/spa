@@ -16,8 +16,7 @@ namespace SHCServer.Models
         [Column(IsPrimaryKey = true)]
         [AutoIncrement]
         public int SmsPackageUsedId { set; get; }
-        public int HealthFacilitiesId { set; get; }
-        public int SmsPackageId { set; get; }
+        public int SmsPackageDistributeId { get; set; }
         public long Quantityused { set; get; }
         public bool IsDelete { get; set; }
         public DateTime? CreateDate { get; set; }

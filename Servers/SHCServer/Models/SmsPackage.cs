@@ -23,8 +23,8 @@ namespace SHCServer.Models
             IsActive = packages.IsActive;
             CreateDate = DateTime.Now;
             CreateUserId = packages.UserId;
-            UpdateDate = DateTime.Now;
-            UpdateUserId = packages.UserId;
+            //UpdateDate = DateTime.Now;
+            //UpdateUserId = packages.UserId;
         }
 
         [Column(IsPrimaryKey = true)]
