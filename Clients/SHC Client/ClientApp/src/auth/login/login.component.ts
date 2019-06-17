@@ -68,4 +68,8 @@ export class LoginComponent extends AppComponentBase implements OnInit {
         this.loginService.authenticateModel = Object.assign(this.loginService.authenticateModel, this.frmLogin.value);
         this.loginService.authenticate(() => { console.log(); }, error => console.log(error));
     }
+
+    resetPasswordClick() {
+        this._router.navigate(["auth/secret"]);
+    }
 }
