@@ -107,12 +107,21 @@ export function convertAbpLocaleToAngularLocale(locale: string): string {
 })
 
 export class RootModule {
+    static message: string;
     constructor() {
         abp.message.error = (message, title) => {
-            swal({ type: 'error', title: title, text: message ,timer:3000});
+            swal({
+                type: 'error',
+                title: title,
+                text: message,
+                timer: 3000
+            });
+            RootModule.message = message;
         }
     }
+
 }
+
 
 export function getBaseHref(platformLocation: PlatformLocation): string {
     const baseUrl = platformLocation.getBaseHrefFromDOM();
