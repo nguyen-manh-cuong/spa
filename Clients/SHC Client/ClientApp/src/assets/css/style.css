@@ -513,8 +513,16 @@ Margin Right
 /*---------------------------------------------------------------------
                              BG Effect
 -----------------------------------------------------------------------*/
-.iq-bg { background-color: rgba(0, 0, 0, 0); background-origin: initial; background-position: center center; background-repeat: no-repeat; background-size: cover !important; position: relative; z-index: 0; }
-.iq-bg-fixed { background-color: rgba(0, 0, 0, 0); background-origin: initial; background-position: center center; background-repeat: no-repeat; background-size: cover !important; position: relative; z-index: 0; background-attachment: fixed !important; }
+.iq-bg {
+    background-color: rgba(0, 0, 0, 0);
+    background-origin: initial;
+    background-position: center center;
+    background-repeat: no-repeat;
+    position: relative;
+    z-index: 0;
+    background-position: -50px 0!important;
+}
+.iq-bg-fixed { background-color: rgba(0, 0, 0, 0); background-origin: initial;background-repeat: no-repeat; background-size: cover !important; position: relative; z-index: 0; background-attachment: fixed !important; }
 
 /*---------------------------------------------------------------------
                        Background Gradient 
