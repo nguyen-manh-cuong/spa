@@ -24,7 +24,7 @@
                                             <validation [control]="frmLogin.controls['password']"></validation>
                                         </div>
                                     </div>
-                                    <div class="form-group">Quên mật khẩu? Nhấn <a href="#">vào đây</a></div>
+                                    <div class="form-group">Quên mật khẩu? Nhấn <a style="cursor:pointer" (click)="resetPasswordClick()">vào đây</a></div>
                                     <div class="form-group">Đăng ký tài khoản mới? Nhấn <a href="/auth/register">vào đây</a></div>
 
                                     <div class="form-group">
