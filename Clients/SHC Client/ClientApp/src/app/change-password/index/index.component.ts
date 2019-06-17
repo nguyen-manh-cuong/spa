@@ -103,15 +103,15 @@ export class IndexComponent extends AppComponentBase implements OnInit {
         //this.checkCapcha();
     }
 
-    //repasswordInput(event) {
-    //    event.target.value = this.replace_space(event.target.value);
+    repasswordInput(event) {
+        event.target.value = this.replace_space(event.target.value);
 
-    //    if (event.target.value != this.frmResetPassword.controls['NewPassword'].value) {
-    //        this.frmResetPassword.controls['RePassword'].setErrors({ 'comparePassword': true });
-    //    }
+        if (event.target.value != this.frmResetPassword.controls['NewPassword'].value) {
+            this.frmResetPassword.controls['RePassword'].setErrors({ 'comparePassword': true });
+        }
 
-    //    //this.checkCapcha();
-    //}
+        //this.checkCapcha();
+    }
 
     replace_alias(str) {
         str = str.replace(/[^A-Za-z0-9]+/ig, "");
