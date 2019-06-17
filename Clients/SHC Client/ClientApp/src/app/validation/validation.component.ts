@@ -33,6 +33,7 @@ export class ValidationComponent implements OnInit {
             'password' : isVi ? 'Xác nhận mật khẩu không khớp.' : 'Password incorrect',
             'passwordStrong': isVi ? 'Mật khẩu phải có chữ hoa, chữ thường, số và ký tự đặc biệt.' : 'Password incorrect',
             'passwordValidate': isVi ? 'Mật khẩu phải chứa chữ hoa, chữ thường, số và ký tự đặc biệt.' : 'Password incorrect',
+            'comparePassword': isVi ? 'Xác nhận mật khẩu mới không đúng' : 'Confirm the new password is not correct',
             'special' : isVi ? 'Không đúng định dạng.' : 'Do not enter special characters',
             'minlength' : isVi ? 'Không đủ độ dài tối thiểu.' : 'Not enough length',
             'email' : isVi ? 'Email không đúng định dạng.' : 'Email invalidate',

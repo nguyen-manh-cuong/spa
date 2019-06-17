@@ -108,7 +108,6 @@ export class IndexComponent extends AppComponentBase implements OnInit {
 
         if (event.target.value != this.frmResetPassword.controls['NewPassword'].value) {
             this.frmResetPassword.controls['RePassword'].setErrors({ 'comparePassword': true });
-            this.comparePassword = true;
         }
 
         //this.checkCapcha();
