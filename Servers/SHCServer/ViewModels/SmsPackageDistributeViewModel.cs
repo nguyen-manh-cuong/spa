@@ -55,9 +55,8 @@ namespace SHCServer.ViewModels
 
             SmsPackageUsed = context.JoinQuery<SmsPackagesDistribute, SmsPackageUsed>((d, u) => new object[]
                        {
-                            JoinType.InnerJoin, d.SmsPackageId == u.SmsPackageId && d.HealthFacilitiesId == u.HealthFacilitiesId
+                            JoinType.InnerJoin, d.Id==u.SmsPackageDistributeId
                        })
-                        .Where((d, u) => d.Id == PackagesDistribute.Id)
                         .Select((d, u) => u).FirstOrDefault();
 
             PackageName = Packages.Name;

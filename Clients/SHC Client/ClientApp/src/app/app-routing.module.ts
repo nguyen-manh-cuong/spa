@@ -24,6 +24,10 @@ import { BookingComponent } from './booking/booking.component';
                 children: [
                     { path: '', component: BookingComponent }
                 ]
+            },
+            {
+                path: 'change-password',
+                loadChildren: 'app/change-password/change-password.module#ChangePasswordModule', canActivate: [AppRouteGuard]
             }
         ])
     ],

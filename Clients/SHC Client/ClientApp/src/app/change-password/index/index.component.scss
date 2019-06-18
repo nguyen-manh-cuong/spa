@@ -1,0 +1,53 @@
+.max-w-470{max-width: 470px;}
+.form-control{height: 30px;}
+form:not(.task-form) .mat-form-field-appearance-outline .mat-form-field-suffix {
+    top: 0px !important;
+}
+.btn-refresh {
+    background-color: #fff;
+    text-align: center;
+    line-height: 40px;
+    width: 40px;
+    height: 40px;
+}
+
+.lbl-capcha {
+    top: -7px;
+    left: 9px;
+    z-index: 9;
+    font-weight: 500;
+    background-color: #fff;
+    width: 116px;
+}
+.lbl-note{font-size: 13px; font-style: italic;}
+.mat-form-field-new-password .mat-form-field-wrapper {
+    margin-bottom: 5px !important;
+    padding-bottom: 0;
+}
+@media (min-width: 1366px) {
+    .min-h-400 {
+        min-height: 400px;
+    }
+}
+.pl-0 {
+    padding-left: 0 !important;
+}
+.pr-0 {
+    padding-right: 0 !important;
+}
+.frm-change-password .form-control {
+    height: 40px;
+    transition: .4s all;
+}
+.mb-5{margin-bottom: 5px!important;}
+.form-field-invalid .form-control {
+    border-color: #d78332!important;
+    transition: .4s all;
+}
+.frm-change-password .control-label {
+    margin-bottom: 5px;
+}
+.box-change-password{
+    max-width: 500px;
+    background-color: #fff;
+}

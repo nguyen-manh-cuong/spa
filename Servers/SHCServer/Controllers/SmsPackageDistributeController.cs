@@ -104,9 +104,9 @@ namespace SHCServer.Controllers
         {
             var package = _context.Query<SmsPackage>().Where(g => g.Id == obj.SmsPackageId && g.IsDelete == false).FirstOrDefault();
             if (package == null) return StatusCode(406, _excep.Throw(406, "Gói SMS đã chọn không tồn tại."));
-
+            int packageDistributeId = _context.Query<SmsPackagesDistribute>().OrderByDesc(pd => pd.Id).FirstOrDefault().Id;
             List<SmsPackagesDistribute> lstPD = new List<SmsPackagesDistribute>();
-            List<SmsPackageUsed> lstPU = new List<SmsPackageUsed>();
+            //List<SmsPackageUsed> lstPU = new List<SmsPackageUsed>();
 
             //GetTotal(string.Concat(obj.MonthStart, "/", obj.YearStart), string.Concat(obj.MonthEnd, "/", obj.YearEnd));
 
@@ -124,12 +124,12 @@ namespace SHCServer.Controllers
                 pd.CreateDate = DateTime.Now;
                 pd.CreateUserId = obj.UserId;
 
-                SmsPackageUsed pu = new SmsPackageUsed();
-                pu.SmsPackageId = obj.SmsPackageId;
-                pu.HealthFacilitiesId = obj.HealthFacilitiesId[i];
-                pu.Quantityused = package.Quantity;
-                pu.CreateDate = DateTime.Now;
-                pu.CreateUserId = obj.UserId;
+                //SmsPackageUsed pu = new SmsPackageUsed();
+                //pu.SmsPackageId = obj.SmsPackageId;
+                //pu.HealthFacilitiesId = obj.HealthFacilitiesId[i];
+                //pu.Quantityused = package.Quantity;
+                //pu.CreateDate = DateTime.Now;
+                //pu.CreateUserId = obj.UserId;
 
                 //if (_context.Query<SmsPackagesDistribute>().Where(g => g.HealthFacilitiesId == pd.HealthFacilitiesId && g.SmsPackageId == obj.SmsPackageId && g.IsDelete == false).Count() > 0)
                 //{
@@ -138,14 +138,24 @@ namespace SHCServer.Controllers
                 //}
 
                 //add
-                lstPU.Add(pu);
-                lstPD.Add(pd);
+                //lstPU.Add(pu);
+                //lstPD.Add(pd);
+                _context.Insert(pd);
             }
 
             try
             {
-                _context.InsertRange(lstPU);
-                _context.InsertRange(lstPD);
+                for(int i = 0; i < obj.HealthFacilitiesId.Count; i++)
+                {
+                    var pu = new SmsPackageUsed();
+                    pu.SmsPackageDistributeId = packageDistributeId + i + 1 ;
+                    pu.Quantityused = package.Quantity;
+                    pu.CreateDate = DateTime.Now;
+                    pu.CreateUserId = obj.UserId;
+                    _context.Insert(pu);
+                }
+
+                
                 return Json(new ActionResultDto());
             }
             catch (Exception e)
@@ -205,6 +215,12 @@ namespace SHCServer.Controllers
                 //_context.Delete<SmsPackagesDistribute>(g => g.Id == id);
 
                 _context.Update<SmsPackagesDistribute>(t => t.Id == id, a => new SmsPackagesDistribute
+                {
+                    IsDelete = true
+                });
+
+
+                _context.Update<SmsPackageUsed>(pu => pu.SmsPackageDistributeId == id, x => new SmsPackageUsed
                 {
                     IsDelete = true
                 });

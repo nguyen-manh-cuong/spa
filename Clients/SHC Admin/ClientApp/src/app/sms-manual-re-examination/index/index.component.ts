@@ -570,7 +570,6 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     }
 
     sendSms() {
-        console.log(this.selection.selected);
 
         this._isRequest = true;
         setTimeout(() => this._isRequest = false, 3000)

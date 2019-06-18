@@ -451,7 +451,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
             this.paginator.pageIndex = 0;
             this.paginator._changePageSize(this.paginator.pageSize);
 
-            this.selection = new SelectionModel<IMedicalHealthcareHistories>(true, []);
+            this.selection.clear();
         });
     }
 

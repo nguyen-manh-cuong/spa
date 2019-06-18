@@ -44,6 +44,7 @@
         "ngx-spinner": "^7.1.4",
         "rxjs": "^6.3.3",
         "slick-carousel": "^1.8.1",
+        "spinjs": "^0.4.193",
         "sweetalert2": "^7.33.1",
         "ts-helpers": "^1.1.2",
         "web-animations-js": "^2.3.1",
