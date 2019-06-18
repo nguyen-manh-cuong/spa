@@ -245,7 +245,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
         
         let date = moment((day + '/' + month + '/' + this.frmUser.controls['_birthYear'].value), "DD/MM/YYYY");
 
-        this.frmUser.controls['birthDay'].setValue(da);
+        this.frmUser.controls['birthDay'].setValue(date);
         this.frmUser.controls['healthId'].setValue(this._healths);
         console.log(12, this.frmUser.value);
         if (this._isNew) {

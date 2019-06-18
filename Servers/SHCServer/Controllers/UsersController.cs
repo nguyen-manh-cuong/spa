@@ -21,6 +21,7 @@ namespace SHCServer.Controllers
     {
         private readonly string _connectionString;
         private readonly string _connectionStringSHC;
+        private string _newPassword;
 
         public UsersController(IOptions<Audience> settings, IConfiguration configuration)
         {
@@ -648,112 +649,115 @@ namespace SHCServer.Controllers
 
         }
 
-        [HttpPost]
-        [Route("api/users")]
-        public IActionResult Create([FromBody]ResetPasswordViewModel obj)
-        {
-            var user = _context.Query<ResetPassword>().Where(u => u.UserName == obj.UserName || u.Email == obj.Email || u.PhoneNumber == obj.PhoneNumber && u.IsDelete == false).FirstOrDefault();
 
-            if (user == null)
-            {
-                return StatusCode(404, _excep.Throw("Khôi phục mật khẩu không thành công", "Tên đăng nhập, Email hoặc số điện thoại không tồn tại"));
-            }
+        #region oldCode
+        //[HttpPost]
+        //[Route("api/users")]
+        //public IActionResult Create([FromBody]ResetPasswordViewModel obj)
+        //{
+        //    var user = _context.Query<ResetPassword>().Where(u => u.UserName == obj.UserName || u.Email == obj.Email || u.PhoneNumber == obj.PhoneNumber && u.IsDelete == false).FirstOrDefault();
 
-            try
-            {
-                _context.Session.BeginTransaction();
+        //    if (user == null)
+        //    {
+        //        return StatusCode(404, _excep.Throw("Khôi phục mật khẩu không thành công", "Tên đăng nhập, Email hoặc số điện thoại không tồn tại"));
+        //    }
 
-                _context.Update<UserSecret>(us => us.UserId == user.UserId, x => new UserSecret()
-                {
-                    IsActive = false
-                });
+        //    try
+        //    {
+        //        _context.Session.BeginTransaction();
 
-                _context.Insert<UserSecret>(new UserSecret()
-                {
-                    UserId = user.UserId,
-                    SecretCode = obj.SecretCode,
-                    IsActive = true,
-                    IsDelete = false,
-                    CreateDate = DateTime.Now
-                });
+        //        _context.Update<UserSecret>(us => us.UserId == user.UserId, x => new UserSecret()
+        //        {
+        //            IsActive = false
+        //        });
 
-                _context.Session.CommitTransaction();
-                if (string.IsNullOrEmpty(user.Email))
-                {
-                    return StatusCode(406, _excep.Throw("Khôi phục mật khẩu không thành công", "Tài khoản này chưa có email liên kết"));
-                }
+        //        _context.Insert<UserSecret>(new UserSecret()
+        //        {
+        //            UserId = user.UserId,
+        //            SecretCode = obj.SecretCode,
+        //            IsActive = true,
+        //            IsDelete = false,
+        //            CreateDate = DateTime.Now
+        //        });
 
-                if (!SendMail(user.Email, obj.SecretCode, user.UserName))
-                {
-                    return StatusCode(500, _excep.Throw("Có lỗi xảy ra khi gửi mã bí mật"));
-                }
-            }
-            catch (Exception e)
-            {
-                if (_context.Session.IsInTransaction)
-                {
-                    _context.Session.RollbackTransaction();
-                }
-                return StatusCode(500, _excep.Throw("Có lỗi xảy ra", e.Message));
-            }
-            return Json(new ActionResultDto());
-        }
+        //        _context.Session.CommitTransaction();
+        //        if (string.IsNullOrEmpty(user.Email))
+        //        {
+        //            return StatusCode(406, _excep.Throw("Khôi phục mật khẩu không thành công", "Tài khoản này chưa có email liên kết"));
+        //        }
 
-        [HttpPut]
-        [Route("api/users")]
-        public IActionResult Update([FromBody] ResetPasswordViewModel obj)
-        {
-            var user = _contextmdmdb.Query<ResetPassword>().Where(u => u.UserName == obj.UserName || u.Email == obj.Email || u.PhoneNumber == obj.PhoneNumber && u.IsDelete==false).FirstOrDefault();
-            var secret = _contextmdmdb.Query<UserSecret>().Where(us => us.SecretCode == obj.SecretCode && us.UserId == user.UserId && us.IsDelete == false).FirstOrDefault();
+        //        if (!SendMail(user.Email, obj.SecretCode, user.UserName))
+        //        {
+        //            return StatusCode(500, _excep.Throw("Có lỗi xảy ra khi gửi mã bí mật"));
+        //        }
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        if (_context.Session.IsInTransaction)
+        //        {
+        //            _context.Session.RollbackTransaction();
+        //        }
+        //        return StatusCode(500, _excep.Throw("Có lỗi xảy ra", e.Message));
+        //    }
+        //    return Json(new ActionResultDto());
+        //}
 
-            if (user == null)
-            {
-                return StatusCode(404, _excep.Throw("Đổi mật khẩu không thành công", "Tên đăng nhập, Email hoặc số điện thoại không đúng"));
-            }
-            else if (obj.SecretCode != null)
-            {
-                if (secret == null)
-                {
-                    return StatusCode(406, _excep.Throw("Đổi mật khẩu không thành công", "Mã bí mật không đúng"));
-                }
-                if (secret.IsActive == false)
-                {
-                    return StatusCode(406, _excep.Throw("Đổi mật khẩu không thành công", "Mã bí mật không còn hiệu lực"));
-                }
-            }
+        //[HttpPut]
+        //[Route("api/users")]
+        //public IActionResult Update([FromBody] ResetPasswordViewModel obj)
+        //{
+        //    var user = _contextmdmdb.Query<ResetPassword>().Where(u => u.UserName == obj.UserName || u.Email == obj.Email || u.PhoneNumber == obj.PhoneNumber && u.IsDelete==false).FirstOrDefault();
+        //    var secret = _contextmdmdb.Query<UserSecret>().Where(us => us.SecretCode == obj.SecretCode && us.UserId == user.UserId && us.IsDelete == false).FirstOrDefault();
 
-            if (Utils.VerifyHashedPassword(user.Password, obj.Password))
-            {
-                return StatusCode(406, _excep.Throw("Đổi mật khẩu không thành công", "Mật khẩu mới không được trùng mật khẩu hiện tại"));
-            }
+        //    if (user == null)
+        //    {
+        //        return StatusCode(404, _excep.Throw("Đổi mật khẩu không thành công", "Tên đăng nhập, Email hoặc số điện thoại không đúng"));
+        //    }
+        //    else if (obj.SecretCode != null)
+        //    {
+        //        if (secret == null)
+        //        {
+        //            return StatusCode(406, _excep.Throw("Đổi mật khẩu không thành công", "Mã bí mật không đúng"));
+        //        }
+        //        if (secret.IsActive == false)
+        //        {
+        //            return StatusCode(406, _excep.Throw("Đổi mật khẩu không thành công", "Mã bí mật không còn hiệu lực"));
+        //        }
+        //    }
 
-            try
-            {
-                _contextmdmdb.Session.BeginTransaction();
+        //    if (Utils.VerifyHashedPassword(user.Password, obj.Password))
+        //    {
+        //        return StatusCode(406, _excep.Throw("Đổi mật khẩu không thành công", "Mật khẩu mới không được trùng mật khẩu hiện tại"));
+        //    }
 
-                _contextmdmdb.Update<UserSecret>(us => us.Id == secret.Id, x => new UserSecret()
-                {
-                    IsDelete = true,
-                    IsActive = false
-                });
+        //    try
+        //    {
+        //        _contextmdmdb.Session.BeginTransaction();
 
-                _contextmdmdb.Update<ResetPassword>(u => u.UserId == user.UserId, x => new ResetPassword()
-                {
-                    Password = Utils.HashPassword(obj.Password)
-                });
+        //        _contextmdmdb.Update<UserSecret>(us => us.Id == secret.Id, x => new UserSecret()
+        //        {
+        //            IsDelete = true,
+        //            IsActive = false
+        //        });
 
-                _contextmdmdb.Session.CommitTransaction();
-            }
-            catch (Exception e)
-            {
-                if (_contextmdmdb.Session.IsInTransaction)
-                {
-                    _contextmdmdb.Session.RollbackTransaction();
-                }
-                return StatusCode(500, _excep.Throw("Có lỗi xảy ra", e.Message));
-            }
-            return Json(new ActionResultDto());
-        }
+        //        _contextmdmdb.Update<ResetPassword>(u => u.UserId == user.UserId, x => new ResetPassword()
+        //        {
+        //            Password = Utils.HashPassword(obj.Password)
+        //        });
+
+        //        _contextmdmdb.Session.CommitTransaction();
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        if (_contextmdmdb.Session.IsInTransaction)
+        //        {
+        //            _contextmdmdb.Session.RollbackTransaction();
+        //        }
+        //        return StatusCode(500, _excep.Throw("Có lỗi xảy ra", e.Message));
+        //    }
+        //    return Json(new ActionResultDto());
+        //}
+        #endregion
 
         [HttpPut]
         [Route("api/user-approved")]
@@ -951,6 +955,195 @@ namespace SHCServer.Controllers
                       + "_"
                       + Guid.NewGuid().ToString().Substring(0, 4)
                       + Path.GetExtension(fileName);
+        }
+
+        [HttpPut]
+        [Route("api/users")]
+        public IActionResult UpdatePassword([FromBody]ResetPasswordViewModel obj)
+        {
+            var user = _context.Query<ResetPassword>().Where(u => (u.UserName == obj.UserName || u.Email == obj.Email || u.PhoneNumber == obj.PhoneNumber) && u.IsDelete == false).FirstOrDefault();
+
+            if (user == null)
+            {
+                return StatusCode(404, _excep.Throw("Khôi phục mật khẩu không thành công", "Tên đăng nhập, Email hoặc số điện thoại không tồn tại"));
+            }
+
+            try
+            {
+
+                //_context.Update<UserSecret>(us => us.UserId == user.UserId, x => new UserSecret()
+                //{
+                //    IsActive=false
+                //});
+
+                //_context.Insert<UserSecret>(new UserSecret()
+                //{
+                //    UserId = user.UserId,
+                //    SecretCode = obj.SecretCode,
+                //    IsActive=true,
+                //    IsDelete=false,
+                //    CreateDate=DateTime.Now
+                //});
+
+
+
+                if (string.IsNullOrEmpty(user.Email))
+                {
+                    return StatusCode(406, _excep.Throw("Khôi phục mật khẩu không thành công", "Tài khoản này chưa có email liên kết"));
+                }
+                else if (string.IsNullOrEmpty(user.Email) && string.IsNullOrEmpty(user.PhoneNumber))
+                {
+                    return StatusCode(406, _excep.Throw("Khôi phục mật khẩu không thành công", "Tài khoản này chưa có email, số điện thoại liên kết"));
+                }
+
+                _context.Session.BeginTransaction();
+
+                _context.Update<ResetPassword>(u => u.UserId == user.UserId, x => new ResetPassword()
+                {
+                    Password = Utils.HashPassword(GeneratorPassword()),
+                    UpdateDate = DateTime.Now
+                });
+
+                _context.Session.CommitTransaction();
+
+                if (!SendMail(user.Email, _newPassword, user.UserName))
+                {
+                    return StatusCode(500, _excep.Throw("Có lỗi xảy ra khi gửi lại mật khẩu"));
+                }
+            }
+            catch (Exception e)
+            {
+                if (_context.Session.IsInTransaction)
+                {
+                    _context.Session.RollbackTransaction();
+                }
+                return StatusCode(500, _excep.Throw("Có lỗi xảy ra", e.Message));
+            }
+            return Json(new ActionResultDto());
+        }
+        #region oldCode
+        //[HttpPut]
+        //[Route("api/users")]
+        //public IActionResult Update([FromBody] ResetPasswordViewModel obj)
+        //{
+        //    var user = _context.Query<ResetPassword>().Where(u => u.UserName == obj.UserName || u.Email == obj.Email || u.PhoneNumber == obj.PhoneNumber && u.IsDelete==false).FirstOrDefault();
+        //    //var secret = _context.Query<UserSecret>().Where(us => us.SecretCode == obj.SecretCode && us.UserId == user.UserId && us.IsDelete == false).FirstOrDefault();
+
+        //    if (user == null)
+        //    {
+        //        return StatusCode(404, _excep.Throw("Khôi phục mật khẩu không thành công", "Tên đăng nhập, Email hoặc số điện thoại không đúng"));
+        //    }
+        //    //else if (obj.SecretCode != null)
+        //    //{
+        //    //    if (secret == null)
+        //    //    {
+        //    //        return StatusCode(406, _excep.Throw("Khôi phục mật khẩu không thành công", "Mã bí mật không đúng"));
+        //    //    }
+        //    //    if (secret.IsActive == false)
+        //    //    {
+        //    //        return StatusCode(406, _excep.Throw("Khôi phục mật khẩu không thành công", "Mã bí mật không còn hiệu lực"));
+        //    //    }
+        //    //}
+
+        //    //if (Utils.VerifyHashedPassword(user.Password, obj.Password))
+        //    //{
+        //    //    return StatusCode(406, _excep.Throw("Khôi phục mật khẩu không thành công", "Mật khẩu mới không được trùng mật khẩu hiện tại"));
+        //    //}
+
+        //    try
+        //    {
+        //        _context.Session.BeginTransaction();
+
+        //        //_context.Update<UserSecret>(us => us.Id == secret.Id, x => new UserSecret()
+        //        //{
+        //        //    IsDelete = true,
+        //        //    IsActive = false
+        //        //});
+
+        //        _context.Update<ResetPassword>(u => u.UserId == user.UserId, x => new ResetPassword()
+        //        {
+        //            Password = Utils.HashPassword(GeneratorPassword())
+        //        });
+
+        //        _context.Session.CommitTransaction();
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        if (_context.Session.IsInTransaction)
+        //        {
+        //            _context.Session.RollbackTransaction();
+        //        }
+        //        return StatusCode(500, _excep.Throw("Có lỗi xảy ra", e.Message));
+        //    }
+        //    return Json(new ActionResultDto());
+        //}
+        #endregion
+        public string GeneratorPassword()
+        {
+            string newPassword;
+            bool includeLowercase = true;
+            bool includeNumeric = true;
+            bool includeSpecial = true;
+            bool includeUppercase = true;
+            int lengthOfPassword = 10;
+
+            const int MAXIMUM_IDENTICAL_CONSECUTIVE_CHARS = 2;
+            const string LOWERCASE_CHARACTERS = "abcdefghijklmnopqrstuvwxyz";
+            const string UPPERCASE_CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            const string NUMERIC_CHARACTERS = "0123456789";
+            const string SPECIAL_CHARACTERS = @"!#$%&*@\";
+
+            //const int PASSWORD_LENGTH_MIN = 8;
+            //const int PASSWORD_LENGTH_MAX = 128;
+
+            //if (lengthOfPassword < PASSWORD_LENGTH_MIN || lengthOfPassword > PASSWORD_LENGTH_MAX)
+            //{
+            //    return "Password length must be between 8 and 128.";
+            //}
+
+            string characterSet = "";
+
+            if (includeLowercase)
+            {
+                characterSet += LOWERCASE_CHARACTERS;
+            }
+
+            if (includeUppercase)
+            {
+                characterSet += UPPERCASE_CHARACTERS;
+            }
+
+            if (includeNumeric)
+            {
+                characterSet += NUMERIC_CHARACTERS;
+            }
+
+            if (includeSpecial)
+            {
+                characterSet += SPECIAL_CHARACTERS;
+            }
+
+            char[] password = new char[lengthOfPassword];
+            int characterSetLength = characterSet.Length;
+
+            System.Random random = new System.Random();
+            for (int characterPosition = 0; characterPosition < lengthOfPassword; characterPosition++)
+            {
+                password[characterPosition] = characterSet[random.Next(characterSetLength - 1)];
+
+                bool moreThanTwoIdenticalInARow =
+                    characterPosition > MAXIMUM_IDENTICAL_CONSECUTIVE_CHARS
+                    && password[characterPosition] == password[characterPosition - 1]
+                    && password[characterPosition - 1] == password[characterPosition - 2];
+
+                if (moreThanTwoIdenticalInARow)
+                {
+                    characterPosition--;
+                }
+            }
+
+            _newPassword = newPassword = string.Join(null, password);
+            return newPassword;
         }
     }
 }
