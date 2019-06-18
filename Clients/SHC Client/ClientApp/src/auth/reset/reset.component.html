@@ -12,9 +12,9 @@
                                 <form [formGroup]="frmSecret" class="form-horizontal">
                                     <div [ngClass]="{'has-error':highLightControl('info')}" class="form-group">
                                         <div>
-                                            <label [ngClass]="{'text-danger':highLightControl('info')}">Tên đăng nhập/Email/Số điện thoại</label>
+                                            <label [ngClass]="{'text-danger':highLightControl('info')}">Nhập số điện thoại hoặc Email để lấy mật khẩu</label>
                                             <label class="text-danger">*</label>
-                                            <input formControlName="info" type="text" class="form-control input-lg" autocomplete="off" maxlength="255">
+                                            <input (input)="infoInput($event)" formControlName="info" type="text" class="form-control input-lg" autocomplete="off" maxlength="320">
                                             <validation [control]="frmSecret.controls['info']"></validation>
                                         </div>
                                     </div>

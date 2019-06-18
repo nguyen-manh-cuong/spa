@@ -964,11 +964,11 @@ namespace SHCServer.Controllers
         [Route("api/users")]
         public IActionResult UpdatePassword([FromBody]ResetPasswordViewModel obj)
         {
-            var user = _context.Query<ResetPassword>().Where(u => (u.UserName == obj.UserName || u.Email == obj.Email || u.PhoneNumber == obj.PhoneNumber) && u.IsDelete == false).FirstOrDefault();
+            var user = _contextmdmdb.Query<ResetPassword>().Where(u => ( u.Email == obj.Email || u.PhoneNumber == obj.PhoneNumber) && u.IsDelete == false).FirstOrDefault();
 
             if (user == null)
             {
-                return StatusCode(404, _excep.Throw("Khôi phục mật khẩu không thành công", "Tên đăng nhập, Email hoặc số điện thoại không tồn tại"));
+                return StatusCode(404, _excep.Throw("Khôi phục mật khẩu không thành công", "Số điện thoại hoặc Email không tồn tại"));
             }
 
             try
@@ -999,15 +999,15 @@ namespace SHCServer.Controllers
                     return StatusCode(406, _excep.Throw("Khôi phục mật khẩu không thành công", "Tài khoản này chưa có email, số điện thoại liên kết"));
                 }
 
-                _context.Session.BeginTransaction();
+                _contextmdmdb.Session.BeginTransaction();
 
-                _context.Update<ResetPassword>(u => u.UserId == user.UserId, x => new ResetPassword()
+                _contextmdmdb.Update<ResetPassword>(u => u.UserId == user.UserId, x => new ResetPassword()
                 {
                     Password = Utils.HashPassword(GeneratorPassword()),
                     UpdateDate = DateTime.Now
                 });
 
-                _context.Session.CommitTransaction();
+                _contextmdmdb.Session.CommitTransaction();
 
                 if (!SendMail(user.Email, _newPassword, user.UserName))
                 {
@@ -1016,9 +1016,9 @@ namespace SHCServer.Controllers
             }
             catch (Exception e)
             {
-                if (_context.Session.IsInTransaction)
+                if (_contextmdmdb.Session.IsInTransaction)
                 {
-                    _context.Session.RollbackTransaction();
+                    _contextmdmdb.Session.RollbackTransaction();
                 }
                 return StatusCode(500, _excep.Throw("Có lỗi xảy ra", e.Message));
             }
@@ -1130,7 +1130,20 @@ namespace SHCServer.Controllers
             int characterSetLength = characterSet.Length;
 
             System.Random random = new System.Random();
-            for (int characterPosition = 0; characterPosition < lengthOfPassword; characterPosition++)
+
+            for (int i = 0; i < 4; i++)
+            {
+                if (i == 0)
+                    password[i] = LOWERCASE_CHARACTERS[random.Next(0, 25)];
+                if (i == 1)
+                    password[i] = UPPERCASE_CHARACTERS[random.Next(0, 25)];
+                if (i == 2)
+                    password[i] = NUMERIC_CHARACTERS[random.Next(0, 9)];
+                if (i == 3)
+                    password[i] = SPECIAL_CHARACTERS[random.Next(0, 6)];
+            }
+
+            for (int characterPosition = 4; characterPosition < lengthOfPassword; characterPosition++)
             {
                 password[characterPosition] = characterSet[random.Next(characterSetLength - 1)];
 
@@ -1146,7 +1159,7 @@ namespace SHCServer.Controllers
             }
 
             _newPassword = newPassword = string.Join(null, password);
-            return newPassword;
+            return _newPassword;
         }
     }
 }

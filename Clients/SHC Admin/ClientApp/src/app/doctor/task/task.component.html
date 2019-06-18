@@ -300,28 +300,30 @@
                 </div>
 
                 <div class="row pt-4">
-                    <div class="col-md-6">
+                    <div class="col-md-5">
                         <mat-form-field [ngClass]="{'mat-form-field-invalid':checkPriceFrom}" appearance="outline"
-                            class="w-100">
-                            <mat-label>{{l("DoctorPriceFrom")}}</mat-label>
+                                        class="w-100">
+                            <mat-label >{{l("DoctorPriceFrom")}}</mat-label>
                             <input #priceFrom (input)="priceFromInput($event)" #priceFrom mask="dot_separator"
-                                maxlength="12" formControlName="priceFrom" matInput>
+                                   maxlength="12" formControlName="priceFrom" matInput>
                             <!-- <mat-icon *ngIf="checkPriceFrom" matSuffix [matTooltipPosition]="'before'"
-                                matTooltipClass="bg-danger text-light mr-1"
-                                matTooltip="Giá khám từ không được nhỏ hơn giá khám đến" color="warn">info</mat-icon> -->
+                matTooltipClass="bg-danger text-light mr-1"
+                matTooltip="Giá khám từ không được nhỏ hơn giá khám đến" color="warn">info</mat-icon> -->
                         </mat-form-field>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-1 custom-label"><mat-label>{{l("VNĐ")}}</mat-label></div>
+                    <div class="col-md-5">
                         <mat-form-field [ngClass]="{'mat-form-field-invalid':checkPriceTo}" appearance="outline"
-                            class="w-100">
+                                        class="w-100">
                             <mat-label>{{l("DoctorPriceTo")}}</mat-label>
                             <input #priceTo (input)="priceToInput($event)" mask="dot_separator" maxlength="12"
-                                formControlName="priceTo" matInput>
-                            <!-- <mat-icon *ngIf="checkPriceTo" matSuffix [matTooltipPosition]="'before'"
-                                matTooltipClass="bg-danger text-light mr-1"
-                                matTooltip="Giá khám từ không được nhỏ hơn giá khám đến" color="warn">info</mat-icon> -->
+                                   formControlName="priceTo" matInput>
+                                    <!-- <mat-icon *ngIf="checkPriceTo" matSuffix [matTooltipPosition]="'before'"
+                                    matTooltipClass="bg-danger text-light mr-1"
+                                    matTooltip="Giá khám từ không được nhỏ hơn giá khám đến" color="warn">info</mat-icon> -->
                         </mat-form-field>
                     </div>
+                    <div class="col-md-1 custom-label"><mat-label>{{l("VNĐ")}}</mat-label></div>
                 </div>
 
                 <div class="row">
