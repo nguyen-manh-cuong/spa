@@ -59,7 +59,8 @@ export class IndexComponent extends AppComponentBase implements OnInit {
     capchaInput(event) {
         // khong cho phep nhap khoang trang
         event.target.value = this.replace_space(this.replace_alias(event.target.value));
-        if ((this._capcha.code != event.target.value) && this.frmResetPassword.controls['capcha'].value) {
+        this.frmResetPassword.controls['capcha'].setValue(this.replace_space(this.replace_alias(event.target.value)));
+        if ((this._capcha.code != event.target.value) && this.frmResetPassword.controls['capcha'].value != '') {
             this.frmResetPassword.controls['capcha'].setErrors({ 'capcha': true });
         }
     }
