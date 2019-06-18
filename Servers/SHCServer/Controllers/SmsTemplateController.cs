@@ -36,6 +36,7 @@ namespace SHCServer.Controllers
                                    sms.SmsTemplateName,
                                    sms.SmsTemplateCode,
                                    sms.MessageType,
+                                   MessageTypeName = _context.Query<CategoryCommon>().Where(c=>c.Id==sms.MessageType).FirstOrDefault().Name,
                                    sms.SmsContent,
                                    sms.IsActive,
                                    sms.OrganizationName,

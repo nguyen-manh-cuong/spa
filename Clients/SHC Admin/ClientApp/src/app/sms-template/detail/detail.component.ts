@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 
-import { Component, Inject, Injector, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, Inject, Injector, OnInit, ViewChild, AfterViewInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { IUser, ICategoryCommon, ISmsTemplate } from '@shared/Interfaces';
 import { MAT_DIALOG_DATA, MatDialogRef, MatInput } from '@angular/material';
@@ -17,11 +17,15 @@ import { TaskComponent } from '../../change-password/task/task.component';
 @Component({
     selector: 'app-detail',
     templateUrl: './detail.component.html',
-    styleUrls: ['./detail.component.scss']
+    styleUrls: ['./detail.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class DetailComponent extends AppComponentBase implements OnInit, AfterViewInit {
 
     api: string = 'sms-templates';
+
+    usingChecked: boolean = false;
+    applyChecked: boolean = false;
 
     _frm: FormGroup;
     _smstemplates: ISmsTemplate | any = { smsTemplateCode: '', smsTemplateName: '', messageType: '', messageContent: '', isActive: '', applyAllSystem: '', id: 0 };
@@ -64,6 +68,8 @@ export class DetailComponent extends AppComponentBase implements OnInit, AfterVi
             userId: []
         };
         this._frm = this._formBuilder.group(this._context);
+        this.usingChecked = this._frm.controls['isActive'].value;
+        this.applyChecked = this._frm.controls['applyAllSystem'].value;
     }
 
     ngAfterViewInit(): void {

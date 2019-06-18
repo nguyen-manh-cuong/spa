@@ -58,13 +58,13 @@
             <ng-container matColumnDef="smsTemplateName">
                 <th mat-header-cell *matHeaderCellDef class="text-center"> {{l('PackageTemplateName')}} </th>
                 <td mat-cell *matCellDef="let element" class="min-w-150" class="td-ellipsis" title="{{element.smsTemplateName}}">
-                    {{element.smsTemplateName}}
-                    <!--<u><b class="cursor" (click)="openDetailDialog(element)">{{element.smsTemplateName}}</b></u></td>-->
-</ng-container>
+                    <!--{{element.smsTemplateName}}-->
+                    <u><b class="cursor" (click)="openDetailDialog(element)">{{element.smsTemplateName}}</b></u></td>
+            </ng-container>
             <ng-container matColumnDef="messageType">
                 <th mat-header-cell *matHeaderCellDef class="text-center"> {{l('PackageTemplateMessageType')}} </th>
                 <td mat-cell *matCellDef="let element">
-                    {{element.messageType == 1 ? 'SMS truyền thống' : (element.messageType == 2 ? 'Chăm sóc khách hàng' : '')}}
+                    {{element.messageTypeName}}
                 </td>
             </ng-container>
             <ng-container matColumnDef="smsContent">

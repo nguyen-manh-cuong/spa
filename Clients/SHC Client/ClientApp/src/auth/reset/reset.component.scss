@@ -7,3 +7,25 @@
 .custom-overplay .overplay {
     position: unset !important;
 }
+.recover{
+    position: relative;
+}
+.recover::before {
+    content: '';
+    display: block;
+    position: absolute;
+    height: 1px;
+    background: #ddd;
+    width: 38%;
+    top: 11px;
+}
+.recover::after {
+    content: '';
+    display: block;
+    position: absolute;
+    height: 1px;
+    background: #ddd;
+    width: 38%;
+    top: 11px;
+    right:0;
+}

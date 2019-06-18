@@ -1,0 +1,44 @@
+.readonly-wrapper {
+    cursor: not-allowed;
+}
+
+.readonly-wrapper .readonly-block {
+    pointer-events: none;
+}
+
+.custom-form .mat-form-field-appearance-outline .mat-form-field-outline {
+    color: transparent !important;
+}
+
+.custom-form .disabled .mat-form-field-outline {
+    background-color: transparent;
+}
+
+.custom-form .mat-select-arrow {
+    border: none;
+}
+
+.custom-form .mat-checkbox-label{
+    color:#000000;
+}
+
+.disabled .mat-form-field-outline {
+    background-color: transparent !important;
+}
+
+.custom-readonly {
+    cursor: pointer !important;
+}
+
+.text-readonly {
+    color: #00695c !important;
+}
+
+input:read-only {
+    color: #00695c !important;
+}
+
+textarea:read-only {
+    color: #00695c !important;
+    font-weight:500;
+}

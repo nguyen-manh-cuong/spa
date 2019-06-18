@@ -8,9 +8,8 @@ import { LoginService } from './login/login.service';
 import { NgModule } from '@angular/core';
 import { SharedModule } from '@shared/shared.module';
 import { UtilsModule } from '@shared/utils/utils.module';
-import { SecretComponent } from './secret/secret.component';
-import { ResetComponent } from './reset-password/reset-password.component';
 import { ValidationModule } from '@app/validation/validation.module';
+import { ResetComponent } from './reset/reset.component';
 
 @NgModule({
     imports: [
@@ -21,7 +20,7 @@ import { ValidationModule } from '@app/validation/validation.module';
         ValidationModule,
         UtilsModule
     ],
-    declarations: [LoginComponent, AuthComponent, SecretComponent, ResetComponent],
+    declarations: [LoginComponent, AuthComponent, ResetComponent],
     providers: [
         LoginService
     ]
