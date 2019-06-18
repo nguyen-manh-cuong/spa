@@ -167,9 +167,9 @@ export class TaskComponent extends AppComponentBase implements OnInit {
             birthDay: [this._user.birthDay],
             cmnd: [],
             gp: [],
-            _birthDay: [1],
-            _birthMonth: [1],
-            _birthYear: [moment().year() - 100],
+            _birthDay: [this._user.birthDay ? ((new Date(this._user.birthDay)).getDate()) : 1],
+            _birthMonth: [this._user.birthDay ? ((new Date(this._user.birthDay)).getMonth() + 1) : 1],
+            _birthYear: [this._user.birthDay ? ((new Date(this._user.birthDay)).getFullYear()) : (moment().year() - 100)],
             code: [],
             groupUser: [],
             identification: [this._user.identification, [this.validateRule.identification, Validators.required]],
@@ -193,21 +193,34 @@ export class TaskComponent extends AppComponentBase implements OnInit {
         this.checkShowPathFile(this._user.accountType);
     }
 
+    // BHYT - Insurrance, CMND - Identification, GPHN - CertificationCode, GPKD - LicenseCode
     checkShowPathFile(value) {
         if (1 === value) {
             this.flagShowLoadFileCMND = true;
             this.flagShowLoadFileGPHN = 0;
+
+            this.frmUser.controls['certificationCode'].setErrors(null);
+            this.frmUser.controls['lisenceCode'].setErrors(null);
         }
         else if (2 === value) {
             this.flagShowLoadFileCMND = true;
             this.flagShowLoadFileGPHN = 1;
+
+            this.frmUser.controls['insurrance'].setErrors(null);
+            this.frmUser.controls['lisenceCode'].setErrors(null);
         }
         else {
             this.flagShowLoadFileCMND = false;
             this.flagShowLoadFileGPHN = 2;
+
             this.getHealthFacilities();
             this._checked = -1;
+
             this.frmUser.controls['identification'].setErrors(null);
+            this.frmUser.controls['certificationCode'].setErrors(null);
+            this.frmUser.controls['insurrance'].setErrors(null);
+
+            this._healths = [];
         }
     }
 
@@ -240,14 +253,26 @@ export class TaskComponent extends AppComponentBase implements OnInit {
     submit() {
         let day = this.frmUser.controls['_birthDay'].value < 10 ? ('0' + this.frmUser.controls['_birthDay'].value) : this.frmUser.controls['_birthDay'].value;
         let month = this.frmUser.controls['_birthMonth'].value < 10 ? ('0' + this.frmUser.controls['_birthMonth'].value) : this.frmUser.controls['_birthMonth'].value;
-        this.frmUser.controls['groupUser'].setValue(this._selection.selected);
-        
-        
-        let date = moment((day + '/' + month + '/' + this.frmUser.controls['_birthYear'].value), "DD/MM/YYYY");
-
+        //let date = moment((day + '/' + month + '/' + this.frmUser.controls['_birthYear'].value), "DD/MM/YYYY");
         this.frmUser.controls['birthDay'].setValue((this.frmUser.controls['_birthYear'].value + '/' + month + '/' + day));
+
         this.frmUser.controls['healthId'].setValue(this._healths);
-        console.log(12, this.frmUser.value);
+        this.frmUser.controls['groupUser'].setValue(this._selection.selected);
+
+        if (1 === this.frmUser.controls['accountType'].value) {
+            this.frmUser.controls['certificationCode'].setValue(null);
+            this.frmUser.controls['lisenceCode'].setValue(null);
+        }
+        else if (2 === this.frmUser.controls['accountType'].value) {
+            this.frmUser.controls['insurrance'].setValue(null);
+            this.frmUser.controls['lisenceCode'].setValue(null);
+        }
+        else {
+            this.frmUser.controls['identification'].setValue(null);
+            this.frmUser.controls['certificationCode'].setValue(null);
+            this.frmUser.controls['insurrance'].setValue(null);
+        }
+        
         if (this._isNew) {
             this._dataService.createUser('users-register', this.frmUser.value).subscribe(() => {
                 swal({

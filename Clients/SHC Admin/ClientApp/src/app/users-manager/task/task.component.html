@@ -319,7 +319,7 @@
     </mat-tab-group>
     <div class="text-right mb-3">
         <button class="mr-3" mat-button mat-dialog-close>{{l('Close')}}</button>
-        <button mat-raised-button color="primary" (click)="submit()" [disabled]=" _selection.selected.length == 0 || _healths.length == 0">{{l('Save')}}</button>
+        <button mat-raised-button color="primary" (click)="submit()" [disabled]="frmUser.invalid || _selection.selected.length == 0 || _healths.length == 0">{{l('Save')}}</button>
     </div>
 </form>
 
