@@ -32,6 +32,14 @@ export class ValidationRule {
         return null;
     }
 
+    // Input CMND
+    identification(control: AbstractControl) {
+        if (control.value && !(control.value.length == 9 || control.value.length == 12)) {
+            return { identification: true };
+        }
+        return null;
+    }
+
     topPhoneNumber(control: AbstractControl) {
         let arr: string[] = ['086', '096', '097', '098', '032', '033', '034', '035', '036', '037', '038', '039',
             '089', '090', '093', '070', '079', '077', '076', '078',

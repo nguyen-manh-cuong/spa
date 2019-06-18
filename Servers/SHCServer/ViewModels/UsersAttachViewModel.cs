@@ -1,15 +1,9 @@
 ﻿using System;
-using Viettel.Annotations;
 
 namespace SHCServer.Models
 {
-    [Table("sys_users_attachs")]
-    public class UsersAttach
+    public class UsersAttachViewModel
     {
-        [Column(IsPrimaryKey = true)]
-        [AutoIncrement]
-        public int UserAttachId { get; set; }
-
         public int? UserId { get; set; }
         public string Path { get; set; }
         public string Type { get; set; }
