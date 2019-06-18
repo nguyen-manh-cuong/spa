@@ -59,15 +59,15 @@ import { NgModule } from '@angular/core';
                     },
                     {
                         path: 'category-common',
-                        loadChildren: 'app/category-common/category-common.module#CategoryCommonModule', canActivate:[AppRouteGuard]
+                        loadChildren: 'app/category-common/category-common.module#CategoryCommonModule', canActivate: [AppRouteGuard]
                     },
                     {
                         path: 'booking-doctor-approve',
-                        loadChildren: 'app/booking-doctor-approve/booking-doctor-approve.module#BookingDoctorApproveModule', canActivate:[AppRouteGuard]
+                        loadChildren: 'app/booking-doctor-approve/booking-doctor-approve.module#BookingDoctorApproveModule', canActivate: [AppRouteGuard]
                     },
                     {
                         path: 'booking-doctor',
-                        loadChildren: 'app/booking-doctor/booking-doctor.module#BookingDoctorModule', canActivate:[AppRouteGuard]
+                        loadChildren: 'app/booking-doctor/booking-doctor.module#BookingDoctorModule', canActivate: [AppRouteGuard]
                     },
                     {
                         path: 'booking-list',
@@ -76,12 +76,12 @@ import { NgModule } from '@angular/core';
                     {
                         path: 'doctor',
                         loadChildren: 'app/doctor/doctor.module#DoctorModule', canActivate: [AppRouteGuard]
-                    }, 
+                    },
                     {
                         path: 'change-password',
                         loadChildren: 'app/change-password/change-password.module#ChangePasswordModule', canActivate: [AppRouteGuard]
-                    }
-               ]
+                    },                   
+                ]
             },
         ])
     ],

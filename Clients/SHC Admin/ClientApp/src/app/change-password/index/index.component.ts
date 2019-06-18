@@ -141,8 +141,9 @@ export class IndexComponent extends AppComponentBase implements OnInit {
                 text: '',
                 type: 'success',
                 timer: 3000
-            });
-            this._authService.logout();
+            }).then(() => {
+                this._authService.logout();
+            });     
         }, err => {
             this.checkOldPassword = false;
             this.frmResetPassword.controls['capcha'].setValue('');
