@@ -177,8 +177,8 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     gender: 1,
     titleCode: '',
     positionCode: '',
-    nationCode: '',
-    ethnicityCode: '',
+    nationCode: 'VN',
+    ethnicityCode: '001',
     certificationDate: '',
     academicId: 0,
     degreeId: 0,
@@ -778,7 +778,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
           this._avatars[0] = null;
           swal({
             title: 'Thông báo',
-            text: 'Chỉ được tải lên file jpg, png, jpeg, pdf',
+            text: 'Chỉ được tải lên file jpg, png, jpeg',
             type: 'warning',
             timer: 3000
           });
