@@ -182,8 +182,10 @@ export class IndexComponent extends AppComponentBase implements OnInit {
                 text: '',
                 type: 'success',
                 timer: 3000
+            }).then(() => {
+                this._authService.logout();
             });
-            this._authService.logout();
+           
         }, err => {
 
             if (RootModule.message == "Đổi mật khẩu không thành công. Mật khẩu hiện tại không đúng") {
