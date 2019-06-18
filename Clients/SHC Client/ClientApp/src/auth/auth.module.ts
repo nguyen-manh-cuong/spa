@@ -11,9 +11,8 @@ import { SharedModule } from '@shared/shared.module';
 import { UtilsModule } from '@shared/utils/utils.module';
 import { ValidationModule } from '@app/validation/validation.module';
 import { NgxMaskModule } from 'ngx-mask';
-import { SecretComponent } from './secret/secret.component';
-import { ResetComponent } from './reset-password/reset-password.component';
 import { NgxSpinnerModule } from 'ngx-spinner';
+import { ResetComponent } from './reset/reset.component';
 
 @NgModule({
     imports: [
@@ -26,7 +25,7 @@ import { NgxSpinnerModule } from 'ngx-spinner';
         NgxSpinnerModule,
         NgxMaskModule.forRoot()
     ],
-    declarations: [LoginComponent, AuthComponent, RegisterComponent, SecretComponent, ResetComponent],
+    declarations: [LoginComponent, AuthComponent, RegisterComponent, ResetComponent],
     providers: [
         LoginService
     ]

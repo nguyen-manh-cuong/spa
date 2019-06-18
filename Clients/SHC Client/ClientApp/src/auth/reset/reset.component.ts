@@ -12,12 +12,12 @@ import swal from 'sweetalert2';
 import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
-    selector: 'app-secret',
-    templateUrl: './secret.component.html',
-    styleUrls: ['./secret.component.scss'],
+    selector: 'app-reset',
+    templateUrl: './reset.component.html',
+    styleUrls: ['./reset.component.scss'],
     encapsulation: ViewEncapsulation.None
 })
-export class SecretComponent extends AppComponentBase implements OnInit {
+export class ResetComponent extends AppComponentBase implements OnInit {
 
     frmSecret: FormGroup;
 
@@ -42,7 +42,7 @@ export class SecretComponent extends AppComponentBase implements OnInit {
     }
 
     ngOnInit(): void {
-        this.frmSecret = this._formBuilder.group({ info: ['', [Validators.required]], capcha: ['', [Validators.required]] });
+        this.frmSecret = this._formBuilder.group({ info: ['', [Validators.required]]});
         this.getCapcha();
         this.titleService.setTitle("SHC Client | Quên mật khẩu");
     }
@@ -55,16 +55,6 @@ export class SecretComponent extends AppComponentBase implements OnInit {
         this.router.navigate(['/auth/login']);
     }
 
-    
-    capchaInput(event) {
-        event.target.value = this.replace_alias(this.replace_space(event.target.value));
-        if (event.target.value == '') {
-            return this.frmSecret.controls['capcha'].setErrors({ 'required': true });
-        }
-        if (this._capcha.code != event.target.value) {
-           return this.frmSecret.controls['capcha'].setErrors({'capcha':true});
-        }
-    }
 
     infoInput($event){
         $event.target.value = this.replace_space($event.target.value);
@@ -112,31 +102,20 @@ export class SecretComponent extends AppComponentBase implements OnInit {
 
     submit() {
         var info = this.frmSecret.controls['info'].value;
-        var secret = this.makeSecret(8);
-        if (this.frmSecret.controls['capcha'].value != this._capcha.code) {
-            return swal({
-                title:"Đổi mật khẩu không thành công",
-                text: "Mã xác nhận không chính xác",
-                type: "warning",
-                timer: 3000
-            }).then(()=>{
-            })
-        } else {
+        //var secret = this.makeSecret(8);
             this.spinner.show();
-            this._dataService.create("users", Object.assign({
+            this._dataService.update("users", Object.assign({
                 userName: info,
                 phoneNumber: info,
                 email: info,
-                secretCode: secret
+                //secretCode: secret
             })).subscribe(() => {
                 this.spinner.hide();
-                this.continue = true;
+                return this.router.navigateByUrl("/auth/login");
             }, err => {
                 this.spinner.hide();
-                this.getCapcha();
             });
         }
-    }
 
     check: boolean = false;
 
