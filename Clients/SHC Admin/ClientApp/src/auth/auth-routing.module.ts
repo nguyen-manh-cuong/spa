@@ -3,8 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { AuthComponent } from './auth.component';
 import { LoginComponent } from './login/login.component';
 import { NgModule } from '@angular/core';
-import { SecretComponent } from './secret/secret.component';
-import { ResetComponent } from './reset-password/reset-password.component';
+import { ResetComponent } from './reset/reset.component';
 
 @NgModule({
   imports: [
@@ -14,8 +13,7 @@ import { ResetComponent } from './reset-password/reset-password.component';
         component: AuthComponent,
         children: [
           { path: 'login', component: LoginComponent },
-          { path: 'reset-password', component: SecretComponent},
-          { path: 'secret', redirectTo:'login'},
+          { path: 'reset', component: ResetComponent},
           { path: '', redirectTo:'login'}
         ]
       }

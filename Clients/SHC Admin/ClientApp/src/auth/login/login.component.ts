@@ -246,7 +246,7 @@ export class LoginComponent extends AppComponentBase implements OnInit {
     }
 
     resetPassWordClick() {
-        this.router.navigate(['/auth/reset-password']);
+        this.router.navigateByUrl('/auth/reset');
     }
     replace_alias(str) {
         str = str.replace(/[^A-Za-z0-9]+/ig, "");
