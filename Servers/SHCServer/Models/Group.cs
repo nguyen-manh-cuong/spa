@@ -6,7 +6,7 @@ using Viettel.Entity;
 namespace SHCServer.Models
 {
     [Table("sys_groups")]
-    public class Group: IEntity
+    public class Group
     {
         public Group()
         {
@@ -14,15 +14,19 @@ namespace SHCServer.Models
 
         public Group(GroupInputViewModel group)
         {
-            Name = group.Name;
+            GroupName = group.GroupName;
             Description = group.Description;
         }
 
         [Column(IsPrimaryKey = true)]
         [AutoIncrement]
-        public int Id { get; set; }
+        public int GroupId { get; set; }
+        public int? ApplicationId { get; set; }
+        public string GroupName { get; set; }
+        public bool? IsDelete { get; set; }
+        public bool? Fixed { get; set; }
 
-        public string Name { get; set; }
+        //public string Name { get; set; }
 
         public string Description { get; set; }
 
@@ -38,7 +42,7 @@ namespace SHCServer.Models
         public GroupMapBase()
         {
             // Ignore(o => o.UserGroups);
-            Property(o => o.Id).IsAutoIncrement().IsPrimaryKey();
+            Property(o => o.GroupId).IsAutoIncrement().IsPrimaryKey();
         }
     }
 

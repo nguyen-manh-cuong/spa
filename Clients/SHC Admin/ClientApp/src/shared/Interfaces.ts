@@ -2,6 +2,7 @@
 
 export interface IUser {
     id?: number;
+    userId?: number;
     userName: string;
     password: string;
     fullName?: string;
@@ -19,13 +20,20 @@ export interface IUser {
 
     medicalCode?: string;
     medicalCodeRelatives?: string;
-    identification?: number;
+    identification?: number | string;
     insurrance?: string;
     workPlace?: string;
     healthFacilitiesName?: string;
     specialist?: string;
+    certificationCode?: string;
+    lisenceCode?: string;
 
+    status: number | string;
+    statusSHC: number | string;
+    
     groups: IGroup[];
+    healthId: IHealthfacilities[];
+    groupHealthFacilities: IHealthfacilities[];
 }
 
 export interface IDoctor {
