@@ -245,7 +245,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
         
         let date = moment((day + '/' + month + '/' + this.frmUser.controls['_birthYear'].value), "DD/MM/YYYY");
 
-        this.frmUser.controls['birthDay'].setValue(da);
+        this.frmUser.controls['birthDay'].setValue((this.frmUser.controls['_birthYear'].value + '/' + month + '/' + day));
         this.frmUser.controls['healthId'].setValue(this._healths);
         console.log(12, this.frmUser.value);
         if (this._isNew) {
@@ -253,7 +253,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
                 swal({
                     title: 'Thêm mới thành công',
                     text: ``,
-                    type: 'warning',
+                    type: 'success',
                     timer: 3000
                 });
                 this.dialogRef.close();
@@ -274,7 +274,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
                 swal({
                     title: 'Cập nhật thành công',
                     text: ``,
-                    type: 'warning',
+                    type: 'success',
                     timer: 3000
                 });
                 this.dialogRef.close();

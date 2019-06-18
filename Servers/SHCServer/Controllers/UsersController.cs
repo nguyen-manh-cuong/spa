@@ -304,7 +304,9 @@ namespace SHCServer.Controllers
                     UserId = userId,
                     ExpriredDate = DateTime.Now.AddMonths(2)
                 });
+                _context.Session.CommitTransaction();
 
+                _context.Session.BeginTransaction();
                 // Insert sys_users_attachs in smarthealthcare
                 var _files = Request.Form.Files;
                 if (_files.Count > 0)
