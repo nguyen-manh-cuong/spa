@@ -63,20 +63,12 @@
     cursor: pointer;
 }
 
-.upload-button {
-    border-radius: 4px;
-    border: 1px solid #00a2a2;
-    float: right;
-    /*margin-right: 648px;*/
-}
-
 .upload-button .btn-primary-inverted {
     cursor: pointer;
 }
 
 .image-uploader .upload-content {
     float: left;
-    margin-bottom: 16px;
     width: 100%;
 }
 
@@ -130,4 +122,18 @@ input:read-only {
 .danger {
     color: red;
     padding-left: 3px;
+}
+.number-business .mat-form-field-wrapper{
+    margin-bottom: 0px;
+    padding-bottom: 0px;
+}
+
+.col-left::after {
+    content: '';
+    height: 54%;
+    width: 1px;
+    background-color: #ddd;
+    position: absolute;
+    top: 7px;
+    right: 8px;
 }
