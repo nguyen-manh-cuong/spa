@@ -70,6 +70,6 @@ export class LoginComponent extends AppComponentBase implements OnInit {
     }
 
     resetPasswordClick() {
-        this._router.navigate(["auth/secret"]);
+        this._router.navigateByUrl("auth/reset");
     }
 }

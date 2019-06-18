@@ -3073,6 +3073,7 @@ export interface IExternalAuthenticateResultModel {
 }
 
 export class CreateUserDto implements ICreateUserDto {
+    userId?: number;
     userName: string;
     fullName: string;
     email: string;
@@ -3092,11 +3093,13 @@ export class CreateUserDto implements ICreateUserDto {
 
     medicalCode?: string;
     medicalCodeRelatives?: string;
-    identification?: number;
+    identification?: number | string;
     insurrance?: string;
+    lisenceCode?: string;
     workPlace?: string;
     healthFacilitiesName?: string;
     specialist?: string;
+    certificationCode?: string;
 
     constructor(data?: ICreateUserDto) {
         if (data) {
@@ -3163,6 +3166,7 @@ export class CreateUserDto implements ICreateUserDto {
 }
 
 export interface ICreateUserDto {
+    userId?: number;
     userName: string;
     fullName: string;
     email: string;

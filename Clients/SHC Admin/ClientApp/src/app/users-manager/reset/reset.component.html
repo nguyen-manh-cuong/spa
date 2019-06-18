@@ -1,0 +1,52 @@
+<form [formGroup]="frmUser" class="container reset-container p-relative" id="form-dialog" novalidate>
+    <div class="text-center mt-2">
+        <mat-label>Bạn có chắc không?</mat-label>
+    </div>
+    <div class="text-center mb-4">
+        <mat-label>Tài khoản sẽ được reset mật khẩu</mat-label>
+    </div>
+    <div class="row ml-2 mr-2">
+        <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{l("ResetNewPassword")}}</mat-label>
+            <input type="password" formControlName="newPassword" matInput autocomplete="off" required minlength="8">
+            <validation matSuffix [control]="frmUser.controls['newPassword']"></validation>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{l("Nhập lại mật khẩu")}}</mat-label>
+            <input (input)="confirmPasswordInput($event.target.value)" type="password" formControlName="confirmPassword" matInput autocomplete="off" required minlength="8">
+            <validation matSuffix [control]="frmUser.controls['confirmPassword']"></validation>
+        </mat-form-field>
+        <div class="row">
+            <div class="col-md-5">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>{{l("ResetCapcha")}}</mat-label>
+                    <input (input)="capchaInput($event)" formControlName="capcha" matInput autocomplete="off" required>
+                    <validation matSuffix [control]="frmUser.controls['capcha']"></validation>
+                </mat-form-field>
+            </div>
+            <div class="col-md-5 mt-1" style="margin-left:-20px!important;padding-bottom: 1px!important">
+                <img [src]="_capcha.data" width="160" height="40" alt="" />
+            </div>
+            <div class="col-md-2 mt-1 ml-3">
+                <span type="button" class="btn-refresh" (click)="getCapcha()"><i class="fa fa-refresh"
+                        aria-hidden="true"></i></span>
+            </div>
+        </div>
+    </div>
+    <div class="row mb-2">
+        <div class="col-md-1"></div>
+        <div class="col-md-5">
+            <div class="d-flex justify-content-center">
+                <button mat-button mat-dialog-close mat-raised-button color="primary" class="w-100" [buttonBusy]="true"
+                    [busyText]="'xxx'">{{l("Đóng")}}</button>
+            </div>
+        </div>
+        <div class="col-md-5">
+            <div class="d-flex justify-content-center">
+                <button mat-button mat-raised-button color="primary" class="w-100" (click)="submit()"
+                    [disabled]="frmUser.invalid" [buttonBusy]="true" [busyText]="'xxx'">{{l("Lưu")}}</button>
+            </div>
+        </div>
+        <div class="col-md-1"></div>
+    </div>
+</form>
