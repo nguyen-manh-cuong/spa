@@ -22,5 +22,9 @@ export class DashboardComponent extends AppComponentBase implements OnInit {
 
   logout(): void {
     this._authService.logout();
-  }
+    }
+
+    changePassword() {
+        this.router.navigate(["/app/change-password/index"]);
+    }
 }

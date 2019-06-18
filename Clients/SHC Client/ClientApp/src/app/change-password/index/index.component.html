@@ -1,0 +1,273 @@
+<!-- Header -->
+<header id="header-wrap">
+    <div class="container">
+        <div class="position-relative">
+            <a href="" class="navbar-brand">
+                <img class="img-responsive hidden-sm" id="logo_img" src="./assets/images/logo.png" alt="logo">
+                <img class="img-responsive hidden-xs hidden-md hidden-lg" id="logo_img" src="./assets/images/logo_sm.png" alt="logo">
+            </a>
+            <div class="col-xs-12 col-md-5 col-sm-7 iq-mt-20 no-padding">
+                <div class="input-group input-group-lg blue-outline">
+                    <div class="input-group-btn search-panel">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"> <span id="search_concept">Tất cả</span> <span class="caret"></span> </button>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="#contains">Contains</a></li>
+                            <li><a href="#its_equal">It's equal</a></li>
+                            <li><a href="#greather_than">Greather than </a></li>
+                            <li><a href="#less_than">Less than </a></li>
+                            <li><a href="#all">Anything</a></li>
+                        </ul>
+                    </div>
+                    <input type="hidden" name="search_param" value="all" id="search_param">
+                    <input type="text" class="form-control" name="x" placeholder="Tìm kiếm thông tin, kiến thức y tế...">
+                    <span class="input-group-btn">
+                        <button class="btn btn-blue btn-sz" type="button"><span class="fa fa-search"></span></button>
+                    </span>
+                </div>
+            </div>
+            <div class="col-sm-2 iq-mt-30 no-padding-right hidden-sm hidden-xs" style="display: flex">
+                <div class="c-icon iq-pr-10"><i class="fa fa-user-circle-o "></i></div>
+                <div>
+                    <a href="javascript:void(0)" (click)="logout()">Đăng xuất</a>
+                </div>
+            </div>
+            <div class="notify">
+                <a class="#"><img class="" id="" src="./assets/images/icon/bell.png"></a>
+                <a class="#"><img class="" id="" src="./assets/images/icon/cart.png"></a><span class="red">0</span>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="navbar navbar-default menu-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button>
+            </div>
+            <div class="navbar-collapse collapse">
+                <nav>
+                    <ul class="nav navbar-nav">
+                        <li routerLinkActive="active"><a class="page-scroll" [routerLink]="['/app/dashboard/home']">Trang chủ</a></li>
+                        <li class=""><a class="page-scroll" href="./features.html">Hỏi bác sĩ tư vấn</a></li>
+                        <!--<li><a class="page-scroll" href="./customers.html">Khách hàng</a></li>-->
+                        <li><a class="page-scroll" href="./download.html">Xét nghiệm</a></li>
+                        <li class="dropdown"><a class="page-scroll" [routerLink]="['/app/booking']">Đăng ký khám</a></li>
+                        <li><a class="page-scroll" href="./pricing.html">Ưu đãi</a></li>
+                        <li><a class="page-scroll" href="./support.html">Chuẩn đoán</a></li>
+                        <li><a class="page-scroll" href="./contact.html">Sống khỏe</a></li>
+                        <li><a class="page-scroll" href="./contact.html">Tra cứu</a></li>
+                        <!--
+                                    <li class="visible-md visible-sm">
+                                      <div class="dropdown">
+                                        <button class="btn flat dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <span class="glyphicon glyphicon-user" aria-hidden="true"></span> </button>
+                                      </div>
+                                    </li>
+                        -->
+                        <li class="text-right with-top-divider visible-xs"> <a href="javascript:void(0)" (click)="logout()">Đăng xuất</a> </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+<!-- /Header -->
+<!--Main-->
+<div class="main-content">
+    <nav class="text-center bg-grey nav-level-2">
+        <div class="container no-padding">
+            <ul class="nav-tabs tab-content-triggers list-unstyled list-inline auto-scroll-nav">
+                <li class="no-paddings" routerLinkActive="active"><span href="#!" class="auto-scroll-item">Thông tin cá nhân</span></li>
+                <li class="no-paddings" routerLinkActive="active"><a [routerLink]="['/app/change-password/index']" class="uto-scroll-item">Đổi mật khẩu </a></li>
+            </ul>
+        </div>
+    </nav>
+    <section class="overview-block-ptb iq-bg iq-features" style="background: url(/assets/images/bg/14.jpg);">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="mt10 contentpanel container positionBox box-change-password">
+ 
+                        <div class="contentpanel mt10">
+                            <form [formGroup]="frmResetPassword" class="form-horizontal frm-change-password">
+                                <div class="form-group" [ngClass]="{'form-field-invalid': !checkOldPassword || frmResetPassword.get('Password').invalid && (frmResetPassword.get('Password').dirty || frmResetPassword.get('Password').touched)}">
+                                    <label class="primary-label control-label">Mật khẩu hiện tại<span class="text-danger">*</span></label>
+                                    <input formControlName="Password" #password matInput type="password" (paste)="onPaste()" autocomplete="off" (input)="passwordInput($event)" [required]="true" maxlength="255" minlength="8" class="form-control">
+                                    <validation matSuffix [control]="frmResetPassword.controls['Password']"></validation>
+                                </div>
+                                <div class="form-group mb-5" [ngClass]="{'form-field-invalid': ckeckPasswordOldNew || frmResetPassword.get('NewPassword').invalid && (frmResetPassword.get('NewPassword').dirty || frmResetPassword.get('NewPassword').touched)}">
+                                    <label class="primary-label control-label">Mật khẩu mới<span class="text-danger">*</span></label>
+                                    <input formControlName="NewPassword" type="password" (input)="newPasswordInput($event)" matInput maxlength="255" minlength="8" [required]="true" class="form-control" title="Mật khẩu cần có ít nhất 8 kí tự">
+                                    <validation matSuffix [control]="frmResetPassword.controls['NewPassword']"></validation>
+                                </div>
+                                <div class="form-group"><label class="lbl-note"> Mật khẩu phải chứa chữ hoa, chữ thường, số và kí tự đặc biệt</label></div>
+
+                                <div class="form-group" [ngClass]="{'form-field-invalid': frmResetPassword.get('RePassword').invalid && (frmResetPassword.get('RePassword').dirty || frmResetPassword.get('RePassword').touched)}">
+                                    <label class="primary-label control-label">Xác nhận lại mật khẩu<span class="text-danger">*</span></label>
+                                    <input formControlName="RePassword" type="password" (input)="repasswordInput($event)" matInput [required]="true" maxlength="255" minlength="8" class="form-control">
+                                    <validation matSuffix [control]="frmResetPassword.controls['RePassword']"></validation>
+                                </div>
+                                <!--capcha-->
+                                <div class="form-group" [ngClass]="{'form-field-invalid': frmResetPassword.get('capcha').invalid && (frmResetPassword.get('capcha').dirty || frmResetPassword.get('capcha').touched)}">
+                                    <div><label class="primary-label control-label">Mã xác nhận<span class="text-danger">*</span></label></div>
+                                    <div class="col-md-6 pl-0 pr-0">
+                                        <input (input)="capchaInput($event)" (click)="capchaClick($event)" maxlength="4" formControlName="capcha" matInput autocomplete="off"
+                                               [required]="true" class="form-control">
+                                        <validation *ngIf="!capcha" matSuffix [control]="frmResetPassword.controls['capcha']"></validation>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <img [src]="_capcha.data" width="160" height="40" alt="" />
+                                    </div>
+                                    <div class="col-md-1">
+                                        <span type="button" class="btn-refresh" (click)="getCapcha()">
+                                            <i class="fa fa-refresh"
+                                               aria-hidden="true"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                <!--/capcha-->
+                                <div class="form-group">
+                                    <button color="primary" class="btn btn-aqua btn-block btn-lg text-uppercase" (click)="resetPassword()" [disabled]="frmResetPassword.invalid || frmResetPassword.controls['capcha'].value==''">Lưu</button>
+                                </div>
+
+                            </form>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div>
+<!--/Main-->
+<!-- Footer -->
+<footer>
+    <!-- Footer Info -->
+    <section class="footer-info iq-pt-30 iq-counter-box iq-bg iq-bg-fixed iq-over-black-80 iq-font-white" style="background: url(/assets/images/bg/03.jpg);">
+        <div class="container">
+            <div class="row">
+            </div>
+            <div class="row">
+                <div class="col-sm-6 col-md-2">
+                    <div class="iq-footer-box text-left">
+                        <div class="footer-content">
+                            <h4 class="sub-title iq-tw-6 iq-pb-10">Đọc tin</h4>
+                            <a href="#">
+                                <p class="iq-mb-0">Dinh dưỡng</p>
+                            </a>
+                            <a href="#">
+                                <p class="iq-mb-0">Vui khỏe</p>
+                            </a>
+                            <a href="#">
+                                <p class="iq-mb-0">Cần biết</p>
+                            </a>
+                            <a href="#">
+                                <p class="iq-mb-0">Sống khỏe mạnh</p>
+                            </a>
+                            <a href="#">
+                                <p class="iq-mb-0">Lời khuyên từ chuyên gia</p>
+                            </a>
+                            <a href="#">
+                                <p class="iq-mb-0">Chính sách BHYT</p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-md-2 re4-mt-30">
+                    <div class="footer-content">
+                        <h4 class="sub-title iq-tw-6 iq-pb-10">Xem VIDEO</h4>
+                        <a href="#">
+                            <p class="iq-mb-0">Bài tập vận động</p>
+                        </a>
+                        <a href="#">
+                            <p class="iq-mb-0">Y hoc thường thức</p>
+                        </a>
+                        <a href="#">
+                            <p class="iq-mb-0">Mẹo hay</p>
+                        </a>
+                        <a href="#">
+                            <p class="iq-mb-0">Bài tập Yoga</p>
+                        </a>
+                        <a href="#">
+                            <p class="iq-mb-0">Thư giãn</p>
+                        </a>
+                        <a href="#">
+                            <p class="iq-mb-0">Tư vấn trực tiếp</p>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-md-2 re-mt-30 re4-mt-30 sm-clearfix">
+                    <div class="iq-footer-box">
+                        <div class="footer-content">
+                            <h4 class="sub-title iq-tw-6 iq-pb-10">Tra cứu bệnh</h4>
+                            <a href="#">
+                                <p class="iq-mb-0">Theo tên</p>
+                            </a>
+                            <a href="#">
+                                <p class="iq-mb-0">Theo vị trí cơ thể</p>
+                            </a>
+                            <a href="#">
+                                <p class="iq-mb-0">Theo đối tượng</p>
+                            </a>
+                            <a href="#">
+                                <p class="iq-mb-0">Theo chuyên khoa</p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-md-2 re-mt-30 re4-mt-30">
+                    <div class="iq-footer-box text-left">
+                        <div class="footer-content">
+                            <h4 class="sub-title iq-tw-6 iq-pb-10">Danh mục ngành y</h4>
+                            <a href="#">
+                                <p class="iq-mb-0">Tra cứu bệnh viện</p>
+                            </a>
+                            <a href="#">
+                                <p class="iq-mb-0">Tra cứu phòng khám</p>
+                            </a>
+                            <a href="#">
+                                <p class="iq-mb-0">Tra cứu nhà thuốc</p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-md-2 re-mt-30 re4-mt-30">
+                    <div class="iq-footer-box text-left">
+                        <div class="footer-content">
+                            <h4 class="sub-title iq-tw-6 iq-pb-10">Tư vấn</h4>
+                            <a href="#">
+                                <p class="iq-mb-0">Xem danh sách tư vấn</p>
+                            </a>
+                            <a href="#">
+                                <p class="iq-mb-0">Gửi câu hỏi mới</p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-md-2 re-mt-30 re4-mt-30">
+                    <div class="iq-footer-box text-left">
+                        <div class="footer-content">
+                            <h4 class="sub-title iq-tw-6 iq-pb-10">dịch vụ y tế</h4>
+                            <a href="#">
+                                <p class="iq-mb-0">Đăng ký khám</p>
+                            </a>
+                            <a href="#">
+                                <p class="iq-mb-0">Đăng ký xét nghiệm</p>
+                            </a>
+                            <a href="#">
+                                <p class="iq-mb-0">Dịch vụ ưu đãi</p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row iq-mt-40">
+
+            </div>
+        </div>
+    </section>
+    <!-- Footer Info END -->
+</footer>
+<!-- Footer END -->
+<!-- back-to-top -->
+<div id="back-to-top" style="display: none;"> <a class="top" id="top" href="#top"> <i class="ion-ios-upload-outline"></i> </a> </div>

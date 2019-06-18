@@ -936,21 +936,5 @@ namespace SHCServer.Controllers
                 return false;
             }
         }
-
-        public string convertToUnSign(string s)
-        {
-            Regex regex = new Regex("\\p{IsCombiningDiacriticalMarks}+");
-            string temp = s.Normalize(NormalizationForm.FormD);
-            return regex.Replace(temp, String.Empty).Replace('\u0111', 'd').Replace('\u0110', 'D').Replace(" ", "_");
-        }
-
-        private string GetUniqueFileName(string fileName)
-        {
-            fileName = Path.GetFileName(fileName);
-            return Path.GetFileNameWithoutExtension(fileName)
-                      + "_"
-                      + Guid.NewGuid().ToString().Substring(0, 4)
-                      + Path.GetExtension(fileName);
-        }
     }
 }

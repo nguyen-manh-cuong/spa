@@ -9,6 +9,8 @@ import { TaskComponent } from '../task/task.component';
 import swal from 'sweetalert2';
 import { getPermission } from '@shared/helpers/utils';
 import { Router } from '@angular/router';
+import { DetailComponent } from '../detail/detail.component';
+
 
 @Component({
     selector: 'app-index',
@@ -17,7 +19,7 @@ import { Router } from '@angular/router';
     encapsulation: ViewEncapsulation.None
 })
 export class IndexComponent extends PagedListingComponentBase<ISmsTemplate> implements OnInit, AfterViewInit {
-
+    detailDialog: any;
     displayedColumns = ['orderNumber','code', 'smsTemplateName', 'messageType', 'smsContent', 'isActive', 'organizationName', 'task'];
     permission: any;
     _status = [{ id: 2, name: "Tất cả" }, { id: 1, name: "Hiệu lực" }, { id: 0, name: "Không hiệu lực" }]
@@ -32,6 +34,7 @@ export class IndexComponent extends PagedListingComponentBase<ISmsTemplate> impl
         this.frmSearch = this._formBuilder.group({ smsTemplateName: [], status: [2,], healthFacilitiesId: this.appSession.user.healthFacilitiesId });
         this.dataService = this._dataService;
         this.dialogComponent = TaskComponent;
+        this.detailDialog = DetailComponent;
         this._status
         this.permission = getPermission(abp.nav.menus['mainMenu'].items, this.router.url);
     }
@@ -63,4 +66,14 @@ export class IndexComponent extends PagedListingComponentBase<ISmsTemplate> impl
             return false;
         }
     }
+
+
+    openDetailDialog(obj?: ISmsTemplate): void {
+        const dialogRef = this.dialog.open(this.detailDialog, { minWidth: 'calc(100vw/2)', maxWidth: 'calc(100vw - 300px)', disableClose: true, data: obj ? obj : null });
+        dialogRef.afterClosed().subscribe(() => {
+            this.paginator.pageIndex = 0;
+            this.paginator._changePageSize(this.paginator.pageSize);
+        });
+    }
+
 }

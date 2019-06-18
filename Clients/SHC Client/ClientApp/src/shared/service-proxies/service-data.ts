@@ -100,7 +100,6 @@ export class DataService {
 
         const options_: any = { observe: 'response', responseType: 'blob', headers: new HttpHeaders({ 'Content-Type': 'application/json', 'Accept': 'application/json' }) };
 
-        abp.ui.setBusy('#main-container');
         return this.http.request('get', url_, options_).pipe(_observableMergeMap((response_: any) => this.processDataOk(response_)))
             .pipe(_observableCatch((response_: any) => {
                 if (response_ instanceof HttpResponseBase) {
