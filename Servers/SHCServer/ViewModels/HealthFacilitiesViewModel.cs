@@ -37,15 +37,16 @@ namespace SHCServer.ViewModels
             TotalDoctor = context.Query<HealthFacilitiesDoctors>().Where(o => o.HealthFacilitiesId == obj.HealthFacilitiesId).Count();
         }
 
-        public int HealthFacilitiesId { set; get; }
+        public int? HealthFacilitiesId { set; get; }
         public string Name { set; get; }
         public string Code { set; get; }
         public string DistrictCode { set; get; }
         public string ProvinceCode { set; get; }
         public string Address { set; get; }  
         public List<HealthFacilitiesSpecialistsViewModel> Specialist { set; get; }
-        public int TotalDoctor { set; get; }
-        public bool IsActive { set; get; }
-        public bool IsDelete { set; get; }
+        public int? TotalDoctor { set; get; }
+        public bool? IsActive { set; get; }
+        public bool? IsDelete { set; get; }
+        public bool? Checked { set; get; }
     }
 }

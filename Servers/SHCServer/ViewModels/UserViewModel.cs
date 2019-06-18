@@ -33,7 +33,7 @@ namespace SHCServer.ViewModels
             WardCode = user.WardCode;
             Address = user.Address;
 
-            Groups = context.JoinQuery<UserGroup, Group>((userGroup, g) => new object[] { JoinType.LeftJoin, userGroup.GroupId == g.Id })
+            Groups = context.JoinQuery<UserGroup, Group>((userGroup, g) => new object[] { JoinType.LeftJoin, userGroup.GroupId == g.GroupId })
                              .Where((u, g) => u.UserId == user.Id)
                              .Select((u, g) => new GroupViewModel(g))
                              .ToList();
@@ -59,43 +59,51 @@ namespace SHCServer.ViewModels
         public override int Id { set; get; } 
 
         public string Locality { set; get; }
+        public string AccountTypeName { set; get; }
+        public string GroupName { get; set; }
+        public string LisenceCode { get; set; }
+        public string CertificationCode { get; set; }
+        public int? StatusSHC { get; set; }
 
         public IList<GroupViewModel> Groups { get; set; }
     }
 
     public sealed class UserInputViewModel : UserBase
-
     {
-        public UserInputViewModel()
-        {
-        }
+        public int? Reset { get; set; }
+        public int? ApplicationId { get; set; }
+        public UserInputViewModel() { }
 
         public UserInputViewModel(User obj) : this()
         {
-            Id = obj.Id;
+            UserId = obj.UserId;
             UserName = obj.UserName;
             FullName = obj.FullName;
             Email = obj.Email;
 
-            if (!string.IsNullOrEmpty(obj.Password)) Password = Utils.HashPassword(obj.Password);
+            if (!string.IsNullOrEmpty(obj.Password))
+            {
+                Password = Utils.HashPassword(obj.Password);
+            }
         }
 
         public GroupInputViewModel[] Groups { get; set; }
 
-        public int Id { set; get; }
         public bool? isUsingDoctor { get; set; }
         public bool? isUsingCall { get; set; }
         public bool? isUsingUpload { get; set; }
         public bool? isUsingRegister { get; set; }
         public bool? isUsingVideo { get; set; }
         public bool? isUsingExamination { get; set; }
-
         /// <summary>
         /// pro common
         /// </summary>
         public int? CreateUserId { get; set; }
-        public DateTime? CreateDate { get; set; }
         public int? UpdateUserId { get; set; }
-        public DateTime? UpdateDate { get; set; }
+        public string CertificationCode { get; set; }
+        public string LisenceCode { get; set; }
+        public string GroupId { get; set; }
+        public string healthId { get; set; }
+        public string ImageFileOld { get; set; }
     }
 }

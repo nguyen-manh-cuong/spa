@@ -111,6 +111,16 @@ export class DataService {
                     formData.append('avatar', input.avatar, input.avatar.name);
                 }
             }
+            if (key === 'cmnd') {
+                if (input.avatar) {
+                    formData.append('cmnd', input.avatar, input.avatar.name);
+                }
+            }
+            if (key === 'gp') {
+                if (input.avatar) {
+                    formData.append('gp', input.avatar, input.avatar.name);
+                }
+            }
             if (key === 'specialist') {
                 Array.from(input.specialist).forEach((e: any) => specialist += e.specialistCode + ",");
             }
@@ -235,6 +245,127 @@ export class DataService {
             return this.processDataOk(response_);
         })).pipe(_observableCatch((response_: any) => {
 
+            abp.ui.clearBusy('#form-dialog');
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDataOk(<any>response_);
+                } catch (e) {
+                    return <Observable<any>><any>_observableThrow(e);
+                }
+            } else {
+                return <Observable<any>><any>_observableThrow(response_);
+            }
+        }));
+    }
+
+
+    createUser(enpoint: string, input: any | null | undefined): Observable<any> {
+        let url_ = this.baseUrl + `/${enpoint}`;
+        url_ = url_.replace(/[?&]$/, '');
+
+        let groupId = '';
+        let healthId  = '';
+        
+        const formData: FormData = new FormData();
+        for (const key in input) {
+            if (key === 'cmnd') {
+                if (input.cmnd && input.cmnd.files && input.cmnd.files.length) {
+                    Array.from(input.cmnd.files).forEach((f: any) => formData.append('cmnd', f));
+                }
+            }
+            if (key === 'gp') {
+                if (input.gp && input.gp.files && input.gp.files.length) {
+                    Array.from(input.gp.files).forEach((f: any) => formData.append('gp', f));
+                }
+            }
+            if (key === 'groupUser') {
+                Array.from(input.groupUser).forEach((h: any) => {
+                    groupId += h.groupId + '-' + h.applicationId + ',';
+                });
+            }
+            if (key === 'healthId') {
+                Array.from(input.healthId).forEach((h: any) => {
+                    healthId += h.healthFacilitiesId + ',';
+                });
+            }
+            else {
+                formData.append(key, input[key]);
+            }
+        }
+        
+        formData.append('groupId', groupId);
+        formData.append('healthId', healthId);
+        const options_: any = {
+            body: formData,
+            observe: 'response',
+            responseType: 'blob',
+            headers: new HttpHeaders({
+                'Accept': 'application/json'
+            })
+        };
+       
+        return this.http.request('post', url_, options_).pipe(_observableMergeMap((response_: any) => {
+            return this.processDataOk(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDataOk(<any>response_);
+                } catch (e) {
+                    return <Observable<any>><any>_observableThrow(e);
+                }
+            } else {
+                return <Observable<any>><any>_observableThrow(response_);
+            }
+        }));
+    }
+    
+    updateUser(enpoint: string, input: any | null | undefined): Observable<any> {
+        let url_ = this.baseUrl + `/${enpoint}`;
+        url_ = url_.replace(/[?&]$/, '');
+
+        let groupId = '';
+        let healthId = '';
+        console.log(2009, input);
+        const formData: FormData = new FormData();
+        for (const key in input) {
+            if (key === 'gp') {
+                if (input.gp && input.gp.files && input.gp.files.length) {
+                    Array.from(input.gp.files).forEach((f: any) => formData.append('gp', f));
+                }
+            }
+            if (key === 'cmnd') {
+                if (input.cmnd && input.cmnd.files && input.cmnd.files.length !== 0) {
+                    Array.from(input.cmnd.files).forEach((f: any) => formData.append('cmnd', f));
+                }
+            }
+            if (key === 'groupUser') {
+                Array.from(input.groupUser).forEach((h: any) => {
+                    groupId += h.groupId + '-' + h.applicationId + ',';
+                });
+            }
+            if (key === 'healthId') {
+                Array.from(input.healthId).forEach((h: any) => {
+                    healthId += h.healthFacilitiesId + ',';
+                });
+            }
+            else {
+                formData.append(key, input[key]);
+            }
+        }
+        
+        formData.append('groupId', groupId);
+        formData.append('healthId', healthId);
+        const options_: any = {
+            body: formData,
+            observe: 'response',
+            responseType: 'blob',
+            headers: new HttpHeaders({ 'Accept': 'application/json' })
+        };
+
+        abp.ui.setBusy('#form-dialog');
+        return this.http.request('put', url_, options_).pipe(_observableMergeMap((response_: any) => {
+            return this.processDataOk(response_);
+        })).pipe(_observableCatch((response_: any) => {
             abp.ui.clearBusy('#form-dialog');
             if (response_ instanceof HttpResponseBase) {
                 try {

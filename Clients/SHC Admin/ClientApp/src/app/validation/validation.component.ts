@@ -39,7 +39,7 @@ export class ValidationComponent implements OnInit {
             'capcha': isVi? 'Mã xác nhận không đúng':'Capcha incorrect',
             'passwordStrong': isVi ? 'Mật khẩu phải có chữ hoa, chữ thường, số và ký tự đặc biệt.' : 'Password incorrect',
             'passwordValidate': isVi ? 'Mật khẩu sai định dạng' : 'Password incorrect',
-
+            'identification': isVi ? 'CMND/CCCD phải có độ dài là 9 hoặc 12 ký tự' : 'Identification invalidate',
         }
         return messages[err]
     }

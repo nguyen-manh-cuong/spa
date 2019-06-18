@@ -80,6 +80,10 @@ import { NgModule } from '@angular/core';
                     {
                         path: 'change-password',
                         loadChildren: 'app/change-password/change-password.module#ChangePasswordModule', canActivate: [AppRouteGuard]
+                    },
+                    {
+                        path: 'users-manager',
+                        loadChildren: 'app/users-manager/users-manager.module#UsersManagerModule', canActivate: [AppRouteGuard]
                     }
                ]
             },

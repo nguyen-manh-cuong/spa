@@ -20,7 +20,7 @@ namespace SHCServer.ViewModels
             Id  = obj.Id;
             Url = obj.DownstreamPathTemplate;
 
-            Groups = _context.JoinQuery<RouterGroup, Group>((rg, g) => new object[] { JoinType.LeftJoin, rg.GroupId == g.Id })
+            Groups = _context.JoinQuery<RouterGroup, Group>((rg, g) => new object[] { JoinType.LeftJoin, rg.GroupId == g.GroupId })
                              .Where((u, g) => u.RouterId == obj.Id)
                              .Select((u, g) => new GroupViewModel(g)).ToList();
         }
