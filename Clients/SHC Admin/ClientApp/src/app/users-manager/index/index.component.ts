@@ -18,31 +18,32 @@ export class IndexComponent extends PagedListingComponentBase<IUser> implements 
 
     displayedColumns = ['orderNumber', 'fullName', 'userName', 'groupName', 'accountType', 'phoneNumber', 'email', 'locality', '_approved', '_lock',  'task'];
 
-    _provinces = [];
-    _districts = [];
-    _wards = [];
+    provinces = [];
+    districts = [];
+    wards = [];
     _groups: Array<IGroup> = [];
     dialogResetComponent: any;
 
     _accountTypes = [{ id: 1, name: 'Thành viên' }, { id: 2, name: 'Bác sỹ/ Chuyên gia/ Điều dưỡng...' }, { id: 3, name: 'Cơ sở y tế/ doanh nghiệp' }];
 
-    constructor(injector: Injector, private _dataService: DataService, public dialog: MatDialog, private _formBuilder: FormBuilder) {
+    constructor(injector: Injector, private _dataService: DataService, public dialog: MatDialog, private formBuilder: FormBuilder) {
         super(injector);
     }
 
     ngOnInit() {
         this.api = 'users';
-        this.frmSearch = this._formBuilder.group({ provinceCode: [], districtCode: [], wardCode: [], userName: [], userPhoneEmail: [], group: [], accountType: [], fullName: [] });
+        this.frmSearch = this.formBuilder.group({ provinceCode: [], districtCode: [], wardCode: [], userName: [], userPhoneEmail: [], group: [], accountType: [], fullName: [] });
         this.ruleSearch = { accountType: 'int', group: 'int' };
         this.dataService = this._dataService;
         this.dialogComponent = TaskComponent;
         this.dialogResetComponent = ResetComponent;
-        this.dataService.getAll('provinces').subscribe(resp => this._provinces = resp.items);
+        this.dataService.getAll('provinces').subscribe(resp => this.provinces = resp.items);
         this.dataService.getAll('groups').subscribe(resp => this._groups = resp.items);
         
     }
 
     resetDialog(obj?: any): void {
+        if (obj === null || obj === undefined) return;
         swal({
             title: this.l('Bạn có chắc không?'),
             text: this.l(`${obj.userName} sẽ thay đổi mật khẩu.`),
@@ -65,21 +66,21 @@ export class IndexComponent extends PagedListingComponentBase<IUser> implements 
     }
 
     onSelectProvince(obj: any): void {
-        this._districts = this._wards = [];
+        this.districts = this.wards = [];
         this.frmSearch.patchValue({ districtCode: null, wardCode: null });
-        const province = this._provinces.find((o: { provinceCode: string, name: string; }) => o.provinceCode === obj);
-        if (province) { this.dataService.get('districts', JSON.stringify({ ProvinceCode: province.provinceCode }), '', 0, 0).subscribe(resp => this._districts = resp.items); }
+        const province = this.provinces.find((o: { provinceCode: string, name: string; }) => o.provinceCode === obj);
+        if (province) { this.dataService.get('districts', JSON.stringify({ ProvinceCode: province.provinceCode }), '', 0, 0).subscribe(resp => this.districts = resp.items); }
     }
 
     onSelectDistrict(obj: any): void {
-        this._wards = [];
+        this.wards = [];
         this.frmSearch.patchValue({ wardCode: null });
-        const district = this._districts.find((o: { districtCode: string, name: string; }) => o.districtCode === obj);
-        if (district) { this.dataService.get('wards', JSON.stringify({ DistrictCode: district.districtCode }), '', 0, 0).subscribe(resp => this._wards = resp.items); }
+        const district = this.districts.find((o: { districtCode: string, name: string; }) => o.districtCode === obj);
+        if (district) { this.dataService.get('wards', JSON.stringify({ DistrictCode: district.districtCode }), '', 0, 0).subscribe(resp => this.wards = resp.items); }
     }
 
     onHandleApproved(user: any, event) {
-        if (user.status == 0) {
+        if (user.status === 0) {
             return swal({
                 title: 'Thông báo',
                 text: 'Tài khoản hiện đang khóa.',
@@ -88,12 +89,13 @@ export class IndexComponent extends PagedListingComponentBase<IUser> implements 
             }).then((result) => {
                 console.log(12, result);
                 if (result.value) {
-                    this.dataService.get(this.api, '', '', this.paginator.pageIndex, this.paginator.pageSize).subscribe(data => this.dataSources.data = data.items);
+                    this.dataService.get(this.api, '', '', this.paginator.pageIndex, this.paginator.pageSize)
+                        .subscribe(data => this.dataSources.data = data.items);
                 }
-            })
+            });
         }
 
-        let msg = user.statusSHC == 2 ? `${user.userName} sẽ tạm khóa` : (user.statusSHC == 3 ? `${user.userName} sẽ được mở khóa` : `${user.userName} sẽ được phê duyệt`);
+        let msg = user.statusSHC === 2 ? `${user.userName} sẽ tạm khóa` : (user.statusSHC == 3 ? `${user.userName} sẽ được mở khóa` : `${user.userName} sẽ được phê duyệt`);
 
         swal({
             title: this.l('Thông báo'),
@@ -107,7 +109,7 @@ export class IndexComponent extends PagedListingComponentBase<IUser> implements 
             buttonsStyling: false
         }).then((result) => {
             if (result.value) {
-                user.statusSHC == 1 ? 2 : 3;
+                user.statusSHC === 1 ? 2 : 3;
                 this.dataService.update('user-approved', user).subscribe(() => {
                     this.dataService.get(this.api, '', '', this.paginator.pageIndex, this.paginator.pageSize).subscribe(data => this.dataSources.data = data.items);
                 });
@@ -116,7 +118,7 @@ export class IndexComponent extends PagedListingComponentBase<IUser> implements 
     }
 
     onHandleLock(user: any, event): void {
-        let msg = user.status == 0 ? `${user.userName} sẽ được mở khóa` : `${user.userName} sẽ bị khóa`;
+        let msg = user.status === 0 ? `${user.userName} sẽ được mở khóa` : `${user.userName} sẽ bị khóa`;
         swal({
             title: this.l('Thông báo'),
             text: this.l(`Bạn có chắc không? ${msg}`),
@@ -129,7 +131,7 @@ export class IndexComponent extends PagedListingComponentBase<IUser> implements 
             buttonsStyling: false
         }).then((result) => {
             if (result.value) {
-                user.status == 0 ? 1 : 0;
+                user.status === 0 ? user.status = 1 : user.status = 0;
                 this.dataService.update('user-locked', user).subscribe(() => {
                     this.dataService.get(this.api, '', '', this.paginator.pageIndex, this.paginator.pageSize).subscribe(data => this.dataSources.data = data.items);
                 });

@@ -184,7 +184,7 @@
                         <div class="upload-content"   *ngIf="!_isNew">
                             <div class="row" *ngFor="let o of _certificateUrlsUpdate; let i = index">
                                 <!--<div class="col-md-2"><img src="{{o.url}}" class="rounded mb-3 selFile" title={{o.name}} width="50"></div>-->
-                                <div class="col-md-9"><p title="{{o.path}}" class="img-name">{{getFileName(o.path)}}</p></div>
+                                <div class="col-md-9"><p title="{{o.path}}" class="img-name wrap-text-word">{{getFileName(o.path)}}</p></div>
                                 <div class="col-md-3 mr-auto"><span class="btn btn-primary btn-delete" (click)="onRemoveFile(i, 2)"><i aria-hidden="true" class="fa  fa-trash-alt"></i>Xóa file</span></div>
                             </div>
                         </div>
@@ -322,7 +322,7 @@
     </mat-tab-group>
     <div class="text-right mb-3">
         <button class="mr-3" mat-button mat-dialog-close>{{l('Close')}}</button>
-        <button mat-raised-button color="primary" (click)="submit()" [disabled]="frmUser.invalid || _selection.selected.length == 0 || _healths.length == 0">{{l('Save')}}</button>
+        <button mat-raised-button color="primary" (click)="submit()" [disabled]="frmUser.invalid">{{l('Save')}}</button>
     </div>
 </form>
 

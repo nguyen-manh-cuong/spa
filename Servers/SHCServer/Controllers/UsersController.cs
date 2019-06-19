@@ -19,19 +19,19 @@ namespace SHCServer.Controllers
 {
     public class UsersController : BaseController
     {
-        private readonly string _connectionString;
-        private readonly string _connectionStringSHC;
+        //private readonly string _connectionString;
+        //private readonly string _connectionStringShc;
         private string _newPassword;
 
         public UsersController(IOptions<Audience> settings, IConfiguration configuration)
         {
             _settings = settings;
             _contextmdmdb = new MySqlContext(new MySqlConnectionFactory(configuration.GetConnectionString("MdmConnection")));
-            _connectionString = configuration.GetConnectionString("MdmConnection");
+            //_connectionString = configuration.GetConnectionString("MdmConnection");
             _excep = new FriendlyException();
 
             _context = new MySqlContext(new MySqlConnectionFactory(configuration.GetConnectionString("DefaultConnection")));
-            _connectionStringSHC = configuration.GetConnectionString("DefaultConnection");
+            //_connectionStringShc = configuration.GetConnectionString("DefaultConnection");
         }
 
         [HttpGet]
@@ -59,35 +59,35 @@ namespace SHCServer.Controllers
                 if (data.ContainsKey("provinceCode"))
                 {
                     clause.Add("AND u.ProvinceCode = @provinceCode");
-                    param.Add(DbParam.Create("@provinceCode", data["provinceCode"].ToString()));
+                    param.Add(DbParam.Create("@provinceCode", data["provinceCode"]));
                 }
 
                 if (data.ContainsKey("districtCode"))
                 {
                     clause.Add("AND u.DistrictCode = @districtCode");
-                    param.Add(DbParam.Create("@districtCode", data["districtCode"].ToString()));
+                    param.Add(DbParam.Create("@districtCode", data["districtCode"]));
                 }
 
                 if (data.ContainsKey("wardCode"))
                 {
                     clause.Add("AND u.WardCode = @wardCode");
-                    param.Add(DbParam.Create("@wardCode", data["wardCode"].ToString()));
+                    param.Add(DbParam.Create("@wardCode", data["wardCode"]));
                 }
 
                 if (data.ContainsKey("userName"))
                 {
-                    clause.Add($"AND u.UserName LIKE '%{data["userName"].ToString().Replace(@"%", "\\%").Replace(@"_", "\\_").Trim()}%'");
+                    clause.Add($"AND u.UserName LIKE '%{data["userName"].Replace(@"%", "\\%").Replace(@"_", "\\_").Trim()}%'");
                 }
 
                 if (data.ContainsKey("accountType"))
                 {
                     clause.Add("AND u.AccountType = @accountType");
-                    param.Add(DbParam.Create("@accountType", data["accountType"].ToString()));
+                    param.Add(DbParam.Create("@accountType", data["accountType"]));
                 }
 
                 if (data.ContainsKey("userPhoneEmail"))
                 {
-                    clause.Add($"AND (u.PhoneNumber LIKE '%{data["userPhoneEmail"].ToString().Trim()}%' OR u.Email LIKE '%{data["userPhoneEmail"].ToString().Trim()}%')");
+                    clause.Add($"AND (u.PhoneNumber LIKE '%{data["userPhoneEmail"].Trim()}%' OR u.Email LIKE '%{data["userPhoneEmail"].Trim()}%')");
                 }
 
                 if (data.ContainsKey("group"))
@@ -98,7 +98,7 @@ namespace SHCServer.Controllers
                     {
                         int count = group.Count;
                         clause.Add($"AND ( u.UserId = {group[0].UserId}");
-                        for (int i = 1; i <  count - 1; i++)
+                        for (int i = 1; i < count - 1; i++)
                         {
                             clause.Add($"OR u.UserId = {group[i].UserId}");
                         }
@@ -114,10 +114,28 @@ namespace SHCServer.Controllers
             {
                 var data = JsonConvert.DeserializeObject<Dictionary<string, string>>(sorting);
 
+                if (data.ContainsKey("userId"))
+                {
+                    if (data["userId"] == "asc") clause.Add("ORDER BY u.UserId ASC");
+                    else clause.Add("ORDER BY u.UserId DESC");
+                }
+
                 if (data.ContainsKey("fullName"))
                 {
-                    if(data["fullName"].ToString() == "asc") clause.Add("ORDER BY u.fullName ASC");
-                    else clause.Add("ORDER BY u.fullName DESC");
+                    if (data["fullName"] == "asc") clause.Add("ORDER BY u.FullName ASC");
+                    else clause.Add("ORDER BY u.FullName DESC");
+                }
+
+                if (data.ContainsKey("userName"))
+                {
+                    if (data["userName"] == "asc") clause.Add("ORDER BY u.UserName ASC");
+                    else clause.Add("ORDER BY u.UserName DESC");
+                }
+
+                if (data.ContainsKey("accountType"))
+                {
+                    if (data["accountType"] == "asc") clause.Add("ORDER BY g.GroupName ASC");
+                    else clause.Add("ORDER BY g.GroupName DESC");
                 }
             }
 
@@ -190,34 +208,34 @@ namespace SHCServer.Controllers
         [Route("api/users-register")]
         public IActionResult Register([FromForm]UserInputViewModel obj)
         {
-            var User = _contextmdmdb.Query<UserMDM>();
+            var getUser = _contextmdmdb.Query<UserMDM>();
 
-            if (User.Where(u => u.UserName == obj.UserName.Trim()).Count() > 0)
+            if (getUser.Where(u => u.UserName == obj.UserName.Trim()).Count() > 0)
             {
                 return StatusCode(406, _excep.Throw("Thông báo", "Tài khoản đã tồn tại!"));
             }
 
-            if (User.Where(u => u.Email == obj.Email.Trim() && !string.IsNullOrEmpty(u.Email)).Count() > 0)
+            if (getUser.Where(u => u.Email == obj.Email.Trim() && !string.IsNullOrEmpty(u.Email)).Count() > 0)
             {
                 return StatusCode(406, _excep.Throw("Thông báo", "Email đã tồn tại!"));
             }
 
-            if (User.Where(u => u.Identification == obj.Identification && !string.IsNullOrEmpty(u.Identification)).Count() > 0)
+            if (getUser.Where(u => u.Identification == obj.Identification && !string.IsNullOrEmpty(u.Identification)).Count() > 0)
             {
                 return StatusCode(406, _excep.Throw("Thông báo", "Số CMND đã tồn tại!"));
             }
 
-            if (User.Where(u => u.CertificationCode == obj.CertificationCode && !string.IsNullOrEmpty(u.CertificationCode)).Count() > 0)
+            if (getUser.Where(u => u.CertificationCode == obj.CertificationCode && !string.IsNullOrEmpty(u.CertificationCode)).Count() > 0)
             {
                 return StatusCode(406, _excep.Throw("Thông báo", "Số GPHN đã tồn tại!"));
             }
 
-            if (User.Where(u => u.LisenceCode == obj.LisenceCode && !string.IsNullOrEmpty(u.LisenceCode)).Count() > 0)
+            if (getUser.Where(u => u.LisenceCode == obj.LisenceCode && !string.IsNullOrEmpty(u.LisenceCode)).Count() > 0)
             {
                 return StatusCode(406, _excep.Throw("Thông báo", "Số GPKD đã tồn tại!"));
             }
 
-            if (User.Where(u => u.Insurrance == obj.Insurrance && !string.IsNullOrEmpty(u.Insurrance)).Count() > 0)
+            if (getUser.Where(u => u.Insurrance == obj.Insurrance && !string.IsNullOrEmpty(u.Insurrance)).Count() > 0)
             {
                 return StatusCode(406, _excep.Throw("Thông báo", "Số thẻ BHYT  đã tồn tại!"));
             }
@@ -251,7 +269,7 @@ namespace SHCServer.Controllers
                     Insurrance = obj.Insurrance,
                     Identification = obj.Identification,
                     LisenceCode = obj.LisenceCode
-                }) ;
+                });
                 _contextmdmdb.Session.CommitTransaction();
 
                 UserMDM user = _contextmdmdb.Query<UserMDM>().Where(u => u.UserName == obj.UserName).FirstOrDefault();
@@ -306,7 +324,7 @@ namespace SHCServer.Controllers
                                 });
                                 _context.Session.CommitTransaction();
                             }
-                            
+
                         }
                     }
                 }
@@ -321,14 +339,14 @@ namespace SHCServer.Controllers
                 });
                 _context.Session.CommitTransaction();
 
-                _context.Session.BeginTransaction();
                 // Insert sys_users_attachs in smarthealthcare
-                var _files = Request.Form.Files;
-                if (_files.Count > 0)
+                _context.Session.BeginTransaction();
+                var files = Request.Form.Files;
+                if (files.Count > 0)
                 {
-                    foreach (var file in _files)
+                    foreach (var file in files)
                     {
-                        var uniqueFileName = GetUniqueFileName(convertToUnSign(file.FileName));
+                        var uniqueFileName = GetUniqueFileName(ConvertToUnSign(file.FileName));
                         var uploads = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
                         var filePath = Path.Combine(uploads, uniqueFileName);
                         if (file.Name == "cmnd")
@@ -389,7 +407,7 @@ namespace SHCServer.Controllers
             {
                 if (_context.Session.IsInTransaction) _context.Session.RollbackTransaction();
                 if (_contextmdmdb.Session.IsInTransaction) _contextmdmdb.Session.RollbackTransaction();
-                return StatusCode(500, _excep.Throw("Thông báo", e.Message.ToString()));
+                return StatusCode(500, _excep.Throw("Thông báo", e.Message));
             }
         }
 
@@ -446,8 +464,8 @@ namespace SHCServer.Controllers
 
                 _contextmdmdb.Session.CommitTransaction();
 
-                UserMDM User = _contextmdmdb.Query<UserMDM>().Where(u => u.UserName == obj.UserName).FirstOrDefault();
-                int userId = User != null ? User.UserId : 0;
+                UserMDM userMdm = _contextmdmdb.Query<UserMDM>().Where(u => u.UserName == obj.UserName).FirstOrDefault();
+                int userId = userMdm != null ? userMdm.UserId : 0;
 
                 // Update sys_users_groups in mdm
                 string[] groups;
@@ -591,12 +609,12 @@ namespace SHCServer.Controllers
                 }
 
                 _context.Session.BeginTransaction();
-                var _files = Request.Form.Files;
-                if (_files.Count > 0)
+                var files = Request.Form.Files;
+                if (files.Count > 0)
                 {
-                    foreach (var file in _files)
+                    foreach (var file in files)
                     {
-                        var uniqueFileName = GetUniqueFileName(convertToUnSign(file.FileName));
+                        var uniqueFileName = GetUniqueFileName(ConvertToUnSign(file.FileName));
                         var uploads = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
                         var filePath = Path.Combine(uploads, uniqueFileName);
                         if (file.Name == "cmnd")
@@ -780,7 +798,7 @@ namespace SHCServer.Controllers
         public IActionResult Approved([FromBody] UserInputViewModel obj)
         {
             var user = _context.Query<User>().Where(u => u.UserId == obj.UserId).FirstOrDefault();
-            
+
             int statusTmp = user.Status == 1 ? 2 : (user.Status == 2 ? 3 : 2);
             try
             {
@@ -836,7 +854,6 @@ namespace SHCServer.Controllers
         [Route("api/users")]
         public IActionResult Delete(int id)
         {
-            var user = _contextmdmdb.Query<UserMDM>().Where(q => q.UserId == id).FirstOrDefault();
             try
             {
                 _context.Session.BeginTransaction();
@@ -931,7 +948,7 @@ namespace SHCServer.Controllers
             }
         }
 
-        public bool SendMail(string sendTo, string newPassword,string user)
+        public bool SendMail(string sendTo, string newPassword, string user)
         {
             string userName = "configshc@gmail.com";
             string password = "Abc@123456";
@@ -944,7 +961,7 @@ namespace SHCServer.Controllers
                 MailMessage message = new MailMessage(userName, sendTo);
 
                 message.Subject = "[SHC] Thay đổi mật khẩu";
-                                                                                                 
+
                 message.Body = "Xin chào " + user + "\nChúng tôi vừa nhận được yêu cầu thay đổi mật khẩu từ phía bạn. Mật khẩu mới của bạn là: " + newPassword + "\nĐể bảo mật, bạn vui lòng thay đổi mật khẩu sau khi đăng nhập và không tiết lộ cho bất kỳ cá nhân nào.";
 
                 mailclient.Send(message);
@@ -957,7 +974,7 @@ namespace SHCServer.Controllers
             }
         }
 
-        public string convertToUnSign(string s)
+        public string ConvertToUnSign(string s)
         {
             Regex regex = new Regex("\\p{IsCombiningDiacriticalMarks}+");
             string temp = s.Normalize(NormalizationForm.FormD);
@@ -977,7 +994,7 @@ namespace SHCServer.Controllers
         [Route("api/users")]
         public IActionResult UpdatePassword([FromBody]ResetPasswordViewModel obj)
         {
-            var user = _contextmdmdb.Query<ResetPassword>().Where(u => ( u.Email == obj.Email || u.PhoneNumber == obj.PhoneNumber) && u.IsDelete == false).FirstOrDefault();
+            var user = _contextmdmdb.Query<ResetPassword>().Where(u => (u.Email == obj.Email || u.PhoneNumber == obj.PhoneNumber) && u.IsDelete == false).FirstOrDefault();
 
             if (user == null)
             {

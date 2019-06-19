@@ -83,7 +83,7 @@
         </div>
     </form>
     <div class="table-content" [perfectScrollbar]="{}">
-        <table mat-table [dataSource]="dataSources" matSort #sort="matSort" matSortActive="fullName" matSortDisableClear matSortDirection="asc" class="w-100 task">
+        <table mat-table [dataSource]="dataSources" matSort #sort="matSort" matSortActive="userId" matSortDisableClear matSortDirection="desc" class="w-100 task">
             <ng-container matColumnDef="orderNumber">
                 <th mat-header-cell *matHeaderCellDef class="min-w-30 text-center"> {{l("OrderNumber")}} </th>
                 <td mat-cell *matCellDef="let element; let i = index;" class="min-w-30 text-center">
@@ -95,16 +95,16 @@
                 <td mat-cell *matCellDef="let element">{{element.fullName}}</td>
             </ng-container>
             <ng-container matColumnDef="userName">
-                <th mat-header-cell *matHeaderCellDef class="min-w-30 text-center"> {{l('Tên tài khoản')}} </th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header class="min-w-30 text-center"> {{l('Tên tài khoản')}} </th>
                 <td mat-cell *matCellDef="let element"> {{element.userName}} </td>
             </ng-container>
 
             <ng-container matColumnDef="accountType">
-                <th mat-header-cell *matHeaderCellDef class="min-w-30 text-center"> {{l('Loại tài khoản')}} </th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header class="min-w-30 text-center"> {{l('Loại tài khoản')}} </th>
                 <td mat-cell *matCellDef="let element"> {{element.accountTypeName}} </td>
             </ng-container>
             <ng-container matColumnDef="groupName">
-                <th mat-header-cell *matHeaderCellDef class="min-w-30 text-center"> {{l('Nhóm tài khoản')}} </th>
+                <th mat-header-cell *matHeaderCellDef  class="min-w-30 text-center"> {{l('Nhóm tài khoản')}} </th>
                 <td mat-cell *matCellDef="let element"> {{element.groupName}} </td>
             </ng-container>
             <ng-container matColumnDef="phoneNumber">
