@@ -148,19 +148,19 @@
                                 <div class="col-md-9">
                                     <mat-form-field appearance="outline" class="w-100" *ngIf="flagShowLoadFileGPHN==0">
                                         <mat-label>{{l('Số thẻ bảo hiểm y tế')}}</mat-label>
-                                        <input formControlName="insurrance" matInput required (keyup)="ruleSpecialCharacter()" maxlength="255">
+                                        <input formControlName="insurrance" matInput required maxlength="255" (input)="inputInsurrance($event)">
                                         <validation matSuffix [control]="frmUser.controls['insurrance']"></validation>
                                     </mat-form-field>
 
                                     <mat-form-field appearance="outline" class="w-100" *ngIf="flagShowLoadFileGPHN==1">
                                         <mat-label>{{l('Số giấy phép hành nghề')}}</mat-label>
-                                        <input formControlName="certificationCode" matInput required (keyup)="ruleSpecialCharacter()" maxlength="255">
+                                        <input formControlName="certificationCode" matInput required  maxlength="255" (input)="inputCertificationCode($event)">
                                         <validation matSuffix [control]="frmUser.controls['certificationCode']"></validation>
                                     </mat-form-field>
 
                                     <mat-form-field appearance="outline" class="w-100 number-business" *ngIf="flagShowLoadFileGPHN==2">
                                         <mat-label>{{l('Số giấy phép kinh doanh')}}</mat-label>
-                                        <input formControlName="lisenceCode" matInput required (keyup)="ruleSpecialCharacter()" maxlength="255">
+                                        <input formControlName="lisenceCode" matInput required  maxlength="255" (input)="inputLisenceCode($event)">
                                         <validation matSuffix [control]="frmUser.controls['lisenceCode']"></validation>
                                     </mat-form-field>
                                 </div>
@@ -197,7 +197,7 @@
                                 <div class="col-md-9">
                                     <mat-form-field appearance="outline" class="w-100">
                                         <mat-label>{{l('Số CMND')}}</mat-label>
-                                        <input formControlName="identification" matInput required mask="0*" minlength="9" maxlength="12">
+                                        <input formControlName="identification" matInput required mask="0*" minlength="9" maxlength="12" >
                                         <validation matSuffix [control]="frmUser.controls['identification']"></validation>
                                     </mat-form-field>
                                 </div>
@@ -322,7 +322,7 @@
     </mat-tab-group>
     <div class="text-right mb-3">
         <button class="mr-3" mat-button mat-dialog-close>{{l('Close')}}</button>
-        <button mat-raised-button color="primary" (click)="submit()" [disabled]=" _selection.selected.length == 0 || _healths.length == 0">{{l('Save')}}</button>
+        <button mat-raised-button color="primary" (click)="submit()" [disabled]="frmUser.invalid || _selection.selected.length == 0 || _healths.length == 0">{{l('Save')}}</button>
     </div>
 </form>
 

@@ -147,7 +147,8 @@ namespace SHCServer.Controllers
                     Insurrance = reader["Insurrance"].ToString(),
                     Identification = reader["Identification"].ToString(),
                     LisenceCode = reader["LisenceCode"].ToString(),
-                    CertificationCode = reader["CertificationCode"].ToString()
+                    CertificationCode = reader["CertificationCode"].ToString(),
+                    BirthDay = reader["BirthDay"] != DBNull.Value ? DateTime.Parse(reader["BirthDay"].ToString()) : DateTime.Now
                 });
             }
             reader.Close();
