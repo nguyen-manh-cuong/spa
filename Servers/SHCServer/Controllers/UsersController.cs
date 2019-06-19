@@ -826,17 +826,17 @@ namespace SHCServer.Controllers
             var user = _contextmdmdb.Query<UserMDM>().Where(q => q.UserId == id).FirstOrDefault();
             try
             {
-                if (user.AccountType == 3)
+                _context.Session.BeginTransaction();
+                _context.Update<User>(g => g.UserId == id, a => new User
                 {
+                    IsDelete = true
+                });
 
-                }
-                else
-                {
-
-                }
+                _context.Session.CommitTransaction();
                 _contextmdmdb.Session.BeginTransaction();
 
-                _contextmdmdb.Update<User>(g => g.UserId == id, a => new User
+
+                _contextmdmdb.Update<UserMDM>(g => g.UserId == id, a => new UserMDM
                 {
                     IsDelete = true
                 });
