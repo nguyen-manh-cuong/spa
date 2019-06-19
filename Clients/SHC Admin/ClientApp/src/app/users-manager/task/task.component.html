@@ -47,7 +47,7 @@
                             <div class="col-md-2 text-right">
                                 <label class="mt-10">{{l('BirthDay')}}</label>
                             </div>
-                            <div class="col-md-1">
+                            <div class="col-md-2">
                                 <mat-form-field appearance="outline" class="w-100">
                                     <mat-select formControlName="_birthDay" (selectionChange)="onSelectDay()">
                                         <mat-option *ngFor="let o of _dates" [value]="o">{{ o }}</mat-option>
@@ -61,7 +61,7 @@
                                     </mat-select>
                                 </mat-form-field>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-2">
                                 <mat-form-field appearance="outline" class="w-100">
                                     <mat-select formControlName="_birthYear">
                                         <mat-option *ngFor="let o of _years" [value]="o">{{ o }}</mat-option>
