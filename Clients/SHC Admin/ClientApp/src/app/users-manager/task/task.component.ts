@@ -5,7 +5,6 @@ import { Component, Inject, Injector, OnInit, ViewEncapsulation, ViewChild } fro
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { IGroup, IUser } from '@shared/Interfaces';
 import { MAT_DIALOG_DATA, MatDialogRef, DateAdapter, MAT_DATE_LOCALE, MAT_DATE_FORMATS, MatTableDataSource, MatPaginator } from '@angular/material';
-
 import { AppComponentBase } from '@shared/app-component-base';
 import { CreateUserDto } from '@shared/service-proxies/service-proxies';
 import { DataService } from '@shared/service-proxies/service-data';
@@ -95,6 +94,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
     _certificateUrlsUpdate: Array<{ url: string, file: any, path: string, name: string }> = [];
 
     usersHeal = [];
+    highlight: boolean = false;
 
     constructor(injector: Injector, private _formBuilder: FormBuilder, private _dataService: DataService, public dialogRef: MatDialogRef<TaskComponent>, @Inject(MAT_DIALOG_DATA) public user: IUser) {
         super(injector);
@@ -197,21 +197,26 @@ export class TaskComponent extends AppComponentBase implements OnInit {
     // BHYT - Insurrance, CMND - Identification, GPHN - CertificationCode, GPKD - LicenseCode
     checkShowPathFile(value): void {
         if (1 === value) {
+            this.frmUser.controls['certificationCode'].setErrors(null);
+            this.frmUser.controls['lisenceCode'].setErrors(null);
             this.flagShowLoadFileCMND = true;
             this.flagShowLoadFileGPHN = 0;
         }
         else if (2 === value) {
+            this.frmUser.controls['insurrance'].setErrors(null);
+            this.frmUser.controls['lisenceCode'].setErrors(null);
             this.flagShowLoadFileCMND = true;
             this.flagShowLoadFileGPHN = 1;
         }
         else {
             this.flagShowLoadFileCMND = false;
             this.flagShowLoadFileGPHN = 2;
-
             this.getHealthFacilities();
             this._checked = -1;
-
             this._healths = [];
+            this.frmUser.controls['insurrance'].setErrors(null);
+            this.frmUser.controls['identification'].setErrors(null);
+            this.frmUser.controls['certificationCode'].setErrors(null);
         }
     }
 
@@ -418,6 +423,10 @@ export class TaskComponent extends AppComponentBase implements OnInit {
         if (event.target.value && event.target.value.length > 1 && !patternNum.test(event.target.value.trim().substring(1))) {
             this.frmUser.controls['phoneNumber'].setErrors({ special: true });
         }
+        event.target.value = this.replace_space(this.replace_alias(event.target.value));
+        if (event.target.value == '') {
+            this.frmUser.controls['phoneNumber'].setErrors({ 'required': true });
+        }
     }
 
     ruleEmail(event: any) {
@@ -520,6 +529,12 @@ export class TaskComponent extends AppComponentBase implements OnInit {
     inputInsurrance(event) {
         event.target.value = this.cleanSpace(cleanUnicode(event.target.value));
         this.frmUser.controls['insurrance'].setValue(this.cleanSpace(cleanUnicode(event.target.value)));
+    }
+
+    identificationInput($event) {
+        if ($event.target.value.length > 9 && $event.target.value.length < 12) {
+            this.frmUser.controls['identification'].setErrors({ identification:true})
+        }
     }
 
     inputCertificationCode(event) {

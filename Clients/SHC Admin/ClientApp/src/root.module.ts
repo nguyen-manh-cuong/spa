@@ -109,15 +109,16 @@ export function convertAbpLocaleToAngularLocale(locale: string): string {
 })
 
 export class RootModule {
+    static message: string;
     constructor() {
         abp.message.error = (message, title) => {
-            //swal({ type: 'error', title: title, text: message });
             swal({
+                type: 'error',
                 title: title,
                 text: message,
-                type: 'error',
-                timer: 3000,
+                timer: 3000
             });
+            RootModule.message = message;
         }
     }
 

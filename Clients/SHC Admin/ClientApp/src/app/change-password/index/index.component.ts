@@ -8,6 +8,7 @@ import { ValidationRule } from '@shared/common/common';
 import swal from 'sweetalert2';
 import { DomSanitizer, Title } from '@angular/platform-browser';
 import { AppAuthService } from '@shared/auth/app-auth.service';
+import { RootModule } from '../../../root.module';
 
 @Component({
     selector: 'app-index',
@@ -73,21 +74,39 @@ export class IndexComponent extends AppComponentBase implements OnInit {
 
     newPasswordInput(event) {
         event.target.value = this.replace_space(event.target.value);
-        if (event.target.value && event.target.value === this.frmResetPassword.controls['Password'].value) {
-            this.ckeckPasswordOldNew = true;
+
+        if (event.target.value != this.frmResetPassword.controls['RePassword'].value) {
+            this.frmResetPassword.controls['RePassword'].setErrors({ 'comparePassword': true });
+        } else {
+            this.frmResetPassword.controls['RePassword'].setErrors(null);
         }
-        else {
-            this.ckeckPasswordOldNew = false;
-        }
+        this.ckeckPasswordOldNew = false;
+        //this.checkCapcha();
+        //if (event.target.value && event.target.value === this.frmResetPassword.controls['Password'].value) {
+        //    this.ckeckPasswordOldNew = true;
+        //}
+        //else {
+        //    this.ckeckPasswordOldNew = false;
+        //}
     }
 
     passwordInput(event) {
         event.target.value = this.replace_space(event.target.value);
+        if (event.target.value == '') {
+            this.frmResetPassword.controls['Password'].setErrors({ required: true });
+        }
         this.checkOldPassword = true;
+        //this.checkCapcha();
     }
 
     repasswordInput(event) {
         event.target.value = this.replace_space(event.target.value);
+
+        if (event.target.value != this.frmResetPassword.controls['NewPassword'].value) {
+            this.frmResetPassword.controls['RePassword'].setErrors({ 'comparePassword': true });
+        }
+
+        //this.checkCapcha();
     }
 
     replace_alias(str) {
@@ -128,8 +147,8 @@ export class IndexComponent extends AppComponentBase implements OnInit {
             });
         }
         if (this.frmResetPassword.controls['capcha'].value != this._capcha.code) {
-            this.capcha = true;
-            this.frmResetPassword.controls['capcha'].setValue('');
+            this.capcha = false;
+            this.frmResetPassword.controls['capcha'].setErrors({ 'capcha': true });
             this.getCapcha();
             return;
         }
@@ -145,12 +164,21 @@ export class IndexComponent extends AppComponentBase implements OnInit {
                 this._authService.logout();
             });     
         }, err => {
-            this.checkOldPassword = false;
-            this.frmResetPassword.controls['capcha'].setValue('');
-            this.password.nativeElement.focus();
-
-            this.frmResetPassword.controls['capcha'].setErrors(null);
-            this.getCapcha();
+            if (RootModule.message == "Đổi mật khẩu không thành công. Mật khẩu hiện tại không đúng") {
+                this.checkOldPassword = false;
+                this.frmResetPassword.controls['capcha'].setValue('');
+                this.frmResetPassword.controls['capcha'].setErrors(null);
+                this.password.nativeElement.focus();
+                this.frmResetPassword.setErrors({ invalid: true });
+                this.getCapcha();
+            }
+            else {
+                this.ckeckPasswordOldNew = true;
+                this.frmResetPassword.controls['capcha'].setValue('');
+                this.frmResetPassword.controls['capcha'].setErrors(null);
+                this.frmResetPassword.setErrors({ invalid: true });
+                this.getCapcha();
+            }
         });
     }
 

@@ -113,6 +113,7 @@
                                         <input (input)="capchaInput($event)" (click)="capchaClick($event)" maxlength="4" formControlName="capcha" matInput autocomplete="off"
                                                [required]="true" class="form-control">
                                         <validation *ngIf="!capcha" matSuffix [control]="frmResetPassword.controls['capcha']"></validation>
+ 
                                     </div>
                                     <div class="col-md-5">
                                         <img [src]="_capcha.data" width="160" height="40" alt="" />

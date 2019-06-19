@@ -137,3 +137,23 @@ input:read-only {
     top: 7px;
     right: 8px;
 }
+.col-date .mat-form-field-wrapper{
+    margin-bottom: 0;
+}
+.help-block {
+    font-size: 11px;
+    margin-top: -15px;
+}
+.word-break-all {
+    word-break: break-all;
+}
+.btn-delete{
+    width: 91.7px;
+    height: 39px;
+}
+.btn-primary-inverted:hover {
+    background: #00a2a2 !important;
+    color: #fff !important;
+    transition: .4s all;
+    cursor: pointer;
+}
