@@ -147,3 +147,13 @@ input:read-only {
 .word-break-all {
     word-break: break-all;
 }
+.btn-delete{
+    width: 91.7px;
+    height: 39px;
+}
+.btn-primary-inverted:hover {
+    background: #00a2a2 !important;
+    color: #fff !important;
+    transition: .4s all;
+    cursor: pointer;
+}

@@ -419,6 +419,10 @@ export class TaskComponent extends AppComponentBase implements OnInit {
         if (event.target.value && event.target.value.length > 1 && !patternNum.test(event.target.value.trim().substring(1))) {
             this.frmUser.controls['phoneNumber'].setErrors({ special: true });
         }
+        event.target.value = this.replace_space(this.replace_alias(event.target.value));
+        if (event.target.value == '') {
+            this.frmUser.controls['phoneNumber'].setErrors({ 'required': true });
+        }
     }
 
     ruleEmail(event: any) {
