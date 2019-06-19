@@ -108,7 +108,20 @@ namespace SHCServer.Controllers
                 }
             }
 
-            clause.Add("GROUP BY u.UserId ORDER BY u.UserId DESC");
+            clause.Add("GROUP BY u.UserId");
+
+            if (sorting != null)
+            {
+                var data = JsonConvert.DeserializeObject<Dictionary<string, string>>(sorting);
+
+                if (data.ContainsKey("fullName"))
+                {
+                    if(data["fullName"].ToString() == "asc") clause.Add("ORDER BY u.fullName ASC");
+                    else clause.Add("ORDER BY u.fullName DESC");
+                }
+            }
+
+
             var readerAll = _contextmdmdb.Session.ExecuteReader($"{query} {string.Join(" ", clause)}", param);
             var total = 0;
 

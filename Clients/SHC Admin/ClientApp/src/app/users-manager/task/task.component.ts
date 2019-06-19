@@ -193,7 +193,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
         this.checkShowPathFile(this._user.accountType);
        
     }
-
+    //this.validateRule.identification
     // BHYT - Insurrance, CMND - Identification, GPHN - CertificationCode, GPKD - LicenseCode
     checkShowPathFile(value): void {
         if (1 === value) {

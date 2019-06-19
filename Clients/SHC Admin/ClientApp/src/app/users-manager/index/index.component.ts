@@ -16,7 +16,7 @@ import { ResetComponent } from '../reset/reset.component';
 })
 export class IndexComponent extends PagedListingComponentBase<IUser> implements OnInit, AfterViewInit {
 
-    displayedColumns = ['fullName', 'userName', 'groupName', 'accountType', 'phoneNumber', 'email', 'locality', '_approved', '_lock',  'task'];
+    displayedColumns = ['orderNumber', 'fullName', 'userName', 'groupName', 'accountType', 'phoneNumber', 'email', 'locality', '_approved', '_lock',  'task'];
 
     _provinces = [];
     _districts = [];
@@ -135,5 +135,14 @@ export class IndexComponent extends PagedListingComponentBase<IUser> implements 
                 });
             }
         })
+    }
+
+    ruleSpecialCharacter(): void {
+        var control = this.frmSearch.controls['userName'];
+        const pattern = /^[a-zA-Z0-9]*$/;
+
+        if (control.value && !pattern.test(control.value)) {
+            control.setValue(control.value.replace(/[^a-zA-Z0-9]/g, ""));
+        }
     }
 }
