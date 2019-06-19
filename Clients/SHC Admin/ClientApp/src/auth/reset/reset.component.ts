@@ -56,7 +56,7 @@ export class ResetComponent extends AppComponentBase implements OnInit {
 
     infoInput($event){
         //$event.target.value = this.replace_space($event.target.value);
-        if($event.target.value==''){
+        if($event.target.value.trim()==''){
             this.frmSecret.controls['info'].setErrors({'required':true});
         }
     }
