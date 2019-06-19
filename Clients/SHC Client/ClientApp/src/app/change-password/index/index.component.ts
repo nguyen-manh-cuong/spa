@@ -46,6 +46,7 @@ export class IndexComponent extends AppComponentBase implements OnInit {
     }
     //capchar
     capcha = false;
+    heighlight = false;
     _capcha: { code: string, data: any } = { code: '', data: '' };
 
     getCapcha() {
@@ -168,8 +169,9 @@ export class IndexComponent extends AppComponentBase implements OnInit {
         //    });
         //}
         if (this.frmResetPassword.controls['capcha'].value != this._capcha.code) {
-            this.capcha = true;
-            this.frmResetPassword.controls['capcha'].setValue('');
+            this.capcha = false;
+            this.heighlight = true;
+            this.frmResetPassword.controls['capcha'].setErrors({ 'capcha': true});            
             this.getCapcha();
             return;
         }

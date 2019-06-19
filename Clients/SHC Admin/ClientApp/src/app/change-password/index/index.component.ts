@@ -128,8 +128,8 @@ export class IndexComponent extends AppComponentBase implements OnInit {
             });
         }
         if (this.frmResetPassword.controls['capcha'].value != this._capcha.code) {
-            this.capcha = true;
-            this.frmResetPassword.controls['capcha'].setValue('');
+            this.capcha = false;
+            this.frmResetPassword.controls['capcha'].setErrors({ 'capcha': true });
             this.getCapcha();
             return;
         }
