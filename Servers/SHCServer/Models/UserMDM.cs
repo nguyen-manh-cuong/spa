@@ -35,5 +35,6 @@ namespace SHCServer.Models
         public string CertificationCode { get; set; }
         public string Insurrance { get; set; }
         public string LisenceCode { get; set; }
+        public bool? IsDelete { get; set; }
     }
 }

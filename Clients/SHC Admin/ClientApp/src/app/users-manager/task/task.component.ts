@@ -154,7 +154,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
         this._context = {
             userId: [this._user.userId],
             userName: [this._user.userName, [Validators.required, this.validateRule.hasValue]],
-            password: ['', [Validators.required, this.validateRule.passwordStrong]],
+            password: ['', [this._isNew ? Validators.required : this.validateRule.hasValueNull, this._isNew ? this.validateRule.passwordStrong : this.validateRule.hasValueNull]],
             fullName: [this._user.fullName, [Validators.required, this.validateRule.hasValue]],
             email: [this._user.email, this.validateRule.email],
             phoneNumber: [this._user.phoneNumber, this.validateRule.topPhoneNumber],
@@ -172,10 +172,10 @@ export class TaskComponent extends AppComponentBase implements OnInit {
             _birthYear: [this._user.birthDay ? ((new Date(this._user.birthDay)).getFullYear()) : (moment().year() - 100)],
             code: [],
             groupUser: [],
-            identification: [this._user.identification, [this.validateRule.identification, Validators.required]],
-            certificationCode: [this._user.certificationCode, [Validators.required]],
-            insurrance: [this._user.insurrance, [Validators.required]],
-            lisenceCode: [this._user.lisenceCode, [Validators.required]],
+            identification: [this._user.identification],
+            certificationCode: [this._user.certificationCode],
+            insurrance: [this._user.insurrance],
+            lisenceCode: [this._user.lisenceCode],
             createUserId: [this.appSession.userId],
             updateUserId: [this.appSession.userId],
             healthId: [],
@@ -191,31 +191,18 @@ export class TaskComponent extends AppComponentBase implements OnInit {
         this._dataService.getAll('provinces').subscribe(resp => this._provinces = resp.items);
 
         this.checkShowPathFile(this._user.accountType);
-
-        if (this.flagShowLoadFileGPHN === 0) {
-            this.flagShowLoadFileCMND = true;
-            this.flagShowLoadFileGPHN = 0;
-
-            this.frmUser.controls['certificationCode'].setErrors(null);
-            this.frmUser.controls['lisenceCode'].setErrors(null);
-        }
+       
     }
-
+    //this.validateRule.identification
     // BHYT - Insurrance, CMND - Identification, GPHN - CertificationCode, GPKD - LicenseCode
     checkShowPathFile(value): void {
         if (1 === value) {
             this.flagShowLoadFileCMND = true;
             this.flagShowLoadFileGPHN = 0;
-
-            this.frmUser.controls['certificationCode'].setErrors(null);
-            this.frmUser.controls['lisenceCode'].setErrors(null);
         }
         else if (2 === value) {
             this.flagShowLoadFileCMND = true;
             this.flagShowLoadFileGPHN = 1;
-
-            this.frmUser.controls['insurrance'].setErrors(null);
-            this.frmUser.controls['lisenceCode'].setErrors(null);
         }
         else {
             this.flagShowLoadFileCMND = false;
@@ -223,10 +210,6 @@ export class TaskComponent extends AppComponentBase implements OnInit {
 
             this.getHealthFacilities();
             this._checked = -1;
-
-            this.frmUser.controls['identification'].setErrors(null);
-            this.frmUser.controls['certificationCode'].setErrors(null);
-            this.frmUser.controls['insurrance'].setErrors(null);
 
             this._healths = [];
         }
@@ -268,17 +251,17 @@ export class TaskComponent extends AppComponentBase implements OnInit {
         this.frmUser.controls['groupUser'].setValue(this._selection.selected);
 
         if (1 === this.frmUser.controls['accountType'].value) {
-            this.frmUser.controls['certificationCode'].setValue(null);
-            this.frmUser.controls['lisenceCode'].setValue(null);
+            this.frmUser.controls['certificationCode'].setValue('');
+            this.frmUser.controls['lisenceCode'].setValue('');
         }
         else if (2 === this.frmUser.controls['accountType'].value) {
-            this.frmUser.controls['insurrance'].setValue(null);
-            this.frmUser.controls['lisenceCode'].setValue(null);
+            this.frmUser.controls['insurrance'].setValue('');
+            this.frmUser.controls['lisenceCode'].setValue('');
         }
         else {
-            this.frmUser.controls['identification'].setValue(null);
-            this.frmUser.controls['certificationCode'].setValue(null);
-            this.frmUser.controls['insurrance'].setValue(null);
+            this.frmUser.controls['identification'].setValue('');
+            this.frmUser.controls['certificationCode'].setValue('');
+            this.frmUser.controls['insurrance'].setValue('');
         }
         
         if (this._isNew) {

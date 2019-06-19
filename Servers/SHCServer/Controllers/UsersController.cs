@@ -108,7 +108,20 @@ namespace SHCServer.Controllers
                 }
             }
 
-            clause.Add("GROUP BY u.UserId ORDER BY u.UserId DESC");
+            clause.Add("GROUP BY u.UserId");
+
+            if (sorting != null)
+            {
+                var data = JsonConvert.DeserializeObject<Dictionary<string, string>>(sorting);
+
+                if (data.ContainsKey("fullName"))
+                {
+                    if(data["fullName"].ToString() == "asc") clause.Add("ORDER BY u.fullName ASC");
+                    else clause.Add("ORDER BY u.fullName DESC");
+                }
+            }
+
+
             var readerAll = _contextmdmdb.Session.ExecuteReader($"{query} {string.Join(" ", clause)}", param);
             var total = 0;
 
@@ -826,17 +839,17 @@ namespace SHCServer.Controllers
             var user = _contextmdmdb.Query<UserMDM>().Where(q => q.UserId == id).FirstOrDefault();
             try
             {
-                if (user.AccountType == 3)
+                _context.Session.BeginTransaction();
+                _context.Update<User>(g => g.UserId == id, a => new User
                 {
+                    IsDelete = true
+                });
 
-                }
-                else
-                {
-
-                }
+                _context.Session.CommitTransaction();
                 _contextmdmdb.Session.BeginTransaction();
 
-                _contextmdmdb.Update<User>(g => g.UserId == id, a => new User
+
+                _contextmdmdb.Update<UserMDM>(g => g.UserId == id, a => new UserMDM
                 {
                     IsDelete = true
                 });
@@ -918,7 +931,7 @@ namespace SHCServer.Controllers
             }
         }
 
-        public bool SendMail(string sendTo, string secretCode,string user)
+        public bool SendMail(string sendTo, string newPassword,string user)
         {
             string userName = "configshc@gmail.com";
             string password = "Abc@123456";
@@ -932,7 +945,7 @@ namespace SHCServer.Controllers
 
                 message.Subject = "[SHC] Thay đổi mật khẩu";
                                                                                                  
-                message.Body = "Xin chào " + user + "\nChúng tôi vừa nhận được yêu cầu thay đổi mật khẩu từ phía bạn"+ "\nVui lòng sử dụng mã bí mật để thay đổi mật khẩu: " + secretCode + "\nĐể bảo mật, bạn vui lòng thay đổi mật khẩu sau khi đăng nhập và không tiết lộ cho bất kỳ cá nhân nào.";
+                message.Body = "Xin chào " + user + "\nChúng tôi vừa nhận được yêu cầu thay đổi mật khẩu từ phía bạn. Mật khẩu mới của bạn là: " + newPassword + "\nĐể bảo mật, bạn vui lòng thay đổi mật khẩu sau khi đăng nhập và không tiết lộ cho bất kỳ cá nhân nào.";
 
                 mailclient.Send(message);
 

@@ -82,8 +82,8 @@ namespace AdminServer.Controllers
                 objs
                 .Skip(skipCount * maxResultCount)
                 .Take(maxResultCount)
-                .OrderBy(o => o.ApplicationName)
-                .ThenBy(o => o.GroupName)
+                .OrderBy(o => o.GroupName)
+                .ThenBy(o => o.ApplicationName)
                 .ToList(),
                     TotalCount = objs.Count()
                 }
