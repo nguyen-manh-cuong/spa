@@ -22,6 +22,12 @@ export class ValidationRule {
         return null;
     }
 
+    //Kiem tra space, null
+    hasValueNull(control: AbstractControl) {
+        
+        return null;
+    }
+
     //Kiem tra special character
     hasSpecialCharacter(control: AbstractControl) {
         const pattern = /^[0-9]*$/;

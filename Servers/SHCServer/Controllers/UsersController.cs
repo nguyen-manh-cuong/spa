@@ -257,14 +257,15 @@ namespace SHCServer.Controllers
                             if (ids.Length == 2)
                             {
                                 _contextmdmdb.Session.BeginTransaction();
-                                string subQuery = "INSERT INTO sys_users_groups (UserId, GroupId, ApplicationId) VALUES ";
+                                string subQuery = "INSERT INTO sys_users_groups (UserId, GroupId, ApplicationId, CreateUserId, CreateDate) VALUES ";
                                 var subParamQuery = new List<string>();
                                 var subParam = new List<DbParam>();
 
-                                subParamQuery.Add($"(@UserId, @GroupId, @ApplicationId)");
+                                subParamQuery.Add($"(@UserId, @GroupId, @ApplicationId, @CreateUserId, {DateTime.Now})");
                                 subParam.Add(DbParam.Create("@UserId", userId));
                                 subParam.Add(DbParam.Create("@GroupId", int.Parse(ids[0].Trim())));
                                 subParam.Add(DbParam.Create("@ApplicationId", int.Parse(ids[1].Trim())));
+                                subParam.Add(DbParam.Create("@CreateUserId", obj.CreateUserId));
                                 _contextmdmdb.Session.ExecuteNonQuery($"{subQuery} {string.Join(",", subParamQuery)}", subParam);
                                 _contextmdmdb.Session.CommitTransaction();
                             }
@@ -826,17 +827,17 @@ namespace SHCServer.Controllers
             var user = _contextmdmdb.Query<UserMDM>().Where(q => q.UserId == id).FirstOrDefault();
             try
             {
-                if (user.AccountType == 3)
+                _context.Session.BeginTransaction();
+                _context.Update<User>(g => g.UserId == id, a => new User
                 {
+                    IsDelete = true
+                });
 
-                }
-                else
-                {
-
-                }
+                _context.Session.CommitTransaction();
                 _contextmdmdb.Session.BeginTransaction();
 
-                _contextmdmdb.Update<User>(g => g.UserId == id, a => new User
+
+                _contextmdmdb.Update<UserMDM>(g => g.UserId == id, a => new UserMDM
                 {
                     IsDelete = true
                 });
