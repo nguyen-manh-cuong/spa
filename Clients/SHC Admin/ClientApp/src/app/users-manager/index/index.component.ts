@@ -1,15 +1,12 @@
 import { AfterViewInit, Component, Injector, OnInit } from '@angular/core';
 import { IGroup, IUser } from '@shared/Interfaces';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material';
-import { catchError, map, startWith, switchMap, window } from 'rxjs/operators';
-import { merge, of } from 'rxjs';
+import { MatDialog } from '@angular/material';
 
 import { DataService } from '@shared/service-proxies/service-data';
 import { FormBuilder } from '@angular/forms';
 import { PagedListingComponentBase } from '@shared/paged-listing-component-base';
 import { TaskComponent } from '../task/task.component';
 import swal from 'sweetalert2';
-import { zipObject } from 'lodash';
 import { ResetComponent } from '../reset/reset.component';
 
 @Component({
@@ -58,7 +55,7 @@ export class IndexComponent extends PagedListingComponentBase<IUser> implements 
             buttonsStyling: false
         }).then((result) => {
             if (result.value) {
-                const dialogRef = this.dialog.open(this.dialogResetComponent, { minWidth: 'calc(100vw/2)', maxWidth: 'calc(100vw - 300px)', disableClose: true, data: obj ? obj : null });
+                const dialogRef = this.dialog.open(this.dialogResetComponent, { minWidth: 'calc(50/2)', maxWidth: 'calc(50 - 50)', disableClose: true, data: obj ? obj : null });
                 dialogRef.afterClosed().subscribe(() => {
                     this.paginator.pageIndex = 0;
                     this.paginator._changePageSize(this.paginator.pageSize);
@@ -67,14 +64,14 @@ export class IndexComponent extends PagedListingComponentBase<IUser> implements 
         });
     }
 
-    onSelectProvince(obj: any) {
+    onSelectProvince(obj: any): void {
         this._districts = this._wards = [];
         this.frmSearch.patchValue({ districtCode: null, wardCode: null });
         const province = this._provinces.find((o: { provinceCode: string, name: string; }) => o.provinceCode === obj);
         if (province) { this.dataService.get('districts', JSON.stringify({ ProvinceCode: province.provinceCode }), '', 0, 0).subscribe(resp => this._districts = resp.items); }
     }
 
-    onSelectDistrict(obj: any) {
+    onSelectDistrict(obj: any): void {
         this._wards = [];
         this.frmSearch.patchValue({ wardCode: null });
         const district = this._districts.find((o: { districtCode: string, name: string; }) => o.districtCode === obj);
@@ -82,15 +79,17 @@ export class IndexComponent extends PagedListingComponentBase<IUser> implements 
     }
 
     onHandleApproved(user: any, event) {
-
         if (user.status == 0) {
-            console.log(12, event);
-            event.checked = !event.checked;
             return swal({
                 title: 'Thông báo',
                 text: 'Tài khoản hiện đang khóa.',
                 type: 'warning',
                 timer: 3000
+            }).then((result) => {
+                console.log(12, result);
+                if (result.value) {
+                    this.dataService.get(this.api, '', '', this.paginator.pageIndex, this.paginator.pageSize).subscribe(data => this.dataSources.data = data.items);
+                }
             })
         }
 
@@ -116,8 +115,8 @@ export class IndexComponent extends PagedListingComponentBase<IUser> implements 
         })
     }
 
-    onHandleLock(user: any, event) {
-        let msg = user.status == 1 ? `${user.userName} sẽ được mở khóa` : `${user.userName} sẽ bị khóa`;
+    onHandleLock(user: any, event): void {
+        let msg = user.status == 0 ? `${user.userName} sẽ được mở khóa` : `${user.userName} sẽ bị khóa`;
         swal({
             title: this.l('Thông báo'),
             text: this.l(`Bạn có chắc không? ${msg}`),
@@ -136,12 +135,5 @@ export class IndexComponent extends PagedListingComponentBase<IUser> implements 
                 });
             }
         })
-    }
-
-    getGroupNameByUserId(id: any) {
-        this._dataService.get('groups-name', JSON.stringify({'userId': id}), null, null, null).subscribe(resp => {
-            //this._groups = resp.items;
-            console.log(1, resp.items);
-        });
     }
 }

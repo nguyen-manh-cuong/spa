@@ -5,7 +5,6 @@ import { Component, Inject, Injector, OnInit, ViewEncapsulation, ViewChild } fro
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { IGroup, IUser } from '@shared/Interfaces';
 import { MAT_DIALOG_DATA, MatDialogRef, DateAdapter, MAT_DATE_LOCALE, MAT_DATE_FORMATS, MatTableDataSource, MatPaginator } from '@angular/material';
-import { identity, pickBy } from 'lodash';
 
 import { AppComponentBase } from '@shared/app-component-base';
 import { CreateUserDto } from '@shared/service-proxies/service-proxies';
@@ -14,6 +13,7 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { ValidationRule } from '@shared/common/common';
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import swal from 'sweetalert2';
+import { cleanUnicode } from '../../../shared/helpers/utils';
 
 export const MY_FORMATS = {
     parse: {
@@ -73,7 +73,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
 
     _dates = _.range(1, 32);
     _months = _.range(1, 13);
-    _years = _.range(moment().year() - 100, moment().year());
+    _years = _.range(moment().year() - 100, moment().year() + 1);
     _invaliBirthday = false;
 
     flagShowLoadFileCMND: boolean = true;
@@ -173,9 +173,9 @@ export class TaskComponent extends AppComponentBase implements OnInit {
             code: [],
             groupUser: [],
             identification: [this._user.identification, [this.validateRule.identification, Validators.required]],
-            certificationCode: [this._user.certificationCode],
-            insurrance: [this._user.insurrance],
-            lisenceCode: [this._user.lisenceCode],
+            certificationCode: [this._user.certificationCode, [Validators.required]],
+            insurrance: [this._user.insurrance, [Validators.required]],
+            lisenceCode: [this._user.lisenceCode, [Validators.required]],
             createUserId: [this.appSession.userId],
             updateUserId: [this.appSession.userId],
             healthId: [],
@@ -191,10 +191,18 @@ export class TaskComponent extends AppComponentBase implements OnInit {
         this._dataService.getAll('provinces').subscribe(resp => this._provinces = resp.items);
 
         this.checkShowPathFile(this._user.accountType);
+
+        if (this.flagShowLoadFileGPHN === 0) {
+            this.flagShowLoadFileCMND = true;
+            this.flagShowLoadFileGPHN = 0;
+
+            this.frmUser.controls['certificationCode'].setErrors(null);
+            this.frmUser.controls['lisenceCode'].setErrors(null);
+        }
     }
 
     // BHYT - Insurrance, CMND - Identification, GPHN - CertificationCode, GPKD - LicenseCode
-    checkShowPathFile(value) {
+    checkShowPathFile(value): void {
         if (1 === value) {
             this.flagShowLoadFileCMND = true;
             this.flagShowLoadFileGPHN = 0;
@@ -349,14 +357,14 @@ export class TaskComponent extends AppComponentBase implements OnInit {
                 if (file.type == 'image/jpeg' || file.type == 'image/png' || 'image/jpg') {
                     if (type == 'idCard') {
                         reader.onload = (e: any) => {
-                            this._idCardUrls.push({ url: "/assets/images/212328-200.png", file: file, path: this.replace_alias(file.name), name: this.ruleFileName(file.name) });
+                            this._idCardUrls.push({ url: "/assets/images/212328-200.png", file: file, path: this.replace_alias(file.name), name: file.name });
                         }
                         this.arrayIdCard.push(file);
                     }
 
                     if (type == 'certificate') {
                         reader.onload = (e: any) => {
-                            this._certificateUrls.push({ url: "/assets/images/212328-200.png", file: file, path: this.replace_alias(file.name), name: this.ruleFileName(file.name) });
+                            this._certificateUrls.push({ url: "/assets/images/212328-200.png", file: file, path: this.replace_alias(file.name), name: file.name });
                         }
                         this.arrayCertificate.push(file);
                     }
@@ -365,13 +373,13 @@ export class TaskComponent extends AppComponentBase implements OnInit {
                 else if (file.type == 'application/pdf') {
                     if (type == 'idCard') {
                         reader.onload = (e: any) => {
-                            this._idCardUrls.push({ url: "/assets/images/24-512.png", file: file, path: this.replace_alias(file.name), name: this.ruleFileName(file.name) });
+                            this._idCardUrls.push({ url: "/assets/images/24-512.png", file: file, path: this.replace_alias(file.name), name: file.name });
                         }
                         this.arrayIdCard.push(file);
                     }
                     else if (type == 'certificate') {
                         reader.onload = (e: any) => {
-                            this._certificateUrls.push({ url: "/assets/images/24-512.png", file: file, path: this.replace_alias(file.name), name: this.ruleFileName(file.name) });
+                            this._certificateUrls.push({ url: "/assets/images/24-512.png", file: file, path: this.replace_alias(file.name), name: file.name });
                         };
                         this.arrayCertificate.push(file);
                     }
@@ -498,7 +506,6 @@ export class TaskComponent extends AppComponentBase implements OnInit {
     _checked = -1;
     _healths = [];
     getHealth(health: any, event: any) {
-       
         if (event.checked) {
             this._checked = health.code;
             if (this.flagShowLoadFileGPHN == 2) {
@@ -521,14 +528,30 @@ export class TaskComponent extends AppComponentBase implements OnInit {
         });
     }
 
+    // Xóa khoảng trắng
+    cleanSpace(str) {
+        str = str.replace(/ /g, "");
+        return str;
+    }
+    // Xóa khoảng trắng và kí tự unicode
+    inputInsurrance(event) {
+        event.target.value = this.cleanSpace(cleanUnicode(event.target.value));
+        this.frmUser.controls['insurrance'].setValue(this.cleanSpace(cleanUnicode(event.target.value)));
+    }
+
+    inputCertificationCode(event) {
+        event.target.value = this.cleanSpace(cleanUnicode(event.target.value));
+        this.frmUser.controls['certificationCode'].setValue(this.cleanSpace(cleanUnicode(event.target.value)));
+    }
+
+    inputLisenceCode(event) {
+        event.target.value = this.cleanSpace(cleanUnicode(event.target.value));
+        this.frmUser.controls['lisenceCode'].setValue(this.cleanSpace(cleanUnicode(event.target.value)));
+    }
+
     ngAfterViewInit(): void {
-        
         this._dataService.get('healthfacility','', '', this.paginator.pageIndex, this.paginator.pageSize).subscribe(resp => {
             this.dataSource.data = resp.items;
-            let length = resp.items.length;
-            for (let item of this.dataSource.data) {
-                
-            }
             this.totalItems = resp.totalCount;
         });
     }
