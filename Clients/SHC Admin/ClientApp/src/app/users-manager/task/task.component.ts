@@ -5,7 +5,6 @@ import { Component, Inject, Injector, OnInit, ViewEncapsulation, ViewChild } fro
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { IGroup, IUser } from '@shared/Interfaces';
 import { MAT_DIALOG_DATA, MatDialogRef, DateAdapter, MAT_DATE_LOCALE, MAT_DATE_FORMATS, MatTableDataSource, MatPaginator } from '@angular/material';
-
 import { AppComponentBase } from '@shared/app-component-base';
 import { CreateUserDto } from '@shared/service-proxies/service-proxies';
 import { DataService } from '@shared/service-proxies/service-data';
@@ -198,21 +197,26 @@ export class TaskComponent extends AppComponentBase implements OnInit {
     // BHYT - Insurrance, CMND - Identification, GPHN - CertificationCode, GPKD - LicenseCode
     checkShowPathFile(value): void {
         if (1 === value) {
+            this.frmUser.controls['certificationCode'].setErrors(null);
+            this.frmUser.controls['lisenceCode'].setErrors(null);
             this.flagShowLoadFileCMND = true;
             this.flagShowLoadFileGPHN = 0;
         }
         else if (2 === value) {
+            this.frmUser.controls['insurrance'].setErrors(null);
+            this.frmUser.controls['lisenceCode'].setErrors(null);
             this.flagShowLoadFileCMND = true;
             this.flagShowLoadFileGPHN = 1;
         }
         else {
             this.flagShowLoadFileCMND = false;
             this.flagShowLoadFileGPHN = 2;
-
             this.getHealthFacilities();
             this._checked = -1;
-
             this._healths = [];
+            this.frmUser.controls['insurrance'].setErrors(null);
+            this.frmUser.controls['identification'].setErrors(null);
+            this.frmUser.controls['certificationCode'].setErrors(null);
         }
     }
 
