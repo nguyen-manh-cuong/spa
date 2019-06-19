@@ -527,6 +527,12 @@ export class TaskComponent extends AppComponentBase implements OnInit {
         this.frmUser.controls['insurrance'].setValue(this.cleanSpace(cleanUnicode(event.target.value)));
     }
 
+    identificationInput($event) {
+        if ($event.target.value.length > 9 && $event.target.value.length < 12) {
+            this.frmUser.controls['identification'].setErrors({ identification:true})
+        }
+    }
+
     inputCertificationCode(event) {
         event.target.value = this.cleanSpace(cleanUnicode(event.target.value));
         this.frmUser.controls['certificationCode'].setValue(this.cleanSpace(cleanUnicode(event.target.value)));

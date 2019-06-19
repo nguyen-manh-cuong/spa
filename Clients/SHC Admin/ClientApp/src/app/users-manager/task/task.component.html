@@ -197,7 +197,7 @@
                                 <div class="col-md-9">
                                     <mat-form-field appearance="outline" class="w-100">
                                         <mat-label>{{l('Số CMND')}}</mat-label>
-                                        <input formControlName="identification" matInput required mask="0*" minlength="9" maxlength="12" >
+                                        <input formControlName="identification" (input)="identificationInput($event)" matInput required mask="0*" minlength="9" maxlength="12" >
                                         <validation matSuffix [control]="frmUser.controls['identification']"></validation>
                                     </mat-form-field>
                                 </div>
