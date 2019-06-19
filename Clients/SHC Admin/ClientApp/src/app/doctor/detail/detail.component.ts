@@ -224,7 +224,7 @@ export class DetailComponent extends AppComponentBase implements OnInit, AfterVi
 
   ngOnInit() {
     this.dataService = this._dataService;
-    this.uploadBaseUrl=AppConsts.uploadBaseUrl;
+    this.uploadBaseUrl = AppConsts.remoteServiceBaseUrl.substring(0, AppConsts.remoteServiceBaseUrl.indexOf("9008") + 4) + "/wwwroot";
     this.getProvinces();
     this.getTitles();
     this.getPositions();
