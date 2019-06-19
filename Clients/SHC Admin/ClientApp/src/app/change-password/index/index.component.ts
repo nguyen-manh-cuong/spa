@@ -8,6 +8,7 @@ import { ValidationRule } from '@shared/common/common';
 import swal from 'sweetalert2';
 import { DomSanitizer, Title } from '@angular/platform-browser';
 import { AppAuthService } from '@shared/auth/app-auth.service';
+import { RootModule } from '../../../root.module';
 
 @Component({
     selector: 'app-index',
@@ -163,12 +164,21 @@ export class IndexComponent extends AppComponentBase implements OnInit {
                 this._authService.logout();
             });     
         }, err => {
-            this.checkOldPassword = false;
-            this.frmResetPassword.controls['capcha'].setValue('');
-            this.password.nativeElement.focus();
-
-            this.frmResetPassword.controls['capcha'].setErrors(null);
-            this.getCapcha();
+            if (RootModule.message == "Đổi mật khẩu không thành công. Mật khẩu hiện tại không đúng") {
+                this.checkOldPassword = false;
+                this.frmResetPassword.controls['capcha'].setValue('');
+                this.frmResetPassword.controls['capcha'].setErrors(null);
+                this.password.nativeElement.focus();
+                this.frmResetPassword.setErrors({ invalid: true });
+                this.getCapcha();
+            }
+            else {
+                this.ckeckPasswordOldNew = true;
+                this.frmResetPassword.controls['capcha'].setValue('');
+                this.frmResetPassword.controls['capcha'].setErrors(null);
+                this.frmResetPassword.setErrors({ invalid: true });
+                this.getCapcha();
+            }
         });
     }
 
