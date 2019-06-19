@@ -177,7 +177,7 @@
                             <div class="row" *ngFor="let o of _certificateUrls; let i = index">
                                 <!--<div class="col-md-2"><img src="{{o.url}}" class="rounded mb-3 selFile" title={{o.name}} width="50"></div>-->
                                 <div class="col-md-9"><p title="{{o.path}}" class="img-name word-break-all">{{o.name}}</p></div>
-                                <div class="col-md-3 mr-auto"><span class="btn btn-primary btn-delete" (click)="removeFile(i, 2)"><i aria-hidden="true" class="fa  fa-trash-alt"></i>Xóa file</span></div>
+                                <div class="col-md-3 mr-auto"><span class="btn btn-primary btn-delete d-block btn-primary-inverted" (click)="removeFile(i, 2)"><i aria-hidden="true" class="fa  fa-trash-alt"></i>Xóa file</span></div>
                             </div>
                         </div>
 
@@ -185,7 +185,7 @@
                             <div class="row" *ngFor="let o of _certificateUrlsUpdate; let i = index">
                                 <!--<div class="col-md-2"><img src="{{o.url}}" class="rounded mb-3 selFile" title={{o.name}} width="50"></div>-->
                                 <div class="col-md-9"><p title="{{o.path}}" class="img-name word-break-all">{{getFileName(o.path)}}</p></div>
-                                <div class="col-md-3 mr-auto"><span class="btn btn-primary btn-delete" (click)="onRemoveFile(i, 2)"><i aria-hidden="true" class="fa  fa-trash-alt"></i>Xóa file</span></div>
+                                <div class="col-md-3 mr-auto"><span class="btn btn-primary btn-delete d-block btn-primary-inverted" (click)="onRemoveFile(i, 2)"><i aria-hidden="true" class="fa  fa-trash-alt"></i>Xóa file</span></div>
                             </div>
                         </div>
                         <div class="upload-target"><div class="row"></div></div>
@@ -213,7 +213,7 @@
                             <div class="row" *ngFor="let o of _idCardUrlsUpdate; let i = index">
                                 <!--<div class="col-md-2"><img src="{{o.url}}" class="rounded mb-3 selFile" title={{o.name}} width="50"></div>-->
                                 <div class="col-md-9"><p title="{{o.path}}" class="img-name word-break-all">{{getFileName(o.path)}}</p></div>
-                                <div class="col-md-3 ml-auto"><span class="btn btn-primary btn-delete" (click)="onRemoveFile(i, 1)"><i aria-hidden="true"></i>Xóa file</span></div>
+                                <div class="col-md-3 ml-auto"><span class="btn btn-primary btn-delete d-block btn-primary-inverted" (click)="onRemoveFile(i, 1)"><i aria-hidden="true"></i>Xóa file</span></div>
                             </div>
                         </div>
 
@@ -221,7 +221,7 @@
                             <div class="row" *ngFor="let o of _idCardUrls; let i = index">
                                 <!--<div class="col-md-2"><img src="{{o.url}}" class="rounded mb-3 selFile" title={{o.name}} width="50"></div>-->
                                 <div class="col-md-9"><p title="{{o.path}}" class="img-name word-break-all">{{o.name}}</p></div>
-                                <div class="col-md-3 ml-auto"><span class="btn btn-primary btn-delete" (click)="removeFile(i, 1)"><i aria-hidden="true"></i>Xóa file</span></div>
+                                <div class="col-md-3 ml-auto"><span class="btn btn-primary btn-delete d-block btn-primary-inverted" (click)="removeFile(i, 1)"><i aria-hidden="true"></i>Xóa file</span></div>
                             </div>
                         </div>
 
