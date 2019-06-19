@@ -931,7 +931,7 @@ namespace SHCServer.Controllers
             }
         }
 
-        public bool SendMail(string sendTo, string secretCode,string user)
+        public bool SendMail(string sendTo, string newPassword,string user)
         {
             string userName = "configshc@gmail.com";
             string password = "Abc@123456";
@@ -945,7 +945,7 @@ namespace SHCServer.Controllers
 
                 message.Subject = "[SHC] Thay đổi mật khẩu";
                                                                                                  
-                message.Body = "Xin chào " + user + "\nChúng tôi vừa nhận được yêu cầu thay đổi mật khẩu từ phía bạn"+ "\nVui lòng sử dụng mã bí mật để thay đổi mật khẩu: " + secretCode + "\nĐể bảo mật, bạn vui lòng thay đổi mật khẩu sau khi đăng nhập và không tiết lộ cho bất kỳ cá nhân nào.";
+                message.Body = "Xin chào " + user + "\nChúng tôi vừa nhận được yêu cầu thay đổi mật khẩu từ phía bạn. Mật khẩu mới của bạn là: " + newPassword + "\nĐể bảo mật, bạn vui lòng thay đổi mật khẩu sau khi đăng nhập và không tiết lộ cho bất kỳ cá nhân nào.";
 
                 mailclient.Send(message);
 
