@@ -73,21 +73,39 @@ export class IndexComponent extends AppComponentBase implements OnInit {
 
     newPasswordInput(event) {
         event.target.value = this.replace_space(event.target.value);
-        if (event.target.value && event.target.value === this.frmResetPassword.controls['Password'].value) {
-            this.ckeckPasswordOldNew = true;
+
+        if (event.target.value != this.frmResetPassword.controls['RePassword'].value) {
+            this.frmResetPassword.controls['RePassword'].setErrors({ 'comparePassword': true });
+        } else {
+            this.frmResetPassword.controls['RePassword'].setErrors(null);
         }
-        else {
-            this.ckeckPasswordOldNew = false;
-        }
+        this.ckeckPasswordOldNew = false;
+        //this.checkCapcha();
+        //if (event.target.value && event.target.value === this.frmResetPassword.controls['Password'].value) {
+        //    this.ckeckPasswordOldNew = true;
+        //}
+        //else {
+        //    this.ckeckPasswordOldNew = false;
+        //}
     }
 
     passwordInput(event) {
         event.target.value = this.replace_space(event.target.value);
+        if (event.target.value == '') {
+            this.frmResetPassword.controls['Password'].setErrors({ required: true });
+        }
         this.checkOldPassword = true;
+        //this.checkCapcha();
     }
 
     repasswordInput(event) {
         event.target.value = this.replace_space(event.target.value);
+
+        if (event.target.value != this.frmResetPassword.controls['NewPassword'].value) {
+            this.frmResetPassword.controls['RePassword'].setErrors({ 'comparePassword': true });
+        }
+
+        //this.checkCapcha();
     }
 
     replace_alias(str) {

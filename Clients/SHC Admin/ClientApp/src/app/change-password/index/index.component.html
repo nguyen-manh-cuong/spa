@@ -9,15 +9,14 @@
                     <form [formGroup]="frmResetPassword" novalidate class="form-change-password">
                         <mat-form-field appearance="outline" class="w-100" [ngClass]="{'mat-form-field-invalid': !checkOldPassword }">
                             <mat-label>{{l("Mật khẩu hiện tại")}}</mat-label>
-                            <input formControlName="Password" #password matInput type="password" (paste)="onPaste()"  autocomplete="off" (input)="passwordInput($event)" [required]="true" maxlength="255" minlength="8" class="form-control">
+                            <input formControlName="Password" #password matInput type="password" (paste)="onPaste()" autocomplete="off" (input)="passwordInput($event)" [required]="true" maxlength="255" minlength="8" class="form-control">
                             <validation matSuffix [control]="frmResetPassword.controls['Password']"></validation>
                         </mat-form-field>
                         <mat-form-field appearance="outline" class="w-100 mat-form-field-new-password" [ngClass]="{'mat-form-field-invalid': ckeckPasswordOldNew }">
                             <mat-label>{{l("Mật khẩu mới")}}</mat-label>
                             <input formControlName="NewPassword" type="password" (input)="newPasswordInput($event)" matInput maxlength="255" minlength="8" [required]="true" class="form-control" title="Mật khẩu cần có ít nhất 8 kí tự">
-                            <!--<validation matSuffix [control]="frmResetPassword.controls['NewPassword']"></validation>-->
                             <validation matSuffix [control]="frmResetPassword.controls['NewPassword']"></validation>
-                            <mat-icon matSuffix *ngIf="ckeckPasswordOldNew && frmResetPassword.controls['NewPassword'].valid" matTooltipClass="bg-danger text-light" matTooltip="Mật khẩu mới không được trùng mật khẩu hiện tại" color="warn">info</mat-icon>
+                            <!--<mat-icon matSuffix *ngIf="ckeckPasswordOldNew && frmResetPassword.controls['NewPassword'].valid" matTooltipClass="bg-danger text-light" matTooltip="Mật khẩu mới không được trùng mật khẩu hiện tại" color="warn">info</mat-icon>-->
                         </mat-form-field>
                         <label class="lbl-note"> Mật khẩu phải chứa chữ hoa, chữ thường, số và kí tự đặc biệt</label>
                         <mat-form-field appearance="outline" class="w-100">
@@ -25,16 +24,17 @@
                             <input formControlName="RePassword" type="password" (input)="repasswordInput($event)" matInput [required]="true" maxlength="255" minlength="8" class="form-control">
                             <validation matSuffix [control]="frmResetPassword.controls['RePassword']"></validation>
                         </mat-form-field>
+
                         <div class="row">
                             <div class="col-md-6">
                                 <mat-form-field appearance="outline" class="w-100">
                                     <mat-label>{{l("ResetCapcha")}}</mat-label>
-                                    <input (input)="capchaInput($event)" (click) ="capchaClick($event)" maxlength="4" formControlName="capcha" matInput autocomplete="off"
+                                    <input (input)="capchaInput($event)" (click)="capchaClick($event)" maxlength="4" formControlName="capcha" matInput autocomplete="off"
                                            [required]="true" class="form-control">
                                     <!--<mat-icon matSuffix *ngIf="capcha" matTooltipClass="bg-danger text-light"
-                                              matTooltip="Sai mã xác nhận" color="warn">
-                                        info
-                                    </mat-icon>-->
+                          matTooltip="Sai mã xác nhận" color="warn">
+                    info
+                </mat-icon>-->
                                     <validation *ngIf="!capcha" matSuffix [control]="frmResetPassword.controls['capcha']"></validation>
                                 </mat-form-field>
                             </div>

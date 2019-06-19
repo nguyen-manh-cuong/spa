@@ -95,6 +95,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
     _certificateUrlsUpdate: Array<{ url: string, file: any, path: string, name: string }> = [];
 
     usersHeal = [];
+    highlight: boolean = false;
 
     constructor(injector: Injector, private _formBuilder: FormBuilder, private _dataService: DataService, public dialogRef: MatDialogRef<TaskComponent>, @Inject(MAT_DIALOG_DATA) public user: IUser) {
         super(injector);
