@@ -1,6 +1,4 @@
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-
-import { AccountTypePipe } from 'pipes/account-type.pipe';
 import { CommonModule } from '@angular/common';
 import { IndexComponent } from './index/index.component';
 import { NgModule } from '@angular/core';
@@ -12,7 +10,6 @@ import { UsersManagerRoutingModule } from './users-manager-routing.module';
 import { UtilsModule } from '@shared/utils/utils.module';
 import { ValidationModule } from '@app/validation/validation.module';
 import { NgxMaskModule } from 'ngx-mask';
-import { MAT_CHECKBOX_CLICK_ACTION } from '@angular/material';
 import { ResetComponent } from './reset/reset.component';
 
 
@@ -27,7 +24,6 @@ import { ResetComponent } from './reset/reset.component';
         NgxMaskModule.forRoot()
     ],
     declarations: [UsersManagerComponent, IndexComponent, SettingsComponent, TaskComponent, ResetComponent],
-    entryComponents: [TaskComponent, ResetComponent],
-    //providers: [{ provide: MAT_CHECKBOX_CLICK_ACTION, useValue: 'noop' }]
+    entryComponents: [TaskComponent, ResetComponent]
 })
 export class UsersManagerModule { }

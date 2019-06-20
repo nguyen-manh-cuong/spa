@@ -51,7 +51,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
     validateRule = new ValidationRule();
     frmUser: FormGroup;
 
-    _user: IUser | CreateUserDto;
+    userDto: IUser | CreateUserDto;
     _groups: Array<IGroup>;
     _selection = new SelectionModel<IGroup>(true, []);
 
@@ -79,7 +79,6 @@ export class TaskComponent extends AppComponentBase implements OnInit {
     flagShowLoadFileGPHN: number = 0;
 
     keyWorkFind: string = '';
-    lblGPHN: string = 'Số thẻ bảo hiểm y tế';
 
     arrayIdCard = [];
     arrayCertificate = [];
@@ -102,7 +101,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
 
     ngOnInit() {
         if (this.user) {
-            this._user = _.clone(this.user);
+            this.userDto = _.clone(this.user);
             this._isNew = false;
 
             if (_.has(this.user, 'provinceCode') && !_.isNull(this.user.provinceCode)) {
@@ -133,49 +132,49 @@ export class TaskComponent extends AppComponentBase implements OnInit {
             });
         }
         else {
-            this._user = new CreateUserDto();
+            this.userDto = new CreateUserDto();
             this._isNew = true;
 
-            this._user.userName = '';
-            this._user.fullName = '';
-            this._user.email = '';
-            this._user.phoneNumber = '';
-            this._user.provinceCode = '';
-            this._user.districtCode = '';
-            this._user.wardCode = '';
-            this._user.address = '';
-            this._user.identification = '';
-            this._user.certificationCode = '';
-            this._user.insurrance = '';
-            this._user.lisenceCode = '';
-            this._user.accountType = 1;
+            this.userDto.userName = '';
+            this.userDto.fullName = '';
+            this.userDto.email = '';
+            this.userDto.phoneNumber = '';
+            this.userDto.provinceCode = '';
+            this.userDto.districtCode = '';
+            this.userDto.wardCode = '';
+            this.userDto.address = '';
+            this.userDto.identification = '';
+            this.userDto.certificationCode = '';
+            this.userDto.insurrance = '';
+            this.userDto.lisenceCode = '';
+            this.userDto.accountType = 1;
         }
 
         this._context = {
-            userId: [this._user.userId],
-            userName: [this._user.userName, [Validators.required, this.validateRule.hasValue]],
+            userId: [this.userDto.userId],
+            userName: [this.userDto.userName, [Validators.required, this.validateRule.hasValue]],
             password: ['', [this._isNew ? Validators.required : this.validateRule.hasValueNull, this._isNew ? this.validateRule.passwordStrong : this.validateRule.hasValueNull]],
-            fullName: [this._user.fullName, [Validators.required, this.validateRule.hasValue]],
-            email: [this._user.email, this.validateRule.email],
-            phoneNumber: [this._user.phoneNumber, this.validateRule.topPhoneNumber],
-            provinceCode: [this._user.provinceCode],
-            districtCode: [this._user.districtCode],
-            wardCode: [this._user.wardCode],
-            address: [this._user.address],
+            fullName: [this.userDto.fullName, [Validators.required, this.validateRule.hasValue]],
+            email: [this.userDto.email, this.validateRule.email],
+            phoneNumber: [this.userDto.phoneNumber, this.validateRule.topPhoneNumber],
+            provinceCode: [this.userDto.provinceCode],
+            districtCode: [this.userDto.districtCode],
+            wardCode: [this.userDto.wardCode],
+            address: [this.userDto.address],
             sex: [1, Validators.required],
-            accountType: [this._user.accountType, Validators.required],
-            birthDay: [this._user.birthDay],
+            accountType: [this.userDto.accountType, Validators.required],
+            birthDay: [this.userDto.birthDay],
             cmnd: [],
             gp: [],
-            _birthDay: [this._user.birthDay ? ((new Date(this._user.birthDay)).getDate()) : 1],
-            _birthMonth: [this._user.birthDay ? ((new Date(this._user.birthDay)).getMonth() + 1) : 1],
-            _birthYear: [this._user.birthDay ? ((new Date(this._user.birthDay)).getFullYear()) : (moment().year() - 100)],
+            _birthDay: [this.userDto.birthDay ? ((new Date(this.userDto.birthDay)).getDate()) : 1],
+            _birthMonth: [this.userDto.birthDay ? ((new Date(this.userDto.birthDay)).getMonth() + 1) : 1],
+            _birthYear: [this.userDto.birthDay ? ((new Date(this.userDto.birthDay)).getFullYear()) : (moment().year() - 100)],
             code: [],
             groupUser: [],
-            identification: [this._user.identification],
-            certificationCode: [this._user.certificationCode],
-            insurrance: [this._user.insurrance],
-            lisenceCode: [this._user.lisenceCode],
+            identification: [this.userDto.identification],
+            certificationCode: [this.userDto.certificationCode],
+            insurrance: [this.userDto.insurrance],
+            lisenceCode: [this.userDto.lisenceCode],
             createUserId: [this.appSession.userId],
             updateUserId: [this.appSession.userId],
             healthId: [],
@@ -190,7 +189,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
 
         this._dataService.getAll('provinces').subscribe(resp => this._provinces = resp.items);
 
-        this.checkShowPathFile(this._user.accountType);
+        this.checkShowPathFile(this.userDto.accountType);
        
     }
     //this.validateRule.identification
@@ -342,15 +341,15 @@ export class TaskComponent extends AppComponentBase implements OnInit {
                     });
                 }
 
-                if (file.type == 'image/jpeg' || file.type == 'image/png' || 'image/jpg') {
-                    if (type == 'idCard') {
+                if (String(file.type) === 'image/jpeg' || String(file.type) === 'image/png' || String(file.type) === 'image/jpg') {
+                    if (String(type) === 'idCard') {
                         reader.onload = (e: any) => {
                             this._idCardUrls.push({ url: "/assets/images/212328-200.png", file: file, path: this.replace_alias(file.name), name: file.name });
                         }
                         this.arrayIdCard.push(file);
                     }
 
-                    if (type == 'certificate') {
+                    if (type === 'certificate') {
                         reader.onload = (e: any) => {
                             this._certificateUrls.push({ url: "/assets/images/212328-200.png", file: file, path: this.replace_alias(file.name), name: file.name });
                         }
