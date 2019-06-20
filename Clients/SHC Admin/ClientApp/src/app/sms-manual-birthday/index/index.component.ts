@@ -405,7 +405,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     customSearch() {
         this.healthfacilities.value ? this.frmSearch.controls['healthfacilities'].setValue(this.healthfacilities.value.healthFacilitiesId) : (this.appSession.user.healthFacilitiesId == null ? this.frmSearch.controls['healthfacilities'].setValue(null) : '');
         if (
-            (this.frmSearch.controls['fromMonth'].value == 2 && this.frmSearch.controls['fromDay'].value > 29) ||
+            (this.frmSearch.controls['fromMonth'].value == 2 && this.frmSearch.controls['fromDay'].value > 29 && this.frmSearch.controls['fromDay'].value < 32) ||
             (this.frmSearch.controls['fromMonth'].value == 4 && this.frmSearch.controls['fromDay'].value > 30) ||
             (this.frmSearch.controls['fromMonth'].value == 6 && this.frmSearch.controls['fromDay'].value > 30) ||
             (this.frmSearch.controls['fromMonth'].value == 9 && this.frmSearch.controls['fromDay'].value > 30) ||
