@@ -68,6 +68,9 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
                     this.titleService.setTitle(`${this.title} | ${this.l(menu.name)}`);
                     this.pateTitle = this.l(menu.name);
                 }
+                if (this.router.url == '/app/change-password/index') {
+                    this.pateTitle = 'Cập nhật thông tin';
+                }
 
                 this.isTableLoading = false;
             }
