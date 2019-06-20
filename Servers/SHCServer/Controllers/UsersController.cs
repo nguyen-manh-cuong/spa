@@ -212,32 +212,32 @@ namespace SHCServer.Controllers
 
             if (getUser.Where(u => u.UserName == obj.UserName.Trim()).Count() > 0)
             {
-                return StatusCode(406, _excep.Throw("Thông báo", "Tài khoản đã tồn tại!"));
+                return StatusCode(406, _excep.Throw(406,"Thông báo", "Tài khoản đã tồn tại!"));
             }
 
             if (getUser.Where(u => u.Email == obj.Email.Trim() && !string.IsNullOrEmpty(u.Email)).Count() > 0)
             {
-                return StatusCode(406, _excep.Throw("Thông báo", "Email đã tồn tại!"));
+                return StatusCode(406, _excep.Throw(406, "Thông báo", "Email đã tồn tại!"));
             }
 
             if (getUser.Where(u => u.Identification == obj.Identification && !string.IsNullOrEmpty(u.Identification)).Count() > 0)
             {
-                return StatusCode(406, _excep.Throw("Thông báo", "Số CMND đã tồn tại!"));
+                return StatusCode(406, _excep.Throw(406, "Thông báo", "Số CMND đã tồn tại!"));
             }
 
             if (getUser.Where(u => u.CertificationCode == obj.CertificationCode && !string.IsNullOrEmpty(u.CertificationCode)).Count() > 0)
             {
-                return StatusCode(406, _excep.Throw("Thông báo", "Số GPHN đã tồn tại!"));
+                return StatusCode(406, _excep.Throw(406, "Thông báo", "Số GPHN đã tồn tại!"));
             }
 
             if (getUser.Where(u => u.LisenceCode == obj.LisenceCode && !string.IsNullOrEmpty(u.LisenceCode)).Count() > 0)
             {
-                return StatusCode(406, _excep.Throw("Thông báo", "Số GPKD đã tồn tại!"));
+                return StatusCode(406, _excep.Throw(406, "Thông báo", "Số GPKD đã tồn tại!"));
             }
 
             if (getUser.Where(u => u.Insurrance == obj.Insurrance && !string.IsNullOrEmpty(u.Insurrance)).Count() > 0)
             {
-                return StatusCode(406, _excep.Throw("Thông báo", "Số thẻ BHYT  đã tồn tại!"));
+                return StatusCode(406, _excep.Throw(406, "Thông báo", "Số thẻ BHYT  đã tồn tại!"));
             }
 
             try
@@ -417,27 +417,27 @@ namespace SHCServer.Controllers
 
             if (user.FirstOrDefault(u => u.UserId == obj.UserId) == null)
             {
-                return StatusCode(401, _excep.Throw("Thông báo", "Tài khoản không tồn tại!"));
+                return StatusCode(401, _excep.Throw(406, "Thông báo", "Tài khoản không tồn tại!"));
             }
 
             if (user.Where(u => u.Identification == obj.Identification && !string.IsNullOrEmpty(u.Identification) && u.UserId != obj.UserId).Count() > 0)
             {
-                return StatusCode(406, _excep.Throw("Thông báo", "Số CMND đã tồn tại!"));
+                return StatusCode(406, _excep.Throw(406, "Thông báo", "Số CMND đã tồn tại!"));
             }
 
             if (user.Where(u => u.CertificationCode == obj.CertificationCode && !string.IsNullOrEmpty(u.CertificationCode) && u.UserId != obj.UserId).Count() > 0)
             {
-                return StatusCode(406, _excep.Throw("Thông báo", "Số GPHN đã tồn tại!"));
+                return StatusCode(406, _excep.Throw(406, "Thông báo", "Số GPHN đã tồn tại!"));
             }
 
             if (user.Where(u => u.LisenceCode == obj.LisenceCode && !string.IsNullOrEmpty(u.LisenceCode) && u.UserId != obj.UserId).Count() > 0)
             {
-                return StatusCode(406, _excep.Throw("Thông báo", "Số GPKD đã tồn tại!"));
+                return StatusCode(406, _excep.Throw(406, "Thông báo", "Số GPKD đã tồn tại!"));
             }
 
             if (user.Where(u => u.Insurrance == obj.Insurrance && !string.IsNullOrEmpty(u.Insurrance) && u.UserId != obj.UserId).Count() > 0)
             {
-                return StatusCode(406, _excep.Throw("Thông báo", "Số thẻ BHYT  đã tồn tại!"));
+                return StatusCode(406, _excep.Throw(406, "Thông báo", "Số thẻ BHYT  đã tồn tại!"));
             }
 
             try
@@ -880,21 +880,36 @@ namespace SHCServer.Controllers
         {
             try
             {
+                // Delete sys_users in smarthealthcare
                 _context.Session.BeginTransaction();
                 _context.Update<User>(g => g.UserId == id, a => new User
                 {
                     IsDelete = true
                 });
-
                 _context.Session.CommitTransaction();
+
+                // Delete sys_users_healthfacilities in smarthealthcare
+                _context.Session.BeginTransaction();
+                _context.Update<UserHealthFacilities>(g => g.UserId == id, a => new UserHealthFacilities
+                {
+                    IsDelete = true
+                });
+                _context.Session.CommitTransaction();
+
+                // Delete sys_users_groups in mdm
                 _contextmdmdb.Session.BeginTransaction();
+                _contextmdmdb.Update<UserGroup>(g => g.UserId == id, a => new UserGroup
+                {
+                    IsDelete = true
+                });
+                _contextmdmdb.Session.CommitTransaction();
 
-
+                // Delete sys_users in mdm
+                _contextmdmdb.Session.BeginTransaction();
                 _contextmdmdb.Update<UserMDM>(g => g.UserId == id, a => new UserMDM
                 {
                     IsDelete = true
                 });
-
                 _contextmdmdb.Session.CommitTransaction();
 
                 return Json(new ActionResultDto());

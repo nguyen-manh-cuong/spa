@@ -481,8 +481,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
                 type: 2,
                 content: '',
                 objectType: 1
-            })
-                .subscribe(resp => {
+            }).subscribe(resp => {
                     swal({
                         title: 'Thông báo',
                         html: resp,

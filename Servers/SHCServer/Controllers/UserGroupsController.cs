@@ -90,6 +90,13 @@ namespace AdminServer.Controllers
             });
         }
 
+        [HttpGet]
+        [Route("api/groups-all")]
+        public IActionResult GetAllGroups(int skipCount = 0, int maxResultCount = 10, string sorting = null, string filter = null)
+        {
+            return Json(new ActionResultDto{ Result = new{ Items = _contextmdmdb.Query<Group>().Where(a => a.IsDelete == false).ToList() }});
+        }
+
         [HttpPut("{id}")]
 
         public IActionResult Put(int id, [FromBody] GroupInputViewModel obj)
