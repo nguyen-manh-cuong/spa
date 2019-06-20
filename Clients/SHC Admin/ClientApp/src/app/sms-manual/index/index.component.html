@@ -266,7 +266,7 @@
             </ng-container>
             <ng-container matColumnDef="smsCount">
                 <th mat-header-cell *matHeaderCellDef class="text-center"> {{l('Số tin nhắn gửi')}} </th>
-                <td mat-cell (click)="detail(element)" *matCellDef="let element" class="td-ellipsis text-center" title="{{element.smsCount}}"> <a>{{element.smsCount}}</a></td>
+                <td mat-cell (click)="detail(element)" *matCellDef="let element" class="td-ellipsis text-center" title="{{element.smsCount}}"> <a>{{element.smsCount > 0 ? element.smsCount : ''}}</a></td>
             </ng-container>
             <!--<ng-container matColumnDef="ReExaminationDate">
         <th mat-header-cell *matHeaderCellDef mat-sort-header class="min-w-100 text-center"> {{l('Ngày tái khám')}} </th>

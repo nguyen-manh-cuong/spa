@@ -224,6 +224,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     super(injector);
   }
 
+  @ViewChild("doctorName") doctorName;
   @ViewChild("birthDayPicker") birthDayPicker;
   @ViewChild("certificationDatePicker") certificationDatePicker;
 
@@ -376,7 +377,8 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
 
 
   ngAfterViewInit(): void {
-    setTimeout(() => {
+      setTimeout(() => {
+          this.doctorName.nativeElement.focus();
       if (this.obj) {
         if (this.obj.birthDate) {
           this.birthDayPicker.nativeElement.value = moment(this._birthDay).format("DD/MM/YYYY");
@@ -384,7 +386,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
         if (this.obj.certificationDate)
           this.certificationDatePicker.nativeElement.value = moment(this._certificationDate).format("DD/MM/YYYY");
       }
-    });
+      }, 1000);
   }
 
   //Add custom editor
@@ -1013,12 +1015,12 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
       });
     }
     if (priceFrom != null && priceTo != null) {
-      if (priceFrom != "" && priceTo != "" && Number(priceFrom) >= Number(priceTo)) {
+      if (priceFrom != "" && priceTo != "" && Number(priceFrom) > Number(priceTo)) {
         this.checkPriceTo = true;
         this.checkPriceFrom = true;
         return swal({
           title: 'Thông báo',
-          text: 'Giá khám từ phải nhỏ hơn giá khám đến',
+            text: 'Giá đến phải lớn hơn hoặc bằng giá từ',
           type: 'warning',
           timer: 3000
         });
