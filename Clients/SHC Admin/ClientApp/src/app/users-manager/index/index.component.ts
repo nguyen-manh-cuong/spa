@@ -38,7 +38,7 @@ export class IndexComponent extends PagedListingComponentBase<IUser> implements 
         this.dialogComponent = TaskComponent;
         this.dialogResetComponent = ResetComponent;
         this.dataService.getAll('provinces').subscribe(resp => this.provinces = resp.items);
-        this.dataService.getAll('groups').subscribe(resp => this.groups = resp.items);
+        this.dataService.getAll('groups-all').subscribe(resp => this.groups = resp.items);
     }
 
     resetDialog(obj?: any): void {

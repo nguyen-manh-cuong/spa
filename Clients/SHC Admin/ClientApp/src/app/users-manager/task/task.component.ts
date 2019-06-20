@@ -13,6 +13,7 @@ import { ValidationRule } from '@shared/common/common';
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import swal from 'sweetalert2';
 import { cleanUnicode } from '../../../shared/helpers/utils';
+import { RootModule } from '../../../root.module';
 
 export const MY_FORMATS = {
     parse: {
@@ -94,6 +95,14 @@ export class TaskComponent extends AppComponentBase implements OnInit {
 
     usersHeal = [];
     highlight: boolean = false;
+
+    @ViewChild('email') email;
+
+    highLightEmail: boolean = false;
+    highLightIdentification: boolean = false;
+    highLightCertification: boolean = false;
+    highLightInsurrance: boolean = false;
+    highLightLisence: boolean = false;
 
     constructor(injector: Injector, private _formBuilder: FormBuilder, private _dataService: DataService, public dialogRef: MatDialogRef<TaskComponent>, @Inject(MAT_DIALOG_DATA) public user: IUser) {
         super(injector);
@@ -195,15 +204,23 @@ export class TaskComponent extends AppComponentBase implements OnInit {
     //this.validateRule.identification
     // BHYT - Insurrance, CMND - Identification, GPHN - CertificationCode, GPKD - LicenseCode
     checkShowPathFile(value): void {
+        this.highLightInsurrance = false;
+        this.highLightIdentification = false;
+        this.highLightLisence = false;
+        this.highLightCertification = false;
+        this.highLightEmail = false;
+
         if (1 === value) {
             this.frmUser.controls['certificationCode'].setErrors(null);
             this.frmUser.controls['lisenceCode'].setErrors(null);
+
             this.flagShowLoadFileCMND = true;
             this.flagShowLoadFileGPHN = 0;
         }
         else if (2 === value) {
             this.frmUser.controls['insurrance'].setErrors(null);
             this.frmUser.controls['lisenceCode'].setErrors(null);
+
             this.flagShowLoadFileCMND = true;
             this.flagShowLoadFileGPHN = 1;
         }
@@ -213,6 +230,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
             this.getHealthFacilities();
             this._checked = -1;
             this._healths = [];
+
             this.frmUser.controls['insurrance'].setErrors(null);
             this.frmUser.controls['identification'].setErrors(null);
             this.frmUser.controls['certificationCode'].setErrors(null);
@@ -277,6 +295,40 @@ export class TaskComponent extends AppComponentBase implements OnInit {
                     timer: 3000
                 });
                 this.dialogRef.close();
+            }, error => {
+                    if (RootModule.message === 'Email đã tồn tại!') {
+                        //this.frmUser.controls['email'].setValue('');
+                        //this.frmUser.controls['email'].setErrors(null);
+                        //this.frmUser.setErrors({ invalid: true });
+
+                        this.highLightEmail = true;
+                    } else {
+                        this.highLightEmail = false;
+                    }
+
+                    if (RootModule.message === 'Số CMND đã tồn tại!') {
+                        this.highLightIdentification = true;
+                    } else {
+                        this.highLightIdentification = false;
+                    }
+
+                    if (RootModule.message === 'Số GPHN đã tồn tại!') {
+                        this.highLightCertification = true;
+                    } else {
+                        this.highLightCertification = false;
+                    }
+
+                    if (RootModule.message === 'Số GPKD đã tồn tại!') {
+                        this.highLightLisence = true;
+                    } else {
+                        this.highLightLisence = false;
+                    }
+
+                    if (RootModule.message === 'Số thẻ BHYT  đã tồn tại!') {
+                        this.highLightInsurrance = true;
+                    } else {
+                        this.highLightInsurrance = false;
+                    }
             });
         }
         else {

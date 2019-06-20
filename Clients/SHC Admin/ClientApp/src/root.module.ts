@@ -112,12 +112,7 @@ export class RootModule {
     static message: string;
     constructor() {
         abp.message.error = (message, title) => {
-            swal({
-                type: 'error',
-                title: title,
-                text: message,
-                timer: 3000
-            });
+            abp.notify.error(message, title, { hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true });
             RootModule.message = message;
         }
     }
