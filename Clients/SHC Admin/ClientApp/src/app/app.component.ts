@@ -1,4 +1,4 @@
-﻿import * as _ from 'lodash';
+import * as _ from 'lodash';
 import swal from 'sweetalert2';
 
 import { ActivatedRouteSnapshot, ActivationEnd, NavigationEnd, NavigationError, NavigationStart, Router } from '@angular/router';
@@ -78,6 +78,9 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
                 if (menu) {
                     this.titleService.setTitle(`${this.title} | ${this.l(menu.name)}`);
                     this.pateTitle = this.l(menu.name);
+                }
+                if (this.router.url == '/app/change-password/index') {
+                    this.pateTitle = 'Cập nhật thông tin';
                 }
 
                 this.isTableLoading = false;

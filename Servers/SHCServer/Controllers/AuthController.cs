@@ -373,8 +373,7 @@ namespace SHCServer.Controllers
             User currentUser = _context.Query<User>().Where(u => u.Email == email).FirstOrDefault();
 
             if (currentUser != null)
-            {
-                //SHCServer.SendMail.SendMailResetPassword("trungngoc@dichthuatvantin.com", email, "NgocLong90", "smtp.googlemail.com", 587);
+            {                
                 return Json(new ActionResultDto());
             }
 
