@@ -21,12 +21,12 @@ export class IndexComponent extends PagedListingComponentBase<IUser> implements 
     provinces = [];
     districts = [];
     wards = [];
-    _groups: Array<IGroup> = [];
+    groups: Array<IGroup> = [];
     dialogResetComponent: any;
 
-    _accountTypes = [{ id: 1, name: 'Thành viên' }, { id: 2, name: 'Bác sỹ/ Chuyên gia/ Điều dưỡng...' }, { id: 3, name: 'Cơ sở y tế/ doanh nghiệp' }];
+    accTypes = [{ id: 1, name: 'Thành viên' }, { id: 2, name: 'Bác sỹ/ Chuyên gia/ Điều dưỡng...' }, { id: 3, name: 'Cơ sở y tế/ doanh nghiệp' }];
 
-    constructor(injector: Injector, private _dataService: DataService, public dialog: MatDialog, private formBuilder: FormBuilder) {
+    constructor(injector: Injector, private dataSer: DataService, public dialog: MatDialog, private formBuilder: FormBuilder) {
         super(injector);
     }
 
@@ -34,12 +34,11 @@ export class IndexComponent extends PagedListingComponentBase<IUser> implements 
         this.api = 'users';
         this.frmSearch = this.formBuilder.group({ provinceCode: [], districtCode: [], wardCode: [], userName: [], userPhoneEmail: [], group: [], accountType: [], fullName: [] });
         this.ruleSearch = { accountType: 'int', group: 'int' };
-        this.dataService = this._dataService;
+        this.dataService = this.dataSer;
         this.dialogComponent = TaskComponent;
         this.dialogResetComponent = ResetComponent;
         this.dataService.getAll('provinces').subscribe(resp => this.provinces = resp.items);
-        this.dataService.getAll('groups').subscribe(resp => this._groups = resp.items);
-        
+        this.dataService.getAll('groups').subscribe(resp => this.groups = resp.items);
     }
 
     resetDialog(obj?: any): void {
@@ -95,9 +94,9 @@ export class IndexComponent extends PagedListingComponentBase<IUser> implements 
             });
         }
 
-        let msg = user.statusSHC === 2 ? `${user.userName} sẽ tạm khóa` : (user.statusSHC == 3 ? `${user.userName} sẽ được mở khóa` : `${user.userName} sẽ được phê duyệt`);
+        const msg = user.statusSHC === 2 ? `${user.userName} sẽ tạm khóa` : (user.statusSHC === 3 ? `${user.userName} sẽ được mở khóa` : `${user.userName} sẽ được phê duyệt`);
 
-        swal({
+        return swal({
             title: this.l('Thông báo'),
             text: this.l(`Bạn có chắc không? ${msg}`),
             type: 'warning',
@@ -109,16 +108,17 @@ export class IndexComponent extends PagedListingComponentBase<IUser> implements 
             buttonsStyling: false
         }).then((result) => {
             if (result.value) {
-                user.statusSHC === 1 ? 2 : 3;
+                user.statusSHC === 1 ? user.statusSHC = 2 : user.statusSHC = 3;
                 this.dataService.update('user-approved', user).subscribe(() => {
-                    this.dataService.get(this.api, '', '', this.paginator.pageIndex, this.paginator.pageSize).subscribe(data => this.dataSources.data = data.items);
+                    this.dataService.get(this.api, '', '', this.paginator.pageIndex, this.paginator.pageSize)
+                        .subscribe(data => this.dataSources.data = data.items);
                 });
             }
-        })
+        });
     }
 
     onHandleLock(user: any, event): void {
-        let msg = user.status === 0 ? `${user.userName} sẽ được mở khóa` : `${user.userName} sẽ bị khóa`;
+        const msg = user.status === 0 ? `${user.userName} sẽ được mở khóa` : `${user.userName} sẽ bị khóa`;
         swal({
             title: this.l('Thông báo'),
             text: this.l(`Bạn có chắc không? ${msg}`),
@@ -131,20 +131,25 @@ export class IndexComponent extends PagedListingComponentBase<IUser> implements 
             buttonsStyling: false
         }).then((result) => {
             if (result.value) {
-                user.status === 0 ? user.status = 1 : user.status = 0;
+                //user.status === 0 ? user.status = 1 : user.status = 0;
                 this.dataService.update('user-locked', user).subscribe(() => {
-                    this.dataService.get(this.api, '', '', this.paginator.pageIndex, this.paginator.pageSize).subscribe(data => this.dataSources.data = data.items);
+                    this.dataService.get(this.api, '', '', this.paginator.pageIndex, this.paginator.pageSize)
+                        .subscribe(data => {
+                            console.log(12, data.items);
+                            this.dataSources.data = data.items;
+                        });
+                    
                 });
             }
-        })
+        });
     }
 
     ruleSpecialCharacter(): void {
-        var control = this.frmSearch.controls['userName'];
+        const control = this.frmSearch.controls['userName'];
         const pattern = /^[a-zA-Z0-9]*$/;
 
         if (control.value && !pattern.test(control.value)) {
-            control.setValue(control.value.replace(/[^a-zA-Z0-9]/g, ""));
+            control.setValue(control.value.replace(/[^a-zA-Z0-9]/g, ''));
         }
     }
 }

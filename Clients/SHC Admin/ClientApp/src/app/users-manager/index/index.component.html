@@ -22,8 +22,8 @@
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('FilterByProvine')}}</mat-label>
                     <mat-select formControlName="provinceCode" (selectionChange)="onSelectProvince($event.value)">
-                        <mat-option *ngIf="_provinces.length" class="text-center" [innerHTML]="'<div class=\'text-center border-bottom w-100\'>'+ l('SelectAll') +'</div>'"></mat-option>
-                        <mat-option *ngFor="let o of _provinces" [value]="o.provinceCode">{{ o.name }}</mat-option>
+                        <mat-option *ngIf="provinces.length" class="text-center" [innerHTML]="'<div class=\'text-center border-bottom w-100\'>'+ l('SelectAll') +'</div>'"></mat-option>
+                        <mat-option *ngFor="let o of provinces" [value]="o.provinceCode">{{ o.name }}</mat-option>
                     </mat-select>
                 </mat-form-field>
             </div>
@@ -31,8 +31,8 @@
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('FilterByDistrict')}}</mat-label>
                     <mat-select formControlName="districtCode" (selectionChange)="onSelectDistrict($event.value)">
-                        <mat-option *ngIf="_districts.length" class="text-center" [innerHTML]="'<div class=\'text-center border-bottom w-100\'>'+ l('SelectAll') +'</div>'"></mat-option>
-                        <mat-option *ngFor="let o of _districts" [value]="o.districtCode">{{ o.name }}</mat-option>
+                        <mat-option *ngIf="districts.length" class="text-center" [innerHTML]="'<div class=\'text-center border-bottom w-100\'>'+ l('SelectAll') +'</div>'"></mat-option>
+                        <mat-option *ngFor="let o of districts" [value]="o.districtCode">{{ o.name }}</mat-option>
                     </mat-select>
                 </mat-form-field>
             </div>
@@ -40,8 +40,8 @@
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('FilterByWard')}}</mat-label>
                     <mat-select formControlName="wardCode">
-                        <mat-option *ngIf="_wards.length" class="text-center" [innerHTML]="'<div class=\'text-center border-bottom w-100\'>'+ l('SelectAll') +'</div>'"></mat-option>
-                        <mat-option *ngFor="let o of _wards" [value]="o.wardCode">{{ o.name }}</mat-option>
+                        <mat-option *ngIf="wards.length" class="text-center" [innerHTML]="'<div class=\'text-center border-bottom w-100\'>'+ l('SelectAll') +'</div>'"></mat-option>
+                        <mat-option *ngFor="let o of wards" [value]="o.wardCode">{{ o.name }}</mat-option>
                     </mat-select>
                 </mat-form-field>
             </div>
@@ -55,8 +55,8 @@
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l("GroupName")}}</mat-label>
                     <mat-select formControlName="group">
-                        <mat-option *ngIf="_groups.length" class="text-center" [innerHTML]="'<div class=\'text-center border-bottom w-100\'>'+ l('SelectAll') +'</div>'"></mat-option>
-                        <mat-option *ngFor="let o of _groups" [value]="o.groupId">{{ o.groupName }}</mat-option>
+                        <mat-option *ngIf="groups.length" class="text-center" [innerHTML]="'<div class=\'text-center border-bottom w-100\'>'+ l('SelectAll') +'</div>'"></mat-option>
+                        <mat-option *ngFor="let o of groups" [value]="o.groupId">{{ o.groupName }}</mat-option>
                     </mat-select>
                 </mat-form-field>
             </div>
@@ -65,7 +65,7 @@
                     <mat-label>{{l('AccountType')}}</mat-label>
                     <mat-select formControlName="accountType">
                         <mat-option class="text-center" [innerHTML]="'<div class=\'text-center border-bottom w-100\'>'+ l('SelectAll') +'</div>'"></mat-option>
-                        <mat-option *ngFor="let o of _accountTypes" [value]="o.id">{{ o.name }}</mat-option>
+                        <mat-option *ngFor="let o of accTypes" [value]="o.id">{{ o.name }}</mat-option>
                     </mat-select>
                 </mat-form-field>
             </div>

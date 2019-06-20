@@ -6,10 +6,5 @@ import { Component, OnInit } from '@angular/core';
     styleUrls: ['./users-manager.component.scss']
 })
 export class UsersManagerComponent implements OnInit {
-
-    constructor() { }
-
-    ngOnInit() {
-    }
-
+    ngOnInit() {}
 }

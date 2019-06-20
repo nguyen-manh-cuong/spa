@@ -134,8 +134,8 @@ namespace SHCServer.Controllers
 
                 if (data.ContainsKey("accountType"))
                 {
-                    if (data["accountType"] == "asc") clause.Add("ORDER BY g.GroupName ASC");
-                    else clause.Add("ORDER BY g.GroupName DESC");
+                    if (data["accountType"] == "asc") clause.Add("ORDER BY u.AccountType ASC");
+                    else clause.Add("ORDER BY u.AccountType DESC");
                 }
             }
 
@@ -276,10 +276,9 @@ namespace SHCServer.Controllers
                 int userId = user != null ? user.UserId : 0;
 
                 // Insert sys_users_groups in mdm
-                string[] groups;
                 if (!string.IsNullOrEmpty(obj.GroupId))
                 {
-                    groups = obj.GroupId.Split(',');
+                    var groups = obj.GroupId.Split(',');
                     if (groups.Length > 0)
                     {
                         foreach (var item in groups)
@@ -304,10 +303,9 @@ namespace SHCServer.Controllers
                 }
 
                 // Insert sys_users_healthfacilities in smarthealthcare
-                string[] healthIds;
                 if (!string.IsNullOrEmpty(obj.healthId))
                 {
-                    healthIds = obj.healthId.Split(',');
+                    var healthIds = obj.healthId.Split(',');
                     if (healthIds.Length > 0)
                     {
                         foreach (var item in healthIds)
@@ -454,12 +452,19 @@ namespace SHCServer.Controllers
                     Sex = obj.Sex,
                     BirthDay = obj.BirthDay,
                     AccountType = obj.AccountType,
+
                     ProvinceCode = obj.ProvinceCode,
                     DistrictCode = obj.DistrictCode,
                     WardCode = obj.WardCode,
                     Address = obj.Address,
+
                     UpdateDate = DateTime.Now,
-                    UpdateUserId = obj.UpdateUserId
+                    UpdateUserId = obj.UpdateUserId,
+
+                    CertificationCode = obj.CertificationCode,
+                    Insurrance = obj.Insurrance,
+                    Identification = obj.Identification,
+                    LisenceCode = obj.LisenceCode
                 });
 
                 _contextmdmdb.Session.CommitTransaction();
@@ -468,10 +473,9 @@ namespace SHCServer.Controllers
                 int userId = userMdm != null ? userMdm.UserId : 0;
 
                 // Update sys_users_groups in mdm
-                string[] groups;
                 if (!string.IsNullOrEmpty(obj.GroupId))
                 {
-                    groups = obj.GroupId.Split(',');
+                    var groups = obj.GroupId.Split(',');
                     if (groups.Length > 0)
                     {
                         var usersGroup = _contextmdmdb.Query<UserGroup>().Where(p => p.UserId == obj.UserId).Select(q => q.GroupId).ToList();
@@ -526,12 +530,22 @@ namespace SHCServer.Controllers
                         }
                     }
                 }
+                else
+                {
+                    _contextmdmdb.Session.BeginTransaction();
+                    _contextmdmdb.Update<UserGroup>(g => g.UserId == obj.UserId, a => new UserGroup
+                    {
+                        IsDelete = true,
+                        UpdateDate = DateTime.Now,
+                        UpdateUserId = obj.UpdateUserId
+                    });
+                    _contextmdmdb.Session.CommitTransaction();
+                }
 
                 // Update sys_users_healthfacilities in smarthealthcare
-                string[] healthIds;
                 if (!string.IsNullOrEmpty(obj.healthId))
                 {
-                    healthIds = obj.healthId.Split(',');
+                    var healthIds = obj.healthId.Split(',');
                     if (healthIds.Length > 0)
                     {
                         var usersHeal = _context.Query<UserHealthFacilities>().Where(p => p.UserId == obj.UserId).Select(q => q.HealthFacilitiesId).ToList();
@@ -580,12 +594,22 @@ namespace SHCServer.Controllers
                         }
                     }
                 }
+                else
+                {
+                    _context.Session.BeginTransaction();
+                    _context.Update<UserHealthFacilities>(g => g.UserId == obj.UserId, a => new UserHealthFacilities
+                    {
+                        IsDelete = true,
+                        UpdateDate = DateTime.Now,
+                        UpdateUserId = obj.UpdateUserId
+                    });
+                    _context.Session.CommitTransaction();
+                }
 
                 // Update sys_users_attachs in smarthealthcare
-                string[] imageFileArr;
                 if (!string.IsNullOrEmpty(obj.ImageFileOld))
                 {
-                    imageFileArr = obj.ImageFileOld.Split(',');
+                    var imageFileArr = obj.ImageFileOld.Split(',');
                     if (imageFileArr.Length > 0)
                     {
                         var imageFileArrOld = _context.Query<UsersAttach>().Where(p => p.UserId == obj.UserId).Select(q => q.Path).ToList();
@@ -595,7 +619,7 @@ namespace SHCServer.Controllers
                             if (!string.IsNullOrEmpty(item))
                             {
                                 _context.Session.BeginTransaction();
-                                if (imageFileArrOld.Contains(item))
+                                if (!imageFileArrOld.Contains(item))
                                 {
                                     _context.Update<UsersAttach>(g => g.UserId == obj.UserId && g.Path == item, a => new UsersAttach
                                     {
@@ -928,9 +952,9 @@ namespace SHCServer.Controllers
             string password = "Abc@123456";
             try
             {
-                SmtpClient mailclient = new SmtpClient("smtp.gmail.com", 587);
-                mailclient.EnableSsl = true;
-                mailclient.Credentials = new NetworkCredential(userName, password);
+                SmtpClient mailClient = new SmtpClient("smtp.gmail.com", 587);
+                mailClient.EnableSsl = true;
+                mailClient.Credentials = new NetworkCredential(userName, password);
 
                 MailMessage message = new MailMessage(userName, sendTo);
 
@@ -938,7 +962,7 @@ namespace SHCServer.Controllers
 
                 message.Body = "Xin chào " + user + "\nChúng tôi vừa nhận được yêu cầu thay đổi mật khẩu từ phía bạn" + "\nMật khẩu mới của bạn là: " + pass + "\nĐể bảo mật, bạn vui lòng thay đổi mật khẩu sau khi đăng nhập và không tiết lộ cho bất kỳ cá nhân nào.";
 
-                mailclient.Send(message);
+                mailClient.Send(message);
 
                 return true;
             }
@@ -954,9 +978,9 @@ namespace SHCServer.Controllers
             string password = "Abc@123456";
             try
             {
-                SmtpClient mailclient = new SmtpClient("smtp.gmail.com", 587);
-                mailclient.EnableSsl = true;
-                mailclient.Credentials = new NetworkCredential(userName, password);
+                SmtpClient mailClient = new SmtpClient("smtp.gmail.com", 587);
+                mailClient.EnableSsl = true;
+                mailClient.Credentials = new NetworkCredential(userName, password);
 
                 MailMessage message = new MailMessage(userName, sendTo);
 
@@ -964,7 +988,7 @@ namespace SHCServer.Controllers
 
                 message.Body = "Xin chào " + user + "\nChúng tôi vừa nhận được yêu cầu thay đổi mật khẩu từ phía bạn. Mật khẩu mới của bạn là: " + newPassword + "\nĐể bảo mật, bạn vui lòng thay đổi mật khẩu sau khi đăng nhập và không tiết lộ cho bất kỳ cá nhân nào.";
 
-                mailclient.Send(message);
+                mailClient.Send(message);
 
                 return true;
             }
