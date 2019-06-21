@@ -17,7 +17,7 @@ import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/materia
 import { ReasonComponent } from '../reason/reason.component';
 import { Observable } from 'rxjs';
 import { startWith, map, debounceTime, tap, switchMap, finalize } from 'rxjs/operators';
-import { getPermission } from '@shared/helpers/utils';
+import { getPermission, notifyToastr } from '@shared/helpers/utils';
 import { Router } from '@angular/router';
 
 export const MY_FORMATS = {
@@ -311,11 +311,12 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
     }
 
     showMessage(title: string, content: string, type: string) {
-        swal({
-            title:this.l('PackagesMessageTitle.'), 
-            text:this.l('PackagesMessageContent'), 
-            type:'error',
-            timer:3000});
+        notifyToastr(this.l('PackagesMessageTitle.'), this.l('PackagesMessageContent'), 'error');
+        // swal({
+        //     title:this.l('PackagesMessageTitle.'), 
+        //     text:this.l('PackagesMessageContent'), 
+        //     type:'error',
+        //     timer:3000});
     }
 
     deleteDialogPackage(obj) {
@@ -343,56 +344,62 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
         }
 
         if (!this.endTime.nativeElement.value && !this.startTime.nativeElement.value) {
-            return swal({
-                title: 'Thông báo',
-                text: 'Từ ngày và Đến ngày không được để trống',
-                type: 'warning',
-                timer: 3000
-            });
+            return notifyToastr('Thông báo', 'Từ ngày và Đến ngày không được để trống', 'warning');
+            // swal({
+            //     title: 'Thông báo',
+            //     text: 'Từ ngày và Đến ngày không được để trống',
+            //     type: 'warning',
+            //     timer: 3000
+            // });
         }
         if (!this.endTime.nativeElement.value || !this.startTime.nativeElement.value) {
             this.endTime.nativeElement.focus();
             this.startTime.nativeElement.focus();
-            return swal({
-                title: 'Thông báo',
-                text: 'Từ ngày và Đến ngày không được để trống',
-                type: 'warning',
-                timer: 3000
-            });
+            return notifyToastr('Thông báo', 'Từ ngày và Đến ngày không được để trống', 'warning');
+            //   swal({
+            //     title: 'Thông báo',
+            //     text: 'Từ ngày và Đến ngày không được để trống',
+            //     type: 'warning',
+            //     timer: 3000
+            // });
         }
         if (!moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').isValid()) {
             this.startTime.nativeElement.focus();
-            return swal({
-                title: 'Thông báo',
-                text: 'Đến ngày không đúng định dạng',
-                type: 'warning',
-                timer: 3000
-            });
+            return notifyToastr('Thông báo', 'Đến ngày không đúng định dạng', 'warning');
+            //   swal({
+            //     title: 'Thông báo',
+            //     text: 'Đến ngày không đúng định dạng',
+            //     type: 'warning',
+            //     timer: 3000
+            // });
         }
         if (!moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').isValid()) {
             this.startTime.nativeElement.focus();
-            return swal({
-                title: 'Thông báo',
-                text: 'Từ ngày không đúng định dạng',
-                type: 'warning'
-            });
+            return notifyToastr('Thông báo', 'Từ ngày không đúng định dạng', 'warning');
+            //   swal({
+            //     title: 'Thông báo',
+            //     text: 'Từ ngày không đúng định dạng',
+            //     type: 'warning'
+            // });
         }
         if (!moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').isValid()) {
             this.endTime.nativeElement.focus();
-            return swal({
-                title: 'Thông báo',
-                text: 'Đến ngày không đúng định dạng',
-                type: 'warning',
-                timer: 3000
-            });
+            return notifyToastr('Thông báo', 'Đến ngày không đúng định dạng', 'warning');
+            //  swal({
+            //     title: 'Thông báo',
+            //     text: 'Đến ngày không đúng định dạng',
+            //     type: 'warning',
+            //     timer: 3000
+            // });
         }
         if (((moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').valueOf() - moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').valueOf()) / (1000 * 60 * 60 * 24)) < 0) {
-            return swal({
-                title: 'Thông báo',
-                text: 'Đến ngày phải lớn hơn hoặc bằng Từ ngày',
-                type: 'warning',
-                timer: 3000
-            });
+            return notifyToastr('Thông báo', 'Đến ngày phải lớn hơn hoặc bằng Từ ngày', 'warning');
+            //   swal({
+            //     title: 'Thông báo',
+            //     text: 'Đến ngày phải lớn hơn hoặc bằng Từ ngày',
+            //     type: 'warning',
+            //     timer: 3000
+            // });
         }
         this.startTime.nativeElement.value ? this.frmSearch.controls['startTime'].setValue(moment(this.startTime.nativeElement.value + '00:00:00', 'DD/MM/YYYY hh:mm:ss').add(7, 'hours').toDate()) : '';
         this.endTime.nativeElement.value ? this.frmSearch.controls['endTime'].setValue(moment(this.endTime.nativeElement.value + '23:59:59', 'DD/MM/YYYY hh:mm:ss').add(7, 'hours').toDate()) : '';

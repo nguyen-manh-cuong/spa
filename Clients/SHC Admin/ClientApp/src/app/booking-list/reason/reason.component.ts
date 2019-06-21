@@ -10,6 +10,7 @@ import { DataService } from '@shared/service-proxies/service-data';
 import { ValidationRule } from '@shared/common/common';
 import * as moment from 'moment';
 import swal from 'sweetalert2';
+import { notifyToastr } from '@shared/helpers/utils';
 
 
 @Component({
@@ -61,22 +62,23 @@ export class ReasonComponent extends AppComponentBase implements OnInit {
         }
 
         if(params.reasonReject===''){
-            
-            swal({
-                title: this.l('Thông báo'),
-                text: 'Không được bỏ trống',
-                type: 'warning',
-                timer: 3000
-            })
+            notifyToastr(this.l('Thông báo'), 'Không được bỏ trống', 'warning');
+            // swal({
+            //     title: this.l('Thông báo'),
+            //     text: 'Không được bỏ trống',
+            //     type: 'warning',
+            //     timer: 3000
+            // })
             this.txtReason.focus();
         }
         else{
             this._dataService.update(this.api, params).subscribe(() => {
-                swal({
-                    title:this.l('Hủy thành công'), 
-                    text:"Thông tin đặt khám " + this._booking.ticketId + "  đã bị hủy", 
-                    type:'success',
-                    timer:3000});
+                notifyToastr( this.l('Hủy thành công'), "Thông tin đặt khám " + this._booking.ticketId + "  đã bị hủy",  'success');
+                // swal({
+                //     title:this.l('Hủy thành công'), 
+                //     text:"Thông tin đặt khám " + this._booking.ticketId + "  đã bị hủy", 
+                //     type:'success',
+                //     timer:3000});
                 this.dialogRef.close();
             }, err => console.log(err));    
         }

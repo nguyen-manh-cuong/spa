@@ -11,6 +11,7 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { ValidationRule } from '@shared/common/common';
 import swal from 'sweetalert2';
 import { log } from 'util';
+import { notifyToastr } from '@shared/helpers/utils';
 
 
 @Component({
@@ -88,21 +89,23 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
 
         this._isNew ?
             this._dataService.create(this.api, this._frm.value).subscribe(() => {
-                swal({
-                    title: this.l('SaveSuccess'),
-                    text: '',
-                    type: 'success',
-                    timer: 3000
-                });
+                notifyToastr( this.l('SaveSuccess'), '', 'success');
+                // swal({
+                //     title: this.l('SaveSuccess'),
+                //     text: '',
+                //     type: 'success',
+                //     timer: 3000
+                // });
                 this.dialogRef.close();
             }, err => console.log(err)) :
             this._dataService.update(this.api, Object.assign(this._frm.value, { id: this.smstemplate.id })).subscribe(() => {
-                swal({
-                    title: this.l('SaveSuccess'),
-                    text: '',
-                    type: 'success',
-                    timer: 3000
-                });
+                notifyToastr( this.l('SaveSuccess'), '', 'success');
+                // swal({
+                //     title: this.l('SaveSuccess'),
+                //     text: '',
+                //     type: 'success',
+                //     timer: 3000
+                // });
                 this.dialogRef.close();
             }, err => console.log(err));
     }

@@ -11,7 +11,7 @@ import { ILanguage, IBookingTimeslots, IHealthfacilities, IMedicalHealthcareHist
 import { PagedListingComponentBase } from '@shared/paged-listing-component-base';
 import { TaskComponent } from '../task/task.component';
 import swal from 'sweetalert2';
-import { getPermission } from '@shared/helpers/utils';
+import { getPermission, notifyToastr } from '@shared/helpers/utils';
 import { Router } from '@angular/router';
 
 
@@ -98,12 +98,13 @@ export class IndexComponent extends PagedListingComponentBase<IBookingTimeslots>
       buttonsStyling: false
     }).then((result) => {
       if (result.value) {
-        swal({
-          title: this.l('Xóa không thành công'),
-          text: 'Không thể xóa khung giờ khám đang hoạt động!',
-          type: 'error',
-          timer: 3000
-        });
+        notifyToastr(this.l('Xóa không thành công'), 'Không thể xóa khung giờ khám đang hoạt động!', 'error');
+        // swal({
+        //   title: this.l('Xóa không thành công'),
+        //   text: 'Không thể xóa khung giờ khám đang hoạt động!',
+        //   type: 'error',
+        //   timer: 3000
+        // });
       }
     });
   }
@@ -123,30 +124,33 @@ export class IndexComponent extends PagedListingComponentBase<IBookingTimeslots>
   }
 
   showNotify(obj: EntityDto, key: string, id?: number | string) {
-    swal({
-      title: this.l('Không thể xóa khung giờ khám đang hoạt động'),
-      text: '',
-      type: 'error',
-      timer: 3000
-    });
+    notifyToastr(this.l('Không thể xóa khung giờ khám đang hoạt động'), '', 'error');
+    // swal({
+    //   title: this.l('Không thể xóa khung giờ khám đang hoạt động'),
+    //   text: '',
+    //   type: 'error',
+    //   timer: 3000
+    // });
   }
 
   adminConfirm(check?){
     if(check==1){
-      swal({
-        title: "Không có quyền xóa khung giờ khám",
-        text: "",
-        type: "warning",
-        timer:3000
-      });
+      notifyToastr("Không có quyền xóa khung giờ khám", '', 'warning');
+      // swal({
+      //   title: "Không có quyền xóa khung giờ khám",
+      //   text: "",
+      //   type: "warning",
+      //   timer:3000
+      // });
     }
     else{
-      swal({
-        title: "Không có quyền sửa khung giờ khám",
-        text: "",
-        type: "warning",
-        timer:3000
-      });
+      notifyToastr("Không có quyền sửa khung giờ khám", '', 'warning');
+      // swal({
+      //   title: "Không có quyền sửa khung giờ khám",
+      //   text: "",
+      //   type: "warning",
+      //   timer:3000
+      // });
     }
   }
 

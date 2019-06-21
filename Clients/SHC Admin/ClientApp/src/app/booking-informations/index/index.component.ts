@@ -5,7 +5,7 @@ import { MAT_DIALOG_DATA, MatButton, MatDialog, MatDialogRef, MatTableDataSource
 import { Subject, merge, of } from 'rxjs';
 import { Observable } from 'rxjs';
 import { catchError, map, startWith, switchMap, filter, debounceTime, tap, finalize } from 'rxjs/operators';
-import { standardized } from '../../../shared/helpers/utils';
+import { standardized, notifyToastr } from '../../../shared/helpers/utils';
 import { isEmpty, isNil, isNull, omitBy, zipObject } from 'lodash';
 import { SelectionModel } from '@angular/cdk/collections';
 import { DataService } from '@shared/service-proxies/service-data';
@@ -208,48 +208,53 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
     search() {
         if (!this.startTime.nativeElement.value && !this.isFirstTime) {
             this.startTime.nativeElement.focus();
-            return swal({
-                title: 'Thông báo',
-                text: 'Từ ngày không được để trống',
-                type: 'warning',
-                timer: 3000
-            });
+            return notifyToastr('Thông báo', 'Từ ngày không được để trống', 'warning');
+            //  swal({
+            //     title: 'Thông báo',
+            //     text: 'Từ ngày không được để trống',
+            //     type: 'warning',
+            //     timer: 3000
+            // });
         }
         if (!this.endTime.nativeElement.value && !this.isFirstTime) {
             this.endTime.nativeElement.focus();
-            return swal({
-                title: 'Thông báo',
-                text: 'Đến ngày không được để trống',
-                type: 'warning',
-                timer: 3000
-            });
+            return notifyToastr('Thông báo', 'Đến ngày không được để trống', 'warning');
+            //  swal({
+            //     title: 'Thông báo',
+            //     text: 'Đến ngày không được để trống',
+            //     type: 'warning',
+            //     timer: 3000
+            // });
         }
         if (!moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').isValid() && !this.isFirstTime) {
             this.startTime.nativeElement.focus();
-            return swal({
-                title: 'Thông báo',
-                text: 'Từ ngày không đúng định dạng',
-                type: 'warning',
-                timer: 3000
-            });
+            return notifyToastr('Thông báo', 'Từ ngày không đúng định dạng', 'warning');
+            //   swal({
+            //     title: 'Thông báo',
+            //     text: 'Từ ngày không đúng định dạng',
+            //     type: 'warning',
+            //     timer: 3000
+            // });
         }
         if (!moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').isValid() && !this.isFirstTime) {
             this.endTime.nativeElement.focus();
-            return swal({
-                title: 'Thông báo',
-                text: 'Đến ngày không đúng định dạng',
-                type: 'warning',
-                timer: 3000
-            });
+            return notifyToastr('Thông báo', 'Đến ngày không đúng định dạng', 'warning');
+            //   swal({
+            //     title: 'Thông báo',
+            //     text: 'Đến ngày không đúng định dạng',
+            //     type: 'warning',
+            //     timer: 3000
+            // });
         }
         if (((moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').valueOf() - moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').valueOf()) / (1000 * 60 * 60 * 24)) < 0 && !this.isFirstTime) {
             this.endTime.nativeElement.focus();
-            return swal({
-                title: 'Thông báo',
-                text: 'Đến ngày phải lớn hơn hoặc bằng Từ ngày',
-                type: 'warning',
-                timer: 3000
-            });
+            return notifyToastr('Thông báo', 'Đến ngày phải lớn hơn hoặc bằng Từ ngày', 'warning');
+            //   swal({
+            //     title: 'Thông báo',
+            //     text: 'Đến ngày phải lớn hơn hoặc bằng Từ ngày',
+            //     type: 'warning',
+            //     timer: 3000
+            // });
         }
         if (((!this.appSession.user.healthFacilitiesId && this.healthfacilities.value) || (this.appSession.user.healthFacilitiesId)) && !this.isFirstTime) {
             if (this.appSession.user.healthFacilitiesId != null) {

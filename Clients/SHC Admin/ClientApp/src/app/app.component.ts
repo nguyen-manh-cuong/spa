@@ -18,6 +18,7 @@ import { MAT_DIALOG_DATA, MatButton, MatDialog, MatDialogRef } from '@angular/ma
 import { DataService } from '@shared/service-proxies/service-data';
 import { HealthfacilitiesListComponent } from './healthfacilities-list/healthfacilities-list.component';
 import { anyKeysRemoved } from '@fullcalendar/core/util/object-similarity';
+import { notifyToastr } from '@shared/helpers/utils';
 
 @Component({
     templateUrl: './app.component.html',
@@ -237,12 +238,15 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
                 if (resp && resp.items && resp.items.length) {
                     if (resp.items.length != 1) this._dialog.open(HealthfacilitiesListComponent, { minWidth: 'calc(100vw/3)', maxWidth: 'calc(100vw - 300px)', disableClose: true, data: resp.items });
                     else {
-                        swal({
-                            title: 'Thông báo',
-                            text: 'Tài khoản của bạn chỉ có 1 CSYT',
-                            type: 'warning',
-                            timer: 3000
-                        });
+                        notifyToastr('Thông báo','Tài khoản của bạn chỉ có 1 CSYT','warning');
+                        // swal({
+                        //     title: 'Thông báo',
+                        //     text: 'Tài khoản của bạn chỉ có 1 CSYT',
+                        //     type: 'warning',
+                        //     timer: 3000
+                        // });
+                            
+
                     }
                 }
             });

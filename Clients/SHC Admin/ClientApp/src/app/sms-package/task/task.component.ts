@@ -10,6 +10,7 @@ import { DataService } from '@shared/service-proxies/service-data';
 import { ValidationRule } from '@shared/common/common';
 import swal from 'sweetalert2';
 import { stringify } from '@angular/core/src/util';
+import { notifyToastr } from '@shared/helpers/utils';
 
 
 @Component({
@@ -130,7 +131,8 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     }
 
     addDetail() {
-        if (this._frm.controls['cost'].value && this._frm.controls['cost'].value > 2000000000) return swal('Thông báo', 'Thành tiền không được quá 2.000.000.000', 'warning');
+        if (this._frm.controls['cost'].value && this._frm.controls['cost'].value > 2000000000) return notifyToastr('Thông báo', 'Thành tiền không được quá 2.000.000.000', 'warning');
+        // swal('Thông báo', 'Thành tiền không được quá 2.000.000.000', 'warning');
 
         var length: number = this._details.length;
         var smsTo: number = length == 0 ? Number(this._frm.value.smsTo) + 1 : Number(this._details[length - 1].smsTo) + 1;
@@ -207,12 +209,13 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
 
     submit() {
         if (this._frm.controls['cost'].value && this._frm.controls['cost'].value > 2000000000)
-            return swal({
-                title: 'Thông báo',
-                text: 'Thành tiền không được quá 2.000.000.000',
-                type: 'warning',
-                timer: 3000
-            });
+            return notifyToastr( 'Thông báo',  'Thành tiền không được quá 2.000.000.000', 'warning');
+            //  swal({
+            //     title: 'Thông báo',
+            //     text: 'Thành tiền không được quá 2.000.000.000',
+            //     type: 'warning',
+            //     timer: 3000
+            // });
 
         var params = _.pick(this._frm.value, ['id', 'name', 'description', 'cost', 'quantity', 'isActive', 'details', 'userId']);
         var detail: Array<IPackageDetail> = [{
@@ -234,21 +237,23 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
 
         this._isNew ?
             this._dataService.create(this.api, params).subscribe(() => {
-                swal({
-                    title: this.l('SaveSuccess'),
-                    text: '',
-                    type: 'success',
-                    timer: 3000
-                });
+                notifyToastr( this.l('SaveSuccess'), '', 'success');
+                // swal({
+                //     title: this.l('SaveSuccess'),
+                //     text: '',
+                //     type: 'success',
+                //     timer: 3000
+                // });
                 this.dialogRef.close();
             }, err => { }) :
             this._dataService.update(this.api, params).subscribe(() => {
-                swal({
-                    title: this.l('SaveSuccess'),
-                    text: '',
-                    type: 'success',
-                    timer: 3000
-                });
+                notifyToastr( this.l('SaveSuccess'), '', 'success');
+                // swal({
+                //     title: this.l('SaveSuccess'),
+                //     text: '',
+                //     type: 'success',
+                //     timer: 3000
+                // });
                 this.dialogRef.close()
             }, err => { });
     }

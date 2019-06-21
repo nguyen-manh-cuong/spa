@@ -8,6 +8,7 @@ import { AppComponentBase } from '@shared/app-component-base';
 import { DataService } from '@shared/service-proxies/service-data';
 import { ValidationRule } from '@shared/common/common';
 import swal from 'sweetalert2';
+import { notifyToastr } from '@shared/helpers/utils';
 
 
 
@@ -59,32 +60,35 @@ export class TaskComponent extends AppComponentBase implements OnInit {
         var start = this._frm.controls['hoursStart'].value.concat(this._frm.controls['minuteStart'].value);
         var end = this._frm.controls['hoursEnd'].value.concat(this._frm.controls['minuteEnd'].value);
         if (start >= end) {
-            swal({
-                title: this.l('Thông báo'),
-                text: 'Thời gian kết thúc phải lớn hơn thời gian bắt đầu!',
-                type: 'error',
-                timer: 3000
-            });
+            notifyToastr(this.l('Thông báo'), 'Thời gian kết thúc phải lớn hơn thời gian bắt đầu!', 'error');
+            // swal({
+            //     title: this.l('Thông báo'),
+            //     text: 'Thời gian kết thúc phải lớn hơn thời gian bắt đầu!',
+            //     type: 'error',
+            //     timer: 3000
+            // });
         }
         else {
             this._isNew ?
                 this._dataService.create(this.api, _.omit(Object.assign(this._frm.value), 'timeSlotId')).subscribe(() => {
-                    swal({
-                        title: this.l('SaveSuccess'),
-                        text: '',
-                        type: 'success',
-                        timer: 3000
-                    });
+                    notifyToastr(this.l('SaveSuccess'), '', 'success');
+                    // swal({
+                    //     title: this.l('SaveSuccess'),
+                    //     text: '',
+                    //     type: 'success',
+                    //     timer: 3000
+                    // });
                     this.dialogRef.close();
                 }, () => { }) :
 
                 this._dataService.update(this.api, Object.assign(this._frm.value, this.obj.timeSlotId)).subscribe(() => {
-                    swal({
-                        title: this.l('SaveSuccess'),
-                        text: '',
-                        type: 'success',
-                        timer: 3000
-                    });
+                    notifyToastr(this.l('SaveSuccess'), '', 'success');
+                    // swal({
+                    //     title: this.l('SaveSuccess'),
+                    //     text: '',
+                    //     type: 'success',
+                    //     timer: 3000
+                    // });
                     this.dialogRef.close();
                 }, () => { });
         }
