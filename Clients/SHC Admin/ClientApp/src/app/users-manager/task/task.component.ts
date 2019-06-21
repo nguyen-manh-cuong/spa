@@ -194,7 +194,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
         };
 
         this.frmUser = this._formBuilder.group(this.context);
-        this._dataService.getAll('groups').subscribe(resp => {
+        this._dataService.getAll('groups','',JSON.stringify({name:'asc'})).subscribe(resp => {
             this.groups = resp.items;
             if (this.user) {
                 this._dataService.getAll('groups-userid').subscribe(res => {
@@ -655,6 +655,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
 
     checkedHealth = -1;
     _healths = [];
+
 
     getHealth(health: any, event: any) {
         if (event.checked) {
