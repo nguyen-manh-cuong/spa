@@ -48,6 +48,7 @@ namespace SHCServer.Controllers
                                 LEFT JOIN mdm.sys_users_groups ug ON u.UserId = ug.UserId 
                                 LEFT JOIN mdm.sys_groups g ON g.GroupId = ug.GroupId 
                                 WHERE u.IsDelete = 0
+                                AND u.AccountType IN (1, 2, 3)
                                 AND ui.IsDelete = 0 ";
             List<string> clause = new List<string>();
             List<DbParam> param = new List<DbParam>();
