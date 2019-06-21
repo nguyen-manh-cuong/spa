@@ -72,4 +72,8 @@ export class LoginComponent extends AppComponentBase implements OnInit {
     resetPasswordClick() {
         this._router.navigateByUrl("auth/reset");
     }
+
+    registerClick() {
+        this._router.navigateByUrl("auth/register");
+    }
 }

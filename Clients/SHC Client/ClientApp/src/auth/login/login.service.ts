@@ -45,6 +45,7 @@ export class LoginService {
         if (authenticateResult.accessToken) {
             // Successfully logged in
             this.login(authenticateResult.accessToken, authenticateResult.encryptedAccessToken, authenticateResult.expireInSeconds, this.rememberMe);
+            this._router.navigateByUrl('');
 
         } else {
             // Unexpected result!
