@@ -81,14 +81,22 @@ namespace SHCServer.Controllers
 
                 if (data.ContainsKey("accountType"))
                 {
-                    clause.Add("AND u.AccountType = @accountType");
-                    param.Add(DbParam.Create("@accountType", data["accountType"]));
+                    if (!string.IsNullOrEmpty(data["accountType"]))
+                    {
+                        clause.Add("AND u.AccountType = @accountType");
+                        param.Add(DbParam.Create("@accountType", data["accountType"]));
+                    }
+                   
                 }
 
                 if (data.ContainsKey("userPhoneEmail"))
                 {
-                    clause.Add($"AND (u.PhoneNumber = @userPhoneEmail OR u.Email = @userPhoneEmail)");
-                    param.Add(DbParam.Create("@userPhoneEmail", data["userPhoneEmail"]));
+                    if (!string.IsNullOrEmpty(data["userPhoneEmail"]))
+                    {
+                        clause.Add($"AND (u.PhoneNumber = @userPhoneEmail OR u.Email = @userPhoneEmail)");
+                        param.Add(DbParam.Create("@userPhoneEmail", data["userPhoneEmail"]));
+                    }
+                       
                 }
 
                 if (data.ContainsKey("group"))
