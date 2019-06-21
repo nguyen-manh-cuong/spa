@@ -9,7 +9,7 @@ import { MAT_DIALOG_DATA, MatDialogRef, MatInput } from '@angular/material';
 import { AppComponentBase } from '@shared/app-component-base';
 import { DataService } from '@shared/service-proxies/service-data';
 import { ValidationRule } from '@shared/common/common';
-import { standardized } from '@shared/helpers/utils';
+import { standardized, notifyToastr } from '@shared/helpers/utils';
 import swal from 'sweetalert2';
 
 
@@ -99,31 +99,34 @@ export class TaskComponent extends AppComponentBase implements OnInit {
     var start = this._frm.controls['hoursStart'].value.concat(this._frm.controls['minuteStart'].value);
     var end = this._frm.controls['hoursEnd'].value.concat(this._frm.controls['minuteEnd'].value);
     if (start > end) {
-      swal({
-        title: this.l('Thời gian kết thúc phải lớn hơn thời gian bắt đầu'),
-        text: '',
-        type: 'error',
-        timer: 3000
-      });
+      notifyToastr(this.l('Thời gian kết thúc phải lớn hơn thời gian bắt đầu'), '', 'error');
+      // swal({
+      //   title: this.l('Thời gian kết thúc phải lớn hơn thời gian bắt đầu'),
+      //   text: '',
+      //   type: 'error',
+      //   timer: 3000
+      // });
     }
     else {
       this._isNew ?
         this._dataService.create(this.api, standardized(_.omit(Object.assign(this._frm.value), 'timeSlotId'), this.rules)).subscribe(e => {
-          swal({
-            title: this.l('SaveSuccess'),
-            text: '',
-            type: 'success',
-            timer: 3000
-          });
+          notifyToastr(this.l('SaveSuccess'), '', 'success');
+          // swal({
+          //   title: this.l('SaveSuccess'),
+          //   text: '',
+          //   type: 'success',
+          //   timer: 3000
+          // });
           this.dialogRef.close();
         }, err => { }) :
         this._dataService.update(this.api, standardized(Object.assign(this._frm.value, this.obj.timeSlotId), this.rules)).subscribe(() => {
-          swal({
-            title: this.l('SaveSuccess'),
-            text: '',
-            type: 'success',
-            timer: 3000
-          });
+          notifyToastr(this.l('SaveSuccess'), '', 'success');
+          // swal({
+          //   title: this.l('SaveSuccess'),
+          //   text: '',
+          //   type: 'success',
+          //   timer: 3000
+          // });
           this.dialogRef.close();
         }, err => { });
     }

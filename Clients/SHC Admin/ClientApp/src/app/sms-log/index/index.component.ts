@@ -10,6 +10,7 @@ import * as moment from 'moment';
 
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+import { notifyToastr } from '@shared/helpers/utils';
 
 export const MY_FORMATS = {
     parse: {
@@ -178,41 +179,45 @@ export class IndexComponent extends PagedListingComponentBase<ISmsLogs> implemen
         var endDate = moment(this.endDate).valueOf();
 
         if (endDate < startDate || moment(this.startTime.date).valueOf() > moment(this.endTime.date).valueOf()) {
-            return swal(this.l('Notification'), this.l('FromDateMustBeGreaterThanOrEqualToDate'), 'warning');
+            return notifyToastr(this.l('Notification'), this.l('FromDateMustBeGreaterThanOrEqualToDate'), 'warning'); 
+            // swal(this.l('Notification'), this.l('FromDateMustBeGreaterThanOrEqualToDate'), 'warning');
         }
 
         let yearStart = parseInt(this._startDate.slice(6, 10));
         let yearEnd = parseInt(this._endDate.slice(6, 10));
 
         if (yearEnd - yearStart > 1) {
-            return swal({
-                title: 'Thông báo',
-                text: 'Dữ liệu không được lấy quá 1 năm',
-                type: 'warning',
-                timer: 3000
-            });
+            return notifyToastr('Thông báo', 'Dữ liệu không được lấy quá 1 năm', 'warning');
+            // swal({
+            //     title: 'Thông báo',
+            //     text: 'Dữ liệu không được lấy quá 1 năm',
+            //     type: 'warning',
+            //     timer: 3000
+            // });
         }
         if (yearEnd - yearStart == 1) {
             let monthStartTime = parseInt(this._startDate.slice(4, 6));
             let monthEndTime = parseInt(this._endDate.slice(4, 6));
             if (monthEndTime > monthStartTime) {
-                return swal({
-                    title: 'Thông báo',
-                    text: 'Dữ liệu không được lấy quá 1 năm',
-                    type: 'warning',
-                    timer: 3000
-                });
+                return notifyToastr('Thông báo', 'Dữ liệu không được lấy quá 1 năm', 'warning');
+                // swal({
+                //     title: 'Thông báo',
+                //     text: 'Dữ liệu không được lấy quá 1 năm',
+                //     type: 'warning',
+                //     timer: 3000
+                // });
             }
             if (monthStartTime == monthEndTime) {
                 let dateStartTime = parseInt(this._startDate.slice(1, 3));
                 let dateEndTime = parseInt(this._endDate.slice(1, 3));
                 if (dateStartTime < dateEndTime) {
-                    return swal({
-                        title: 'Thông báo',
-                        text: 'Dữ liệu không được lấy quá 1 năm',
-                        type: 'warning',
-                        timer: 3000
-                    });
+                    return notifyToastr('Thông báo', 'Dữ liệu không được lấy quá 1 năm', 'warning');
+                    //  swal({
+                    //     title: 'Thông báo',
+                    //     text: 'Dữ liệu không được lấy quá 1 năm',
+                    //     type: 'warning',
+                    //     timer: 3000
+                    // });
                 }
             }
         }

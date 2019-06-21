@@ -15,7 +15,7 @@ import * as moment from 'moment';
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { zipObject, isNil, omitBy } from 'lodash';
-import { standardized } from '@shared/helpers/utils';
+import { standardized, notifyToastr } from '@shared/helpers/utils';
 
 export const MY_FORMATS = {
     parse: {
@@ -411,12 +411,13 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
             (this.frmSearch.controls['fromMonth'].value == 9 && this.frmSearch.controls['fromDay'].value > 30) ||
             (this.frmSearch.controls['fromMonth'].value == 11 && this.frmSearch.controls['fromDay'].value > 30)
         ) {
-            return swal({
-                title: "Thông báo",
-                text: "Ngày sinh từ không đúng định dạng",
-                type: "warning",
-                timer: 3000
-            });
+            return notifyToastr('Thông báo', "Ngày sinh từ không đúng định dạng", 'warning');
+            //  swal({
+            //     title: "Thông báo",
+            //     text: "Ngày sinh từ không đúng định dạng",
+            //     type: "warning",
+            //     timer: 3000
+            // });
         }
 
         if (
@@ -426,12 +427,13 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
             (this.frmSearch.controls['toMonth'].value == 9 && this.frmSearch.controls['toDay'].value > 30) ||
             (this.frmSearch.controls['toMonth'].value == 11 && this.frmSearch.controls['toDay'].value > 30)
         ) {
-            return swal({
-                title: "Thông báo",
-                text: "Ngày sinh đến không đúng định dạng",
-                type: "warning",
-                timer: 3000
-            });
+            return notifyToastr('Thông báo', "Ngày sinh đến không đúng định dạng", 'warning');
+            //  swal({
+            //     title: "Thông báo",
+            //     text: "Ngày sinh đến không đúng định dạng",
+            //     type: "warning",
+            //     timer: 3000
+            // });
         }
         // this.frmSearch.controls['provinceCode'].setValue(this._provinceCode);
         // this.frmSearch.controls['districtCode'].setValue(this._districtCode);
@@ -440,12 +442,13 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     }
 
     showMess(type: number) {
-        if (type == 1) swal({
-            title: 'Thông báo',
-            text: 'Chưa chọn bệnh nhân',
-            type: 'warning',
-            timer: 3000
-        });
+        if (type == 1) notifyToastr('Thông báo', 'Chưa chọn bệnh nhân', 'warning');
+        //  swal({
+        //     title: 'Thông báo',
+        //     text: 'Chưa chọn bệnh nhân',
+        //     type: 'warning',
+        //     timer: 3000
+        // });
     }
 
     openCustomDialog(): void {
@@ -482,12 +485,13 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
                 content: '',
                 objectType: 1
             }).subscribe(resp => {
-                    swal({
-                        title: 'Thông báo',
-                        html: resp,
-                        type: 'error',
-                        timer: 3000
-                    });
+                    notifyToastr('Thông báo', resp, 'error');
+                    // swal({
+                    //     title: 'Thông báo',
+                    //     html: resp,
+                    //     type: 'error',
+                    //     timer: 3000
+                    // });
                     this.selection = new SelectionModel<IMedicalHealthcareHistories>(true, []);
                     abp.ui.clearBusy('#main-container');
                 }, err => { });

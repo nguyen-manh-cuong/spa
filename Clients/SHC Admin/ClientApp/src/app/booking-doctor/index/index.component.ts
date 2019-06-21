@@ -19,7 +19,7 @@ import timeGrigPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import { Observable } from 'rxjs';
 import { startWith, map, debounceTime, tap, switchMap, finalize } from 'rxjs/operators';
-import { getPermission } from '@shared/helpers/utils';
+import { getPermission, notifyToastr } from '@shared/helpers/utils';
 import { Router } from '@angular/router';
 
 
@@ -82,12 +82,13 @@ export class IndexComponent extends AppComponentBase implements OnInit {
 
     search() {
         if (this.frmSearch.controls['healthfacilities'].value == null) {
-            return swal({
-                title: this.l('Notification'),
-                text: this.l('Đơn vị và Bác sỹ không được để trống'),
-                type: 'warning',
-                timer: 3000
-            });
+            return notifyToastr(this.l('Notification'), this.l('Đơn vị và Bác sỹ không được để trống'), 'warning');
+            // swal({
+            //     title: this.l('Notification'),
+            //     text: this.l('Đơn vị và Bác sỹ không được để trống'),
+            //     type: 'warning',
+            //     timer: 3000
+            // });
         }
 
         let calendarApi = this.calendarComponent.getApi();
@@ -129,12 +130,13 @@ export class IndexComponent extends AppComponentBase implements OnInit {
                 });
         } else {
             //this.appSession.user.healthFacilitiesId == null ? this.frmSearch.controls['healthfacilities'].setValue(null) : '';
-            swal({
-                title: this.l('Notification'),
-                text: this.l('Bác sỹ không được để trống'),
-                type: 'warning',
-                timer: 3000
-            });
+            notifyToastr(this.l('Notification'), this.l('Bác sỹ không được để trống'), 'warning');
+            // swal({
+            //     title: this.l('Notification'),
+            //     text: this.l('Bác sỹ không được để trống'),
+            //     type: 'warning',
+            //     timer: 3000
+            // });
         }
     }
 

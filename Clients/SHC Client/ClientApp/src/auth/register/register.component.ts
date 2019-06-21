@@ -11,6 +11,7 @@ import * as moment from 'moment';
 import swal from 'sweetalert2';
 import { FileValidator } from 'ngx-material-file-input';
 import { Router } from '@angular/router';
+import { notifyToastr } from '@shared/helpers/utils';
 
 @Component({
     selector: 'app-register',
@@ -207,12 +208,13 @@ export class RegisterComponent implements OnInit {
                 !this.frmUser.controls['isUsingRegister'].value &&
                 !this.frmUser.controls['isUsingVideo'].value &&
                 !this.frmUser.controls['isUsingExamination'].value) {
-                return swal({
-                    title: 'Thông báo',
-                    text: 'Bạn phải chọn ít nhất một dịch vụ',
-                    type: 'warning',
-                    timer: 3000
-                });
+                //return swal({
+                //    title: 'Thông báo',
+                //    text: 'Bạn phải chọn ít nhất một dịch vụ',
+                //    type: 'warning',
+                //    timer: 3000
+                //});
+                notifyToastr('Thông báo', 'Bạn phải chọn ít nhất một dịch vụ', 'warning');
             }
         }
 
@@ -226,20 +228,24 @@ export class RegisterComponent implements OnInit {
 
         this._dataService.createUpload('Register', this.frmUser.value).subscribe(
             () => {
-                swal({
-                    title: '<u>Đăng ký mở tài khoản thành công !</u>',
-                    html: "<b>Họ và tên:</b> " + this.frmUser.controls['fullName'].value + "<br>" + "<b>Số điện thoai:</b> " + this.frmUser.controls['phoneNumber'].value + "<br>" + "<b>Email:</b> " + this.frmUser.controls['email'].value,
-                    type: 'success',
-                    confirmButtonClass: 'mat-raised-button mat-primary bg-danger',
-                    width: 500,
-                    buttonsStyling: false,
-                    timer: 3000
-                }).then((result) => {
+                // swal({
+                //     title: '<u>Đăng ký mở tài khoản thành công !</u>',
+                //     html: "<b>Họ và tên:</b> " + this.frmUser.controls['fullName'].value + "<br>" + "<b>Số điện thoai:</b> " + this.frmUser.controls['phoneNumber'].value + "<br>" + "<b>Email:</b> " + this.frmUser.controls['email'].value,
+                //     type: 'success',
+                //     confirmButtonClass: 'mat-raised-button mat-primary bg-danger',
+                //     width: 500,
+                //     buttonsStyling: false,
+                //     timer: 3000
+                notifyToastr(
+                    "Đăng ký mở tài khoản thành công !",
+                    "<b>Họ và tên:</b> " + this.frmUser.controls['fullName'].value + "<br>" + "<b>Số điện thoai:</b> " + this.frmUser.controls['phoneNumber'].value + "<br>" + "<b>Email:</b> " + this.frmUser.controls['email'].value,
+                    'success');
+                //}).then((result) => {
                     //if (result.value) {
                     //this._location.back();
                     //}
                     this._router.navigateByUrl('/');
-                });
+                //});
             }, err => console.log('err: ' + err))
     }
 

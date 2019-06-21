@@ -11,7 +11,7 @@ import { packagedistributeViewComponent } from '../view/view.component';
 import { DatePipe } from '@angular/common';
 import { packagedistributeEditComponent } from '../edit/edit.component';
 import { SelectAutocompleteComponent } from '@app/mat-select-autocomplete/select-autocomplete.component'
-import { getPermission } from '@shared/helpers/utils';
+import { getPermission, notifyToastr } from '@shared/helpers/utils';
 import { Router } from '@angular/router';
 import { AnyARecord } from 'dns';
 
@@ -96,12 +96,13 @@ export class packagedistributeIndexComponent extends PagedListingComponentBase<I
                     this.dataService.delete(this.api, obj[id ? id : 'id']).subscribe(e => {
                         this.paginator._changePageSize(this.paginator.pageSize);
                         this.paginator.pageIndex = 0;
-                        swal({
-                            title: this.l('SuccessfullyDeleted'),
-                            html: this.l('DeletedInSystem', obj[key]),
-                            type: 'success',
-                            timer: 3000
-                        });
+                        notifyToastr( this.l('SuccessfullyDeleted'), this.l('DeletedInSystem', obj[key]), 'success');
+                        // swal({
+                        //     title: this.l('SuccessfullyDeleted'),
+                        //     html: this.l('DeletedInSystem', obj[key]),
+                        //     type: 'success',
+                        //     timer: 3000
+                        // });
                     });
             }
         });
@@ -139,21 +140,23 @@ export class packagedistributeIndexComponent extends PagedListingComponentBase<I
     customSearch() {
         if (this.frmSearch.controls['fromYear'].value == this.frmSearch.controls['toYear'].value) {
             if(this.frmSearch.controls['monthStart'].value > this.frmSearch.controls['monthEnd'].value){
-                return swal({
-                    title: 'Thông báo',
-                    text: 'Đến tháng phải lớn hơn hoặc bằng Từ tháng',
-                    type: 'warning',
-                    timer: 3000
-                });
+                return notifyToastr('Thông báo',  'Đến tháng phải lớn hơn hoặc bằng Từ tháng', 'warning');
+                // swal({
+                //     title: 'Thông báo',
+                //     text: 'Đến tháng phải lớn hơn hoặc bằng Từ tháng',
+                //     type: 'warning',
+                //     timer: 3000
+                // });
             }
         }
         if (this.frmSearch.controls['fromYear'].value > this.frmSearch.controls['toYear'].value) {
-                return swal({
-                    title: 'Thông báo',
-                    text: 'Đến năm phải lớn hơn hoặc bằng Từ năm',
-                    type: 'warning',
-                    timer: 3000
-                });
+                return notifyToastr('Thông báo', 'Đến năm phải lớn hơn hoặc bằng Từ năm', 'warning');
+                //  swal({
+                //     title: 'Thông báo',
+                //     text: 'Đến năm phải lớn hơn hoặc bằng Từ năm',
+                //     type: 'warning',
+                //     timer: 3000
+                // });
         }
         this.btnSearchClicks$.next();
     }

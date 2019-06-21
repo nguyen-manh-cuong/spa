@@ -10,6 +10,7 @@ import { DataService } from '@shared/service-proxies/service-data';
 import { ValidationRule } from '@shared/common/common';
 import * as moment from 'moment';
 import swal from 'sweetalert2';
+import { notifyToastr } from '@shared/helpers/utils';
 
 
 @Component({
@@ -160,11 +161,12 @@ export class EditComponent extends AppComponentBase implements OnInit, AfterView
         }
 
         this._dataService.update(this.api, params).subscribe(() => {
-            swal({
-                title:this.l('SaveSuccess'), 
-                text:'', 
-                type:'success',
-                timer:3000});
+            notifyToastr(this.l('SaveSuccess'), '', 'success');
+            // swal({
+            //     title:this.l('SaveSuccess'), 
+            //     text:'', 
+            //     type:'success',
+            //     timer:3000});
             this.dialogRef.close();
         }, err => console.log(err));
 

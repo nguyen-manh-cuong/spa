@@ -68,7 +68,7 @@
                                 </mat-form-field>
                             </div>
                             <small *ngIf="_invaliBirthday" class="help-block ml-auto pr-4 mb-3" style="color: red; font-style: italic;">Ngày sinh không đúng định dạng</small>
-
+                            <small *ngIf="invalidBirth" class="help-block ml-auto pr-4 mb-3" style="color: red; font-style: italic;">Ngày sinh không lớn hơn ngày hiện tại</small>
                         </div>
                     </div>
                 </div>
@@ -77,21 +77,21 @@
                     <div class="col-md-4">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l('UserName')}}</mat-label>
-                            <input formControlName="userName" [readonly]="!_isNew" matInput [required]="_isNew" (keyup)="ruleSpecialCharacter()" maxlength="255">
+                            <input formControlName="userName" [readonly]="!_isNew" [disabled]="!_isNew" matInput required (keyup)="ruleSpecialCharacter()" maxlength="255">
                             <validation matSuffix [control]="frmUser.controls['userName']"></validation>
                         </mat-form-field>
                     </div>
                     <div class="col-md-4">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l('Password')}}</mat-label>
-                            <input formControlName="password" type="password" matInput [required]="_isNew" minlength="8" maxlength="255">
+                            <input formControlName="password" type="password" [disabled]="!_isNew" [readonly]="!_isNew" matInput required minlength="8" maxlength="255">
                             <validation matSuffix [control]="frmUser.controls['password']"></validation>
                         </mat-form-field>
                     </div>
                     <div class="col-md-4">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l('AccountType')}}</mat-label>
-                            <mat-select formControlName="accountType" (selectionChange)="onSelectAccountType($event.value)" required>
+                            <mat-select formControlName="accountType" (selectionChange)="onSelectAccountType($event.value)"  required>
                                 <mat-option *ngFor="let o of _accountTypes" [value]="o.id">{{ o.name }}</mat-option>
                             </mat-select>
                             <validation matSuffix [control]="frmUser.controls['accountType']"></validation>
@@ -321,6 +321,6 @@
     </mat-tab-group>
     <div class="text-right mb-3">
         <button class="mr-3" mat-button mat-dialog-close>{{l('Close')}}</button>
-        <button mat-raised-button color="primary" (click)="submit()" [disabled]="frmUser.invalid">{{l('Save')}}</button>
+        <button mat-raised-button color="primary" (click)="submit()" [disabled]="frmUser.invalid || _invaliBirthday || invalidBirth">{{l('Save')}}</button>
     </div>
 </form>

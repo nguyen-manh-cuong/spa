@@ -53,3 +53,12 @@ export function standardized(obj: object, libs: object): object {
         return val;
     });
 }
+
+export function notifyToastr(title: string, message: string, type: string) {
+    if (type === "error")
+        abp.notify.error(message, title, { timeOut: 3000, preventDuplicates: true, preventOpenDuplicates: true });
+    if (type === "success")
+        abp.notify.success(message, title, { timeOut: 3000, preventDuplicates: true, preventOpenDuplicates: true });
+    if (type === "warning")
+        abp.notify.warn(message, title, { timeOut: 3000, preventDuplicates: true, preventOpenDuplicates: true });
+}

@@ -15,7 +15,7 @@ import { MatDialog, MatInput, MatDatepicker } from '@angular/material';
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { startTimeRange } from '@angular/core/src/profile/wtf_impl';
-import { getPermission, standardized } from '@shared/helpers/utils';
+import { getPermission, standardized, notifyToastr } from '@shared/helpers/utils';
 import { Router } from '@angular/router';
 import { zipObject, omitBy, isNil } from 'lodash';
 import * as _ from 'lodash';
@@ -440,48 +440,53 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
 
     customSearch() {
         if (!this.endTime.nativeElement.value) {
-            return swal({
-                title: 'Thông báo',
-                text: 'Đến ngày không được để trống',
-                type: 'warning',
-                timer: 3000
-            });
+            return notifyToastr('Thông báo', 'Đến ngày không được để trống', 'warning');
+            // swal({
+            //     title: 'Thông báo',
+            //     text: 'Đến ngày không được để trống',
+            //     type: 'warning',
+            //     timer: 3000
+            // });
         }
 
         if (moment(this.endTime.nativeElement.value, "DD/MM/YYYY") < moment(this.startTime.nativeElement.value, "DD/MM/YYYY")) {
-            return swal({
-                title: 'Thông báo',
-                text: 'Đến ngày phải lớn hơn hoặc bằng Từ ngày',
-                type: 'warning',
-                timer: 3000
-            });
+            return notifyToastr('Thông báo', 'Đến ngày phải lớn hơn hoặc bằng Từ ngày', 'warning');
+            // swal({
+            //     title: 'Thông báo',
+            //     text: 'Đến ngày phải lớn hơn hoặc bằng Từ ngày',
+            //     type: 'warning',
+            //     timer: 3000
+            // });
         }
 
         if (!moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').isValid()) {
-            return swal({
-                title: 'Thông báo',
-                text: 'Đến ngày không đúng định dạng',
-                type: 'warning',
-                timer: 3000
-            });
+            return  notifyToastr('Thông báo', 'Đến ngày không đúng định dạng', 'warning');
+            // swal({
+            //     title: 'Thông báo',
+            //     text: 'Đến ngày không đúng định dạng',
+            //     type: 'warning',
+            //     timer: 3000
+            // });
         }
 
         if (!moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').isValid()) {
-            return swal({
-                title: 'Thông báo',
-                text: 'Từ ngày không đúng định dạng',
-                type: 'warning',
-                timer: 3000
-            });
+            return notifyToastr('Thông báo', 'Từ ngày không đúng định dạng', 'warning');
+            //  swal({
+            //     title: 'Thông báo',
+            //     text: 'Từ ngày không đúng định dạng',
+            //     type: 'warning',
+            //     timer: 3000
+            // });
         }
 
         if (this.birthday.nativeElement.value && !moment(this.birthday.nativeElement.value, 'DD/MM/YYYY').isValid()) {
-            return swal({
-                title: 'Thông báo',
-                text: 'Ngày sinh không đúng định dạng',
-                type: 'warning',
-                timer: 3000
-            });
+            return notifyToastr('Thông báo', 'Ngày sinh không đúng định dạng', 'warning');
+            //  swal({
+            //     title: 'Thông báo',
+            //     text: 'Ngày sinh không đúng định dạng',
+            //     type: 'warning',
+            //     timer: 3000
+            // });
         }
 
         // this.frmSearch.controls['provinceCode'].setValue(this._provinceCode);
@@ -490,12 +495,13 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
 
 
         if (((moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').valueOf() - moment(this.startTime.nativeElement.value, 'DD/MM/YYYY').valueOf()) / (1000 * 60 * 60 * 24)) < 0) {
-            swal({
-                title: this.l('Notification'),
-                text: this.l('FromDateMustBeGreaterThanOrEqualToDate'),
-                type: 'warning',
-                timer: 3000
-            });
+            notifyToastr(this.l('Notification'), this.l('FromDateMustBeGreaterThanOrEqualToDate'), 'warning');
+            // swal({
+            //     title: this.l('Notification'),
+            //     text: this.l('FromDateMustBeGreaterThanOrEqualToDate'),
+            //     type: 'warning',
+            //     timer: 3000
+            // });
             return true;
         }
 
@@ -503,32 +509,35 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
         var endTime = moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').toDate();
 
         if (endTime.getFullYear() - startTime.getFullYear() > 1) {
-            return swal({
-                title: 'Thông báo',
-                text: 'Dữ liệu không được lấy quá 1 năm',
-                type: 'warning',
-                timer: 3000
-            });
+            return notifyToastr('Thông báo', 'Dữ liệu không được lấy quá 1 năm', 'warning');
+            // swal({
+            //     title: 'Thông báo',
+            //     text: 'Dữ liệu không được lấy quá 1 năm',
+            //     type: 'warning',
+            //     timer: 3000
+            // });
         }
         if (endTime.getFullYear() - startTime.getFullYear() == 1) {
             var monthStartTime = startTime.getMonth() + 1;
             var monthEndTime = endTime.getMonth() + 1;
             if (12 - monthStartTime + monthEndTime > 12) {
-                return swal({
-                    title: 'Thông báo',
-                    text: 'Dữ liệu không được lấy quá 1 năm',
-                    type: 'warning',
-                    timer: 3000
-                });
+                return notifyToastr('Thông báo', 'Dữ liệu không được lấy quá 1 năm', 'warning');
+                // swal({
+                //     title: 'Thông báo',
+                //     text: 'Dữ liệu không được lấy quá 1 năm',
+                //     type: 'warning',
+                //     timer: 3000
+                // });
             }
             if (12 - monthStartTime + monthEndTime == 12) {
                 if (endTime.getDate() > startTime.getDate()) {
-                    return swal({
-                        title: 'Thông báo',
-                        text: 'Dữ liệu không được lấy quá 1 năm',
-                        type: 'warning',
-                        timer: 3000
-                    });
+                    return notifyToastr('Thông báo', 'Dữ liệu không được lấy quá 1 năm', 'warning');
+                    //  swal({
+                    //     title: 'Thông báo',
+                    //     text: 'Dữ liệu không được lấy quá 1 năm',
+                    //     type: 'warning',
+                    //     timer: 3000
+                    // });
                 }
             }
         }
@@ -551,12 +560,13 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     }
 
     showMess(type: number) {
-        if (type == 1) swal({
-            title: 'Thông báo',
-            text: 'Chưa chọn bệnh nhân',
-            type: 'warning',
-            timer: 3000
-        });
+        if (type == 1) notifyToastr('Thông báo', 'Chưa chọn bệnh nhân', 'warning');
+        //  swal({
+        //     title: 'Thông báo',
+        //     text: 'Chưa chọn bệnh nhân',
+        //     type: 'warning',
+        //     timer: 3000
+        // });
     }
 
     openCustomDialog(): void {
@@ -598,12 +608,13 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
                 objectType: 1
             })
                 .subscribe(resp => {
-                    swal({
-                        title: 'Thông báo',
-                        html: resp,
-                        type: 'error',
-                        timer: 3000
-                    });
+                    notifyToastr('Thông báo', resp, 'error');
+                    // swal({
+                    //     title: 'Thông báo',
+                    //     html: resp,
+                    //     type: 'error',
+                    //     timer: 3000
+                    // });
                     this.selection.clear();
                     abp.ui.clearBusy('#main-container');
                 }, err => { });

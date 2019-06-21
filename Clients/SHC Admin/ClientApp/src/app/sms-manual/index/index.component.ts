@@ -17,7 +17,7 @@ import swal from 'sweetalert2';
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { zipObject, isNil, omitBy } from 'lodash';
-import { standardized } from '@shared/helpers/utils';
+import { standardized, notifyToastr } from '@shared/helpers/utils';
 
 export const MY_FORMATS = {
     parse: {
@@ -382,22 +382,24 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     customSearch() {
         if (this.ageFist.nativeElement.value && this.ageLast.nativeElement.value) {
             if (parseInt(this.ageFist.nativeElement.value) > parseInt(this.ageLast.nativeElement.value)) {
-                return swal({
-                    title: 'Thông báo',
-                    text: 'Đến tuổi phải lớn hơn hoặc bằng từ tuổi',
-                    type: 'warning',
-                    timer: 3000
-                });
+                return notifyToastr('Thông báo', 'Đến tuổi phải lớn hơn hoặc bằng từ tuổi', 'warning');
+                // swal({
+                //     title: 'Thông báo',
+                //     text: 'Đến tuổi phải lớn hơn hoặc bằng từ tuổi',
+                //     type: 'warning',
+                //     timer: 3000
+                // });
             }
         }
 
         if (this.birthday.nativeElement.value && !moment(this.birthday.nativeElement.value, 'DD/MM/YYYY').isValid()) {
-            return swal({
-                title: 'Thông báo',
-                text: 'Ngày sinh không đúng định dạng',
-                type: 'warning',
-                timer: 3000
-            });
+            return notifyToastr('Thông báo',  'Ngày sinh không đúng định dạng', 'warning');
+            //  swal({
+            //     title: 'Thông báo',
+            //     text: 'Ngày sinh không đúng định dạng',
+            //     type: 'warning',
+            //     timer: 3000
+            // });
         }
 
         // this.frmSearch.controls['provinceCode'].setValue(this._provinceCode);
@@ -436,12 +438,13 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     }
 
     showMess() {
-        swal({
-            title: 'Thông báo',
-            text: 'Chưa chọn bệnh nhân',
-            type: 'warning',
-            timer: 3000
-        });
+        notifyToastr('Thông báo', 'Chưa chọn bệnh nhân', 'warning');
+        // swal({
+        //     title: 'Thông báo',
+        //     text: 'Chưa chọn bệnh nhân',
+        //     type: 'warning',
+        //     timer: 3000
+        // });
     }
 
     openCustomDialog(): void {
