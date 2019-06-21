@@ -44,7 +44,7 @@ namespace SHCServer.Controllers
                         objs = objs.Where(o => o.DistrictCode == value.Trim());
                     }
 
-                    if (string.Equals(key, "keywork"))
+                    if (string.Equals(key, "keyWork"))
                     {
                         objs = objs.Where(o => o.Code.ToString().Contains(value.Trim()) || o.Name.ToString().ToLower().Contains(value.Trim().ToLower()));
                     }
@@ -65,25 +65,85 @@ namespace SHCServer.Controllers
         [Route("api/health")]
         public IActionResult GetHealth(int skipCount = 0, int maxResultCount = 10, string sorting = null, string filter = null)
         {
-            var userHeld = _context.Query<UserHealthFacilities>().Where(o => o.IsDelete == false);
+            var objs = _context.Query<HealthFacilities>().Where(o => o.IsActive == true && o.IsDelete == false);
             if (filter != null)
             {
-                var data = JsonConvert.DeserializeObject<Dictionary<string, string>>(filter);
-               
-                    if (data.ContainsKey("userId"))
+                foreach (var (key, value) in JsonConvert.DeserializeObject<Dictionary<string, string>>(filter))
+                {
+                    if (string.IsNullOrEmpty(value))
+                        continue;
+                    if (string.Equals(key, "provinceCode"))
                     {
-                        userHeld = userHeld.Where(o => o.UserId == int.Parse(data["userId"].ToString()));
+                        objs = objs.Where(o => o.ProvinceCode == value.Trim());
                     }
-               
+                    if (string.Equals(key, "districtCode"))
+                    {
+                        objs = objs.Where(o => o.DistrictCode == value.Trim());
+                    }
+
+                    if (string.Equals(key, "keyWork"))
+                    {
+                        objs = objs.Where(o => o.Code.ToString().Contains(value.Trim()) || o.Name.ToString().ToLower().Contains(value.Trim().ToLower()));
+                    }
+                }
             }
+
+            var listHealthFacilities = objs.TakePage(skipCount == 0 ? 1 : skipCount + 1, maxResultCount).ToList();
+            List<HealthFacilitiesUserViewModel> healthFacilitiesUserViewModels = new List<HealthFacilitiesUserViewModel>();
+            foreach (var item in listHealthFacilities)
+            {
+                HealthFacilitiesUserViewModel healthFacilitiesUserViewModel = new HealthFacilitiesUserViewModel();
+                healthFacilitiesUserViewModel.Code = item.Code;
+                healthFacilitiesUserViewModel.HealthFacilitiesId = item.HealthFacilitiesId;
+                healthFacilitiesUserViewModel.Check = false;
+                healthFacilitiesUserViewModel.Name = item.Name;
+
+                healthFacilitiesUserViewModels.Add(healthFacilitiesUserViewModel);
+            }
+
+            if (filter != null)
+            {
+                var data = JsonConvert.DeserializeObject<Dictionary<string, string>>(filter); 
+
+                if (data.ContainsKey("userId"))
+                {
+                    var listUserHeld = _context.Query<UserHealthFacilities>().Where(o => o.IsDelete == false && o.UserId == int.Parse(data["userId"].ToString())).Select(p => p.HealthFacilitiesId).ToList();
+                    foreach (var item in healthFacilitiesUserViewModels)
+                    {
+                        item.Check = listUserHeld.Contains(item.HealthFacilitiesId);
+                    }
+                }
+            }
+           
 
             return Json(new ActionResultDto()
             {
                 Result = new
                 {
-                    Items = userHeld.ToList()
+                    Items = healthFacilitiesUserViewModels,
+                    TotalCount = objs.Count()
                 }
             });
+
+            //var userHeld = _context.Query<UserHealthFacilities>().Where(o => o.IsDelete == false);
+            //if (filter != null)
+            //{
+            //    var data = JsonConvert.DeserializeObject<Dictionary<string, string>>(filter);
+               
+            //        if (data.ContainsKey("userId"))
+            //        {
+            //            userHeld = userHeld.Where(o => o.UserId == int.Parse(data["userId"].ToString()));
+            //        }
+               
+            //}
+
+            //return Json(new ActionResultDto()
+            //{
+            //    Result = new
+            //    {
+            //        Items = userHeld.ToList()
+            //    }
+            //});
         }
     }
 }

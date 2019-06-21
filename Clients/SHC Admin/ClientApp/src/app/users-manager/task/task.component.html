@@ -21,7 +21,7 @@
                             </div>
 
                             <div class="col-md-4">
-                                <mat-form-field appearance="outline" class="w-100">
+                                <mat-form-field appearance="outline" class="w-100" [ngClass]="{'mat-form-field-invalid': highLightPhone }">
                                     <mat-label>{{l('PhoneNumber')}}</mat-label>
                                     <input formControlName="phoneNumber" (keyup)="rulePhoneNumber($event)" matInput minlength="10" maxlength="45" required>
                                     <validation matSuffix [control]="frmUser.controls['phoneNumber']"></validation>
@@ -146,21 +146,21 @@
                         <div class="upload-content">
                             <div class="row">
                                 <div class="col-md-9">
-                                    <mat-form-field appearance="outline" class="w-100" *ngIf="flagShowLoadFileGPHN==0" [ngClass]="{'mat-form-field-invalid': highLightInsurrance }">
+                                    <mat-form-field appearance="outline" class="w-100" *ngIf="flagShowLoadFileGphn==0" [ngClass]="{'mat-form-field-invalid': highLightInsurrance }">
                                         <mat-label>{{l('Số thẻ bảo hiểm y tế')}}</mat-label>
-                                        <input formControlName="insurrance" matInput required maxlength="255" (input)="inputInsurrance($event)">
+                                        <input formControlName="insurrance" matInput required maxlength="20" (input)="inputInsurrance($event)">
                                         <validation matSuffix [control]="frmUser.controls['insurrance']"></validation>
                                     </mat-form-field>
 
-                                    <mat-form-field appearance="outline" class="w-100" *ngIf="flagShowLoadFileGPHN==1" [ngClass]="{'mat-form-field-invalid': highLightCertification }">
+                                    <mat-form-field appearance="outline" class="w-100" *ngIf="flagShowLoadFileGphn==1" [ngClass]="{'mat-form-field-invalid': highLightCertification }">
                                         <mat-label>{{l('Số giấy phép hành nghề')}}</mat-label>
-                                        <input formControlName="certificationCode" matInput required  maxlength="255" (input)="inputCertificationCode($event)">
+                                        <input formControlName="certificationCode" matInput required  maxlength="20" (input)="inputCertificationCode($event)">
                                         <validation matSuffix [control]="frmUser.controls['certificationCode']"></validation>
                                     </mat-form-field>
 
-                                    <mat-form-field appearance="outline" class="w-100 number-business" *ngIf="flagShowLoadFileGPHN==2" [ngClass]="{'mat-form-field-invalid': highLightLisence }">
+                                    <mat-form-field appearance="outline" class="w-100 number-business" *ngIf="flagShowLoadFileGphn == 2" [ngClass]="{'mat-form-field-invalid': highLightLisence }">
                                         <mat-label>{{l('Số giấy phép kinh doanh')}}</mat-label>
-                                        <input formControlName="lisenceCode" matInput required  maxlength="255" (input)="inputLisenceCode($event)">
+                                        <input formControlName="lisenceCode" matInput required  maxlength="20" (input)="inputLisenceCode($event)">
                                         <validation matSuffix [control]="frmUser.controls['lisenceCode']"></validation>
                                     </mat-form-field>
                                 </div>
@@ -191,7 +191,7 @@
                         <div class="upload-target"><div class="row"></div></div>
                     </div>
 
-                    <div class="image-uploader text-muted col-md-6" data-name="second" data-description="Chứng minh thư nhân dân / thẻ căn cước" *ngIf="flagShowLoadFileCMND">
+                    <div class="image-uploader text-muted col-md-6" data-name="second" data-description="Chứng minh thư nhân dân / thẻ căn cước" *ngIf="flagShowLoadFileCmnd">
                         <div class="upload-content">
                             <div class="row">
                                 <div class="col-md-9">
@@ -257,7 +257,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let g of _groups" class="mat-row">
+                        <tr *ngFor="let g of groups" class="mat-row">
                             <td class="mat-cell pt-2">
                                 <mat-checkbox color="primary" class="m-t-7" (click)="$event.stopPropagation()" (change)="$event ? _selection.toggle(g) : null" [checked]="_selection.isSelected(g)"> </mat-checkbox>
                             </td>
@@ -304,8 +304,7 @@
                             <table mat-table [dataSource]="dataSource" class="w-100 task">
                                 <ng-container matColumnDef="colSelect">
                                     <th mat-header-cell *matHeaderCellDef class="text-center col-checkbox border-left"> {{l('Chọn')}} </th>
-                                    <td mat-cell *matCellDef="let row" class="p-t-8 text-center col-checkbox border-left"><mat-checkbox   (change)="get
-                                                                                                                                        (row, $event)" [checked]="flagShowLoadFileGPHN !== 2 ? (_isNew ? false : row.checkedHeal) : _checked == row.code"></mat-checkbox></td>
+                                    <td mat-cell *matCellDef="let row" class="p-t-8 text-center col-checkbox border-left"><mat-checkbox (click)="getHealth(row, $event)" [checked]="flagShowLoadFileGphn !== 2 ? ( row.check) : (checkedHealth === row.code)"></mat-checkbox></td>
                                 </ng-container>
                                 <ng-container matColumnDef="colHel">
                                     <th mat-header-cell *matHeaderCellDef class="pl-2 border-right text-center"> {{l('Tên đơn vị')}} </th>
@@ -316,7 +315,6 @@
                             </table>
                         </div>
                     </form>
-
                 </div>
             </div>
         </mat-tab>

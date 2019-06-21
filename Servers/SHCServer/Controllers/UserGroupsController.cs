@@ -97,6 +97,23 @@ namespace AdminServer.Controllers
             return Json(new ActionResultDto{ Result = new{ Items = _contextmdmdb.Query<Group>().Where(a => a.IsDelete == false).ToList() }});
         }
 
+        [HttpGet]
+        [Route("api/groups-userid")]
+        public IActionResult GetGroupsByUserId(int skipCount = 0, int maxResultCount = 10, string sorting = null, string filter = null)
+        {
+            var listGroup = _contextmdmdb.Query<UserGroup>().Where(a => a.IsDelete == false);
+            if (filter != null)
+            {
+                var data = JsonConvert.DeserializeObject<Dictionary<string, string>>(filter);
+
+                if (data.ContainsKey("userId"))
+                {
+                    listGroup = listGroup.Where(g => g.UserId == int.Parse(data["userId"]));
+                }
+            }
+            return Json(new ActionResultDto { Result = new { Items = listGroup.ToList() } });
+        }
+
         [HttpPut("{id}")]
 
         public IActionResult Put(int id, [FromBody] GroupInputViewModel obj)
