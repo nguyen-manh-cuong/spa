@@ -258,11 +258,13 @@ export class RegisterComponent implements OnInit {
         }
     }
 
-    rulePhoneNumber(event: any) {
-        const patternNum = /^[0-9]*$/;
+    rulePhoneNumber() {
+        var control = this.frmUser.controls['phoneNumber'];
 
-        if (event.target.value && event.target.value.length > 1 && !patternNum.test(event.target.value.trim().substring(1))) {
-            this.frmUser.controls['phoneNumber'].setErrors({ special: true });
+        const pattern = /^[0-9\+]*$/;
+
+        if (control.value && !pattern.test(control.value)) {
+            control.setValue(control.value.replace(/[^0-9\+]/g, ""));
         }
     }
 
