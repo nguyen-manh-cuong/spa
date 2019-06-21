@@ -226,6 +226,14 @@ export class TaskComponent extends AppComponentBase implements OnInit {
         this.highLightEmail = false;
         this.highLightPhone = false;
 
+        this.frmUser.controls['certificationCode'].setValue(null);
+        this.frmUser.controls['lisenceCode'].setValue(null);
+        this.frmUser.controls['insurrance'].setValue(null);
+        this.frmUser.controls['identification'].setValue(null);
+
+        this._idCardUrls = [];
+        this._certificateUrls = [];
+
         if (1 === value) {
             this.frmUser.controls['certificationCode'].setErrors(null);
             this.frmUser.controls['lisenceCode'].setErrors(null);
@@ -286,7 +294,6 @@ export class TaskComponent extends AppComponentBase implements OnInit {
 
         this.frmUser.controls['healthId'].setValue(this._healths);
         this.frmUser.controls['groupUser'].setValue(this._selection.selected);
-
         if (1 === this.frmUser.controls['accountType'].value) {
             this.frmUser.controls['certificationCode'].setValue('');
             this.frmUser.controls['lisenceCode'].setValue('');
@@ -296,6 +303,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
                     abp.notify.error('Phải tải lên  hình ảnh xác thực – Chứng minh nhân dân / Thẻ căn cước / Hộ chiếu',
                         '',
                         { hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true });
+                    this.frmUser.setErrors(null);
                     return;
                 }
 
@@ -303,6 +311,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
                     abp.notify.error('Phải tải lên  hình ảnh xác thực - Thẻ BHYT',
                         '',
                         { hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true, });
+                    this.frmUser.setErrors(null);
                     return;
                 }
             } else {
@@ -310,6 +319,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
                     abp.notify.error('Phải tải lên  hình ảnh xác thực – Chứng minh nhân dân / Thẻ căn cước / Hộ chiếu',
                         '',
                         { hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true });
+                    this.frmUser.setErrors(null);
                     return;
                 }
 
@@ -317,6 +327,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
                     abp.notify.error('Phải tải lên  hình ảnh xác thực - Thẻ BHYT',
                         '',
                         { hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true, });
+                    this.frmUser.setErrors(null);
                     return;
                 }
             }
@@ -330,6 +341,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
                     abp.notify.error('Phải tải lên  hình ảnh xác thực – Chứng minh nhân dân / Thẻ căn cước / Hộ chiếu',
                         '',
                         { hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true });
+                    this.frmUser.setErrors({ invalid: false });
                     return;
                 }
 
@@ -337,17 +349,20 @@ export class TaskComponent extends AppComponentBase implements OnInit {
                     abp.notify.error('Phải tải lên  hình ảnh xác thực - Giấy phép hành nghề',
                         '',
                         { hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true, return: false });
+                    this.frmUser.setErrors({ invalid: false });
                     return;
                 }
             } else {
                 if (this._idCardUrls.length === 0 && this._idCardUrlsUpdate.length === 0) {
-                    abp.notify.error('Phải tải lên  hình ảnh xác thực – Chứng minh nhân dân / Thẻ căn cước / Hộ chiếu', '',{ hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true });
+                    abp.notify.error('Phải tải lên  hình ảnh xác thực – Chứng minh nhân dân / Thẻ căn cước / Hộ chiếu', '', { hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true });
+                    this.frmUser.setErrors({ invalid: false });
                     return;
                 }
 
 
                 if (this._certificateUrls.length === 0 && this._certificateUrlsUpdate.length === 0) {
                     abp.notify.error('Phải tải lên  hình ảnh xác thực - Giấy phép hành nghề', '', { hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true, return: false });
+                    this.frmUser.setErrors({ invalid: false });
                     return;
                 }
             }
@@ -363,23 +378,27 @@ export class TaskComponent extends AppComponentBase implements OnInit {
                     abp.notify.error('Phải tải lên  hình ảnh xác thực - Giấy phép kinh doanh',
                         '',
                         { hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true });
+                    this.frmUser.setErrors({ invalid: false });
                     return;
                 }
             } else {
                 if (this._certificateUrls.length === 0 && this._certificateUrlsUpdate.length === 0) {
-                    abp.notify.error('Phải tải lên  hình ảnh xác thực - Giấy phép kinh doanh', '',{ hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true });
+                    abp.notify.error('Phải tải lên  hình ảnh xác thực - Giấy phép kinh doanh', '', { hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true });
+                    this.frmUser.setErrors({ invalid: false });
                     return;
                 }
             }
         }
-        
+
+
         if (this._isNew) {
 
             this._dataService.createUser('users-register', this.frmUser.value).subscribe(() => {
                 abp.notify.success('Lưu thành công', '', { hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true });
                 this.dialogRef.close();
             }, error => {
-                this.getErrorHighLight();
+                    this.getErrorHighLight();
+                    
             });
         }
         else {
@@ -398,7 +417,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
                 this.dialogRef.close();
             }, err => {
                     this.getErrorHighLight();
-                    //this.frmUser.setErrors({ invalid: false });
+                    this.frmUser.setErrors({ invalid: false });
             });
         }
         
@@ -459,7 +478,6 @@ export class TaskComponent extends AppComponentBase implements OnInit {
         this.checkShowPathFile(value);
     }
 
-    checkFile: boolean = false;
     detectFiles(event, type) {
         let files = event.target.files;
         let fileFormat = ['image/jpeg', 'image/png', 'image/jpg', 'application/pdf'];
@@ -469,13 +487,11 @@ export class TaskComponent extends AppComponentBase implements OnInit {
                 reader.readAsDataURL(file);
                 if (file.size > 5242880) {
                     abp.notify.error(`File ${file.name} vượt quá 5MB`, 'Thông báo', { hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true });
-                    this.checkFile = true;
                     return;
                 }
 
                 if (fileFormat.indexOf(file.type.toString()) === -1) {
                     abp.notify.error(`File ${file.name} không đúng định dạng`, 'Thông báo', { hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true });
-                    this.checkFile = true;
                     return;
                 }
 
@@ -521,7 +537,6 @@ export class TaskComponent extends AppComponentBase implements OnInit {
 
             this.frmUser.controls['cmnd'].setValue({ files: this.arrayIdCard });
             this.frmUser.controls['gp'].setValue({ files: this.arrayCertificate });
-            this.checkFile = false;
         }
     }
 
@@ -697,6 +712,13 @@ export class TaskComponent extends AppComponentBase implements OnInit {
             .replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, 'u')
             .replace(/ỳ|ý|ỵ|ỷ|ỹ/g, 'y')
             .replace(/đ/g, 'd')
+            .replace(/À|Á|Ạ|Ả|Ã|Â|Ầ|Ấ|Ậ|Ẩ|Ẫ|Ă|Ằ|Ắ|Ặ|Ẳ|Ẵ/g, "A")
+            .replace(/È|É|Ẹ|Ẻ|Ẽ|Ê|Ề|Ế|Ệ|Ể|Ễ/g, "E")
+            .replace(/Ì|Í|Ị|Ỉ|Ĩ/g, "I")
+            .replace(/Ò|Ó|Ọ|Ỏ|Õ|Ô|Ồ|Ố|Ộ|Ổ|Ỗ|Ơ|Ờ|Ớ|Ợ|Ở|Ỡ/g, "O")
+            .replace(/Ù|Ú|Ụ|Ủ|Ũ|Ư|Ừ|Ứ|Ự|Ử|Ữ/g, "U")
+            .replace(/Ỳ|Ý|Ỵ|Ỷ|Ỹ/g, "Y")
+            .replace(/Đ/g, "D")
             .replace(/!|@|\$|%|\^|\*|\(|\)|\+|\=|\<|\>|\?|\/|,|\.|\:|\"| |\"|\&|\#|\[|\]|~/g, ' ')
             .replace(/-+-/g, '-')
             .replace(/(\s)+/g, '$1');
