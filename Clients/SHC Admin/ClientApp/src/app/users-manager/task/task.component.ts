@@ -167,7 +167,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
             userName: [this.userDto.userName, [Validators.required, this.validateRule.hasValue]],
             password: ['', [this._isNew ? Validators.required : this.validateRule.hasValueNull, this._isNew ? this.validateRule.passwordStrong : this.validateRule.hasValueNull]],
             fullName: [this.userDto.fullName, [Validators.required, this.validateRule.hasValue]],
-            email: [this.userDto.email, this.validateRule.email],
+            email:  [this.userDto.email, [this.validateRule.email]],
             phoneNumber: [this.userDto.phoneNumber, this.validateRule.topPhoneNumber],
             provinceCode: [this.userDto.provinceCode],
             districtCode: [this.userDto.districtCode],

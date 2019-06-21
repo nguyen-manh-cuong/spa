@@ -38,6 +38,10 @@ export class ValidationRule {
         return null;
     }
 
+    
+
+
+
     // Input CMND
     identification(control: AbstractControl) {
         if (control.value && !(control.value.length == 9 || control.value.length == 12)) {

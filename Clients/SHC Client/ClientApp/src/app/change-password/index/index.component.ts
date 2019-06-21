@@ -9,6 +9,7 @@ import swal from 'sweetalert2';
 import { DomSanitizer, Title } from '@angular/platform-browser';
 import { AppAuthService } from '@shared/auth/app-auth.service';
 import { RootModule } from '../../../root.module';
+import { notifyToastr } from '@shared/helpers/utils';
 
 @Component({
     selector: 'app-index',
@@ -150,12 +151,13 @@ export class IndexComponent extends AppComponentBase implements OnInit {
         if (this.frmResetPassword.controls['NewPassword'].value != this.frmResetPassword.controls['RePassword'].value) {
             this.getCapcha();
             this.frmResetPassword.controls['capcha'].setValue('');
-            return swal({
-                title: 'Thông báo',
-                text: 'Đổi mật khẩu không thành công. Xác nhận mật khẩu mới không đúng',
-                type: 'warning',
-                timer: 3000
-            });
+            // return swal({
+            //     title: 'Thông báo',
+            //     text: 'Đổi mật khẩu không thành công. Xác nhận mật khẩu mới không đúng',
+            //     type: 'warning',
+            //     timer: 3000
+            // });
+            notifyToastr('Thông báo', 'Đổi mật khẩu không thành công. Xác nhận mật khẩu mới không đúng', 'warning');
         }
 
         //if (this.frmResetPassword.controls['Password'].value == this.frmResetPassword.controls['NewPassword'].value) {
@@ -179,14 +181,20 @@ export class IndexComponent extends AppComponentBase implements OnInit {
         // call api
         this._dataService.update(this.api, Object.assign(this.frmResetPassword.value)).subscribe(() => {
             this.checkOldPassword = true;
-            swal({
-                title: this.l('Đổi mật khẩu thành công'),
-                text: '',
-                type: 'success',
-                timer: 3000
-            }).then(() => {
+            // swal({
+            //     title: this.l('Đổi mật khẩu thành công'),
+            //     text: '',
+            //     type: 'success',
+            //     timer: 3000
+            // }).then(() => {
+            //     this._authService.logout();
+            // });
+            notifyToastr('Đổi mật khẩu thành công', '', 'success');
+            setTimeout(()=>{
                 this._authService.logout();
-            });
+            },2000);
+
+
            
         }, err => {
 

@@ -181,22 +181,24 @@ export class RegisterComponent implements OnInit {
        
         if (this.frmUser.controls['accountType'].value == 1 || this.frmUser.controls['accountType'].value == 2) {
             if (this.frmUser.controls['cmnd'].value == null || this.frmUser.controls['gp'].value == null) {
-                return swal({
-                    title: 'Thông báo',
-                    text: 'Bạn phải cung cấp giấy tờ xác thực',
-                    type: 'warning',
-                    timer: 3000
-                });
+                // return swal({
+                //     title: 'Thông báo',
+                //     text: 'Bạn phải cung cấp giấy tờ xác thực',
+                //     type: 'warning',
+                //     timer: 3000
+                // });
+                notifyToastr('Thông báo', 'Bạn phải cung cấp giấy tờ xác thực', 'warning');
             }
 
             else if (this.frmUser.controls['cmnd'].value.files != null || this.frmUser.controls['gp'].value.files != null) {
                 if (this.frmUser.controls['cmnd'].value.files.length == 0 || this.frmUser.controls['gp'].value.files.length == 0) {
-                    return swal({
-                        title: 'Thông báo',
-                        text: 'Bạn phải cung cấp giấy tờ xác thực',
-                        type: 'warning',
-                        timer: 3000
-                    });
+                    // return swal({
+                    //     title: 'Thông báo',
+                    //     text: 'Bạn phải cung cấp giấy tờ xác thực',
+                    //     type: 'warning',
+                    //     timer: 3000
+                    // });
+                    notifyToastr('Thông báo', 'Bạn phải cung cấp giấy tờ xác thực', 'warning');
                 }
             }
         }
@@ -334,21 +336,22 @@ export class RegisterComponent implements OnInit {
                 let reader = new FileReader();
                 reader.readAsDataURL(file);
                 if (file.size > 5242880) {
-                    return swal({
-                        title: 'Thông báo',
-                        text: `'File ${file.name} vượt quá 5MB`,
-                        type: 'warning',
-                        timer: 3000
-                    });
+                    // return swal({
+                    //     title: 'Thông báo',
+                    //     text: `'File ${file.name} vượt quá 5MB`,
+                    //     type: 'warning',
+                    //     timer: 3000
+                    // });
+                    notifyToastr('Thông báo', `File ${file.name} vượt quá 5MB`, 'warning');
                 }
-
                 if (fileFormat.indexOf(file.type.toString()) === -1) {
-                    return swal({
-                        title: 'Thông báo',
-                        text: `'File ${file.name} không đúng định dạng`,
-                        type: 'warning',
-                        timer: 3000
-                    });
+                    // return swal({
+                    //     title: 'Thông báo',
+                    //     text: `'File ${file.name} không đúng định dạng`,
+                    //     type: 'warning',
+                    //     timer: 3000
+                    // });
+                    notifyToastr('Thông báo', `'File ${file.name} không đúng định dạng`, 'warning');
                 }
                 
                 if (file.type == 'image/jpeg' || file.type == 'image/png') {
