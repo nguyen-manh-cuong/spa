@@ -165,7 +165,10 @@ export class IndexComponent extends AppComponentBase implements OnInit {
                 //timer: 3000
             //})
             //.then(() => {
-                this._authService.logout();
+                setTimeout(()=>{
+                    this._authService.logout();
+                },2000);
+
             //});     
         }, err => {
             if (RootModule.message == "Đổi mật khẩu không thành công. Mật khẩu hiện tại không đúng") {
