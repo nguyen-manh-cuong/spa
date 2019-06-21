@@ -7,7 +7,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { AppComponentBase } from '@shared/app-component-base';
 import { DataService } from '@shared/service-proxies/service-data';
 import { IPachkageDistribute } from '@shared/Interfaces';
-import { standardized } from '@shared/helpers/utils';
+import { standardized, notifyToastr } from '@shared/helpers/utils';
 import { DatePipe } from '@angular/common';
 import * as moment from 'moment';
 import swal from 'sweetalert2';
@@ -90,40 +90,44 @@ export class packagedistributeEditComponent extends AppComponentBase implements 
         if(this._frmpackagedistributeedit.controls['yearStart'].value == this._frmpackagedistributeedit.controls['yearEnd'].value){
             if(this._frmpackagedistributeedit.controls['monthStart'].value > this._frmpackagedistributeedit.controls['monthEnd'].value){
                 this.yearStart.nativeElement.focus();
-                return swal({
-                    title: 'Thông báo',
-                    text: 'Đến tháng phải lớn hơn hoặc bằng Từ tháng',
-                    type: 'warning',
-                    timer: 3000
-                });
+                return notifyToastr('Thông báo', 'Đến tháng phải lớn hơn hoặc bằng Từ tháng', 'warning'); 
+                // swal({
+                //     title: 'Thông báo',
+                //     text: 'Đến tháng phải lớn hơn hoặc bằng Từ tháng',
+                //     type: 'warning',
+                //     timer: 3000
+                // });
             }
         }
 
         if (this._frmpackagedistributeedit.controls['yearStart'].value < yearNow) {
             this.yearStart.nativeElement.focus();
-            return swal({
-                title: 'Thông báo',
-                text: 'Từ năm phải lớn hơn hoặc bằng năm hiện tại',
-                type: 'warning',
-                timer: 3000
-            });
+            return notifyToastr('Thông báo', 'Từ năm phải lớn hơn hoặc bằng năm hiện tại', 'warning');  
+            // swal({
+            //     title: 'Thông báo',
+            //     text: 'Từ năm phải lớn hơn hoặc bằng năm hiện tại',
+            //     type: 'warning',
+            //     timer: 3000
+            // });
         }
         if (this._frmpackagedistributeedit.controls['yearEnd'].value < yearNow) {
             this.yearEnd.nativeElement.focus();
-            return swal({
-                title: 'Thông báo',
-                text: 'Đến năm phải lớn hơn hoặc bằng năm hiện tại',
-                type: 'warning',
-                timer: 3000
-            });
+            return notifyToastr('Thông báo', 'Đến năm phải lớn hơn hoặc bằng năm hiện tại', 'warning'); 
+            // swal({
+            //     title: 'Thông báo',
+            //     text: 'Đến năm phải lớn hơn hoặc bằng năm hiện tại',
+            //     type: 'warning',
+            //     timer: 3000
+            // });
         }
         if (this._frmpackagedistributeedit.controls['yearEnd'].value < this._frmpackagedistributeedit.controls['yearStart'].value) {
-            return swal({
-                title: 'Thông báo',
-                text: 'Đến năm phải lớn hơn hoặc bằng Từ năm',
-                type: 'warning',
-                timer: 3000
-            });
+            return  notifyToastr('Thông báo', 'Đến năm phải lớn hơn hoặc bằng Từ năm','warning');  
+            // swal({
+            //     title: 'Thông báo',
+            //     text: 'Đến năm phải lớn hơn hoặc bằng Từ năm',
+            //     type: 'warning',
+            //     timer: 3000
+            // });
         }
 
         this._frmpackagedistributeedit.value.healthFacilitiesId = this.obj.healthFacilitiesId;
@@ -131,12 +135,13 @@ export class packagedistributeEditComponent extends AppComponentBase implements 
         this._frmpackagedistributeedit.value.userId = this.appSession.userId;
 
         this._dataService.update(this.api, standardized(Object.assign(this._frmpackagedistributeedit.value, { id: this.obj.id }), this.rules)).subscribe(() => {
-            swal({
-                title: this.l('SaveSuccess'),
-                text: '',
-                type: 'success',
-                timer: 3000
-            });
+            notifyToastr( this.l('SaveSuccess'), '', 'success');
+            // swal({
+            //     title: this.l('SaveSuccess'),
+            //     text: '',
+            //     type: 'success',
+            //     timer: 3000
+            // });
             this.dialogRef.close();
         }, err => console.log(err));
     }

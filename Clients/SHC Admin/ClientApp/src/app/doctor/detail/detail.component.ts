@@ -18,7 +18,7 @@ import { ICategoryCommon } from '@shared/Interfaces';
 import { MatAutocompleteTrigger } from '@angular/material';
 import { FileValidator } from 'ngx-material-file-input';
 import { Observable, fromEvent, merge, timer } from 'rxjs';
-import { standardized } from '@shared/helpers/utils';
+import { standardized, notifyToastr } from '@shared/helpers/utils';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { stringify } from '@angular/compiler/src/util';
 import { prepareSyntheticListenerFunctionName } from '@angular/compiler/src/render3/util';
@@ -678,12 +678,13 @@ export class DetailComponent extends AppComponentBase implements OnInit, AfterVi
         this._healthfacilitiesChip.push(event.option.value);
       }
       else {
-        swal({
-          title: 'Thông báo',
-          text: 'Đã chọn đơn vị này',
-          type: 'warning',
-          timer: 3000
-        })
+        notifyToastr('Thông báo', 'Đã chọn đơn vị này', 'warning');
+        // swal({
+        //   title: 'Thông báo',
+        //   text: 'Đã chọn đơn vị này',
+        //   type: 'warning',
+        //   timer: 3000
+        // })
       }
     }
     this.healthfacilitiesInput.nativeElement.value = '';
@@ -779,12 +780,13 @@ export class DetailComponent extends AppComponentBase implements OnInit, AfterVi
         this._specialistChip.push(s);
       }
       else {
-        swal({
-          title: 'Thông báo',
-          text: 'Đã chọn chuyên khoa này',
-          type: 'warning',
-          timer: 3000
-        })
+        notifyToastr('Thông báo', 'Đã chọn chuyên khoa này', 'warning');
+        // swal({
+        //   title: 'Thông báo',
+        //   text: 'Đã chọn chuyên khoa này',
+        //   type: 'warning',
+        //   timer: 3000
+        // })
       }
     }
     this.specialistInput.nativeElement.value = '';
@@ -802,12 +804,13 @@ export class DetailComponent extends AppComponentBase implements OnInit, AfterVi
     if (event.target.files[0].size > 2097152) {
       this._frm.controls['avatar'].setValue(null);
       this.avatarName = "Chưa chọn ảnh";
-      return swal({
-        title: 'Thông báo',
-        text: 'File quá lớn. Chỉ được chọn file có dung lượng nhỏ hơn hoặc bằng 2MB',
-        type: 'warning',
-        timer: 3000
-      });
+      return notifyToastr('Thông báo', 'File quá lớn. Chỉ được chọn file có dung lượng nhỏ hơn hoặc bằng 2MB', 'warning');
+      //   swal({
+      //   title: 'Thông báo',
+      //   text: 'File quá lớn. Chỉ được chọn file có dung lượng nhỏ hơn hoặc bằng 2MB',
+      //   type: 'warning',
+      //   timer: 3000
+      // });
     }
     this.avatarName = this.replace_space(this.replace_alias(event.target.files[0].name));
     this._avatarError = "";
@@ -825,12 +828,13 @@ export class DetailComponent extends AppComponentBase implements OnInit, AfterVi
           reader.readAsDataURL(file);
         } else {
           this.avatarName = "Chưa chọn ảnh";
-          swal({
-            title: 'Thông báo',
-            text: 'Chỉ được tải lên file jpg, png, jpeg, pdf',
-            type: 'warning',
-            timer: 3000
-          });
+          notifyToastr('Thông báo', 'Chỉ được tải lên file jpg, png, jpeg, pdf', 'warning');
+          // swal({
+          //   title: 'Thông báo',
+          //   text: 'Chỉ được tải lên file jpg, png, jpeg, pdf',
+          //   type: 'warning',
+          //   timer: 3000
+          // });
           this._frm.controls['avatar'].setValue(null);
         }
       }
@@ -839,12 +843,13 @@ export class DetailComponent extends AppComponentBase implements OnInit, AfterVi
 
   birthDayChange(value: any) {
     if (moment(this.birthDayPicker.nativeElement.value, 'DD/MM/YYYY').valueOf() > moment(moment(new Date()).format('DD/MM/YYYY'), 'DD/MM/YYYY').valueOf()) {
-      return swal({
-        title: this.l('Notification'),
-        text: 'Ngày sinh phải nhỏ hơn ngày hiện tại',
-        type: 'warning',
-        timer: 3000
-      });
+      return notifyToastr(this.l('Notification'), 'Ngày sinh phải nhỏ hơn ngày hiện tại', 'warning');
+      // swal({
+      //   title: this.l('Notification'),
+      //   text: 'Ngày sinh phải nhỏ hơn ngày hiện tại',
+      //   type: 'warning',
+      //   timer: 3000
+      // });
     }
 
     this._birthDay = this.birthDayPicker.nativeElement.value;
@@ -966,72 +971,80 @@ export class DetailComponent extends AppComponentBase implements OnInit, AfterVi
     var priceTo = this._frm.controls['priceTo'].value;
 
     if (priceFrom > 2000000000) {
-      return swal({
-        title: 'Thông báo',
-        text: 'Giá khám từ không được lớn hơn 2,000,000,000',
-        type: 'warning',
-        timer: 3000
-      });
+      return notifyToastr('Thông báo', 'Giá khám từ không được lớn hơn 2,000,000,000', 'warning');
+      //  swal({
+      //   title: 'Thông báo',
+      //   text: 'Giá khám từ không được lớn hơn 2,000,000,000',
+      //   type: 'warning',
+      //   timer: 3000
+      // });
     }
     if (priceTo > 2000000000) {
-      return swal({
-        title: 'Thông báo',
-        text: 'Giá khám đến không được lớn hơn 2,000,000,000',
-        type: 'warning',
-        timer: 3000
-      });
+      return notifyToastr('Thông báo', 'Giá khám đến không được lớn hơn 2,000,000,000', 'warning');
+      //   swal({
+      //   title: 'Thông báo',
+      //   text: 'Giá khám đến không được lớn hơn 2,000,000,000',
+      //   type: 'warning',
+      //   timer: 3000
+      // });
     }
     if (this._specialistChip.length == 0) {
-      return swal({
-        title: 'Thông báo',
-        text: 'Yêu cầu chọn ít nhất một chuyên khoa',
-        type: 'warning',
-        timer: 3000
-      });
+      return notifyToastr('Thông báo', 'Yêu cầu chọn ít nhất một chuyên khoa', 'warning');
+      //  swal({
+      //   title: 'Thông báo',
+      //   text: 'Yêu cầu chọn ít nhất một chuyên khoa',
+      //   type: 'warning',
+      //   timer: 3000
+      // });
     }
     if (this.birthDayPicker.nativeElement.value != "" && !moment(this.birthDayPicker.nativeElement.value, 'DD/MM/YYYY').isValid()) {
-      return swal({
-        title: 'Thông báo',
-        text: 'Ngày sinh không đúng định dạng',
-        type: 'warning',
-        timer: 3000
-      });
+      return notifyToastr('Thông báo', 'Ngày sinh không đúng định dạng', 'warning');
+      //  swal({
+      //   title: 'Thông báo',
+      //   text: 'Ngày sinh không đúng định dạng',
+      //   type: 'warning',
+      //   timer: 3000
+      // });
     }
 
     if (moment(this.certificationDatePicker.nativeElement.value, 'DD/MM/YYYY').toDate() > new Date(Date.now())) {
-      return swal({
-        title: 'Thông báo',
-        text: 'Ngày cấp chứng chỉ hành nghề lớn hơn ngày hiện tại',
-        type: 'warning',
-        timer: 3000
-      });
+      return notifyToastr('Thông báo', 'Ngày cấp chứng chỉ hành nghề lớn hơn ngày hiện tại', 'warning'); 
+      //   swal({
+      //   title: 'Thông báo',
+      //   text: 'Ngày cấp chứng chỉ hành nghề lớn hơn ngày hiện tại',
+      //   type: 'warning',
+      //   timer: 3000
+      // });
     }
     if (this.certificationDatePicker.nativeElement.value != "" && !moment(this.certificationDatePicker.nativeElement.value, 'DD/MM/YYYY').isValid()) {
-      return swal({
-        title: 'Thông báo',
-        text: 'Ngày cấp chứng chỉ hành ngành không đúng định dạng',
-        type: 'warning',
-        timer: 3000
-      });
+      return notifyToastr('Thông báo', 'Ngày cấp chứng chỉ hành ngành không đúng định dạng', 'warning'); 
+      //  swal({
+      //   title: 'Thông báo',
+      //   text: 'Ngày cấp chứng chỉ hành ngành không đúng định dạng',
+      //   type: 'warning',
+      //   timer: 3000
+      // });
     }
     if ((this._frm.controls['certificationCode'].value === "" || this._frm.controls['certificationCode'].value == null) && (this.certificationDatePicker.nativeElement.value != '' || this.certificationDatePicker.nativeElement.valueAsDate != null)) {
-      return swal({
-        title: 'Thông báo',
-        text: 'Yêu cầu nhập mã giấy phép hành nghề trước khi nhập ngày cấp',
-        type: 'warning',
-        timer: 3000
-      });
+      return notifyToastr('Thông báo', 'Yêu cầu nhập mã giấy phép hành nghề trước khi nhập ngày cấp', 'warning'); 
+      //  swal({
+      //   title: 'Thông báo',
+      //   text: 'Yêu cầu nhập mã giấy phép hành nghề trước khi nhập ngày cấp',
+      //   type: 'warning',
+      //   timer: 3000
+      // });
     }
 
     if (typeof priceFrom === 'number' && typeof priceTo === 'number' && priceFrom >= priceTo) {
       this.checkPriceTo = true;
       this.checkPriceFrom = true;
-      return swal({
-        title: 'Thông báo',
-        text: 'Giá khám từ phải nhỏ hơn giá khám đến',
-        type: 'warning',
-        timer: 3000
-      });
+      return notifyToastr('Thông báo', 'Giá khám từ phải nhỏ hơn giá khám đến', 'warning'); 
+      // swal({
+      //   title: 'Thông báo',
+      //   text: 'Giá khám từ phải nhỏ hơn giá khám đến',
+      //   type: 'warning',
+      //   timer: 3000
+      // });
     }
 
     // if (priceFrom == 0) {
@@ -1146,21 +1159,23 @@ export class DetailComponent extends AppComponentBase implements OnInit, AfterVi
     }
 
     if (!this._specialistChip) {
-      swal({
-        title: 'Thông báo',
-        text: 'Yêu cầu chọn ít nhất một chuyên khoa',
-        type: 'warning',
-        timer: 3000
-      })
+      notifyToastr('Thông báo', 'Yêu cầu chọn ít nhất một chuyên khoa', 'warning'); 
+      // swal({
+      //   title: 'Thông báo',
+      //   text: 'Yêu cầu chọn ít nhất một chuyên khoa',
+      //   type: 'warning',
+      //   timer: 3000
+      // })
     } else {
       this._isNew ?
         this._dataService.createUpload(this.api, standardized(Object.assign(params, {}), {})).subscribe(() => {
-          swal({
-            title: this.l('SaveSuccess'),
-            text: '',
-            type: 'success',
-            timer: 3000
-          });
+          notifyToastr(this.l('SaveSuccess'), '', 'success'); 
+          // swal({
+          //   title: this.l('SaveSuccess'),
+          //   text: '',
+          //   type: 'success',
+          //   timer: 3000
+          // });
           if (this.continueAdd.checked == true) {
             this.openDialogDoctor();
           } else {
@@ -1170,12 +1185,13 @@ export class DetailComponent extends AppComponentBase implements OnInit, AfterVi
           this.checkCertificationCode = true;
         }) :
         this._dataService.updateUpload(this.api, standardized(Object.assign(params, {}), {})).subscribe(() => {
-          swal({
-            title: this.l('SaveSuccess'),
-            text: '',
-            type: 'success',
-            timer: 3000
-          });
+          notifyToastr(this.l('SaveSuccess'), '', 'success'); 
+          // swal({
+          //   title: this.l('SaveSuccess'),
+          //   text: '',
+          //   type: 'success',
+          //   timer: 3000
+          // });
           this.dialogRef.close();
         }, err => {
           this.checkCertificationCode = true;

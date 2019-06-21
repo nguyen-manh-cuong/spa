@@ -7,6 +7,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { AppComponentBase } from '@shared/app-component-base';
 import { DataService } from '@shared/service-proxies/service-data';
 import swal from 'sweetalert2';
+import { notifyToastr } from '@shared/helpers/utils';
 
 @Component({
     selector: 'app-task',
@@ -54,12 +55,13 @@ export class TaskComponent extends AppComponentBase implements OnInit {
                     objectType: this.data.objectType
                 }).subscribe(resp => {
                     this.dialogRef.close()
-                    swal({
-                        title: 'Thông báo',
-                        text: resp,
-                        type: 'error',
-                        timer: 3000
-                    });
+                    notifyToastr( 'Thông báo', resp, 'error');
+                    // swal({
+                    //     title: 'Thông báo',
+                    //     text: resp,
+                    //     type: 'error',
+                    //     timer: 3000
+                    // });
                 }, err => { this.dialogRef.close() });
             } else {
                 this._dataService.create('infosms', {
@@ -71,21 +73,23 @@ export class TaskComponent extends AppComponentBase implements OnInit {
                     objectType: this.data.objectType
                 }).subscribe(resp => {
                     this.dialogRef.close()
-                    swal({
-                        title: 'Thông báo',
-                        html: resp,
-                        type: 'error',
-                        timer: 3000
-                    });
+                    notifyToastr( 'Thông báo', resp, 'error');
+                    // swal({
+                    //     title: 'Thông báo',
+                    //     html: resp,
+                    //     type: 'error',
+                    //     timer: 3000
+                    // });
                 }, err => { this.dialogRef.close() });
             }
         } else {
-            swal({
-                title: 'Thông báo',
-                text: 'Chưa chọn bệnh nhân',
-                type: 'warning',
-                timer: 3000
-            });
+            notifyToastr( 'Thông báo','Chưa chọn bệnh nhân', 'warning');
+            // swal({
+            //     title: 'Thông báo',
+            //     text: 'Chưa chọn bệnh nhân',
+            //     type: 'warning',
+            //     timer: 3000
+            // });
         }
     }
 }
