@@ -14,6 +14,7 @@ import { DataService } from '@shared/service-proxies/service-data';
 import { SelectionModel } from '@angular/cdk/collections';
 import { DomSanitizer, Title } from '@angular/platform-browser';
 import { ValidationRule } from '@shared/common/common';
+import { cleanUnicode } from '@shared/helpers/utils';
 
 @Component({
     selector: 'app-reset',
@@ -28,6 +29,8 @@ export class ResetComponent extends AppComponentBase implements OnInit {
     _capcha: { code: string, data: any } = { code: '', data: '' };
 
     capcha = false;
+
+    checkPassword = false;
 
     _user: IUser | CreateUserDto;
 
@@ -62,6 +65,8 @@ export class ResetComponent extends AppComponentBase implements OnInit {
 
     getCapcha() {
         this._dataService.getAny('get-captcha-image').subscribe(res => this._capcha = { code: res.code, data: this._sanitizer.bypassSecurityTrustResourceUrl('data:image/jpg;base64,' + res.data) });
+        if(this.frmUser)
+            this.frmUser.controls['capcha'].setErrors({capcha:true});
     }
 
     capchaInput(event) {
@@ -95,8 +100,14 @@ export class ResetComponent extends AppComponentBase implements OnInit {
         return str;
     }
 
-    confirmPasswordInput(value) {
-        if (value != this.frmUser.controls['newPassword'].value) {
+    newPasswordInput($event){
+        $event.target.value=cleanUnicode($event.target.value);
+        this.checkPassword=false;
+    }
+
+    confirmPasswordInput($event) {
+        $event.target.value=cleanUnicode($event.target.value);
+        if ($event.target.value != this.frmUser.controls['newPassword'].value) {
             this.frmUser.controls['confirmPassword'].setErrors({ 'comparePassword': true });
         }
     }
@@ -112,7 +123,6 @@ export class ResetComponent extends AppComponentBase implements OnInit {
         }
        
         this._user.password = this.frmUser.controls['newPassword'].value;
-        console.log(11, this._user);
 
         this._dataService.update("users-reset-password", this._user).subscribe(() => {
             swal({
@@ -121,6 +131,8 @@ export class ResetComponent extends AppComponentBase implements OnInit {
                 timer: 3000
             });
             return this.dialogRef.close();
+        },err=>{
+            this.checkPassword=true;
         });
     }
 }

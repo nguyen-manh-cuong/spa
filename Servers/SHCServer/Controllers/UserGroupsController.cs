@@ -57,22 +57,22 @@ namespace AdminServer.Controllers
                 }
             }
 
-            //if (sorting != null)
-            //{
-            //    foreach (var (key, value) in JsonConvert.DeserializeObject<Dictionary<string, string>>(sorting))
-            //    {
-            //        if (!Utils.Utils.PropertyExists<Group>(key))
-            //        {
-            //            continue;
-            //        }
+            if (sorting != null)
+            {
+                foreach (var (key, value) in JsonConvert.DeserializeObject<Dictionary<string, string>>(sorting))
+                {
+                    //if (!Utils.PropertyExists<Group>(key))
+                    //{
+                    //    continue;
+                    //}
 
-            //        //objs = value == "asc" ? objs.OrderBy(u => key) : objs.OrderByDesc(u => key);
-            //        if (key == "groupName")
-            //            objs = value == "asc" ? objs.OrderBy(u => u.GroupName) : objs.OrderByDesc(u => u.GroupName);
-            //        else if (key == "applicationName")
-            //            objs = value == "asc" ? objs.OrderBy(u => u.ApplicationName) : objs.OrderByDesc(u => u.ApplicationName);
-            //    }
-            //}
+                    //objs = value == "asc" ? objs.OrderBy(u => key) : objs.OrderByDesc(u => key);
+                    if (key == "name")
+                        objs = value == "asc" ? objs.OrderBy(u => u.GroupName) : objs.OrderByDesc(u => u.GroupName);
+                    else if (key == "applicationName")
+                        objs = value == "asc" ? objs.OrderBy(u => u.ApplicationName) : objs.OrderByDesc(u => u.ApplicationName);
+                }
+            }
 
             return Json(new ActionResultDto
             {

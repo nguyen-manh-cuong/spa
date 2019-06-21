@@ -122,7 +122,7 @@ namespace SHCServer.Controllers
                 }
             }
 
-            clause.Add("GROUP BY u.UserId");
+           clause.Add("GROUP BY u.UserId");
 
             if (sorting != null)
             {

@@ -55,7 +55,7 @@ export class IndexComponent extends PagedListingComponentBase<IUser> implements 
             buttonsStyling: false
         }).then((result) => {
             if (result.value) {
-                const dialogRef = this.dialog.open(this.dialogResetComponent, { minWidth: 'calc(50/2)', maxWidth: 'calc(50 - 50)', disableClose: true, data: obj ? obj : null });
+                const dialogRef = this.dialog.open(this.dialogResetComponent, { minWidth: 'calc(100/1.75)', maxWidth: 'calc(100 - 100)', disableClose: true, data: obj ? obj : null });
                 dialogRef.afterClosed().subscribe(() => {
                     this.paginator.pageIndex = 0;
                     this.paginator._changePageSize(this.paginator.pageSize);
@@ -79,6 +79,7 @@ export class IndexComponent extends PagedListingComponentBase<IUser> implements 
     }
 
     onHandleApproved(user: any, event) {
+        event.source.checked=!event.source.checked;
         if (user.status === 0) {
             return swal({
                 title: 'Thông báo',
@@ -86,7 +87,6 @@ export class IndexComponent extends PagedListingComponentBase<IUser> implements 
                 type: 'warning',
                 timer: 3000
             }).then((result) => {
-                console.log(12, result);
                 if (result.value) {
                     this.dataService.get(this.api, '', JSON.stringify({ 'userId': 'desc' }), this.paginator.pageIndex, this.paginator.pageSize)
                         .subscribe(data => this.dataSources.data = data.items);
@@ -135,11 +135,13 @@ export class IndexComponent extends PagedListingComponentBase<IUser> implements 
                 this.dataService.update('user-locked', user).subscribe(() => {
                     this.dataService.get(this.api, '', JSON.stringify({'userId': 'desc'}), this.paginator.pageIndex, this.paginator.pageSize)
                         .subscribe(data => {
-                            console.log(12, data.items);
                             this.dataSources.data = data.items;
                         });
                     
                 });
+            }
+            else{
+                event.source.checked=!event.source.checked;
             }
         });
     }

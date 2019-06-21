@@ -15,6 +15,7 @@ namespace SHCServer
         protected FriendlyException _excep;
 
 
+
         [HttpOptions]
         [Route("*")]
         public IActionResult Get()
