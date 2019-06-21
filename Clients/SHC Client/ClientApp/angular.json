@@ -21,9 +21,10 @@
               "src/favicon.ico"
             ],
             "styles": [
-              "node_modules/@ng-select/ng-select/themes/default.theme.css",
-              "node_modules/slick-carousel/slick/slick.scss",
-              "node_modules/slick-carousel/slick/slick-theme.scss"
+                "node_modules/@ng-select/ng-select/themes/default.theme.css",
+                "node_modules/slick-carousel/slick/slick.scss",
+                "node_modules/slick-carousel/slick/slick-theme.scss",
+                "node_modules/toastr/toastr.scss"
             ],
             "scripts": [
                 "src/assets/js/jquery-3.2.1.min.js",
@@ -38,11 +39,13 @@
                 "src/assets/js/skrollr.min.js",
                 "src/assets/js/bootstrap.min.js",
                 "src/assets/js/moment.min.js",
+                "node_modules/toastr/build/toastr.min.js",
                 "node_modules/sweetalert2/dist/sweetalert2.all.min.js",
                 "node_modules/abp-web-resources/Abp/Framework/scripts/abp.js",
                 "node_modules/abp-web-resources/Abp/Framework/scripts/libs/abp.blockUI.js",
                 "node_modules/abp-web-resources/Abp/Framework/scripts/libs/abp.jquery.js",
                 "node_modules/abp-web-resources/Abp/Framework/scripts/libs/abp.moment.js",
+                "node_modules/abp-web-resources/Abp/Framework/scripts/libs/abp.toastr.js",
                 "node_modules/jquery/dist/jquery.min.js",
                 "node_modules/slick-carousel/slick/slick.min.js",
                 "src/assets/js/custom.js"
