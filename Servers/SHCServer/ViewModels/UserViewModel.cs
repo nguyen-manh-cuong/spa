@@ -56,8 +56,8 @@ namespace SHCServer.ViewModels
             HealthFacilitiesId = user.HealthFacilitiesId;
         }
 
-        public override int Id { set; get; } 
-
+        public override int Id { set; get; }
+        //public List<UserHealthFacilities> UserHealthFacilities { get; set; }
         public string Locality { set; get; }
         public string AccountTypeName { set; get; }
         public string GroupName { get; set; }
