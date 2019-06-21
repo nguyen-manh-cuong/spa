@@ -18,6 +18,7 @@ import { RootRoutingModule } from './root-routing.module';
 import { ServiceProxyModule } from '@shared/service-proxies/service-proxy.module';
 import { SharedModule } from '@shared/shared.module';
 import swal from 'sweetalert2';
+import { notifyToastr } from './shared/helpers/utils';
 
 export function appInitializerFactory(
     injector: Injector,
@@ -110,12 +111,14 @@ export class RootModule {
     static message: string;
     constructor() {
         abp.message.error = (message, title) => {
-            swal({
-                type: 'error',
-                title: title,
-                text: message,
-                timer: 3000
-            });
+            //swal({
+            //    type: 'error',
+            //    title: title,
+            //    text: message,
+            //    timer: 3000
+            //});
+            notifyToastr(title, message, 'error');
+            //abp.notify.error(message, title);
             RootModule.message = message;
         }
     }

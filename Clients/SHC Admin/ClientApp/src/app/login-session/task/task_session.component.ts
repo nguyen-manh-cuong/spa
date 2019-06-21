@@ -15,6 +15,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import * as moment from 'moment';
 import swal from 'sweetalert2';
 import { LoginService } from '../../../auth/login/login.service';
+import { notifyToastr } from '@shared/helpers/utils';
 
 
 @Component({
@@ -103,24 +104,27 @@ export class TaskSessionComponent extends AppComponentBase implements OnInit {
 
         this._dataService.get('auth', JSON.stringify({ 'userName': this.frmLogin.controls['userNameOrEmailAddress'].value }), null, null, null).subscribe(data => {
             if (!data.items) {
-                return swal({
-                    title: this.l('Notification'),
-                    text: this.l('Đăng nhập không thành công. Tài khoản không tồn tại'),
-                    type: 'warning',
-                    timer: 3000
-                });
+                return notifyToastr(this.l('Notification'), this.l('Đăng nhập không thành công. Tài khoản không tồn tại'), 'warning'); 
+                //  swal({
+                //     title: this.l('Notification'),
+                //     text: this.l('Đăng nhập không thành công. Tài khoản không tồn tại'),
+                //     type: 'warning',
+                //     timer: 3000
+                // });
             }
 
             if (data.items.status != 2 || data.items.mdmStatus != 1 || moment(new Date(data.items.expriredDate)).valueOf() < moment(Date.now()).valueOf()) {
                 this._dataService.get('auth', JSON.stringify({
                     'userName': this.frmLogin.controls['userNameOrEmailAddress'].value
                 }), null, null, null).subscribe(data => {
-                    return swal({
-                        title: this.l('Notification'),
-                        text: this.l('Đăng nhập không thành công. Tài khoản chưa được kích hoạt hoặc bị khóa'),
-                        type: 'warning',
-                        timer: 3000
-                    });
+                    return notifyToastr(this.l('Notification'),
+                     this.l('Đăng nhập không thành công. Tài khoản chưa được kích hoạt hoặc bị khóa'), 'warning'); 
+                    // swal({
+                    //     title: this.l('Notification'),
+                    //     text: this.l('Đăng nhập không thành công. Tài khoản chưa được kích hoạt hoặc bị khóa'),
+                    //     type: 'warning',
+                    //     timer: 3000
+                    // });
                 });
                 return;
             }
@@ -131,12 +135,14 @@ export class TaskSessionComponent extends AppComponentBase implements OnInit {
                 this.userNameOrEmail.nativeElement.focus();
                 this.frmLogin.controls['userNameOrEmailAddress'].setValue('');
                 this.frmLogin.controls['password'].setValue('');
-                return swal({
-                    title: this.l('Notification'),
-                    text: this.l('Đăng nhập không thành công. Vui lòng trở lại sau 60 phút'),
-                    type: 'warning',
-                    timer: 3000
-                });
+                return notifyToastr(this.l('Notification'), 
+                this.l('Đăng nhập không thành công. Vui lòng trở lại sau 60 phút'), 'warning'); 
+                //  swal({
+                //     title: this.l('Notification'),
+                //     text: this.l('Đăng nhập không thành công. Vui lòng trở lại sau 60 phút'),
+                //     type: 'warning',
+                //     timer: 3000
+                // });
             }
 
             numLoginFail = data.items.counter + 1;
@@ -157,20 +163,24 @@ export class TaskSessionComponent extends AppComponentBase implements OnInit {
                         this.userNameOrEmail.nativeElement.focus();
                         this.frmLogin.controls['userNameOrEmailAddress'].setValue('');
                         this.frmLogin.controls['password'].setValue('');
-                        return swal({
-                            title: this.l('Notification'),
-                            text: this.l('Đăng nhập không thành công. Vui lòng trở lại sau 60 phút'),
-                            type: 'warning',
-                            timer: 3000
-                        });
+                        return notifyToastr(this.l('Notification'), 
+                        this.l('Đăng nhập không thành công. Vui lòng trở lại sau 60 phút'), 'warning');  
+                        // swal({
+                        //     title: this.l('Notification'),
+                        //     text: this.l('Đăng nhập không thành công. Vui lòng trở lại sau 60 phút'),
+                        //     type: 'warning',
+                        //     timer: 3000
+                        // });
                     }
                     else {
-                        return swal({
-                            title: this.l('Notification'),
-                            text: this.l(`Mã xác nhận không trùng khớp. Bạn còn ${10 - numLoginFail} lần thử`),
-                            type: 'warning',
-                            timer: 3000
-                        });
+                        return notifyToastr(this.l('Notification'), 
+                        this.l(`Mã xác nhận không trùng khớp. Bạn còn ${10 - numLoginFail} lần thử`), 'warning');  
+                        // swal({
+                        //     title: this.l('Notification'),
+                        //     text: this.l(`Mã xác nhận không trùng khớp. Bạn còn ${10 - numLoginFail} lần thử`),
+                        //     type: 'warning',
+                        //     timer: 3000
+                        // });
                     }
                 }
             }
@@ -212,31 +222,38 @@ export class TaskSessionComponent extends AppComponentBase implements OnInit {
                 });
 
                 if (numLoginFail <= 5) {
-                    return swal({
-                        title: this.l('Notification'),
-                        text: this.l(`Đăng nhập không thành công. Tên đăng nhập hoặc mật khẩu không chính xác. Bạn còn ${5 - numLoginFail} lần thử`),
-                        type: 'warning',
-                        timer: 3000
-                    });
+                    return notifyToastr(this.l('Notification'), 
+                    this.l(`Đăng nhập không thành công. Tên đăng nhập hoặc mật khẩu không chính xác. Bạn còn ${5 - numLoginFail} lần thử`), 'warning');   
+                    // swal({
+                    //     title: this.l('Notification'),
+                    //     text: this.l(`Đăng nhập không thành công. Tên đăng nhập hoặc mật khẩu không chính xác. Bạn còn ${5 - numLoginFail} lần thử`),
+                    //     type: 'warning',
+                    //     timer: 3000
+                    // });
                 }
                 else if (10 === numLoginFail) {
                     this.userNameOrEmail.nativeElement.focus();
                     this.frmLogin.controls['userNameOrEmailAddress'].setValue('');
                     this.frmLogin.controls['password'].setValue('');
-                    return swal({
-                        title: this.l('Notification'),
-                        text: this.l('Đăng nhập không thành công. Vui lòng trở lại sau 60 phút'),
-                        type: 'warning',
-                        timer: 3000
-                    });
+                    return notifyToastr(this.l('Notification'), 
+                    this.l('Đăng nhập không thành công. Vui lòng trở lại sau 60 phút'), 'warning');   
+                    // swal({
+                    //     title: this.l('Notification'),
+                    //     text: this.l('Đăng nhập không thành công. Vui lòng trở lại sau 60 phút'),
+                    //     type: 'warning',
+                    //     timer: 3000
+                    // });
                 }
                 else {
-                    return swal({
-                        title: this.l('Notification'),
-                        text: (10 - numLoginFail === 0) ? this.l('Đăng nhập không thành công. Vui lòng trở lại sau 60 phút') : this.l(`Đăng nhập không thành công. Tên đăng nhập hoặc mật khẩu không chính xác. Bạn còn ${10 - numLoginFail} lần thử`),
-                        type: 'warning',
-                        timer: 3000
-                    });
+                    return notifyToastr(this.l('Notification'), 
+                    (10 - numLoginFail === 0) ? this.l('Đăng nhập không thành công. Vui lòng trở lại sau 60 phút') 
+                    : this.l(`Đăng nhập không thành công. Tên đăng nhập hoặc mật khẩu không chính xác. Bạn còn ${10 - numLoginFail} lần thử`), 'warning');
+                    //  swal({
+                    //     title: this.l('Notification'),
+                    //     text: (10 - numLoginFail === 0) ? this.l('Đăng nhập không thành công. Vui lòng trở lại sau 60 phút') : this.l(`Đăng nhập không thành công. Tên đăng nhập hoặc mật khẩu không chính xác. Bạn còn ${10 - numLoginFail} lần thử`),
+                    //     type: 'warning',
+                    //     timer: 3000
+                    // });
                 }
             });
         });

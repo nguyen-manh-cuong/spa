@@ -39,12 +39,13 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
     this.frmSearch = this._formBuilder.group({ name: [] });
   }
   showErrorDeleteMessage() {
+    notifyToastr(this.l('ErrorDelete'),this.l('CategoryCommonErrorDeleted', ''),'error');
     // swal({
     //   title:this.l('ErrorDelete'), 
     //   text:this.l('CategoryCommonErrorDeleted', ''), 
     //   type:'error',
     //   timer:3000});
-    notifyToastr(this.l('ErrorDelete'),this.l('CategoryCommonErrorDeleted', ''),'error');
+  
   }
 
   deleteDialogMessage(obj: EntityDto, key: string, id?: number | string) {

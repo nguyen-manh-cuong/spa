@@ -14,6 +14,7 @@ import { DataService } from '@shared/service-proxies/service-data';
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import { ValidationRule } from '@shared/common/common';
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
+import { notifyToastr } from '@shared/helpers/utils';
 
 
 export const MY_FORMATS = {
@@ -62,6 +63,10 @@ export class TaskComponent extends AppComponentBase implements OnInit {
 
     @ViewChild("startTime") startTime;
     @ViewChild("endTime") endTime;
+
+    greaterThanCurrentDate = false;
+    fromDateMustBeGreaterThanOrEqualToDate = false;
+    withinSevenDay = false;
     //chips
     // @ViewChild('healthfacilitiesInput') healthfacilitiesInput: ElementRef<HTMLInputElement>;
     // @ViewChild('auto') matAutocomplete: MatAutocomplete;
@@ -202,7 +207,8 @@ export class TaskComponent extends AppComponentBase implements OnInit {
     //
     submit(status: any) {
         if(this.checkDate()) return;
-        if(!this._lstTimeSlot.length) return swal({title: this.l('Notification'), text: this.l('ExamScheduleNotNull'), type: 'warning', timer: 3000});
+        if(!this._lstTimeSlot.length) return notifyToastr(this.l('Notification'), this.l('ExamScheduleNotNull'), 'warning');
+            // swal({title: this.l('Notification'), text: this.l('ExamScheduleNotNull'), type: 'warning', timer: 3000});
         
         var params = this._frm.value;
         params.lstTimeSlot = this._lstTimeSlot;
@@ -210,7 +216,8 @@ export class TaskComponent extends AppComponentBase implements OnInit {
         params.userId = this.appSession.userId;
 
         this._dataService.create("bookingdoctor", params).subscribe(() => {
-            swal({title: this.l('SaveSuccess'), text: '', type: 'success', timer: 3000});
+            notifyToastr(this.l('SaveSuccess'), '', 'success');
+            // swal({title: this.l('SaveSuccess'), text: '', type: 'success', timer: 3000});
             this.dialogRef.close();
         }, err => {})
     }
@@ -223,10 +230,6 @@ export class TaskComponent extends AppComponentBase implements OnInit {
             // if(type == 2) this.endTime.nativeElement.value ? this._frm.controls['endTime'].setValue(moment(this.endTime.nativeElement.value + '23:59:59', 'DD/MM/YYYY hh:mm:ss').add(7, 'hours').toDate()) : '';
         } 
     }
-
-    greaterThanCurrentDate = false;
-    fromDateMustBeGreaterThanOrEqualToDate = false;
-    withinSevenDay = false;
 
     checkDate(): boolean{
         var toDay = new Date();
