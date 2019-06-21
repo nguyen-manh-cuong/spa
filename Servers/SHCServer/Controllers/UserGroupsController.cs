@@ -94,7 +94,7 @@ namespace AdminServer.Controllers
         [Route("api/groups-all")]
         public IActionResult GetAllGroups(int skipCount = 0, int maxResultCount = 10, string sorting = null, string filter = null)
         {
-            return Json(new ActionResultDto{ Result = new{ Items = _contextmdmdb.Query<Group>().Where(a => a.IsDelete == false).ToList() }});
+            return Json(new ActionResultDto{ Result = new{ Items = _contextmdmdb.Query<Group>().Where(a => a.IsDelete == false).OrderBy(q => q.GroupName).ToList() }});
         }
 
         [HttpGet]

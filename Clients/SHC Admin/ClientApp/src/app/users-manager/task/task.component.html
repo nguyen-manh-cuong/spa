@@ -62,7 +62,7 @@
                             </div>
                             <div class="col-md-2 col-date">
                                 <mat-form-field appearance="outline" class="w-100">
-                                    <mat-select formControlName="_birthYear">
+                                    <mat-select formControlName="_birthYear" (selectionChange)="onSelectYear()">
                                         <mat-option *ngFor="let o of _years" [value]="o">{{ o }}</mat-option>
                                     </mat-select>
                                 </mat-form-field>
@@ -88,10 +88,10 @@
                             <validation matSuffix [control]="frmUser.controls['password']"></validation>
                         </mat-form-field>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-4" [ngClass]="{'disabled': !_isNew}">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l('AccountType')}}</mat-label>
-                            <mat-select formControlName="accountType" (selectionChange)="onSelectAccountType($event.value)"  required>
+                            <mat-select formControlName="accountType" (selectionChange)="onSelectAccountType($event.value)"   required>
                                 <mat-option *ngFor="let o of _accountTypes" [value]="o.id">{{ o.name }}</mat-option>
                             </mat-select>
                             <validation matSuffix [control]="frmUser.controls['accountType']"></validation>
@@ -321,6 +321,6 @@
     </mat-tab-group>
     <div class="text-right mb-3">
         <button class="mr-3" mat-button mat-dialog-close>{{l('Close')}}</button>
-        <button mat-raised-button color="primary" (click)="submit()" [disabled]="frmUser.invalid || _invaliBirthday || invalidBirth">{{l('Save')}}</button>
+        <button mat-raised-button color="primary" (click)="submit()" [disabled]="frmUser.invalid || _invaliBirthday || invalidBirth || checkFile">{{l('Save')}}</button>
     </div>
 </form>
