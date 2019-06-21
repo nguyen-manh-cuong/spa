@@ -55,7 +55,7 @@ export class IndexComponent extends PagedListingComponentBase<IUser> implements 
             buttonsStyling: false
         }).then((result) => {
             if (result.value) {
-                const dialogRef = this.dialog.open(this.dialogResetComponent, { minWidth: 'calc(50/2)', maxWidth: 'calc(50 - 50)', disableClose: true, data: obj ? obj : null });
+                const dialogRef = this.dialog.open(this.dialogResetComponent, { minWidth: 'calc(100/1.75)', maxWidth: 'calc(100 - 100)', disableClose: true, data: obj ? obj : null });
                 dialogRef.afterClosed().subscribe(() => {
                     this.paginator.pageIndex = 0;
                     this.paginator._changePageSize(this.paginator.pageSize);

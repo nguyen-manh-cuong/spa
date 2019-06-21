@@ -51,6 +51,7 @@ namespace SHCServer.Controllers
                                 AND ui.IsDelete = 0 ";
             List<string> clause = new List<string>();
             List<DbParam> param = new List<DbParam>();
+            List<UserViewModel> lst = new List<UserViewModel>();
 
             if (filter != null)
             {
@@ -113,6 +114,10 @@ namespace SHCServer.Controllers
                         }
                         clause.Add($"AND u.UserId = {group[count - 1].UserId})");
                     }
+                    else
+                    {
+                        return Json(new ActionResultDto ());
+                    }
                 }
             }
 
@@ -164,7 +169,8 @@ namespace SHCServer.Controllers
 
             string strQuery = $"{query} {string.Join(" ", clause)}";
             var reader = _contextmdmdb.Session.ExecuteReader(strQuery, param);
-            List<UserViewModel> lst = new List<UserViewModel>();
+
+            
             while (reader.Read())
             {
                 lst.Add(new UserViewModel()

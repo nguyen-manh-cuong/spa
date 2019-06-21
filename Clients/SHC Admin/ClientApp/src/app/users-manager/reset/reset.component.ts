@@ -62,6 +62,8 @@ export class ResetComponent extends AppComponentBase implements OnInit {
 
     getCapcha() {
         this._dataService.getAny('get-captcha-image').subscribe(res => this._capcha = { code: res.code, data: this._sanitizer.bypassSecurityTrustResourceUrl('data:image/jpg;base64,' + res.data) });
+        if(this.frmUser)
+            this.frmUser.controls['capcha'].setErrors({capcha:true});
     }
 
     capchaInput(event) {
