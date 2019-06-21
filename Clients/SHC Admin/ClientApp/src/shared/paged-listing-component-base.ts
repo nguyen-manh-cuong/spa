@@ -9,7 +9,7 @@ import { DataService } from './service-proxies/service-data';
 import { FormGroup } from '@angular/forms';
 import { SelectionModel } from '@angular/cdk/collections';
 import { Subject } from 'rxjs';
-import { standardized } from './helpers/utils';
+import { standardized, notifyToastr } from './helpers/utils';
 import swal from 'sweetalert2';
 import { analyzeAndValidateNgModules } from '@angular/compiler';
 import * as moment from 'moment';
@@ -242,11 +242,12 @@ export abstract class PagedListingComponentBase<EntityDto> extends AppComponentB
         }).then((result) => {
             if (result.value) {
                 this.dataService.delete(this.api, obj[id ? id : 'id']).subscribe(() => {
-                    swal({
-                        title:this.l('SuccessfullyDeleted'), 
-                        html:this.l('DeletedInSystem', obj[key]), 
-                        type:'success',
-                        timer:3000});
+                    // swal({
+                    //     title:this.l('SuccessfullyDeleted'), 
+                    //     html:this.l('DeletedInSystem', obj[key]), 
+                    //     type:'success',
+                    //     timer:3000});
+                    notifyToastr(this.l('SuccessfullyDeleted'),this.l('DeletedInSystem', obj[key]),'success');
                     this.paginator.pageIndex = 0;
                     this.paginator._changePageSize(this.paginator.pageSize);
                 });
