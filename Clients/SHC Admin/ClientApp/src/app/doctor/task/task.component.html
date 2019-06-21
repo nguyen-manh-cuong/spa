@@ -14,8 +14,8 @@
                     <div class="col-md-6">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l("DoctorName")}}</mat-label>
-                            <input (keyup)="fullNameInput($event)" formControlName="fullName" matInput [required]="true"
-                                maxlength="255">
+                            <input #doctorName (keyup)="fullNameInput($event)" formControlName="fullName" matInput [required]="true"
+                                maxlength="255" >
                             <validation matSuffix [control]="_frm.controls['fullName']"></validation>
                         </mat-form-field>
                     </div>

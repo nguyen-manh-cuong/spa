@@ -11,7 +11,6 @@ import { DataService } from '@shared/service-proxies/service-data';
 import { SelectionModel } from '@angular/cdk/collections';
 import { ValidationRule } from '@shared/common/common';
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
-import swal from 'sweetalert2';
 import { cleanUnicode } from '../../../shared/helpers/utils';
 import { RootModule } from '../../../root.module';
 
@@ -33,7 +32,7 @@ export const MY_FORMATS = {
     styleUrls: ['./task.component.scss'],
     providers: [
         { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
-        { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
+        { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS }
     ],
     encapsulation: ViewEncapsulation.None
 })
@@ -53,12 +52,12 @@ export class TaskComponent extends AppComponentBase implements OnInit {
     frmUser: FormGroup;
 
     userDto: IUser | CreateUserDto;
-    _groups: Array<IGroup>;
+    groups: Array<IGroup>;
     _selection = new SelectionModel<IGroup>(true, []);
 
     healthFacilityArr = [];
 
-    _context: any;
+    context: any;
     _isNew: boolean = false;
 
     _countriesCtrl = new FormControl();
@@ -76,8 +75,8 @@ export class TaskComponent extends AppComponentBase implements OnInit {
     _years = _.range(moment().year() - 100, moment().year() + 1);
     _invaliBirthday = false;
 
-    flagShowLoadFileCMND: boolean = true;
-    flagShowLoadFileGPHN: number = 0;
+    flagShowLoadFileCmnd: boolean = true;
+    flagShowLoadFileGphn: number = 0;
 
     keyWorkFind: string = '';
 
@@ -99,6 +98,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
     @ViewChild('email') email;
 
     highLightEmail: boolean = false;
+    highLightPhone: boolean = false;
     highLightIdentification: boolean = false;
     highLightCertification: boolean = false;
     highLightInsurrance: boolean = false;
@@ -159,7 +159,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
             this.userDto.accountType = 1;
         }
 
-        this._context = {
+        this.context = {
             userId: [this.userDto.userId],
             userName: [this.userDto.userName, [Validators.required, this.validateRule.hasValue]],
             password: ['', [this._isNew ? Validators.required : this.validateRule.hasValueNull, this._isNew ? this.validateRule.passwordStrong : this.validateRule.hasValueNull]],
@@ -190,10 +190,20 @@ export class TaskComponent extends AppComponentBase implements OnInit {
             imageFileOld: []
         };
 
-        this.frmUser = this._formBuilder.group(this._context);
+        this.frmUser = this._formBuilder.group(this.context);
         this._dataService.getAll('groups').subscribe(resp => {
-            this._groups = resp.items;
-            if (_.has(this.user, 'groups') && this.user.groups.length > 0) { _.intersectionBy(this._groups, this.user.groups, 'groupId').forEach(g => this._selection.select(g)); }
+            this.groups = resp.items;
+            if (this.user) {
+                this._dataService.getAll('groups-userid').subscribe(res => {
+                    for (const item of res.items) {
+                        for (const it of resp.items) {
+                            if (item.groupId === it.groupId && item.applicationId === it.applicationId && item.userId === this.user.userId) {
+                                this._selection.select(it);
+                            }
+                        }
+                    }
+                });
+            }
         });
 
         this._dataService.getAll('provinces').subscribe(resp => this._provinces = resp.items);
@@ -201,34 +211,37 @@ export class TaskComponent extends AppComponentBase implements OnInit {
         this.checkShowPathFile(this.userDto.accountType);
        
     }
-    //this.validateRule.identification
+
     // BHYT - Insurrance, CMND - Identification, GPHN - CertificationCode, GPKD - LicenseCode
     checkShowPathFile(value): void {
+        
+        this.frmUser.setErrors({ invalid: true });
         this.highLightInsurrance = false;
         this.highLightIdentification = false;
         this.highLightLisence = false;
         this.highLightCertification = false;
         this.highLightEmail = false;
+        this.highLightPhone = false;
 
         if (1 === value) {
             this.frmUser.controls['certificationCode'].setErrors(null);
             this.frmUser.controls['lisenceCode'].setErrors(null);
 
-            this.flagShowLoadFileCMND = true;
-            this.flagShowLoadFileGPHN = 0;
+            this.flagShowLoadFileCmnd = true;
+            this.flagShowLoadFileGphn = 0;
         }
         else if (2 === value) {
             this.frmUser.controls['insurrance'].setErrors(null);
             this.frmUser.controls['lisenceCode'].setErrors(null);
 
-            this.flagShowLoadFileCMND = true;
-            this.flagShowLoadFileGPHN = 1;
+            this.flagShowLoadFileCmnd = true;
+            this.flagShowLoadFileGphn = 1;
         }
         else {
-            this.flagShowLoadFileCMND = false;
-            this.flagShowLoadFileGPHN = 2;
+            this.flagShowLoadFileCmnd = false;
+            this.flagShowLoadFileGphn = 2;
             this.getHealthFacilities();
-            this._checked = -1;
+            this.checkedHealth = -1;
             this._healths = [];
 
             this.frmUser.controls['insurrance'].setErrors(null);
@@ -240,12 +253,12 @@ export class TaskComponent extends AppComponentBase implements OnInit {
     masterToggle() {
         this.isAllSelected() ?
             this._selection.clear() :
-            this._groups.forEach((row: IGroup) => this._selection.select(row));
+            this.groups.forEach((row: IGroup) => this._selection.select(row));
     }
 
     isAllSelected() {
         const numSelected = this._selection.selected.length;
-        const numRows = this._groups.length;
+        const numRows = this.groups.length;
         return numSelected === numRows;
     }
 
@@ -266,7 +279,24 @@ export class TaskComponent extends AppComponentBase implements OnInit {
     submit() {
         let day = this.frmUser.controls['_birthDay'].value < 10 ? ('0' + this.frmUser.controls['_birthDay'].value) : this.frmUser.controls['_birthDay'].value;
         let month = this.frmUser.controls['_birthMonth'].value < 10 ? ('0' + this.frmUser.controls['_birthMonth'].value) : this.frmUser.controls['_birthMonth'].value;
-        //let date = moment((day + '/' + month + '/' + this.frmUser.controls['_birthYear'].value), "DD/MM/YYYY");
+
+        const nowYear = (new Date()).getFullYear();
+        if (nowYear === parseFloat(this.frmUser.controls['_birthYear'].value)) {
+            console.log(1, nowYear);
+            const nowMonth = (new Date()).getMonth() + 1;
+            console.log(2, nowMonth);
+            if (nowMonth < parseFloat(this.frmUser.controls['_birthMonth'].value)) {
+                return;
+            }
+            else if (nowMonth === parseFloat(this.frmUser.controls['_birthMonth'].value)) {
+                const nowDate = (new Date()).getDate();
+                console.log(3, nowDate);
+                if (nowDate < parseFloat(this.frmUser.controls['_birthDay'].value)) {
+                    return;
+                }
+            }
+        }
+
         this.frmUser.controls['birthDay'].setValue((this.frmUser.controls['_birthYear'].value + '/' + month + '/' + day));
 
         this.frmUser.controls['healthId'].setValue(this._healths);
@@ -275,25 +305,48 @@ export class TaskComponent extends AppComponentBase implements OnInit {
         if (1 === this.frmUser.controls['accountType'].value) {
             this.frmUser.controls['certificationCode'].setValue('');
             this.frmUser.controls['lisenceCode'].setValue('');
+
+            if (this._isNew) {
+                if (this._idCardUrls.length === 0) {
+                    abp.notify.error('Phải tải lên  hình ảnh xác thực – Chứng minh nhân dân / Thẻ căn cước / Hộ chiếu', '', { hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true, return: true });
+                }
+
+                if (this._certificateUrls.length === 0) {
+                    abp.notify.error('Phải tải lên  hình ảnh xác thực - Thẻ BHYT', '', { hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true,  });
+                }
+            }
         }
         else if (2 === this.frmUser.controls['accountType'].value) {
             this.frmUser.controls['insurrance'].setValue('');
             this.frmUser.controls['lisenceCode'].setValue('');
+
+            if (this._isNew) {
+                if (this._idCardUrls.length === 0) {
+                    abp.notify.error('Phải tải lên  hình ảnh xác thực – Chứng minh nhân dân / Thẻ căn cước / Hộ chiếu', '', { hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true});
+                }
+
+                if (this._certificateUrls.length === 0) {
+                    abp.notify.error('Phải tải lên  hình ảnh xác thực - Giấy phép hành nghề', '', { hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true, return: false });
+                }
+            }
         }
         else {
             this.frmUser.controls['identification'].setValue('');
             this.frmUser.controls['certificationCode'].setValue('');
             this.frmUser.controls['insurrance'].setValue('');
+
+            if (this._certificateUrls.length === 0) {
+                if (this._isNew) {
+                    abp.notify.error('Phải tải lên  hình ảnh xác thực - Giấy phép kinh doanh', '', { hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true });
+                }
+                
+            }
         }
         
         if (this._isNew) {
+
             this._dataService.createUser('users-register', this.frmUser.value).subscribe(() => {
-                swal({
-                    title: 'Thêm mới thành công',
-                    text: ``,
-                    type: 'success',
-                    timer: 3000
-                });
+                abp.notify.success('Lưu thành công', '', { hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true });
                 this.dialogRef.close();
             }, error => {
                     if (RootModule.message === 'Email đã tồn tại!') {
@@ -323,11 +376,17 @@ export class TaskComponent extends AppComponentBase implements OnInit {
                     } else {
                         this.highLightLisence = false;
                     }
-
+                    
                     if (RootModule.message === 'Số thẻ BHYT  đã tồn tại!') {
                         this.highLightInsurrance = true;
                     } else {
                         this.highLightInsurrance = false;
+                    }
+
+                    if (RootModule.message === 'Số điện thoại đã tồn tại!') {
+                        this.highLightPhone = true;
+                    } else {
+                        this.highLightPhone = false;
                     }
             });
         }
@@ -343,12 +402,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
             this.frmUser.controls['imageFileOld'].setValue(str);
 
             this._dataService.updateUser('users-update', this.frmUser.value).subscribe(() => {
-                swal({
-                    title: 'Cập nhật thành công',
-                    text: ``,
-                    type: 'success',
-                    timer: 3000
-                });
+                abp.notify.success('Lưu thành công', '', { hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true });
                 this.dialogRef.close();
             }, err => { });
         }
@@ -376,21 +430,11 @@ export class TaskComponent extends AppComponentBase implements OnInit {
                 let reader = new FileReader();
                 reader.readAsDataURL(file);
                 if (file.size > 5242880) {
-                    return swal({
-                        title: 'Thông báo',
-                        text: `'File ${file.name} vượt quá 5MB`,
-                        type: 'warning',
-                        timer: 3000
-                    });
+                    abp.notify.error(`File ${file.name} vượt quá 5MB`, 'Thông báo', { hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true });
                 }
 
                 if (fileFormat.indexOf(file.type.toString()) === -1) {
-                    return swal({
-                        title: 'Thông báo',
-                        text: `'File ${file.name} không đúng định dạng`,
-                        type: 'warning',
-                        timer: 3000
-                    });
+                    abp.notify.error(`File ${file.name} không đúng định dạng`, 'Thông báo', { hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true });
                 }
 
                 if (String(file.type) === 'image/jpeg' || String(file.type) === 'image/png' || String(file.type) === 'image/jpg') {
@@ -401,7 +445,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
                         this.arrayIdCard.push(file);
                     }
 
-                    if (type === 'certificate') {
+                    if (String(type) === 'certificate') {
                         reader.onload = (e: any) => {
                             this._certificateUrls.push({ url: "/assets/images/212328-200.png", file: file, path: this.replace_alias(file.name), name: file.name });
                         }
@@ -409,14 +453,14 @@ export class TaskComponent extends AppComponentBase implements OnInit {
                     }
 
                 }
-                else if (file.type == 'application/pdf') {
-                    if (type == 'idCard') {
+                else if (String(file.type) === 'application/pdf') {
+                    if (String(type) === 'idCard') {
                         reader.onload = (e: any) => {
                             this._idCardUrls.push({ url: "/assets/images/24-512.png", file: file, path: this.replace_alias(file.name), name: file.name });
                         }
                         this.arrayIdCard.push(file);
                     }
-                    else if (type == 'certificate') {
+                    else if (String(type) === 'certificate') {
                         reader.onload = (e: any) => {
                             this._certificateUrls.push({ url: "/assets/images/24-512.png", file: file, path: this.replace_alias(file.name), name: file.name });
                         };
@@ -424,10 +468,10 @@ export class TaskComponent extends AppComponentBase implements OnInit {
                     }
                 }
                 else {
-                    if (type == 'idCard') {
+                    if (String(type) === 'idCard') {
                         this._idCardError = "File tải lên không phải file ảnh và pdf";
                     }
-                    if (type == 'certificate') {
+                    if (String(type) === 'certificate') {
                         this._certificateError = "File tải lên không phải file ảnh và pdf";
                     }
                 }
@@ -439,7 +483,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
     }
 
     removeFile(i: number, type: number) {
-        if (type == 1) {
+        if (type === 1) {
             this.arrayIdCard.splice(i, 1);
             this._idCardUrls.splice(i, 1);
             this.frmUser.controls['cmnd'].setValue({ files: this.arrayIdCard });
@@ -452,7 +496,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
     }
 
     onRemoveFile(i: number, type: number) {
-        if (type == 1) {
+        if (type === 1) {
             this._idCardUrlsUpdate.splice(i, 1);
         }
         else {
@@ -540,23 +584,23 @@ export class TaskComponent extends AppComponentBase implements OnInit {
     }
 
     getHealthFacilities() {
-        this._dataService.get('healthfacility', JSON.stringify({ 'keywork': this.keyWorkFind }), '', this.paginator.pageIndex, this.paginator.pageSize).subscribe(resp => {
+        this._dataService.get('health', JSON.stringify({ 'keyWork': this.keyWorkFind, 'userId': this.user ? this.user.userId : '' }), '', this.paginator.pageIndex, this.paginator.pageSize).subscribe(resp => {
             this.dataSource.data = resp.items;
             this.totalItems = resp.totalCount;
         });
     }
 
-    _checked = -1;
+    checkedHealth = -1;
     _healths = [];
     getHealth(health: any, event: any) {
         if (event.checked) {
-            this._checked = health.code;
-            if (this.flagShowLoadFileGPHN == 2) {
+            this.checkedHealth = health.code;
+            if (this.flagShowLoadFileGphn === 2) {
                 this._healths = [];
             }
             this._healths.push(health);
         } else {
-            this._checked = -1;
+            this.checkedHealth = -1;
             this._healths.splice(this._healths.indexOf(health), 1);
         }
     }
@@ -565,7 +609,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
         this.paginator.pageIndex = 0;
         this.nameHealthFacilities.nativeElement.value ? this.keyWorkFind = this.nameHealthFacilities.nativeElement.value : this.keyWorkFind = '';
 
-        this._dataService.get('healthfacility', JSON.stringify({ 'keywork': this.keyWorkFind }), '', this.paginator.pageIndex, this.paginator.pageSize).subscribe(resp => {
+        this._dataService.get('health', JSON.stringify({ 'keyWork': this.keyWorkFind, 'userId': this.user ? this.user.userId : '' }), '', this.paginator.pageIndex, this.paginator.pageSize).subscribe(resp => {
             this.dataSource.data = resp.items;
             this.totalItems = resp.totalCount;
         });
@@ -599,9 +643,22 @@ export class TaskComponent extends AppComponentBase implements OnInit {
     }
 
     ngAfterViewInit(): void {
-        this._dataService.get('healthfacility','', '', this.paginator.pageIndex, this.paginator.pageSize).subscribe(resp => {
+        this._dataService.get('health', this.user ?  JSON.stringify({ 'userId': this.user.userId}) : '', '', this.paginator.pageIndex, this.paginator.pageSize).subscribe(resp => {
             this.dataSource.data = resp.items;
             this.totalItems = resp.totalCount;
+            for (const item of resp.items) {
+                if (this.flagShowLoadFileGphn === 2) {
+                    if (item.check) {
+                        this.checkedHealth = item.code;
+                        this._healths.push(item);
+                        break;
+                    }
+                } else {
+                    if (item.check) {
+                        this._healths.push(item);
+                    }
+                }
+            }
         });
     }
 }

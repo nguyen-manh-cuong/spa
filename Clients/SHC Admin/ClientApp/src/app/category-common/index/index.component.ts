@@ -11,7 +11,7 @@ import { ILanguage, IBookingTimeslots } from '@shared/Interfaces';
 import { PagedListingComponentBase } from '@shared/paged-listing-component-base';
 import { TaskComponent } from '../task/task.component';
 import swal from 'sweetalert2';
-import { getPermission } from '@shared/helpers/utils';
+import { getPermission, notifyToastr } from '@shared/helpers/utils';
 import { Router } from '@angular/router';
 
 export class EntityDto {
@@ -39,11 +39,12 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
     this.frmSearch = this._formBuilder.group({ name: [] });
   }
   showErrorDeleteMessage() {
-    swal({
-      title:this.l('ErrorDelete'), 
-      text:this.l('CategoryCommonErrorDeleted', ''), 
-      type:'error',
-      timer:3000});
+    // swal({
+    //   title:this.l('ErrorDelete'), 
+    //   text:this.l('CategoryCommonErrorDeleted', ''), 
+    //   type:'error',
+    //   timer:3000});
+    notifyToastr(this.l('ErrorDelete'),this.l('CategoryCommonErrorDeleted', ''),'error');
   }
 
   deleteDialogMessage(obj: EntityDto, key: string, id?: number | string) {

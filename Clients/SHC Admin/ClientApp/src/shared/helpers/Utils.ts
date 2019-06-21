@@ -65,20 +65,20 @@ export function getPermission(items: any, router: string): object {
     }
     route.splice(-1, 1);
 
-    if(items.length){
+    if (items.length) {
         for (let i = 0; i < items.length; i++) {
-            if(items[i].route === route.join("/")){
+            if (items[i].route === route.join("/")) {
                 permission.add = items[i].add;
                 permission.delete = items[i].delete;
                 permission.edit = items[i].edit;
                 permission.view = items[i].view;
                 break;
-            } else{
+            } else {
                 var child = items[i].items;
 
-                if(child.length){
+                if (child.length) {
                     for (let i = 0; i < child.length; i++) {
-                        if(child[i].route === route.join("/")){
+                        if (child[i].route === route.join("/")) {
                             permission.add = child[i].add;
                             permission.delete = child[i].delete;
                             permission.edit = child[i].edit;
@@ -92,4 +92,13 @@ export function getPermission(items: any, router: string): object {
     }
 
     return permission;
+}
+
+export function notifyToastr(title: string, message: string, type: string) {
+    if (type === "error")
+        abp.notify.error(message, title, { timeOut: 3000, preventDuplicates: true, preventOpenDuplicates: true });
+    if (type === "success")
+        abp.notify.success(message, title, { timeOut: 3000, preventDuplicates: true, preventOpenDuplicates: true });
+    if (type === "warning")
+        abp.notify.warn(message, title, { timeOut: 3000, preventDuplicates: true, preventOpenDuplicates: true });
 }

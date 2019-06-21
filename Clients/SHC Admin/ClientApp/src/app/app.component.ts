@@ -17,6 +17,7 @@ import { MAT_DIALOG_DATA, MatButton, MatDialog, MatDialogRef } from '@angular/ma
 //import { TaskComponent } from './sms-template-task/task/task.component';
 import { DataService } from '@shared/service-proxies/service-data';
 import { HealthfacilitiesListComponent } from './healthfacilities-list/healthfacilities-list.component';
+import { anyKeysRemoved } from '@fullcalendar/core/util/object-similarity';
 
 @Component({
     templateUrl: './app.component.html',
@@ -62,7 +63,7 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
                 //const menu = abp.nav.menus['mainMenu'].items.find((e: any) => e.route === event.url);
 
                 var menu;
-                abp.nav.menus['mainMenu'].items.forEach(el => {
+                abp.nav.menus['mainMenu'].items.forEach((el: any) => {
                     if (el.route === this.router.url && el.items.length == 0) {
                         menu = el;
                     } else {

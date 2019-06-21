@@ -104,7 +104,6 @@ namespace SHCServer.Controllers
                         }
                         clause.Add($"AND u.UserId = {group[count - 1].UserId})");
                     }
-
                 }
             }
 
@@ -161,7 +160,6 @@ namespace SHCServer.Controllers
             {
                 lst.Add(new UserViewModel()
                 {
-                    //Id = Convert.ToInt32(reader["Id"]),
                     UserId = Convert.ToInt32(reader["UserId"]),
                     UserName = reader["UserName"].ToString(),
                     Status = Convert.ToInt32(reader["Status"]),
@@ -200,7 +198,6 @@ namespace SHCServer.Controllers
                 item.GroupName = String.Join(", ", lst1.ToArray());
             }
 
-
             return Json(new ActionResultDto { Result = new { Items = lst, TotalCount = total } });
         }
 
@@ -213,6 +210,11 @@ namespace SHCServer.Controllers
             if (getUser.Where(u => u.UserName == obj.UserName.Trim()).Count() > 0)
             {
                 return StatusCode(406, _excep.Throw(406,"Thông báo", "Tài khoản đã tồn tại!"));
+            }
+
+            if (getUser.Where(u => u.PhoneNumber == obj.PhoneNumber.Trim() && !string.IsNullOrEmpty(u.PhoneNumber)).Count() > 0)
+            {
+                return StatusCode(406, _excep.Throw(406, "Thông báo", "Số điện thoại đã tồn tại!"));
             }
 
             if (getUser.Where(u => u.Email == obj.Email.Trim() && !string.IsNullOrEmpty(u.Email)).Count() > 0)
@@ -322,7 +324,6 @@ namespace SHCServer.Controllers
                                 });
                                 _context.Session.CommitTransaction();
                             }
-
                         }
                     }
                 }
@@ -418,6 +419,11 @@ namespace SHCServer.Controllers
             if (user.FirstOrDefault(u => u.UserId == obj.UserId) == null)
             {
                 return StatusCode(401, _excep.Throw(406, "Thông báo", "Tài khoản không tồn tại!"));
+            }
+
+            if (user.Where(u => u.PhoneNumber == obj.PhoneNumber && !string.IsNullOrEmpty(u.PhoneNumber) && u.UserId != obj.UserId).Count() > 0)
+            {
+                return StatusCode(406, _excep.Throw(406, "Thông báo", "Số điện thoại đã tồn tại!"));
             }
 
             if (user.Where(u => u.Identification == obj.Identification && !string.IsNullOrEmpty(u.Identification) && u.UserId != obj.UserId).Count() > 0)

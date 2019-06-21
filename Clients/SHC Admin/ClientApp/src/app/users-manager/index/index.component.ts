@@ -88,7 +88,7 @@ export class IndexComponent extends PagedListingComponentBase<IUser> implements 
             }).then((result) => {
                 console.log(12, result);
                 if (result.value) {
-                    this.dataService.get(this.api, '', '', this.paginator.pageIndex, this.paginator.pageSize)
+                    this.dataService.get(this.api, '', JSON.stringify({ 'userId': 'desc' }), this.paginator.pageIndex, this.paginator.pageSize)
                         .subscribe(data => this.dataSources.data = data.items);
                 }
             });
@@ -110,7 +110,7 @@ export class IndexComponent extends PagedListingComponentBase<IUser> implements 
             if (result.value) {
                 user.statusSHC === 1 ? user.statusSHC = 2 : user.statusSHC = 3;
                 this.dataService.update('user-approved', user).subscribe(() => {
-                    this.dataService.get(this.api, '', '', this.paginator.pageIndex, this.paginator.pageSize)
+                    this.dataService.get(this.api, '', JSON.stringify({ 'userId': 'desc' }), this.paginator.pageIndex, this.paginator.pageSize)
                         .subscribe(data => this.dataSources.data = data.items);
                 });
             }
@@ -133,7 +133,7 @@ export class IndexComponent extends PagedListingComponentBase<IUser> implements 
             if (result.value) {
                 //user.status === 0 ? user.status = 1 : user.status = 0;
                 this.dataService.update('user-locked', user).subscribe(() => {
-                    this.dataService.get(this.api, '', '', this.paginator.pageIndex, this.paginator.pageSize)
+                    this.dataService.get(this.api, '', JSON.stringify({'userId': 'desc'}), this.paginator.pageIndex, this.paginator.pageSize)
                         .subscribe(data => {
                             console.log(12, data.items);
                             this.dataSources.data = data.items;
