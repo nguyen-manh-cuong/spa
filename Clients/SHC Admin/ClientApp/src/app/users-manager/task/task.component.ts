@@ -56,6 +56,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
     _selection = new SelectionModel<IGroup>(true, []);
 
     healthFacilityArr = [];
+    _healthCodes = [];
 
     context: any;
     _isNew: boolean = false;
@@ -120,6 +121,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
             if (_.has(this.user, 'districtCode') && !_.isNull(this.user.districtCode)) {
                 this._dataService.get('wards', JSON.stringify({ DistrictCode: this.user.districtCode }), '', 0, 100).subscribe(resp => this._wards = resp.items);
             }
+
             
             this._dataService.get('users-attach', JSON.stringify({ 'userId': this.user.userId }), null, null, null).subscribe(resp => {
                 let imageArr = resp.items;
@@ -282,15 +284,12 @@ export class TaskComponent extends AppComponentBase implements OnInit {
 
         const nowYear = (new Date()).getFullYear();
         if (nowYear === parseFloat(this.frmUser.controls['_birthYear'].value)) {
-            console.log(1, nowYear);
             const nowMonth = (new Date()).getMonth() + 1;
-            console.log(2, nowMonth);
             if (nowMonth < parseFloat(this.frmUser.controls['_birthMonth'].value)) {
                 return;
             }
             else if (nowMonth === parseFloat(this.frmUser.controls['_birthMonth'].value)) {
                 const nowDate = (new Date()).getDate();
-                console.log(3, nowDate);
                 if (nowDate < parseFloat(this.frmUser.controls['_birthDay'].value)) {
                     return;
                 }
@@ -592,16 +591,20 @@ export class TaskComponent extends AppComponentBase implements OnInit {
 
     checkedHealth = -1;
     _healths = [];
+
     getHealth(health: any, event: any) {
         if (event.checked) {
             this.checkedHealth = health.code;
             if (this.flagShowLoadFileGphn === 2) {
                 this._healths = [];
+                this._healthCodes = [];
             }
             this._healths.push(health);
+            this._healthCodes.push(health.code);
         } else {
             this.checkedHealth = -1;
             this._healths.splice(this._healths.indexOf(health), 1);
+            this._healthCodes.splice(this._healthCodes.indexOf(health.code),1);
         }
     }
 
