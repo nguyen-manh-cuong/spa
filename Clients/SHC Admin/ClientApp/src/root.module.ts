@@ -19,6 +19,7 @@ import { RootRoutingModule } from './root-routing.module';
 import { ServiceProxyModule } from '@shared/service-proxies/service-proxy.module';
 import { SharedModule } from '@shared/shared.module';
 import swal from 'sweetalert2';
+import { notifyToastr } from '@shared/helpers/utils';
 
 
 export function appInitializerFactory(
@@ -112,12 +113,8 @@ export class RootModule {
     static message: string;
     constructor() {
         abp.message.error = (message, title) => {
-            swal({
-                type: 'error',
-                title: title,
-                text: message,
-                timer: 3000
-            });
+            //abp.notify.error(message, title, { hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true });
+            notifyToastr(title,message,'error');
             RootModule.message = message;
         }
     }
