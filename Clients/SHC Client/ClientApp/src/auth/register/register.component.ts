@@ -161,6 +161,7 @@ export class RegisterComponent implements OnInit {
         this.frmUser.value.birthDay = new Date($('#birthY').val() + '-' + $('#birthM').val() + '-' + $('#birthDay').val());
         if (this.frmUser.controls['password'].value != this.frmUser.controls['confirmPassword'].value) {
             this.frmUser.controls['confirmPassword'].setErrors({ password: true });
+            this.getCapcha();
         }
         if (this.frmUser.controls['accountType'].value == 3 && (!this.frmUser.controls['healthFacilitiesName'].value || (this.frmUser.controls['healthFacilitiesName'].value && !this.frmUser.controls['healthFacilitiesName'].value.trim()))) {
             this.frmUser.controls['healthFacilitiesName'].setErrors({ required: true });
@@ -319,6 +320,7 @@ export class RegisterComponent implements OnInit {
     detectFiles(event, type) {
         let files = event.target.files;
         let fileFormat = ['image/jpeg', 'image/png', 'application/pdf'];
+        console.log(322, files);
         if (files) {
             for (let file of files) {
                 let reader = new FileReader();

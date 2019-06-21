@@ -56,6 +56,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
     _selection = new SelectionModel<IGroup>(true, []);
 
     healthFacilityArr = [];
+    _healthCodes = [];
 
     context: any;
     _isNew: boolean = false;
@@ -74,6 +75,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
     _months = _.range(1, 13);
     _years = _.range(moment().year() - 100, moment().year() + 1);
     _invaliBirthday = false;
+    invalidBirth: boolean = false;
 
     flagShowLoadFileCmnd: boolean = true;
     flagShowLoadFileGphn: number = 0;
@@ -120,6 +122,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
             if (_.has(this.user, 'districtCode') && !_.isNull(this.user.districtCode)) {
                 this._dataService.get('wards', JSON.stringify({ DistrictCode: this.user.districtCode }), '', 0, 100).subscribe(resp => this._wards = resp.items);
             }
+
             
             this._dataService.get('users-attach', JSON.stringify({ 'userId': this.user.userId }), null, null, null).subscribe(resp => {
                 let imageArr = resp.items;
@@ -279,24 +282,6 @@ export class TaskComponent extends AppComponentBase implements OnInit {
     submit() {
         let day = this.frmUser.controls['_birthDay'].value < 10 ? ('0' + this.frmUser.controls['_birthDay'].value) : this.frmUser.controls['_birthDay'].value;
         let month = this.frmUser.controls['_birthMonth'].value < 10 ? ('0' + this.frmUser.controls['_birthMonth'].value) : this.frmUser.controls['_birthMonth'].value;
-
-        const nowYear = (new Date()).getFullYear();
-        if (nowYear === parseFloat(this.frmUser.controls['_birthYear'].value)) {
-            console.log(1, nowYear);
-            const nowMonth = (new Date()).getMonth() + 1;
-            console.log(2, nowMonth);
-            if (nowMonth < parseFloat(this.frmUser.controls['_birthMonth'].value)) {
-                return;
-            }
-            else if (nowMonth === parseFloat(this.frmUser.controls['_birthMonth'].value)) {
-                const nowDate = (new Date()).getDate();
-                console.log(3, nowDate);
-                if (nowDate < parseFloat(this.frmUser.controls['_birthDay'].value)) {
-                    return;
-                }
-            }
-        }
-
         this.frmUser.controls['birthDay'].setValue((this.frmUser.controls['_birthYear'].value + '/' + month + '/' + day));
 
         this.frmUser.controls['healthId'].setValue(this._healths);
@@ -308,11 +293,31 @@ export class TaskComponent extends AppComponentBase implements OnInit {
 
             if (this._isNew) {
                 if (this._idCardUrls.length === 0) {
-                    abp.notify.error('Phải tải lên  hình ảnh xác thực – Chứng minh nhân dân / Thẻ căn cước / Hộ chiếu', '', { hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true, return: true });
+                    abp.notify.error('Phải tải lên  hình ảnh xác thực – Chứng minh nhân dân / Thẻ căn cước / Hộ chiếu',
+                        '',
+                        { hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true });
+                    return;
                 }
 
                 if (this._certificateUrls.length === 0) {
-                    abp.notify.error('Phải tải lên  hình ảnh xác thực - Thẻ BHYT', '', { hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true,  });
+                    abp.notify.error('Phải tải lên  hình ảnh xác thực - Thẻ BHYT',
+                        '',
+                        { hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true, });
+                    return;
+                }
+            } else {
+                if (this._idCardUrls.length === 0 && this._idCardUrlsUpdate.length === 0) {
+                    abp.notify.error('Phải tải lên  hình ảnh xác thực – Chứng minh nhân dân / Thẻ căn cước / Hộ chiếu',
+                        '',
+                        { hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true });
+                    return;
+                }
+
+                if (this._certificateUrls.length === 0 && this._certificateUrlsUpdate.length === 0) {
+                    abp.notify.error('Phải tải lên  hình ảnh xác thực - Thẻ BHYT',
+                        '',
+                        { hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true, });
+                    return;
                 }
             }
         }
@@ -322,11 +327,28 @@ export class TaskComponent extends AppComponentBase implements OnInit {
 
             if (this._isNew) {
                 if (this._idCardUrls.length === 0) {
-                    abp.notify.error('Phải tải lên  hình ảnh xác thực – Chứng minh nhân dân / Thẻ căn cước / Hộ chiếu', '', { hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true});
+                    abp.notify.error('Phải tải lên  hình ảnh xác thực – Chứng minh nhân dân / Thẻ căn cước / Hộ chiếu',
+                        '',
+                        { hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true });
+                    return;
                 }
 
                 if (this._certificateUrls.length === 0) {
+                    abp.notify.error('Phải tải lên  hình ảnh xác thực - Giấy phép hành nghề',
+                        '',
+                        { hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true, return: false });
+                    return;
+                }
+            } else {
+                if (this._idCardUrls.length === 0 && this._idCardUrlsUpdate.length === 0) {
+                    abp.notify.error('Phải tải lên  hình ảnh xác thực – Chứng minh nhân dân / Thẻ căn cước / Hộ chiếu', '',{ hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true });
+                    return;
+                }
+
+
+                if (this._certificateUrls.length === 0 && this._certificateUrlsUpdate.length === 0) {
                     abp.notify.error('Phải tải lên  hình ảnh xác thực - Giấy phép hành nghề', '', { hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true, return: false });
+                    return;
                 }
             }
         }
@@ -335,11 +357,19 @@ export class TaskComponent extends AppComponentBase implements OnInit {
             this.frmUser.controls['certificationCode'].setValue('');
             this.frmUser.controls['insurrance'].setValue('');
 
-            if (this._certificateUrls.length === 0) {
-                if (this._isNew) {
-                    abp.notify.error('Phải tải lên  hình ảnh xác thực - Giấy phép kinh doanh', '', { hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true });
+            
+            if (this._isNew) {
+                if (this._certificateUrls.length === 0) {
+                    abp.notify.error('Phải tải lên  hình ảnh xác thực - Giấy phép kinh doanh',
+                        '',
+                        { hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true });
+                    return;
                 }
-                
+            } else {
+                if (this._certificateUrls.length === 0 && this._certificateUrlsUpdate.length === 0) {
+                    abp.notify.error('Phải tải lên  hình ảnh xác thực - Giấy phép kinh doanh', '',{ hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true });
+                    return;
+                }
             }
         }
         
@@ -349,45 +379,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
                 abp.notify.success('Lưu thành công', '', { hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true });
                 this.dialogRef.close();
             }, error => {
-                    if (RootModule.message === 'Email đã tồn tại!') {
-                        //this.frmUser.controls['email'].setValue('');
-                        //this.frmUser.controls['email'].setErrors(null);
-                        //this.frmUser.setErrors({ invalid: true });
-
-                        this.highLightEmail = true;
-                    } else {
-                        this.highLightEmail = false;
-                    }
-
-                    if (RootModule.message === 'Số CMND đã tồn tại!') {
-                        this.highLightIdentification = true;
-                    } else {
-                        this.highLightIdentification = false;
-                    }
-
-                    if (RootModule.message === 'Số GPHN đã tồn tại!') {
-                        this.highLightCertification = true;
-                    } else {
-                        this.highLightCertification = false;
-                    }
-
-                    if (RootModule.message === 'Số GPKD đã tồn tại!') {
-                        this.highLightLisence = true;
-                    } else {
-                        this.highLightLisence = false;
-                    }
-                    
-                    if (RootModule.message === 'Số thẻ BHYT  đã tồn tại!') {
-                        this.highLightInsurrance = true;
-                    } else {
-                        this.highLightInsurrance = false;
-                    }
-
-                    if (RootModule.message === 'Số điện thoại đã tồn tại!') {
-                        this.highLightPhone = true;
-                    } else {
-                        this.highLightPhone = false;
-                    }
+                this.getErrorHighLight();
             });
         }
         else {
@@ -404,9 +396,54 @@ export class TaskComponent extends AppComponentBase implements OnInit {
             this._dataService.updateUser('users-update', this.frmUser.value).subscribe(() => {
                 abp.notify.success('Lưu thành công', '', { hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true });
                 this.dialogRef.close();
-            }, err => { });
+            }, err => {
+                    this.getErrorHighLight();
+                    //this.frmUser.setErrors({ invalid: false });
+            });
         }
-       
+        
+    }
+
+    getErrorHighLight() {
+        if (RootModule.message === 'Email đã tồn tại!') {
+            //this.frmUser.controls['email'].setValue('');
+            //this.frmUser.controls['email'].setErrors(null);
+            //this.frmUser.setErrors({ invalid: true });
+
+            this.highLightEmail = true;
+        } else {
+            this.highLightEmail = false;
+        }
+
+        if (RootModule.message === 'Số CMND đã tồn tại!') {
+            this.highLightIdentification = true;
+        } else {
+            this.highLightIdentification = false;
+        }
+
+        if (RootModule.message === 'Số GPHN đã tồn tại!') {
+            this.highLightCertification = true;
+        } else {
+            this.highLightCertification = false;
+        }
+
+        if (RootModule.message === 'Số GPKD đã tồn tại!') {
+            this.highLightLisence = true;
+        } else {
+            this.highLightLisence = false;
+        }
+
+        if (RootModule.message === 'Số thẻ BHYT  đã tồn tại!') {
+            this.highLightInsurrance = true;
+        } else {
+            this.highLightInsurrance = false;
+        }
+
+        if (RootModule.message === 'Số điện thoại đã tồn tại!') {
+            this.highLightPhone = true;
+        } else {
+            this.highLightPhone = false;
+        }
     }
 
     ruleSpecialCharacter() {
@@ -580,6 +617,22 @@ export class TaskComponent extends AppComponentBase implements OnInit {
         }
         else {
             this._invaliBirthday = false;
+            const nowYear = (new Date()).getFullYear();
+            if (nowYear === parseFloat(this.frmUser.controls['_birthYear'].value)) {
+                const nowMonth = (new Date()).getMonth() + 1;
+                if (nowMonth < parseFloat(this.frmUser.controls['_birthMonth'].value)) {
+                    this.invalidBirth = true;
+                    return;
+                }
+                else if (nowMonth === parseFloat(this.frmUser.controls['_birthMonth'].value)) {
+                    const nowDate = (new Date()).getDate();
+                    if (nowDate < parseFloat(this.frmUser.controls['_birthDay'].value)) {
+                        this.invalidBirth = true;
+                        return;
+                    }
+                }
+            }
+            this.invalidBirth = false;
         }
     }
 
@@ -592,16 +645,20 @@ export class TaskComponent extends AppComponentBase implements OnInit {
 
     checkedHealth = -1;
     _healths = [];
+
     getHealth(health: any, event: any) {
         if (event.checked) {
             this.checkedHealth = health.code;
             if (this.flagShowLoadFileGphn === 2) {
                 this._healths = [];
+                this._healthCodes = [];
             }
             this._healths.push(health);
+            this._healthCodes.push(health.code);
         } else {
             this.checkedHealth = -1;
             this._healths.splice(this._healths.indexOf(health), 1);
+            this._healthCodes.splice(this._healthCodes.indexOf(health.code),1);
         }
     }
 

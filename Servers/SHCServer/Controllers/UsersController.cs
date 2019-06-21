@@ -81,13 +81,22 @@ namespace SHCServer.Controllers
 
                 if (data.ContainsKey("accountType"))
                 {
-                    clause.Add("AND u.AccountType = @accountType");
-                    param.Add(DbParam.Create("@accountType", data["accountType"]));
+                    if (!string.IsNullOrEmpty(data["accountType"]))
+                    {
+                        clause.Add("AND u.AccountType = @accountType");
+                        param.Add(DbParam.Create("@accountType", data["accountType"]));
+                    }
+                   
                 }
 
                 if (data.ContainsKey("userPhoneEmail"))
                 {
-                    clause.Add($"AND (u.PhoneNumber LIKE '%{data["userPhoneEmail"].Trim()}%' OR u.Email LIKE '%{data["userPhoneEmail"].Trim()}%')");
+                    if (!string.IsNullOrEmpty(data["userPhoneEmail"]))
+                    {
+                        clause.Add($"AND (u.PhoneNumber = @userPhoneEmail OR u.Email = @userPhoneEmail)");
+                        param.Add(DbParam.Create("@userPhoneEmail", data["userPhoneEmail"]));
+                    }
+                       
                 }
 
                 if (data.ContainsKey("group"))
@@ -426,6 +435,11 @@ namespace SHCServer.Controllers
                 return StatusCode(406, _excep.Throw(406, "Thông báo", "Số điện thoại đã tồn tại!"));
             }
 
+            if (user.Where(u => u.Email == obj.Email && !string.IsNullOrEmpty(u.Email) && u.UserId != obj.UserId).Count() > 0)
+            {
+                return StatusCode(406, _excep.Throw(406, "Thông báo", "Email đã tồn tại!"));
+            }
+
             if (user.Where(u => u.Identification == obj.Identification && !string.IsNullOrEmpty(u.Identification) && u.UserId != obj.UserId).Count() > 0)
             {
                 return StatusCode(406, _excep.Throw(406, "Thông báo", "Số CMND đã tồn tại!"));
@@ -455,6 +469,7 @@ namespace SHCServer.Controllers
                 {
                     FullName = obj.FullName,
                     PhoneNumber = obj.PhoneNumber,
+                    Email = obj.Email,
                     Sex = obj.Sex,
                     BirthDay = obj.BirthDay,
                     AccountType = obj.AccountType,
