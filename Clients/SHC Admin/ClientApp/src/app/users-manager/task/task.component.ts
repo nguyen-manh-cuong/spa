@@ -459,6 +459,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
         this.checkShowPathFile(value);
     }
 
+    checkFile: boolean = false;
     detectFiles(event, type) {
         let files = event.target.files;
         let fileFormat = ['image/jpeg', 'image/png', 'image/jpg', 'application/pdf'];
@@ -468,10 +469,14 @@ export class TaskComponent extends AppComponentBase implements OnInit {
                 reader.readAsDataURL(file);
                 if (file.size > 5242880) {
                     abp.notify.error(`File ${file.name} vượt quá 5MB`, 'Thông báo', { hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true });
+                    this.checkFile = true;
+                    return;
                 }
 
                 if (fileFormat.indexOf(file.type.toString()) === -1) {
                     abp.notify.error(`File ${file.name} không đúng định dạng`, 'Thông báo', { hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true });
+                    this.checkFile = true;
+                    return;
                 }
 
                 if (String(file.type) === 'image/jpeg' || String(file.type) === 'image/png' || String(file.type) === 'image/jpg') {
@@ -516,6 +521,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
 
             this.frmUser.controls['cmnd'].setValue({ files: this.arrayIdCard });
             this.frmUser.controls['gp'].setValue({ files: this.arrayCertificate });
+            this.checkFile = false;
         }
     }
 
@@ -546,6 +552,10 @@ export class TaskComponent extends AppComponentBase implements OnInit {
     }
 
     onSelectMonth() {
+        this.checkBirthDate();
+    }
+
+    onSelectYear() {
         this.checkBirthDate();
     }
 
@@ -677,10 +687,25 @@ export class TaskComponent extends AppComponentBase implements OnInit {
         str = str.replace(/ /g, "");
         return str;
     }
+
+    cleanUnicode(str: string): string {
+        return str
+            .replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, 'a')
+            .replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, 'e')
+            .replace(/ì|í|ị|ỉ|ĩ/g, 'i')
+            .replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, 'o')
+            .replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, 'u')
+            .replace(/ỳ|ý|ỵ|ỷ|ỹ/g, 'y')
+            .replace(/đ/g, 'd')
+            .replace(/!|@|\$|%|\^|\*|\(|\)|\+|\=|\<|\>|\?|\/|,|\.|\:|\"| |\"|\&|\#|\[|\]|~/g, ' ')
+            .replace(/-+-/g, '-')
+            .replace(/(\s)+/g, '$1');
+    }
+
     // Xóa khoảng trắng và kí tự unicode
     inputInsurrance(event) {
-        event.target.value = this.cleanSpace(cleanUnicode(event.target.value));
-        this.frmUser.controls['insurrance'].setValue(this.cleanSpace(cleanUnicode(event.target.value)));
+        event.target.value = this.cleanSpace(this.cleanUnicode(event.target.value));
+        this.frmUser.controls['insurrance'].setValue(this.cleanSpace(this.cleanUnicode(event.target.value)));
     }
 
     identificationInput($event) {
@@ -690,16 +715,19 @@ export class TaskComponent extends AppComponentBase implements OnInit {
     }
 
     inputCertificationCode(event) {
-        event.target.value = this.cleanSpace(cleanUnicode(event.target.value));
-        this.frmUser.controls['certificationCode'].setValue(this.cleanSpace(cleanUnicode(event.target.value)));
+        event.target.value = this.cleanSpace(this.cleanUnicode(event.target.value));
+        this.frmUser.controls['certificationCode'].setValue(this.cleanSpace(this.cleanUnicode(event.target.value)));
     }
 
     inputLisenceCode(event) {
-        event.target.value = this.cleanSpace(cleanUnicode(event.target.value));
-        this.frmUser.controls['lisenceCode'].setValue(this.cleanSpace(cleanUnicode(event.target.value)));
+        event.target.value = this.cleanSpace(this.cleanUnicode(event.target.value));
+        this.frmUser.controls['lisenceCode'].setValue(this.cleanSpace(this.cleanUnicode(event.target.value)));
     }
 
     ngAfterViewInit(): void {
+        if (this.user) {
+            this.frmUser.controls['password'].setErrors(null);
+        }
         this._dataService.get('health', this.user ?  JSON.stringify({ 'userId': this.user.userId}) : '', '', this.paginator.pageIndex, this.paginator.pageSize).subscribe(resp => {
             this.dataSource.data = resp.items;
             this.totalItems = resp.totalCount;
