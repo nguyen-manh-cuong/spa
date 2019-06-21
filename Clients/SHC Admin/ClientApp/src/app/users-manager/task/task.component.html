@@ -166,7 +166,7 @@
                                 </div>
                                 <div class="col-md-3">
                                     <div class="upload-button">
-                                        <input type="file" accept="application/pdf" multiple (change)="detectFiles($event, 'certificate')">
+                                        <input type="file" accept="image/*, application/pdf" multiple (change)="detectFiles($event, 'certificate')">
                                         <span class="btn btn-primary d-block btn-primary-inverted"><i class="fa fa-paperclip" aria-hidden="true"></i>Tải lên</span>
                                     </div>
                                 </div>
@@ -203,7 +203,7 @@
                                 </div>
                                 <div class="col-md-3">
                                     <div class="upload-button">
-                                        <input #dataContainer type="file" (click)="dataContainer.value = null" accept="image/*, application/pdf" (change)="detectFiles($event, 'idCard')">
+                                        <input #dataContainer type="file" multiple accept="image/*, application/pdf" (change)="detectFiles($event, 'idCard')">    <!--(click)="dataContainer.value = null"-->
                                         <span class="btn btn-primary  d-block btn-primary-inverted"><i class="fa fa-paperclip" aria-hidden="true"></i>Tải lên</span>
                                     </div>
                                 </div>
@@ -321,6 +321,6 @@
     </mat-tab-group>
     <div class="text-right mb-3">
         <button class="mr-3" mat-button mat-dialog-close>{{l('Close')}}</button>
-        <button mat-raised-button color="primary" (click)="submit()" [disabled]="frmUser.invalid || _invaliBirthday || invalidBirth || checkFile">{{l('Save')}}</button>
+        <button mat-raised-button color="primary" (click)="submit()" [disabled]="frmUser.invalid || _invaliBirthday || invalidBirth">{{l('Save')}}</button>
     </div>
 </form>

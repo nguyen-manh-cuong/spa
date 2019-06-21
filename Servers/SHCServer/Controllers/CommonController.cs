@@ -21,19 +21,24 @@ namespace SHCServer.Controllers
         {
             _settings = settings;
             _connectionString = configuration.GetConnectionString("DefaultConnection");
+            _contextmdmdb = new MySqlContext(new MySqlConnectionFactory(configuration.GetConnectionString("MdmConnection")));
             _context = new MySqlContext(new MySqlConnectionFactory(configuration.GetConnectionString("DefaultConnection")));
         }
 
         #region location
         [HttpGet]
         [Route("api/provinces")]
-        public IActionResult GetAllProvinces() => Json(new ActionResultDto { Result = new { Items = _context.Query<Province>().Where(o => o.IsActive == true && o.IsDelete == false).OrderBy(p=>p.Name).ToList() } });
+        public IActionResult GetAllProvinces() => Json(new ActionResultDto {
+            Result = new {
+                Items = _contextmdmdb.Query<Province>().Where(o => o.IsActive == true && o.IsDelete == false).OrderBy(p=>p.Name).ToList()
+            }
+        });
 
         [HttpGet]
         [Route("api/districts")]
         public IActionResult GetDistricts(int skipCount = 0, int maxResultCount = 10, string sorting = null, string filter = null)
         {
-            var objs = _context.Query<District>();
+            var objs = _contextmdmdb.Query<District>();
 
             if (filter != null)
             {
@@ -50,7 +55,7 @@ namespace SHCServer.Controllers
         [Route("api/wards")]
         public IActionResult GetWards(int skipCount = 0, int maxResultCount = 10, string sorting = null, string filter = null)
         {
-            var objs = _context.Query<Ward>();
+            var objs = _contextmdmdb.Query<Ward>();
 
             if (filter != null)
             {
