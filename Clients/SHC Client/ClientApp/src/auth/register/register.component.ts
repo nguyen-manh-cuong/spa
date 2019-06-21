@@ -330,7 +330,6 @@ export class RegisterComponent implements OnInit {
     detectFiles(event, type) {
         let files = event.target.files;
         let fileFormat = ['image/jpeg', 'image/png', 'application/pdf'];
-        console.log(322, files);
         if (files) {
             for (let file of files) {
                 let reader = new FileReader();
@@ -402,7 +401,7 @@ export class RegisterComponent implements OnInit {
 
     ruleFileName(name){
         if(name.length>30){
-            return name.substring(0,27) + "...pdf";
+            return name.substring(0,27) +".."+ name.substring(name.lastIndexOf('.'),name.length);
         }else{
             return name;
         }

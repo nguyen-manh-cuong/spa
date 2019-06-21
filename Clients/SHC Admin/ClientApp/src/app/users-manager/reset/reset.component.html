@@ -6,26 +6,26 @@
         <mat-label>Tài khoản sẽ được reset mật khẩu</mat-label>
     </div>
     <div class="row ml-2 mr-2">
-        <mat-form-field appearance="outline" class="w-100">
+        <mat-form-field appearance="outline" class="w-100" [ngClass]="{'mat-form-field-invalid':checkPassword}">
             <mat-label>{{l("ResetNewPassword")}}</mat-label>
-            <input type="password" formControlName="newPassword" matInput autocomplete="off" required minlength="8">
+            <input (input)="newPasswordInput($event)" type="password"  formControlName="newPassword" matInput autocomplete="off" required minlength="8" maxlength="255">
             <validation matSuffix [control]="frmUser.controls['newPassword']"></validation>
         </mat-form-field>
         <mat-form-field appearance="outline" class="w-100">
             <mat-label>{{l("Nhập lại mật khẩu")}}</mat-label>
-            <input (input)="confirmPasswordInput($event.target.value)" type="password" formControlName="confirmPassword" matInput autocomplete="off" required minlength="8">
+            <input (input)="confirmPasswordInput($event)" type="password" formControlName="confirmPassword" matInput autocomplete="off" required minlength="8" maxlength="255">
             <validation matSuffix [control]="frmUser.controls['confirmPassword']"></validation>
         </mat-form-field>
         <div class="row">
             <div class="col-md-5">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l("ResetCapcha")}}</mat-label>
-                    <input (input)="capchaInput($event)" formControlName="capcha" matInput autocomplete="off" required>
+                    <input (input)="capchaInput($event)" formControlName="capcha" matInput autocomplete="off" maxlength="4" required>
                     <validation matSuffix [control]="frmUser.controls['capcha']"></validation>
                 </mat-form-field>
             </div>
             <div class="col-md-5 mt-1" style="margin-left:-20px!important;padding-bottom: 1px!important">
-                <img [src]="_capcha.data" width="160" height="40" alt="" />
+                <img class="ml-2" [src]="_capcha.data" width="160" height="40" alt="" />
             </div>
             <div class="col-md-2 mt-1 ml-3">
                 <span type="button" class="btn-refresh" (click)="getCapcha()"><i class="fa fa-refresh"
