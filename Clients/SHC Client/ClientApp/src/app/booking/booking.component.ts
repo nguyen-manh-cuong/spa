@@ -64,7 +64,7 @@ export class BookingComponent extends AppComponentBase implements OnInit, AfterV
     capcha = false;
     defaultd = '../assets/images/default/defaultd.png';
     defaulth = '../assets/images/default/defaulth.jpg';
-    uploadBaseUrl="";
+    uploadBaseUrl:string="";
 
     slideConfig = {
         "slidesToShow": 4,
@@ -79,6 +79,8 @@ export class BookingComponent extends AppComponentBase implements OnInit, AfterV
     }
 
     ngOnInit() {
+        this.uploadBaseUrl = AppConsts.remoteServiceBaseUrl.substring(0, AppConsts.remoteServiceBaseUrl.indexOf("9008") + 4) + "/wwwroot";
+
         this.frmBooking = this._formBuilder.group({
             //1
             bookingUser: ['', [Validators.required, this.validateRule.hasValue]], phoneNumber: ['', [Validators.required, this.validateRule.hasValue, this.validateRule.topPhoneNumber]],
@@ -101,7 +103,6 @@ export class BookingComponent extends AppComponentBase implements OnInit, AfterV
             this.frmBooking.controls['phoneNumber'].setValue(this.appSession.user.phoneNumber);
         }
 
-        this.uploadBaseUrl = AppConsts.uploadBaseUrl;
         this._dataService.getAll('provinces').subscribe(resp => this._provinces = this._provincesExamination = resp.items);
         this.getDate();
         this.getCapcha();

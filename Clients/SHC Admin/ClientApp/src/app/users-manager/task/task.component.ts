@@ -196,8 +196,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
         };
 
         this.frmUser = this._formBuilder.group(this.context);
-        console.log('Gia tri bie context', this.context);
-        console.log(this.frmUser);
+        
         this._dataService.getAll('groups','',JSON.stringify({name:'asc'})).subscribe(resp => {
             this.groups = resp.items;
             if (this.user) {
@@ -214,9 +213,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
         });
 
         this._dataService.getAll('provinces').subscribe(resp => this._provinces = resp.items);
-
-        this.checkShowPathFile(this.userDto.accountType);
-       
+        this.checkShowPathFile(this.userDto.accountType, this.frmUser.value);
     }
 
     // BHYT - Insurrance, CMND - Identification, GPHN - CertificationCode, GPKD - LicenseCode
@@ -230,11 +227,11 @@ export class TaskComponent extends AppComponentBase implements OnInit {
         this.highLightEmail = false;
         this.highLightPhone = false;
         this.highLightUsername = false;
-
-        this.frmUser.controls['certificationCode'].setValue(null);
-        this.frmUser.controls['lisenceCode'].setValue(null);
-        this.frmUser.controls['insurrance'].setValue(null);
-        this.frmUser.controls['identification'].setValue(null);
+        
+        // this.frmUser.controls['certificationCode'].setValue(null);
+        // this.frmUser.controls['lisenceCode'].setValue(null);
+        // this.frmUser.controls['insurrance'].setValue(null);
+        // this.frmUser.controls['identification'].setValue(null);
 
         this._idCardUrls = [];
         this._certificateUrls = [];
@@ -300,15 +297,17 @@ export class TaskComponent extends AppComponentBase implements OnInit {
         this.frmUser.controls['healthId'].setValue(this._healths);
         this.frmUser.controls['groupUser'].setValue(this._selection.selected);
         if (1 === this.frmUser.controls['accountType'].value) {
-            this.frmUser.controls['certificationCode'].setValue('');
-            this.frmUser.controls['lisenceCode'].setValue('');
+            // this.frmUser.controls['certificationCode'].setValue('');
+            // this.frmUser.controls['lisenceCode'].setValue('');
+            this.frmUser.controls['certificationCode'].setErrors(null);
+            this.frmUser.controls['lisenceCode'].setErrors(null);
 
             if (this._isNew) {
                 if (this._idCardUrls.length === 0) {
                     abp.notify.error('Phải tải lên  hình ảnh xác thực – Chứng minh nhân dân / Thẻ căn cước / Hộ chiếu',
                         '',
                         { hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true });
-                    this.frmUser.setErrors(null);
+                    //this.frmUser.setErrors(null);
                     return;
                 }
 
@@ -316,7 +315,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
                     abp.notify.error('Phải tải lên  hình ảnh xác thực - Thẻ BHYT',
                         '',
                         { hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true, });
-                    this.frmUser.setErrors(null);
+                   // this.frmUser.setErrors(null);
                     return;
                 }
             } else {
@@ -324,7 +323,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
                     abp.notify.error('Phải tải lên  hình ảnh xác thực – Chứng minh nhân dân / Thẻ căn cước / Hộ chiếu',
                         '',
                         { hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true });
-                    this.frmUser.setErrors(null);
+                    //this.frmUser.setErrors(null);
                     return;
                 }
 
@@ -332,21 +331,23 @@ export class TaskComponent extends AppComponentBase implements OnInit {
                     abp.notify.error('Phải tải lên  hình ảnh xác thực - Thẻ BHYT',
                         '',
                         { hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true, });
-                    this.frmUser.setErrors(null);
+                    //this.frmUser.setErrors(null);
                     return;
                 }
             }
         }
         else if (2 === this.frmUser.controls['accountType'].value) {
-            this.frmUser.controls['insurrance'].setValue('');
-            this.frmUser.controls['lisenceCode'].setValue('');
+            // this.frmUser.controls['insurrance'].setValue('');
+            // this.frmUser.controls['lisenceCode'].setValue('');
+            this.frmUser.controls['insurrance'].setErrors(null);
+            this.frmUser.controls['lisenceCode'].setErrors(null);
 
             if (this._isNew) {
                 if (this._idCardUrls.length === 0) {
                     abp.notify.error('Phải tải lên  hình ảnh xác thực – Chứng minh nhân dân / Thẻ căn cước / Hộ chiếu',
                         '',
                         { hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true });
-                    this.frmUser.setErrors({ invalid: false });
+                    //this.frmUser.setErrors({ invalid: false });
                     return;
                 }
 
@@ -354,28 +355,31 @@ export class TaskComponent extends AppComponentBase implements OnInit {
                     abp.notify.error('Phải tải lên  hình ảnh xác thực - Giấy phép hành nghề',
                         '',
                         { hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true, return: false });
-                    this.frmUser.setErrors({ invalid: false });
+                    //this.frmUser.setErrors({ invalid: false });
                     return;
                 }
             } else {
                 if (this._idCardUrls.length === 0 && this._idCardUrlsUpdate.length === 0) {
                     abp.notify.error('Phải tải lên  hình ảnh xác thực – Chứng minh nhân dân / Thẻ căn cước / Hộ chiếu', '', { hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true });
-                    this.frmUser.setErrors({ invalid: false });
+                    //this.frmUser.setErrors({ invalid: false });
                     return;
                 }
 
 
                 if (this._certificateUrls.length === 0 && this._certificateUrlsUpdate.length === 0) {
                     abp.notify.error('Phải tải lên  hình ảnh xác thực - Giấy phép hành nghề', '', { hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true, return: false });
-                    this.frmUser.setErrors({ invalid: false });
+                    //this.frmUser.setErrors({ invalid: false });
                     return;
                 }
             }
         }
         else {
-            this.frmUser.controls['identification'].setValue('');
-            this.frmUser.controls['certificationCode'].setValue('');
-            this.frmUser.controls['insurrance'].setValue('');
+            // this.frmUser.controls['identification'].setValue('');
+            // this.frmUser.controls['certificationCode'].setValue('');
+            // this.frmUser.controls['insurrance'].setValue('');           
+            this.frmUser.controls['insurrance'].setErrors(null);
+            this.frmUser.controls['identification'].setErrors(null);
+            this.frmUser.controls['certificationCode'].setErrors(null);
 
             
             if (this._isNew) {
@@ -383,13 +387,13 @@ export class TaskComponent extends AppComponentBase implements OnInit {
                     abp.notify.error('Phải tải lên  hình ảnh xác thực - Giấy phép kinh doanh',
                         '',
                         { hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true });
-                    this.frmUser.setErrors({ invalid: false });
+                    //this.frmUser.setErrors({ invalid: false });
                     return;
                 }
             } else {
                 if (this._certificateUrls.length === 0 && this._certificateUrlsUpdate.length === 0) {
                     abp.notify.error('Phải tải lên  hình ảnh xác thực - Giấy phép kinh doanh', '', { hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true });
-                    this.frmUser.setErrors({ invalid: false });
+                    //this.frmUser.setErrors({ invalid: false });
                     return;
                 }
             }
@@ -600,6 +604,12 @@ export class TaskComponent extends AppComponentBase implements OnInit {
         if (!pattern.test(event.target.value)) {
             control.setValue(control.value.replace(/[^a-zA-Z0-9\.\-\_\@]/g, ""));
         }
+
+        var domain=control.value.substring(control.value.indexOf('@')+1,control.value.length);
+        var local=control.value.substring(0,control.value.indexOf('@')+1);
+        domain = domain.replace(/[-\_\@]/g,"");
+
+        control.setValue(local + domain);
     }
 
     replace_alias(str) {
@@ -727,9 +737,10 @@ export class TaskComponent extends AppComponentBase implements OnInit {
             .replace(/Ù|Ú|Ụ|Ủ|Ũ|Ư|Ừ|Ứ|Ự|Ử|Ữ/g, "U")
             .replace(/Ỳ|Ý|Ỵ|Ỷ|Ỹ/g, "Y")
             .replace(/Đ/g, "D")
-            .replace(/!|@|\$|%|\^|\*|\(|\)|\+|\=|\<|\>|\?|\/|,|\.|\:|\"| |\"|\&|\#|\[|\]|~/g, ' ')
+            .replace(/!|@|\$|%|\^|\*|\(|\)|\+|\=|\<|\>|\?|\/|,|\.|\:|\"| |\"|\&|\#|\[|\\|\{|\}|\||\]|~/g, ' ')
             .replace(/-+-/g, '-')
-            .replace(/(\s)+/g, '$1');
+            .replace(/(\s)+/g, '$1')
+            .replace(/[^a-zA-Z0-9]/g, '');
     }
 
     // Xóa khoảng trắng và kí tự unicode
@@ -750,8 +761,8 @@ export class TaskComponent extends AppComponentBase implements OnInit {
     }
 
     inputLisenceCode(event) {
-        event.target.value = this.cleanSpace(this.cleanUnicode(event.target.value));
-        this.frmUser.controls['lisenceCode'].setValue(this.cleanSpace(this.cleanUnicode(event.target.value)));
+        // event.target.value = this.cleanSpace(this.cleanUnicode(event.target.value));
+        // this.frmUser.controls['lisenceCode'].setValue(this.cleanSpace(this.cleanUnicode(event.target.value)));
     }
 
     ngAfterViewInit(): void {
