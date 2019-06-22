@@ -261,6 +261,7 @@ namespace SHCServer.Controllers
 
             if (getUser.Where(u => u.Identification == obj.Identification && !string.IsNullOrEmpty(u.Identification)).Count() > 0)
             {
+
                 return StatusCode(406, _excep.Throw(406, "Thông báo", "Số CMND đã tồn tại!"));
             }
 
