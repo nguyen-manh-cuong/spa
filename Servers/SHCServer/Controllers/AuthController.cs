@@ -239,6 +239,9 @@ namespace SHCServer.Controllers
         [Route("api/Register")]
         public object Register([FromForm] UserInputViewModel obj)
         {
+            obj.UserName = obj.UserName.Trim().ToLower();
+            obj.Email = obj.Email.Trim().ToLower();
+
             var getUser = _contextmdmdb.Query<UserMDM>();
 
             if (getUser.Where(u => u.UserName == obj.UserName.Trim()).Count() > 0)
