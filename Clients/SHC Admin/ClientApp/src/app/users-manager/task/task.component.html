@@ -74,14 +74,28 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-4" *ngIf="_isNew">
                         <mat-form-field appearance="outline" class="w-100" [ngClass]="{'mat-form-field-invalid': highLightUsername }">
                             <mat-label>{{l('UserName')}}</mat-label>
                             <input formControlName="userName" [readonly]="!_isNew" [disabled]="!_isNew" matInput required (keyup)="ruleSpecialCharacter()" maxlength="255">
                             <validation matSuffix [control]="frmUser.controls['userName']"></validation>
                         </mat-form-field>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-4 disabled" *ngIf="!_isNew">
+                        <mat-form-field appearance="outline" class="w-100" [ngClass]="{'mat-form-field-invalid': highLightUsername }">
+                            <mat-label>{{l('UserName')}}</mat-label>
+                            <input formControlName="userName" [readonly]="!_isNew" [disabled]="!_isNew" matInput required (keyup)="ruleSpecialCharacter()" maxlength="255">
+                            <validation matSuffix [control]="frmUser.controls['userName']"></validation>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-4" *ngIf="_isNew">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{l('Password')}}</mat-label>
+                            <input formControlName="password" type="password" [disabled]="!_isNew" [readonly]="!_isNew" matInput required minlength="8" maxlength="255">
+                            <validation matSuffix [control]="frmUser.controls['password']"></validation>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-4 disabled" *ngIf="!_isNew">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l('Password')}}</mat-label>
                             <input formControlName="password" type="password" [disabled]="!_isNew" [readonly]="!_isNew" matInput required minlength="8" maxlength="255">
@@ -91,7 +105,7 @@
                     <div class="col-md-4" [ngClass]="{'disabled': !_isNew}">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l('AccountType')}}</mat-label>
-                            <mat-select formControlName="accountType" (selectionChange)="onSelectAccountType($event.value)"   required>
+                            <mat-select formControlName="accountType" (selectionChange)="onSelectAccountType($event.value)" required>
                                 <mat-option *ngFor="let o of _accountTypes" [value]="o.id">{{ o.name }}</mat-option>
                             </mat-select>
                             <validation matSuffix [control]="frmUser.controls['accountType']"></validation>
