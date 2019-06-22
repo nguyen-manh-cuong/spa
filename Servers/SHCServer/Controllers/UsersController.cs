@@ -905,6 +905,8 @@ namespace SHCServer.Controllers
                 });
 
                 _contextmdmdb.Session.CommitTransaction();
+
+                SendMailLockUser(user.Email, user.UserName, statusTmp);
             }
             catch (Exception e)
             {
@@ -1019,6 +1021,41 @@ namespace SHCServer.Controllers
                 message.Subject = "[SHC] Thay đổi mật khẩu";
 
                 message.Body = "Xin chào " + user + "\nChúng tôi vừa nhận được yêu cầu thay đổi mật khẩu từ phía bạn" + "\nMật khẩu mới của bạn là: " + pass + "\nĐể bảo mật, bạn vui lòng thay đổi mật khẩu sau khi đăng nhập và không tiết lộ cho bất kỳ cá nhân nào.";
+
+                mailClient.Send(message);
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public bool SendMailLockUser(string sendTo, string user, int checkLock)
+        {
+            string userName = "configshc@gmail.com";
+            string password = "Abc@123456";
+            try
+            {
+                SmtpClient mailClient = new SmtpClient("smtp.gmail.com", 587);
+                mailClient.EnableSsl = true;
+                mailClient.Credentials = new NetworkCredential(userName, password);
+
+                MailMessage message = new MailMessage(userName, sendTo);
+
+                if (checkLock == 0)
+                {
+                    message.Subject = "[SHC] Thông báo khóa tài khoản";
+
+                    message.Body = "Xin chào " + user + "\nChúng tôi nhận thấy có một số điều bất thường từ tài khoản của bạn. Do đó, tài khoản " + user + " tạm thời bị khóa.\nMọi chi tiết xin liên hệ admin của hệ thống qua 0982314938. Chân thành cảm ơn và xin lỗi vì sự bất tiện này";
+                }
+                else
+                {
+                    message.Subject = "[SHC] Thông báo mở khóa tài khoản";
+
+                    message.Body = "Xin chào " + user + "\nChúng tôi nhận được yêu cầu kích hoạt lại tài khoản cho bạn. \nMọi chi tiết xin liên hệ 09764564123 để được tư vấn và giải đáp thắc mắc. Chúng tôi xin chân thành cảm ơn! ";
+                }
 
                 mailClient.Send(message);
 

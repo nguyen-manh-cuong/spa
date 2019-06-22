@@ -81,8 +81,8 @@ export class RegisterComponent implements OnInit {
             accountType: [1],
             birthDay: [''],
             register: [this._user.register],
-            identification: [this._user.identification, this.validateRule.identification],
-            insurrance: [this._user.insurrance],
+            identification: [this._user.identification ? this._user.identification: '' , this.validateRule.identification],
+            insurrance: [this._user.insurrance ? this._user.insurrance: ''],
             certificationCode: [this._user.certificationCode],
             lisenceCode: [this._user.lisenceCode],
             workPlace: [this._user.workPlace],
@@ -184,7 +184,9 @@ export class RegisterComponent implements OnInit {
     }
 
     submit() {
-        this.frmUser.value.birthDay = new Date($('#birthY').val() + '-' + $('#birthM').val() + '-' + $('#birthDay').val());
+        let day = parseInt($('#birthDay').val().toString()) < 10 ? ('0' + $('#birthDay').val()) : $('#birthDay').val();
+        let month = parseInt($('#birthM').val().toString().substr(6)) < 10 ? ('0' + $('#birthM').val().toString().substr(6)) : $('#birthM').val().toString().substr(6);
+        this.frmUser.controls['birthDay'].setValue(($('#birthY').val() + '/' + month + '/' + day));
         if (this.frmUser.controls['password'].value != this.frmUser.controls['confirmPassword'].value) {
             this.frmUser.controls['confirmPassword'].setErrors({ password: true });
             this.getCapcha();
@@ -213,6 +215,7 @@ export class RegisterComponent implements OnInit {
                 //     timer: 3000
                 // });
                 notifyToastr('Thông báo', 'Bạn phải cung cấp giấy tờ xác thực', 'warning');
+                return null;
             }
 
             else if (this.frmUser.controls['cmnd'].value.files != null || this.frmUser.controls['gp'].value.files != null) {
@@ -224,6 +227,7 @@ export class RegisterComponent implements OnInit {
                     //     timer: 3000
                     // });
                     notifyToastr('Thông báo', 'Bạn phải cung cấp giấy tờ xác thực', 'warning');
+                    return null;
                 }
             }
         }
@@ -249,11 +253,12 @@ export class RegisterComponent implements OnInit {
                 //    timer: 3000
                 //});
                 notifyToastr('Thông báo', 'Bạn phải chọn ít nhất một dịch vụ', 'warning');
+                return null;
             }
         }
 
 
-        if (this._invaliBirthday) return;
+        if (this._invaliBirthday) return null;
 
         if (this.frmUser.controls['codeCapcha'].value != this._capcha.code) {
             this.capcha = true;
@@ -274,7 +279,7 @@ export class RegisterComponent implements OnInit {
             this.frmUser.controls['certificationCode'].setValue('');
             this.frmUser.controls['insurrance'].setValue('');
         }
-       
+
         this._dataService.createUpload('Register', this.frmUser.value).subscribe(
             () => {
                 // swal({
@@ -287,15 +292,23 @@ export class RegisterComponent implements OnInit {
                 //     timer: 3000
                 notifyToastr(
                     "Đăng ký mở tài khoản thành công !",
-                    "<b>Họ và tên:</b> " + this.frmUser.controls['fullName'].value + "<br>" + "<b>Số điện thoai:</b> " + this.frmUser.controls['phoneNumber'].value + "<br>" + "<b>Email:</b> " + this.frmUser.controls['email'].value,
+                    "<b>Họ và tên:</b> " +
+                    this.frmUser.controls['fullName'].value +
+                    "<br>" +
+                    "<b>Số điện thoai:</b> " +
+                    this.frmUser.controls['phoneNumber'].value +
+                    "<br>" +
+                    "<b>Email:</b> " +
+                    this.frmUser.controls['email'].value,
                     'success');
                 //}).then((result) => {
-                    //if (result.value) {
-                    //this._location.back();
-                    //}
-                    this._router.navigateByUrl('/');
+                //if (result.value) {
+                //this._location.back();
+                //}
+                this._router.navigateByUrl('/');
                 //});
-            }, err => console.log('err: ' + err))
+            },
+            err => console.log('err: ' + err));
     }
 
     //validate  
@@ -389,6 +402,7 @@ export class RegisterComponent implements OnInit {
                     //     timer: 3000
                     // });
                     notifyToastr('Thông báo', `File ${file.name} vượt quá 5MB`, 'warning');
+                    return;
                 }
                 if (fileFormat.indexOf(file.type.toString()) === -1) {
                     // return swal({
@@ -398,6 +412,7 @@ export class RegisterComponent implements OnInit {
                     //     timer: 3000
                     // });
                     notifyToastr('Thông báo', `'File ${file.name} không đúng định dạng`, 'warning');
+                    return;
                 }
                 
                 if (String(file.type) === 'image/jpeg' || String(file.type) === 'image/png') {
