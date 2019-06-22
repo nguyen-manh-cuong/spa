@@ -88,7 +88,7 @@
                             <validation matSuffix [control]="frmUser.controls['userName']"></validation>
                         </mat-form-field>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-4" *ngIf="_isNew">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l('Password')}}</mat-label>
                             <input formControlName="password" type="password" [disabled]="!_isNew" [readonly]="!_isNew" matInput required minlength="8" maxlength="255">
