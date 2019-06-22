@@ -200,9 +200,9 @@ namespace SHCServer.Controllers
 
             foreach (var item in lst)
             {
-                if (!string.IsNullOrEmpty(item.ProvinceCode)) item.Locality = _contextmdmdb.Query<Province>().FirstOrDefault(o => o.ProvinceCode == item.ProvinceCode).Name;
-                if (!string.IsNullOrEmpty(item.DistrictCode)) item.Locality = $"{item.Locality} - {_contextmdmdb.Query<District>().FirstOrDefault(o => o.DistrictCode == item.DistrictCode).Name}";
-                if (!string.IsNullOrEmpty(item.WardCode)) item.Locality = $"{item.Locality} - {_contextmdmdb.Query<Ward>().FirstOrDefault(o => o.WardCode == item.WardCode).Name}";
+                if (!string.IsNullOrEmpty(item.ProvinceCode)) item.Locality = _contextmdmdb.Query<Province>().FirstOrDefault(o => o.ProvinceCode == item.ProvinceCode)!=null? _contextmdmdb.Query<Province>().FirstOrDefault(o => o.ProvinceCode == item.ProvinceCode).Name:"";
+                if (!string.IsNullOrEmpty(item.DistrictCode)) item.Locality = _contextmdmdb.Query<District>().FirstOrDefault(o => o.DistrictCode == item.DistrictCode) != null ? $"{item.Locality} - {_contextmdmdb.Query<District>().FirstOrDefault(o => o.DistrictCode == item.DistrictCode).Name}" : "";
+                if (!string.IsNullOrEmpty(item.WardCode)) item.Locality = _contextmdmdb.Query<Ward>().FirstOrDefault(o => o.WardCode == item.WardCode)!=null? $"{item.Locality} - {_contextmdmdb.Query<Ward>().FirstOrDefault(o => o.WardCode == item.WardCode) ? .Name}":"";
 
                 item.Locality = (!string.IsNullOrEmpty(item.Locality) ? item.Locality : "");
 

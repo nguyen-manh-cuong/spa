@@ -206,22 +206,24 @@ export class RegisterComponent implements OnInit {
        
         if (String(this.frmUser.controls['accountType'].value) === '1' || String(this.frmUser.controls['accountType'].value) === '2') {
             if (this.frmUser.controls['cmnd'].value == null || this.frmUser.controls['gp'].value == null) {
-                return swal({
-                    title: 'Thông báo',
-                    text: 'Bạn phải cung cấp giấy tờ xác thực',
-                    type: 'warning',
-                    timer: 3000
-                });
+                // return swal({
+                //     title: 'Thông báo',
+                //     text: 'Bạn phải cung cấp giấy tờ xác thực',
+                //     type: 'warning',
+                //     timer: 3000
+                // });
+                notifyToastr('Thông báo', 'Bạn phải cung cấp giấy tờ xác thực', 'warning');
             }
 
             else if (this.frmUser.controls['cmnd'].value.files != null || this.frmUser.controls['gp'].value.files != null) {
                 if (this.frmUser.controls['cmnd'].value.files.length == 0 || this.frmUser.controls['gp'].value.files.length == 0) {
-                    return swal({
-                        title: 'Thông báo',
-                        text: 'Bạn phải cung cấp giấy tờ xác thực',
-                        type: 'warning',
-                        timer: 3000
-                    });
+                    // return swal({
+                    //     title: 'Thông báo',
+                    //     text: 'Bạn phải cung cấp giấy tờ xác thực',
+                    //     type: 'warning',
+                    //     timer: 3000
+                    // });
+                    notifyToastr('Thông báo', 'Bạn phải cung cấp giấy tờ xác thực', 'warning');
                 }
             }
         }
@@ -375,27 +377,27 @@ export class RegisterComponent implements OnInit {
     detectFiles(event, type) {
         let files = event.target.files;
         let fileFormat = ['image/jpeg', 'image/png', 'application/pdf'];
-        console.log(322, files);
         if (files) {
             for (let file of files) {
                 let reader = new FileReader();
                 reader.readAsDataURL(file);
                 if (file.size > 5242880) {
-                    return swal({
-                        title: 'Thông báo',
-                        text: `'File ${file.name} vượt quá 5MB`,
-                        type: 'warning',
-                        timer: 3000
-                    });
+                    // return swal({
+                    //     title: 'Thông báo',
+                    //     text: `'File ${file.name} vượt quá 5MB`,
+                    //     type: 'warning',
+                    //     timer: 3000
+                    // });
+                    notifyToastr('Thông báo', `File ${file.name} vượt quá 5MB`, 'warning');
                 }
-
                 if (fileFormat.indexOf(file.type.toString()) === -1) {
-                    return swal({
-                        title: 'Thông báo',
-                        text: `'File ${file.name} không đúng định dạng`,
-                        type: 'warning',
-                        timer: 3000
-                    });
+                    // return swal({
+                    //     title: 'Thông báo',
+                    //     text: `'File ${file.name} không đúng định dạng`,
+                    //     type: 'warning',
+                    //     timer: 3000
+                    // });
+                    notifyToastr('Thông báo', `'File ${file.name} không đúng định dạng`, 'warning');
                 }
                 
                 if (String(file.type) === 'image/jpeg' || String(file.type) === 'image/png') {
@@ -446,7 +448,7 @@ export class RegisterComponent implements OnInit {
 
     ruleFileName(name){
         if(name.length>30){
-            return name.substring(0,27) + "...pdf";
+            return name.substring(0,27) +".."+ name.substring(name.lastIndexOf('.'),name.length);
         }else{
             return name;
         }

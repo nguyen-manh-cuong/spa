@@ -8,19 +8,19 @@
     <div class="row ml-2 mr-2">
         <mat-form-field appearance="outline" class="w-100" [ngClass]="{'mat-form-field-invalid':checkPassword}">
             <mat-label>{{l("ResetNewPassword")}}</mat-label>
-            <input (input)="newPasswordInput($event)" type="password"  formControlName="newPassword" matInput autocomplete="off" required minlength="8">
+            <input (input)="newPasswordInput($event)" type="password"  formControlName="newPassword" matInput autocomplete="off" required minlength="8" maxlength="255">
             <validation matSuffix [control]="frmUser.controls['newPassword']"></validation>
         </mat-form-field>
         <mat-form-field appearance="outline" class="w-100">
             <mat-label>{{l("Nhập lại mật khẩu")}}</mat-label>
-            <input (input)="confirmPasswordInput($event)" type="password" formControlName="confirmPassword" matInput autocomplete="off" required minlength="8">
+            <input (input)="confirmPasswordInput($event)" type="password" formControlName="confirmPassword" matInput autocomplete="off" required minlength="8" maxlength="255">
             <validation matSuffix [control]="frmUser.controls['confirmPassword']"></validation>
         </mat-form-field>
         <div class="row">
             <div class="col-md-5">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l("ResetCapcha")}}</mat-label>
-                    <input (input)="capchaInput($event)" formControlName="capcha" matInput autocomplete="off" required>
+                    <input (input)="capchaInput($event)" formControlName="capcha" matInput autocomplete="off" maxlength="4" required>
                     <validation matSuffix [control]="frmUser.controls['capcha']"></validation>
                 </mat-form-field>
             </div>
