@@ -113,7 +113,7 @@ namespace SHCServer.Controllers
                         {
                             clause.Add($"OR u.UserId = {group[i].UserId}");
                         }
-                        clause.Add($"AND u.UserId = {group[count - 1].UserId})");
+                        clause.Add($"OR u.UserId = {group[count - 1].UserId})");
                     }
                     else
                     {
