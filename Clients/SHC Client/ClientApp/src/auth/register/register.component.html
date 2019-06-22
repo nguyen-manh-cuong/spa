@@ -308,10 +308,7 @@
 
                             <div class="form-group">
                                 <div class="row">
-                                    <div class="col-xs-12 col-md-4">
-                                        <label class="primary-label custom-label">Xã/Phường</label>
-                                    </div>
-
+                                    <div class="col-xs-12 col-md-4"><label class="primary-label custom-label">Xã/Phường</label></div>
                                     <div class="col-xs-12 col-md-8">
                                         <select formControlName="wardCode" class="form-control" id="ward">
                                             <option *ngFor="let o of _wards" [ngValue]="o.wardCode">{{o.name}}
@@ -322,46 +319,47 @@
                             </div>
 
                             <div class="for-account-type-professional no-margins">
-                                <div class="form-group {_hideMember ? 'hidden' : ''}"
-                                    [ngClass]="{'has-error': frmUser.get('identification').invalid && (frmUser.get('identification').dirty || frmUser.get('identification').touched)}">
+                                <div class="form-group" [ngClass]="{'has-error': frmUser.get('identification').invalid && (frmUser.get('identification').dirty || frmUser.get('identification').touched) && checkInfo}"  *ngIf="checkInfo">
                                     <div class="row">
-                                        <div class="col-xs-12 col-md-4">
-                                            <label class="primary-label control-label">Số CMND/CCCD</label>
-                                        </div>
-
+                                        <div class="col-xs-12 col-md-4"><label class="primary-label control-label">Số CMND/CCCD</label></div>
                                         <div class="col-xs-12 col-md-8">
-                                            <input type="text" id="identification" formControlName="identification"
-                                                mask="0*" name="prof_spec" class="form-control" minlength="9"
-                                                maxlength="12">
+                                            <input type="text" id="identification" formControlName="identification"  mask="0*" name="prof_spec" class="form-control" minlength="9" maxlength="12">
                                             <validation [control]="frmUser.controls['identification']"></validation>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div class="form-group" [ngClass]="{'hidden': _hideMember}">
+                                <div class="form-group" *ngIf="checkCategoryLoadFile == 1">
                                     <div class="row">
-                                        <div class="col-xs-12 col-md-4">
-                                            <label class="primary-label custom-label">Số thẻ BHYT</label>
-                                        </div>
-
+                                        <div class="col-xs-12 col-md-4"><label class="primary-label custom-label">Số thẻ BHYT</label></div>
                                         <div class="col-xs-12 col-md-8">
-                                            <input type="text" formControlName="insurrance"
-                                                [patterns]="insurrancePatterns" mask="0*" name="prof_place" value=""
-                                                class="form-control" maxlength="15">
+                                            <input type="text" formControlName="insurrance" [patterns]="insurrancePatterns" mask="0*" name="prof_place" value="" class="form-control" maxlength="15">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group" *ngIf="checkCategoryLoadFile == 2">
+                                    <div class="row">
+                                        <div class="col-xs-12 col-md-4"><label class="primary-label custom-label">Số giấy phép hành nghề</label></div>
+                                        <div class="col-xs-12 col-md-8">
+                                            <input type="text" formControlName="certificationCode" [patterns]="insurrancePatterns" mask="0*" name="prof_place" value="" class="form-control" maxlength="15">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group" *ngIf="checkCategoryLoadFile == 3">
+                                    <div class="row">
+                                        <div class="col-xs-12 col-md-4"><label class="primary-label custom-label">Số giấy phép kinh doanh</label></div>
+                                        <div class="col-xs-12 col-md-8">
+                                            <input type="text" formControlName="lisenceCode" [patterns]="insurrancePatterns" mask="0*" name="prof_place" value="" class="form-control" maxlength="15">
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="form-group" [ngClass]="{'hidden': _hideDoctor}">
                                     <div class="row">
-                                        <div class="col-xs-12 col-md-4">
-                                            <label class="primary-label custom-label">Nơi công tác</label>
-                                        </div>
-
-                                        <div class="col-xs-12 col-md-8">
-                                            <input type="text" formControlName="workPlace" name="prof_place"
-                                                class="form-control" maxlength="255">
-                                        </div>
+                                        <div class="col-xs-12 col-md-4"><label class="primary-label custom-label">Nơi công tác</label></div>
+                                        <div class="col-xs-12 col-md-8"><input type="text" formControlName="workPlace" name="prof_place" class="form-control" maxlength="255"></div>
                                     </div>
                                 </div>
 
@@ -401,97 +399,127 @@
                                 <div class="form-group">
                                     <div class="row">
                                         <div class="col-xs-12 col-md-4">
-                                            <label class="primary-label">Gửi giấy tờ xác thực<span
-                                                    class="text-danger">*</span></label>
+                                            <label class="primary-label">
+                                                Gửi giấy tờ xác thực<span class="text-danger">*</span>
+                                            </label>
                                         </div>
 
-
-                                        <div class="col-xs-12 col-md-8">
-                                            <div class="image-uploader text-muted" data-name="first"
-                                                data-description="Chứng minh thư nhân dân / thẻ căn cước">
+                                        <!--Thành viên-->
+                                        <div class="col-xs-12 col-md-8" *ngIf="checkCategoryLoadFile == 1">
+                                            <div class="image-uploader text-muted" data-name="first" data-description="Chứng minh thư nhân dân / thẻ căn cước">
                                                 <div class="upload-content">
-                                                    <span class="upload-description"> Chứng minh thư nhân dân / thẻ căn
-                                                        cước </span>
+                                                    <span class="upload-description"> Chứng minh thư nhân dân / thẻ căn cước </span>
                                                     <div class="upload-button">
-                                                        <input #dataContainer type="file"
-                                                             (click)="dataContainer.value = null"
-                                                            accept="image/*, application/pdf"
-                                                            (change)="detectFiles($event, 'idCard')" multiple><span
-                                                            class="btn btn-sm btn-primary-inverted">
-                                                            <i class="fa fa-paperclip" aria-hidden="true"></i>Tải
-                                                            lên
-                                                        </span>
+                                                        <input #dataContainer type="file" (click)="dataContainer.value = null" accept="image/*, application/pdf" (change)="detectFiles($event, 'idCard')" multiple>
+                                                        <span class="btn btn-sm btn-primary-inverted"><i class="fa fa-paperclip" aria-hidden="true"></i>Tải lên</span>
                                                     </div>
                                                 </div>
                                                 <div class="upload-content">
                                                     <div class="row" *ngFor="let o of _idCardUrls; let i = index">
-                                                        <div class="col-md-2">
-                                                            <img src="{{o.url}}" class="rounded mb-3 selFile"
-                                                                title={{o.name}} width="50">
-                                                        </div>
-                                                        <div style="text-align: " class="col-md-7">
-                                                            <p title="{{o.name}}" class="img-name">{{o.name}}</p>
-                                                        </div>
+                                                        <div class="col-md-2"><img src="{{o.url}}" class="rounded mb-3 selFile" title={{o.name}} width="50"></div>
+                                                        <div style="text-align: " class="col-md-7"><p title="{{o.name}}" class="img-name">{{o.name}}</p></div>
                                                         <div style="padding: 15px" class="col-md-2">
-                                                            <span class="btn btn-sm btn-default btn-delete"
-                                                                (click)="removeFile(i, 1)">
-                                                                <i aria-hidden="true"></i>Xóa file
-                                                            </span>
+                                                            <span class="btn btn-sm btn-default btn-delete" (click)="removeFile(i, 1)"><i aria-hidden="true"></i>Xóa file</span>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <!-- <div class="text-danger margin-bottom-thin my-mat-hint">
-                {{_idCardError}}<span>&nbsp;</span>
-            </div> -->
-                                                <div class="upload-target">
-                                                    <div class="row"></div>
-                                                </div>
+                                                <div class="upload-target"><div class="row"></div></div>
                                             </div>
-                                            <div class="image-uploader text-muted" data-name="second"
-                                                data-description="Giấy phép hành nghề hoặc bằng tốt nghiệp">
+                                            <div class="image-uploader text-muted" data-name="second" data-description="Số thẻ bảo hiểm y tế">
                                                 <div class="upload-content">
-                                                    <span class="upload-description">
-                                                        Giấy phép
-                                                        hành nghề hoặc bằng tốt nghiệp
-                                                    </span>
+                                                    <span class="upload-description">Số thẻ bảo hiểm y tế</span>
                                                     <div class="upload-button">
-                                                        <input type="file" accept="image/*, application/pdf" multiple
-                                                            (change)="detectFiles($event, 'certificate')"><span
-                                                            class="btn btn-sm btn-primary-inverted">
-                                                            <i class="fa fa-paperclip" aria-hidden="true"></i>Tải
-                                                            lên
-                                                        </span>
+                                                        <input type="file" accept="image/*, application/pdf" multiple (change)="detectFiles($event, 'certificate')">
+                                                        <span class="btn btn-sm btn-primary-inverted"><i class="fa fa-paperclip" aria-hidden="true"></i>Tải lên</span>
                                                     </div>
                                                 </div>
 
                                                 <div class="upload-content">
                                                     <div class="row" *ngFor="let o of _certificateUrls; let i = index">
-                                                        <div class="col-md-2">
-                                                            <img src="{{o.url}}" class="rounded mb-3 selFile"
-                                                                title={{o.name}} width="50">
-                                                        </div>
-                                                        <div style="text-align: " class="col-md-7">
-                                                            <p title="{{o.name}}" class="img-name">{{o.name}}</p>
-                                                        </div>
+                                                        <div class="col-md-2"><img src="{{o.url}}" class="rounded mb-3 selFile" title={{o.name}} width="50"></div>
+                                                        <div style="text-align: " class="col-md-7"><p title="{{o.name}}" class="img-name">{{o.name}}</p></div>
                                                         <div style="padding: 15px" class="col-md-2">
-                                                            <span class="btn btn-sm btn-default btn-delete"
-                                                                (click)="removeFile(i, 2)">
-                                                                <i aria-hidden="true"></i>Xóa file
-                                                            </span>
+                                                            <span class="btn btn-sm btn-default btn-delete" (click)="removeFile(i, 2)"><i aria-hidden="true"></i>Xóa file</span>
                                                         </div>
                                                     </div>
                                                 </div>
 
                                                 <p style="font-size: 12px;font-style:italic">(Chỉ cho phép  tải lên file jpg, png, jpeg, pdf và có dung lượng tối đa mỗi file = 5MB) </p>
-
-                                                <!-- <div class="text-danger margin-bottom-thin my-mat-hint">
-        {{_certificateError}}<span>&nbsp;</span>
-    </div> -->
-                                                <div class="upload-target">
-                                                    <div class="row"></div>
-                                                </div>
+                                                <div class="upload-target"><div class="row"></div></div>
                                             </div>
                                         </div>
+
+                                        <!--Bác sĩ/ Chuyên gia/ Điều dưỡng...-->
+                                        <div class="col-xs-12 col-md-8" *ngIf="checkCategoryLoadFile == 2">
+                                            <div class="image-uploader text-muted" data-name="first" data-description="Chứng minh thư nhân dân / thẻ căn cước">
+                                                <div class="upload-content">
+                                                    <span class="upload-description"> Chứng minh thư nhân dân / thẻ căn cước </span>
+                                                    <div class="upload-button">
+                                                        <input #dataContainer type="file" (click)="dataContainer.value = null" accept="image/*, application/pdf" (change)="detectFiles($event, 'idCard')" multiple>
+                                                        <span class="btn btn-sm btn-primary-inverted"><i class="fa fa-paperclip" aria-hidden="true"></i>Tải lên</span>
+                                                    </div>
+                                                </div>
+                                                <div class="upload-content">
+                                                    <div class="row" *ngFor="let o of _idCardUrls; let i = index">
+                                                        <div class="col-md-2"><img src="{{o.url}}" class="rounded mb-3 selFile" title={{o.name}} width="50"></div>
+                                                        <div style="text-align: " class="col-md-7"><p title="{{o.name}}" class="img-name">{{o.name}}</p></div>
+                                                        <div style="padding: 15px" class="col-md-2">
+                                                            <span class="btn btn-sm btn-default btn-delete" (click)="removeFile(i, 1)"><i aria-hidden="true"></i>Xóa file</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="upload-target"><div class="row"></div></div>
+                                            </div>
+                                            <div class="image-uploader text-muted" data-name="second" data-description="Số giấy phép hành nghề">
+                                                <div class="upload-content">
+                                                    <span class="upload-description">Số giấy phép hành nghề</span>
+                                                    <div class="upload-button">
+                                                        <input type="file" accept="image/*, application/pdf" multiple (change)="detectFiles($event, 'certificate')">
+                                                        <span class="btn btn-sm btn-primary-inverted"><i class="fa fa-paperclip" aria-hidden="true"></i>Tải lên</span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="upload-content">
+                                                    <div class="row" *ngFor="let o of _certificateUrls; let i = index">
+                                                        <div class="col-md-2"><img src="{{o.url}}" class="rounded mb-3 selFile" title={{o.name}} width="50"></div>
+                                                        <div style="text-align: " class="col-md-7"><p title="{{o.name}}" class="img-name">{{o.name}}</p></div>
+                                                        <div style="padding: 15px" class="col-md-2">
+                                                            <span class="btn btn-sm btn-default btn-delete" (click)="removeFile(i, 2)"><i aria-hidden="true"></i>Xóa file</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <p style="font-size: 12px;font-style:italic">(Chỉ cho phép  tải lên file jpg, png, jpeg, pdf và có dung lượng tối đa mỗi file = 5MB) </p>
+                                                <div class="upload-target"><div class="row"></div></div>
+                                            </div>
+                                        </div>
+
+                                        <!--Cơ sở Y tế / Doanh nghiệp-->
+                                        <div class="col-xs-12 col-md-8" *ngIf="checkCategoryLoadFile == 3">
+                                            <div class="image-uploader text-muted" data-name="second" data-description="Số giấy phép kinh doanh">
+                                                <div class="upload-content">
+                                                    <span class="upload-description">Số giấy phép kinh doanh</span>
+                                                    <div class="upload-button">
+                                                        <input type="file" accept="image/*, application/pdf" multiple (change)="detectFiles($event, 'certificate')">
+                                                        <span class="btn btn-sm btn-primary-inverted"><i class="fa fa-paperclip" aria-hidden="true"></i>Tải lên</span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="upload-content">
+                                                    <div class="row" *ngFor="let o of _certificateUrls; let i = index">
+                                                        <div class="col-md-2"><img src="{{o.url}}" class="rounded mb-3 selFile" title={{o.name}} width="50"></div>
+                                                        <div style="text-align: " class="col-md-7"><p title="{{o.name}}" class="img-name">{{o.name}}</p></div>
+                                                        <div style="padding: 15px" class="col-md-2">
+                                                            <span class="btn btn-sm btn-default btn-delete" (click)="removeFile(i, 2)"><i aria-hidden="true"></i>Xóa file</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <p style="font-size: 12px;font-style:italic">(Chỉ cho phép  tải lên file jpg, png, jpeg, pdf và có dung lượng tối đa mỗi file = 5MB) </p>
+                                                <div class="upload-target"><div class="row"></div></div>
+                                            </div>
+                                        </div>
+
                                     </div>
                                 </div>
                             </div>

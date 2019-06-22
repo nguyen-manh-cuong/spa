@@ -239,27 +239,46 @@ namespace SHCServer.Controllers
         [Route("api/Register")]
         public object Register([FromForm] UserInputViewModel obj)
         {
-            var User = _contextmdmdb.Query<UserMDM>();
+            var getUser = _contextmdmdb.Query<UserMDM>();
 
-            if (User.Where(u => u.UserName == obj.UserName).Count() > 0)
+            if (getUser.Where(u => u.UserName == obj.UserName.Trim()).Count() > 0)
             {
-                return StatusCode(406, _excep.Throw("Đăng ký không thành công.", "Tài khoản đã tồn tại!"));
+                return StatusCode(406, _excep.Throw(406, "Thông báo", "Tài khoản đã tồn tại!"));
             }
-            if (User.Where(u => u.Email == obj.Email).Count() > 0)
+
+            if (getUser.Where(u => u.PhoneNumber == obj.PhoneNumber.Trim() && !string.IsNullOrEmpty(u.PhoneNumber)).Count() > 0)
             {
-                return StatusCode(406, _excep.Throw("Đăng ký không thành công.", "Email đã tồn tại!"));
+                return StatusCode(406, _excep.Throw(406, "Thông báo", "Số điện thoại đã tồn tại!"));
             }
-            if (User.Where(u => u.PhoneNumber == obj.PhoneNumber).Count() > 0)
+
+            if (getUser.Where(u => u.Email == obj.Email.Trim() && !string.IsNullOrEmpty(u.Email)).Count() > 0)
             {
-                return StatusCode(406, _excep.Throw("Đăng ký không thành công.", "Số điện thoại đã tồn tại!"));
+                return StatusCode(406, _excep.Throw(406, "Thông báo", "Email đã tồn tại!"));
             }
-            //if (obj.Identification != "null" && !string.IsNullOrEmpty(obj.Identification) && User.Where(u => u.Identification == obj.Identification).Count() > 0)
-            //{
-            //    return StatusCode(406, _excep.Throw("Đăng ký không thành công.", "Số CMND đã tồn tại!"));
-            //}
+
+            if (getUser.Where(u => u.Identification == obj.Identification && !string.IsNullOrEmpty(u.Identification)).Count() > 0)
+            {
+                return StatusCode(406, _excep.Throw(406, "Thông báo", "Số CMND đã tồn tại!"));
+            }
+
+            if (getUser.Where(u => u.CertificationCode == obj.CertificationCode && !string.IsNullOrEmpty(u.CertificationCode)).Count() > 0)
+            {
+                return StatusCode(406, _excep.Throw(406, "Thông báo", "Số GPHN đã tồn tại!"));
+            }
+
+            if (getUser.Where(u => u.LisenceCode == obj.LisenceCode && !string.IsNullOrEmpty(u.LisenceCode)).Count() > 0)
+            {
+                return StatusCode(406, _excep.Throw(406, "Thông báo", "Số GPKD đã tồn tại!"));
+            }
+
+            if (getUser.Where(u => u.Insurrance == obj.Insurrance && !string.IsNullOrEmpty(u.Insurrance)).Count() > 0)
+            {
+                return StatusCode(406, _excep.Throw(406, "Thông báo", "Số thẻ BHYT  đã tồn tại!"));
+            }
 
             try
             {
+                // Insert sys_users in mdm
                 _contextmdmdb.Session.BeginTransaction();
                 _contextmdmdb.Insert(() => new UserMDM
                 {
@@ -279,26 +298,30 @@ namespace SHCServer.Controllers
                     DistrictCode = obj.DistrictCode,
                     WardCode = obj.WardCode,
 
-                    //Register = obj.Register,
-                    //Identification = obj.Identification,
-                    //Insurrance = obj.Insurrance,
-                    //WorkPlace = obj.WorkPlace,
-                    //HealthFacilitiesName = obj.HealthFacilitiesName,
-                    //Specialist = obj.Specialist
+                    CreateUserId = obj.CreateUserId,
+                    CreateDate = DateTime.Now,
+
+                    CertificationCode = obj.CertificationCode,
+                    Insurrance = obj.Insurrance,
+                    Identification = obj.Identification,
+                    LisenceCode = obj.LisenceCode
                 });
                 _contextmdmdb.Session.CommitTransaction();
 
                 UserMDM user = _contextmdmdb.Query<UserMDM>().Where(u => u.UserName == obj.UserName).FirstOrDefault();
                 int userId = user != null ? user.UserId : 0;
 
+                // Insert sys_users in smarthealthcare
                 _context.Session.BeginTransaction();
-
                 _context.Insert(() => new User
                 {
+                    Status = 1,
                     UserId = userId,
                     ExpriredDate = DateTime.Now.AddMonths(2)
                 });
+                _context.Session.CommitTransaction();
 
+                // Insert sys_users_services in smarthealthcare
                 if (user != null && obj.AccountType != 1)
                 {
                     _context.Insert(() => new UsersServices
@@ -313,12 +336,14 @@ namespace SHCServer.Controllers
                     });
                 }
 
-                var _files = Request.Form.Files;
-                if (_files.Count > 0)
+                // Insert sys_users_attachs in smarthealthcare
+                _context.Session.BeginTransaction();
+                var files = Request.Form.Files;
+                if (files.Count > 0)
                 {
-                    foreach (var file in _files)
+                    foreach (var file in files)
                     {
-                        var uniqueFileName = GetUniqueFileName(convertToUnSign(file.FileName));
+                        var uniqueFileName = GetUniqueFileName(ConvertToUnSign(file.FileName));
                         var uploads = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
                         var filePath = Path.Combine(uploads, uniqueFileName);
                         if (file.Name == "cmnd")
@@ -327,24 +352,52 @@ namespace SHCServer.Controllers
                             {
                                 UserId = user.UserId,
                                 Path = "/uploads/" + uniqueFileName,
-                                Type = "1"
+                                Type = "1",
+                                CreateUserId = obj.CreateUserId,
+                                CreateDate = DateTime.Now
                             });
                         }
                         else
                         {
-                            _context.Insert(() => new UsersAttach
+                            if (obj.AccountType == 2)
                             {
-                                UserId = user.UserId,
-                                Path = "/uploads/" + uniqueFileName,
-                                Type = "2"
-                            });
+                                _context.Insert(() => new UsersAttach
+                                {
+                                    UserId = user.UserId,
+                                    Path = "/uploads/" + uniqueFileName,
+                                    Type = "3",
+                                    CreateUserId = obj.CreateUserId,
+                                    CreateDate = DateTime.Now
+                                });
+                            }
+                            else if (obj.AccountType == 3)
+                            {
+                                _context.Insert(() => new UsersAttach
+                                {
+                                    UserId = user.UserId,
+                                    Path = "/uploads/" + uniqueFileName,
+                                    Type = "4",
+                                    CreateUserId = obj.CreateUserId,
+                                    CreateDate = DateTime.Now
+                                });
+                            }
+                            else
+                            {
+                                _context.Insert(() => new UsersAttach
+                                {
+                                    UserId = user.UserId,
+                                    Path = "/uploads/" + uniqueFileName,
+                                    Type = "2",
+                                    CreateUserId = obj.CreateUserId,
+                                    CreateDate = DateTime.Now
+                                });
+                            }
                         }
                         file.CopyTo(new FileStream(filePath, FileMode.Create));
                     }
                 }
-
                 _context.Session.CommitTransaction();
-                
+
                 return Json(new ActionResultDto());
             }
             catch (Exception e)
@@ -418,13 +471,6 @@ namespace SHCServer.Controllers
             }
         }
 
-        public string convertToUnSign(string s)
-        {
-            Regex regex = new Regex("\\p{IsCombiningDiacriticalMarks}+");
-            string temp = s.Normalize(NormalizationForm.FormD);
-            return regex.Replace(temp, String.Empty).Replace('\u0111', 'd').Replace('\u0110', 'D').Replace(" ", "_");
-        }
-
         private string GetUniqueFileName(string fileName)
         {
             fileName = Path.GetFileName(fileName);
@@ -459,6 +505,13 @@ namespace SHCServer.Controllers
                 ExpireInSeconds = Convert.ToDouble(settings.Value.Expire) * 60 * 24,
                 UserId = user.Id
             };
+        }
+
+        public string ConvertToUnSign(string s)
+        {
+            Regex regex = new Regex("\\p{IsCombiningDiacriticalMarks}+");
+            string temp = s.Normalize(NormalizationForm.FormD);
+            return regex.Replace(temp, String.Empty).Replace('\u0111', 'd').Replace('\u0110', 'D').Replace(" ", "_");
         }
     }
 }

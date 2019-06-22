@@ -2570,6 +2570,8 @@ export class CreateUserDto implements ICreateUserDto {
     workPlace?: string;
     healthFacilitiesName?: string;
     specialist?: string;
+    certificationCode?: string;
+    lisenceCode?: string;
 
     constructor(data?: ICreateUserDto) {
         if (data) {

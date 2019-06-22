@@ -54,6 +54,9 @@ export class RegisterComponent implements OnInit {
     @ViewChild("fullName") fullName: ElementRef;
     @ViewChild("imageData") imageData: ElementRef;
 
+    checkCategoryLoadFile: number = 1;
+    checkInfo: boolean = true;
+
     constructor(private _sanitizer: DomSanitizer, private _dataService: DataService, private _formBuilder: FormBuilder, private _router: Router) { }
 
     ngOnInit() {
@@ -80,12 +83,14 @@ export class RegisterComponent implements OnInit {
             register: [this._user.register],
             identification: [this._user.identification, this.validateRule.identification],
             insurrance: [this._user.insurrance],
+            certificationCode: [this._user.certificationCode],
+            lisenceCode: [this._user.lisenceCode],
             workPlace: [this._user.workPlace],
             healthFacilitiesName: [this._user.healthFacilitiesName],
             specialist: [this._user.specialist],
             codeCapcha: [''],
-            cmnd: [null],
-            gp: [null],
+            cmnd: [],
+            gp: [],
             isUsingdoctor: [this._obj.isUsingdoctor],
             isUsingCall: [this._obj.isUsingCall],
             isUsingUpload: [this._obj.isUsingUpload],
@@ -118,8 +123,14 @@ export class RegisterComponent implements OnInit {
                 this._hideMember = false;
                 this._hideMF = true;
                 this._hideSpecialist = true;
-                this.frmUser.controls["register"].setValue(null);
+                this.frmUser.controls["register"].setValue('');
                 this.cleanControl(['workPlace', 'healthFacilitiesName', 'specialist']);
+                this.frmUser.controls['certificationCode'].setValue('');
+                this.frmUser.controls['lisenceCode'].setValue('');
+                this.frmUser.controls['certificationCode'].setErrors(null);
+                this.frmUser.controls['lisenceCode'].setErrors(null);
+                this.checkCategoryLoadFile = 1;
+                this.checkInfo = true;
                 break;
             case 2:
                 this._hideDoctor = false;
@@ -127,7 +138,13 @@ export class RegisterComponent implements OnInit {
                 this._hideMF = true;
                 this._hideSpecialist = false;
                 this.frmUser.controls["register"].setValue(1);
-                this.cleanControl(['identification', 'insurrance', 'healthFacilitiesName']);
+                this.cleanControl([ 'healthFacilitiesName']);
+                this.frmUser.controls['insurrance'].setValue('');
+                this.frmUser.controls['lisenceCode'].setValue('');
+                this.frmUser.controls['insurrance'].setErrors(null);
+                this.frmUser.controls['lisenceCode'].setErrors(null);
+                this.checkCategoryLoadFile = 2;
+                this.checkInfo = true;
                 break;
             case 3:
                 this._hideDoctor = true;
@@ -135,7 +152,15 @@ export class RegisterComponent implements OnInit {
                 this._hideMF = false;
                 this._hideSpecialist = false;
                 this.frmUser.controls["register"].setValue(3);
-                this.cleanControl(['identification', 'insurrance', 'workPlace']);
+                this.cleanControl(['workPlace']);
+                this.frmUser.controls['insurrance'].setValue('');
+                this.frmUser.controls['identification'].setValue('');
+                this.frmUser.controls['certificationCode'].setValue('');
+                this.frmUser.controls['insurrance'].setErrors(null);
+                this.frmUser.controls['identification'].setErrors(null);
+                this.frmUser.controls['certificationCode'].setErrors(null);
+                this.checkCategoryLoadFile = 3;
+                this.checkInfo = false;
                 break;
         }
     }
@@ -176,10 +201,10 @@ export class RegisterComponent implements OnInit {
                 }
             }
 
-            return;
+            return null;
         }
        
-        if (this.frmUser.controls['accountType'].value == 1 || this.frmUser.controls['accountType'].value == 2) {
+        if (String(this.frmUser.controls['accountType'].value) === '1' || String(this.frmUser.controls['accountType'].value) === '2') {
             if (this.frmUser.controls['cmnd'].value == null || this.frmUser.controls['gp'].value == null) {
                 return swal({
                     title: 'Thông báo',
@@ -201,7 +226,14 @@ export class RegisterComponent implements OnInit {
             }
         }
 
-        if (this.frmUser.controls['accountType'].value != 1) {
+        if (String(this.frmUser.controls['accountType'].value) === '3') {
+            if (this.frmUser.controls['gp'].value == null) {
+                notifyToastr('Thông báo', 'Bạn phải cung cấp giấy tờ xác thực', 'warning');
+                return null;
+            }
+        }
+
+        if (String(this.frmUser.controls['accountType'].value) !== '1') {
             if (!this.frmUser.controls['isUsingdoctor'].value &&
                 !this.frmUser.controls['isUsingCall'].value &&
                 !this.frmUser.controls['isUsingUpload'].value &&
@@ -226,6 +258,21 @@ export class RegisterComponent implements OnInit {
             return;
         }
 
+        console.log(2001, this.frmUser);
+        if (1 === this.frmUser.controls['accountType'].value) {
+            this.frmUser.controls['certificationCode'].setValue('');
+            this.frmUser.controls['lisenceCode'].setValue('');
+        }
+        else if (2 === this.frmUser.controls['accountType'].value) {
+            this.frmUser.controls['insurrance'].setValue('');
+            this.frmUser.controls['lisenceCode'].setValue('');
+        }
+        else {
+            this.frmUser.controls['identification'].setValue('');
+            this.frmUser.controls['certificationCode'].setValue('');
+            this.frmUser.controls['insurrance'].setValue('');
+        }
+       
         this._dataService.createUpload('Register', this.frmUser.value).subscribe(
             () => {
                 // swal({
@@ -294,7 +341,7 @@ export class RegisterComponent implements OnInit {
         //}
     }
 
-    replace_alias(str) {
+    replaceAlias(str) {
         str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
         str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
         str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i");
@@ -313,12 +360,12 @@ export class RegisterComponent implements OnInit {
         return str;
     }
 
-    replace_alias_number(str) {
+    replaceAliasNumber(str) {
         str = str.replace(/a|e|i|o|u|y|d|A|E|I|O|U|Y|D/g, "");
         return str;
     }
 
-    replace_space(str) {
+    replaceSpace(str) {
         str = str.replace(/ /g, "_");
         return str;
     }
@@ -351,42 +398,42 @@ export class RegisterComponent implements OnInit {
                     });
                 }
                 
-                if (file.type == 'image/jpeg' || file.type == 'image/png') {
-                    if (type == 'idCard') {
+                if (String(file.type) === 'image/jpeg' || String(file.type) === 'image/png') {
+                    if (String(type) === 'idCard') {
                         reader.onload = (e: any) => {
-                            this._idCardUrls.push({ url: "/assets/images/212328-200.png", file: file, name: this.replace_alias(file.name), displayName:this.ruleFileName(file.name) });
+                            this._idCardUrls.push({ url: "/assets/images/212328-200.png", file: file, name: this.replaceAlias(file.name), displayName:this.ruleFileName(file.name) });
                             console.log(this._idCardUrls);
                         }
                         this.arrayIdCard.push(file);
                     }
 
-                    if (type == 'certificate') {
+                    if (String(type) === 'certificate') {
                         reader.onload = (e: any) => {
-                            this._certificateUrls.push({ url: "/assets/images/212328-200.png", file: file, name: this.replace_alias(file.name),displayName:this.ruleFileName(file.name) });
+                            this._certificateUrls.push({ url: "/assets/images/212328-200.png", file: file, name: this.replaceAlias(file.name),displayName:this.ruleFileName(file.name) });
                         }
                         this.arrayCertificate.push(file);
                     }
 
                 }
-                if (file.type == 'application/pdf') {
-                    if (type == 'idCard') {
+                if (String(file.type) === 'application/pdf') {
+                    if (String(type) === 'idCard') {
                         reader.onload = (e: any) => {
-                            this._idCardUrls.push({ url: "/assets/images/24-512.png", file: file, name: this.replace_alias(file.name),displayName:this.ruleFileName(file.name) });
+                            this._idCardUrls.push({ url: "/assets/images/24-512.png", file: file, name: this.replaceAlias(file.name),displayName:this.ruleFileName(file.name) });
                         }
                         this.arrayIdCard.push(file);
                     }
 
-                    if (type == 'certificate') {
+                    if (String(type) === 'certificate') {
                         reader.onload = (e: any) => {
-                            this._certificateUrls.push({ url: "/assets/images/24-512.png", file: file, name: this.replace_alias(file.name),displayName:this.ruleFileName(file.name) });
+                            this._certificateUrls.push({ url: "/assets/images/24-512.png", file: file, name: this.replaceAlias(file.name), displayName:this.ruleFileName(file.name) });
                         }
                         this.arrayCertificate.push(file);
                     }
                 } else {
-                    if (type == 'idCard') {
+                    if (String(type) === 'idCard') {
                         this._idCardError = "File tải lên không phải file ảnh và pdf";
                     }
-                    if (type == 'certificate') {
+                    if (String(type) === 'certificate') {
                         this._certificateError = "File tải lên không phải file ảnh và pdf";
                     }
                 }
@@ -423,8 +470,8 @@ export class RegisterComponent implements OnInit {
     cleanControl(listControl) {
         if (this.frmUser) {
             listControl.forEach(el => {
-                this.frmUser.controls[el].setValue(null);
-            })
+                this.frmUser.controls[el].setValue('');
+            });
         }
     }
 }
