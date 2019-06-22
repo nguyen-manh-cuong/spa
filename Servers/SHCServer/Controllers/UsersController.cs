@@ -227,21 +227,17 @@ namespace SHCServer.Controllers
         [Route("api/users-register")]
         public IActionResult Register([FromForm]UserInputViewModel obj)
         {
+            obj.UserName = obj.UserName.Trim().ToLower();
+            obj.Email = obj.Email.Trim().ToLower();
+            if (string.IsNullOrEmpty(obj.CertificationCode)) obj.CertificationCode = obj.CertificationCode.Trim().ToUpper();
+            if (string.IsNullOrEmpty(obj.Insurrance)) obj.Insurrance = obj.Insurrance.Trim().ToUpper();
+            if (string.IsNullOrEmpty(obj.LisenceCode)) obj.LisenceCode = obj.LisenceCode.Trim().ToUpper();
+
+
             var getUser = _contextmdmdb.Query<UserMDM>().Where(o => o.IsDelete == false);
-
-            var check = 0;
-            var checkValue = getUser.Where(o => (obj.Email != null && o.Email == obj.Email) || (obj.UserName != null && o.UserName == obj.UserName)).ToList();
-
-            for (var i = 0; i < checkValue.Count; i++)
-            {
-                if (string.Compare(checkValue[i].UserName, obj.UserName, false) == 0) //check User
-                    check = 1;
-                if (string.Compare(checkValue[i].Email, obj.Email, false) == 0) //check email
-                    check = 2;
-            }
-
+            
             //tài khoản
-            if (check == 1)
+            if (getUser.Where(u => u.UserName == obj.UserName.Trim() && !string.IsNullOrEmpty(u.UserName)).Any())
             {
                 return StatusCode(406, _excep.Throw(406,"Thông báo", "Tài khoản đã tồn tại!"));
             }
@@ -252,7 +248,7 @@ namespace SHCServer.Controllers
             }
 
             //email
-            if (check == 2)
+            if (getUser.Where(u => u.Email == obj.Email.Trim() && !string.IsNullOrEmpty(u.Email)).Any())
             {
                 return StatusCode(406, _excep.Throw(406, "Thông báo", "Email đã tồn tại!"));
             }
