@@ -93,10 +93,10 @@ namespace SHCServer.Controllers
 
                 if (data.ContainsKey("userPhoneEmail"))
                 {
-                    if (!string.IsNullOrEmpty(data["userPhoneEmail"]))
+                    if (!string.IsNullOrEmpty(data["userPhoneEmail"].Trim()))
                     {
                         clause.Add($"AND (u.PhoneNumber = @userPhoneEmail OR u.Email = @userPhoneEmail)");
-                        param.Add(DbParam.Create("@userPhoneEmail", data["userPhoneEmail"]));
+                        param.Add(DbParam.Create("@userPhoneEmail", data["userPhoneEmail"].Trim()));
                     }
                        
                 }

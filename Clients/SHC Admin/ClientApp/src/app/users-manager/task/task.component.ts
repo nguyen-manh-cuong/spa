@@ -761,8 +761,8 @@ export class TaskComponent extends AppComponentBase implements OnInit {
     }
 
     inputLisenceCode(event) {
-        // event.target.value = this.cleanSpace(this.cleanUnicode(event.target.value));
-        // this.frmUser.controls['lisenceCode'].setValue(this.cleanSpace(this.cleanUnicode(event.target.value)));
+        event.target.value = this.cleanSpace(this.cleanUnicode(event.target.value));
+        this.frmUser.controls['lisenceCode'].setValue(this.cleanSpace(this.cleanUnicode(event.target.value)));
     }
 
     ngAfterViewInit(): void {
