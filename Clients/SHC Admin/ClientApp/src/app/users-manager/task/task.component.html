@@ -31,7 +31,7 @@
                             <div class="col-md-4">
                                 <mat-form-field appearance="outline" class="w-100" [ngClass]="{'mat-form-field-invalid': highLightEmail }">
                                     <mat-label>Email</mat-label>
-                                    <input formControlName="email" #email (keyup)="ruleEmail($event)" matInput maxlength="320" required>
+                                    <input formControlName="email" #email (input)="ruleEmail($event)" matInput maxlength="320" required>
                                     <validation matSuffix [control]="frmUser.controls['email']"></validation>
                                 </mat-form-field>
                             </div>
