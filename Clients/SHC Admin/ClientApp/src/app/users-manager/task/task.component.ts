@@ -105,6 +105,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
     highLightCertification: boolean = false;
     highLightInsurrance: boolean = false;
     highLightLisence: boolean = false;
+    highLightUsername: boolean = false;
 
     constructor(injector: Injector, private _formBuilder: FormBuilder, private _dataService: DataService, public dialogRef: MatDialogRef<TaskComponent>, @Inject(MAT_DIALOG_DATA) public user: IUser) {
         super(injector);
@@ -114,6 +115,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
         if (this.user) {
             this.userDto = _.clone(this.user);
             this._isNew = false;
+            
 
             if (_.has(this.user, 'provinceCode') && !_.isNull(this.user.provinceCode)) {
                 this._dataService.get('districts', JSON.stringify({ ProvinceCode: this.user.provinceCode }), '', 0, 100).subscribe(resp => this._districts = resp.items);
@@ -215,8 +217,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
     }
 
     // BHYT - Insurrance, CMND - Identification, GPHN - CertificationCode, GPKD - LicenseCode
-    checkShowPathFile(value, frm: any): void {
-
+    checkShowPathFile(value): void {
         
         this.frmUser.setErrors({ invalid: true });
         this.highLightInsurrance = false;
@@ -225,6 +226,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
         this.highLightCertification = false;
         this.highLightEmail = false;
         this.highLightPhone = false;
+        this.highLightUsername = false;
         
         // this.frmUser.controls['certificationCode'].setValue(null);
         // this.frmUser.controls['lisenceCode'].setValue(null);
@@ -295,15 +297,17 @@ export class TaskComponent extends AppComponentBase implements OnInit {
         this.frmUser.controls['healthId'].setValue(this._healths);
         this.frmUser.controls['groupUser'].setValue(this._selection.selected);
         if (1 === this.frmUser.controls['accountType'].value) {
-            this.frmUser.controls['certificationCode'].setValue('');
-            this.frmUser.controls['lisenceCode'].setValue('');
+            // this.frmUser.controls['certificationCode'].setValue('');
+            // this.frmUser.controls['lisenceCode'].setValue('');
+            this.frmUser.controls['certificationCode'].setErrors(null);
+            this.frmUser.controls['lisenceCode'].setErrors(null);
 
             if (this._isNew) {
                 if (this._idCardUrls.length === 0) {
                     abp.notify.error('Phải tải lên  hình ảnh xác thực – Chứng minh nhân dân / Thẻ căn cước / Hộ chiếu',
                         '',
                         { hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true });
-                    this.frmUser.setErrors(null);
+                    //this.frmUser.setErrors(null);
                     return;
                 }
 
@@ -311,7 +315,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
                     abp.notify.error('Phải tải lên  hình ảnh xác thực - Thẻ BHYT',
                         '',
                         { hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true, });
-                    this.frmUser.setErrors(null);
+                   // this.frmUser.setErrors(null);
                     return;
                 }
             } else {
@@ -319,7 +323,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
                     abp.notify.error('Phải tải lên  hình ảnh xác thực – Chứng minh nhân dân / Thẻ căn cước / Hộ chiếu',
                         '',
                         { hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true });
-                    this.frmUser.setErrors(null);
+                    //this.frmUser.setErrors(null);
                     return;
                 }
 
@@ -327,21 +331,23 @@ export class TaskComponent extends AppComponentBase implements OnInit {
                     abp.notify.error('Phải tải lên  hình ảnh xác thực - Thẻ BHYT',
                         '',
                         { hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true, });
-                    this.frmUser.setErrors(null);
+                    //this.frmUser.setErrors(null);
                     return;
                 }
             }
         }
         else if (2 === this.frmUser.controls['accountType'].value) {
-            this.frmUser.controls['insurrance'].setValue('');
-            this.frmUser.controls['lisenceCode'].setValue('');
+            // this.frmUser.controls['insurrance'].setValue('');
+            // this.frmUser.controls['lisenceCode'].setValue('');
+            this.frmUser.controls['insurrance'].setErrors(null);
+            this.frmUser.controls['lisenceCode'].setErrors(null);
 
             if (this._isNew) {
                 if (this._idCardUrls.length === 0) {
                     abp.notify.error('Phải tải lên  hình ảnh xác thực – Chứng minh nhân dân / Thẻ căn cước / Hộ chiếu',
                         '',
                         { hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true });
-                    this.frmUser.setErrors({ invalid: false });
+                    //this.frmUser.setErrors({ invalid: false });
                     return;
                 }
 
@@ -349,28 +355,31 @@ export class TaskComponent extends AppComponentBase implements OnInit {
                     abp.notify.error('Phải tải lên  hình ảnh xác thực - Giấy phép hành nghề',
                         '',
                         { hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true, return: false });
-                    this.frmUser.setErrors({ invalid: false });
+                    //this.frmUser.setErrors({ invalid: false });
                     return;
                 }
             } else {
                 if (this._idCardUrls.length === 0 && this._idCardUrlsUpdate.length === 0) {
                     abp.notify.error('Phải tải lên  hình ảnh xác thực – Chứng minh nhân dân / Thẻ căn cước / Hộ chiếu', '', { hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true });
-                    this.frmUser.setErrors({ invalid: false });
+                    //this.frmUser.setErrors({ invalid: false });
                     return;
                 }
 
 
                 if (this._certificateUrls.length === 0 && this._certificateUrlsUpdate.length === 0) {
                     abp.notify.error('Phải tải lên  hình ảnh xác thực - Giấy phép hành nghề', '', { hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true, return: false });
-                    this.frmUser.setErrors({ invalid: false });
+                    //this.frmUser.setErrors({ invalid: false });
                     return;
                 }
             }
         }
         else {
-            this.frmUser.controls['identification'].setValue('');
-            this.frmUser.controls['certificationCode'].setValue('');
-            this.frmUser.controls['insurrance'].setValue('');
+            // this.frmUser.controls['identification'].setValue('');
+            // this.frmUser.controls['certificationCode'].setValue('');
+            // this.frmUser.controls['insurrance'].setValue('');           
+            this.frmUser.controls['insurrance'].setErrors(null);
+            this.frmUser.controls['identification'].setErrors(null);
+            this.frmUser.controls['certificationCode'].setErrors(null);
 
             
             if (this._isNew) {
@@ -378,13 +387,13 @@ export class TaskComponent extends AppComponentBase implements OnInit {
                     abp.notify.error('Phải tải lên  hình ảnh xác thực - Giấy phép kinh doanh',
                         '',
                         { hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true });
-                    this.frmUser.setErrors({ invalid: false });
+                    //this.frmUser.setErrors({ invalid: false });
                     return;
                 }
             } else {
                 if (this._certificateUrls.length === 0 && this._certificateUrlsUpdate.length === 0) {
                     abp.notify.error('Phải tải lên  hình ảnh xác thực - Giấy phép kinh doanh', '', { hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true });
-                    this.frmUser.setErrors({ invalid: false });
+                    //this.frmUser.setErrors({ invalid: false });
                     return;
                 }
             }
@@ -433,7 +442,9 @@ export class TaskComponent extends AppComponentBase implements OnInit {
         } else {
             this.highLightEmail = false;
         }
-
+        if (RootModule.message === 'Tài khoản đã tồn tại!') {
+            this.highLightUsername = true;
+        }
         if (RootModule.message === 'Số CMND đã tồn tại!') {
             this.highLightIdentification = true;
         } else {
@@ -593,6 +604,12 @@ export class TaskComponent extends AppComponentBase implements OnInit {
         if (!pattern.test(event.target.value)) {
             control.setValue(control.value.replace(/[^a-zA-Z0-9\.\-\_\@]/g, ""));
         }
+
+        var domain=control.value.substring(control.value.indexOf('@')+1,control.value.length);
+        var local=control.value.substring(0,control.value.indexOf('@')+1);
+        domain = domain.replace(/[-\_\@]/g,"");
+
+        control.setValue(local + domain);
     }
 
     replace_alias(str) {

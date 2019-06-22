@@ -35,7 +35,7 @@ namespace SHCServer.ViewModels
                        {
                             JoinType.InnerJoin, d.SmsPackageId == p.Id
                        })
-                        .Where((d, p) => d.Id == PackagesDistribute.Id)
+                        .Where((d, p) => d.Id == PackagesDistribute.Id && d.IsDelete==false && d.IsActive==true && p.IsDelete==false && p.IsActive==true)
                         .Select((d, p) => p).FirstOrDefault();
                         
 
@@ -43,21 +43,21 @@ namespace SHCServer.ViewModels
                        {
                             JoinType.InnerJoin, d.HealthFacilitiesId == h.HealthFacilitiesId
                        })
-                        .Where((d, h) => d.Id == PackagesDistribute.Id)
+                        .Where((d, h) => d.Id == PackagesDistribute.Id && d.IsDelete==false && d.IsActive==true && h.IsDelete==false && h.IsActive==true)
                         .Select((d, h) => h).FirstOrDefault();
 
             SmsBrand = context.JoinQuery<SmsPackagesDistribute, SmsBrands>((d, b) => new object[]
                        {
                             JoinType.InnerJoin, d.SmsBrandsId == b.SmsBrandId
                        })
-                        .Where((d, b) => d.Id == PackagesDistribute.Id)
+                        .Where((d, b) => d.Id == PackagesDistribute.Id && d.IsDelete==false)
                         .Select((d, b) => b).FirstOrDefault();
 
             SmsPackageUsed = context.JoinQuery<SmsPackagesDistribute, SmsPackageUsed>((d, u) => new object[]
                        {
                             JoinType.InnerJoin, d.Id==u.SmsPackageDistributeId
                        })
-                        .Select((d, u) => u).FirstOrDefault();
+                        .Where((d, u) => d.IsDelete == false && d.IsActive==true && u.IsDelete==false).Select((d, u) => u).FirstOrDefault();
 
             PackageName = Packages.Name;
             Quantity = Packages.Quantity;
