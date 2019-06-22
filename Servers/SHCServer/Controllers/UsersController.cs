@@ -229,9 +229,9 @@ namespace SHCServer.Controllers
         {
             obj.UserName = obj.UserName.Trim().ToLower();
             obj.Email = obj.Email.Trim().ToLower();
-            if (string.IsNullOrEmpty(obj.CertificationCode)) obj.CertificationCode = obj.CertificationCode.Trim().ToUpper();
-            if (string.IsNullOrEmpty(obj.Insurrance)) obj.Insurrance = obj.Insurrance.Trim().ToUpper();
-            if (string.IsNullOrEmpty(obj.LisenceCode)) obj.LisenceCode = obj.LisenceCode.Trim().ToUpper();
+            if (!string.IsNullOrEmpty(obj.CertificationCode)) obj.CertificationCode = obj.CertificationCode.Trim().ToUpper();
+            if (!string.IsNullOrEmpty(obj.Insurrance)) obj.Insurrance = obj.Insurrance.Trim().ToUpper();
+            if (!string.IsNullOrEmpty(obj.LisenceCode)) obj.LisenceCode = obj.LisenceCode.Trim().ToUpper();
 
 
             var getUser = _contextmdmdb.Query<UserMDM>().Where(o => o.IsDelete == false);
