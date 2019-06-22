@@ -105,6 +105,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
     highLightCertification: boolean = false;
     highLightInsurrance: boolean = false;
     highLightLisence: boolean = false;
+    highLightUsername: boolean = false;
 
     constructor(injector: Injector, private _formBuilder: FormBuilder, private _dataService: DataService, public dialogRef: MatDialogRef<TaskComponent>, @Inject(MAT_DIALOG_DATA) public user: IUser) {
         super(injector);
@@ -114,6 +115,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
         if (this.user) {
             this.userDto = _.clone(this.user);
             this._isNew = false;
+            
 
             if (_.has(this.user, 'provinceCode') && !_.isNull(this.user.provinceCode)) {
                 this._dataService.get('districts', JSON.stringify({ ProvinceCode: this.user.provinceCode }), '', 0, 100).subscribe(resp => this._districts = resp.items);
@@ -194,6 +196,8 @@ export class TaskComponent extends AppComponentBase implements OnInit {
         };
 
         this.frmUser = this._formBuilder.group(this.context);
+        console.log('Gia tri bie context', this.context);
+        console.log(this.frmUser);
         this._dataService.getAll('groups','',JSON.stringify({name:'asc'})).subscribe(resp => {
             this.groups = resp.items;
             if (this.user) {
@@ -225,6 +229,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
         this.highLightCertification = false;
         this.highLightEmail = false;
         this.highLightPhone = false;
+        this.highLightUsername = false;
 
         this.frmUser.controls['certificationCode'].setValue(null);
         this.frmUser.controls['lisenceCode'].setValue(null);
@@ -440,7 +445,9 @@ export class TaskComponent extends AppComponentBase implements OnInit {
         } else {
             this.highLightEmail = false;
         }
-
+        if (RootModule.message === 'Tài khoản đã tồn tại!') {
+            this.highLightUsername = true;
+        }
         if (RootModule.message === 'Số CMND đã tồn tại!') {
             this.highLightIdentification = true;
         } else {
