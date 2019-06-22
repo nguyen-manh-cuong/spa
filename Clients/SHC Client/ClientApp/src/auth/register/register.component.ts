@@ -81,8 +81,8 @@ export class RegisterComponent implements OnInit {
             accountType: [1],
             birthDay: [''],
             register: [this._user.register],
-            identification: [this._user.identification, this.validateRule.identification],
-            insurrance: [this._user.insurrance],
+            identification: [this._user.identification ? this._user.identification: '' , this.validateRule.identification],
+            insurrance: [this._user.insurrance ? this._user.insurrance: ''],
             certificationCode: [this._user.certificationCode],
             lisenceCode: [this._user.lisenceCode],
             workPlace: [this._user.workPlace],
@@ -184,7 +184,9 @@ export class RegisterComponent implements OnInit {
     }
 
     submit() {
-        this.frmUser.value.birthDay = new Date($('#birthY').val() + '-' + $('#birthM').val() + '-' + $('#birthDay').val());
+        let day = parseInt($('#birthDay').val().toString()) < 10 ? ('0' + $('#birthDay').val()) : $('#birthDay').val();
+        let month = parseInt($('#birthM').val().toString().substr(6)) < 10 ? ('0' + $('#birthM').val().toString().substr(6)) : $('#birthM').val().toString().substr(6);
+        this.frmUser.controls['birthDay'].setValue(($('#birthY').val() + '/' + month + '/' + day));
         if (this.frmUser.controls['password'].value != this.frmUser.controls['confirmPassword'].value) {
             this.frmUser.controls['confirmPassword'].setErrors({ password: true });
             this.getCapcha();
