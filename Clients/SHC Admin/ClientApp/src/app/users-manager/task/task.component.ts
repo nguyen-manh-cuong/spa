@@ -213,7 +213,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
         });
 
         this._dataService.getAll('provinces').subscribe(resp => this._provinces = resp.items);
-        this.checkShowPathFile(this.userDto.accountType, this.frmUser.value);
+        this.checkShowPathFile(this.userDto.accountType);
     }
 
     // BHYT - Insurrance, CMND - Identification, GPHN - CertificationCode, GPKD - LicenseCode

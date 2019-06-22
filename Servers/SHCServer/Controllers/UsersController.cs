@@ -122,10 +122,12 @@ namespace SHCServer.Controllers
                 }
             }
 
-           clause.Add("GROUP BY u.UserId");
+            clause.Add("GROUP BY u.UserId");
 
             if (sorting != null)
             {
+                //clause.Add(" ORDER BY u.CreateDate DESC ");
+
                 var data = JsonConvert.DeserializeObject<Dictionary<string, string>>(sorting);
 
                 if (data.ContainsKey("userId"))
@@ -151,9 +153,13 @@ namespace SHCServer.Controllers
                     if (data["accountType"] == "asc") clause.Add("ORDER BY u.AccountType ASC");
                     else clause.Add("ORDER BY u.AccountType DESC");
                 }
+                if (data.ContainsKey("createDate"))
+                {
+                    if (data["createDate"] == "asc") clause.Add("ORDER BY u.CreateDate ASC");
+                    else clause.Add("ORDER BY u.CreateDate DESC");
+                }
             }
-
-
+            
             var readerAll = _contextmdmdb.Session.ExecuteReader($"{query} {string.Join(" ", clause)}", param);
             var total = 0;
 
@@ -221,39 +227,52 @@ namespace SHCServer.Controllers
         [Route("api/users-register")]
         public IActionResult Register([FromForm]UserInputViewModel obj)
         {
-            var getUser = _contextmdmdb.Query<UserMDM>();
+            var getUser = _contextmdmdb.Query<UserMDM>().Where(o => o.IsDelete == false);
 
-            if (getUser.Where(u => u.UserName == obj.UserName.Trim()).Count() > 0)
+            var check = 0;
+            var checkValue = getUser.Where(o => (obj.Email != null && o.Email == obj.Email) || (obj.UserName != null && o.UserName == obj.UserName)).ToList();
+
+            for (var i = 0; i < checkValue.Count; i++)
+            {
+                if (string.Compare(checkValue[i].UserName, obj.UserName, false) == 0) //check User
+                    check = 1;
+                if (string.Compare(checkValue[i].Email, obj.Email, false) == 0) //check email
+                    check = 2;
+            }
+
+            //tài khoản
+            if (check == 1)
             {
                 return StatusCode(406, _excep.Throw(406,"Thông báo", "Tài khoản đã tồn tại!"));
             }
 
-            if (getUser.Where(u => u.PhoneNumber == obj.PhoneNumber.Trim() && !string.IsNullOrEmpty(u.PhoneNumber)).Count() > 0)
+            if (getUser.Where(u => u.PhoneNumber == obj.PhoneNumber.Trim() && !string.IsNullOrEmpty(u.PhoneNumber)).Any())
             {
                 return StatusCode(406, _excep.Throw(406, "Thông báo", "Số điện thoại đã tồn tại!"));
             }
 
-            if (getUser.Where(u => u.Email == obj.Email.Trim() && !string.IsNullOrEmpty(u.Email)).Count() > 0)
+            //email
+            if (check == 2)
             {
                 return StatusCode(406, _excep.Throw(406, "Thông báo", "Email đã tồn tại!"));
             }
 
-            if (getUser.Where(u => u.Identification == obj.Identification && !string.IsNullOrEmpty(u.Identification)).Count() > 0)
+            if (getUser.Where(u => u.Identification == obj.Identification && !string.IsNullOrEmpty(u.Identification)).Any())
             {
                 return StatusCode(406, _excep.Throw(406, "Thông báo", "Số CMND đã tồn tại!"));
             }
 
-            if (getUser.Where(u => u.CertificationCode == obj.CertificationCode && !string.IsNullOrEmpty(u.CertificationCode)).Count() > 0)
+            if (getUser.Where(u => u.CertificationCode == obj.CertificationCode && !string.IsNullOrEmpty(u.CertificationCode)).Any())
             {
                 return StatusCode(406, _excep.Throw(406, "Thông báo", "Số GPHN đã tồn tại!"));
             }
 
-            if (getUser.Where(u => u.LisenceCode == obj.LisenceCode && !string.IsNullOrEmpty(u.LisenceCode)).Count() > 0)
+            if (getUser.Where(u => u.LisenceCode == obj.LisenceCode && !string.IsNullOrEmpty(u.LisenceCode)).Any())
             {
                 return StatusCode(406, _excep.Throw(406, "Thông báo", "Số GPKD đã tồn tại!"));
             }
 
-            if (getUser.Where(u => u.Insurrance == obj.Insurrance && !string.IsNullOrEmpty(u.Insurrance)).Count() > 0)
+            if (getUser.Where(u => u.Insurrance == obj.Insurrance && !string.IsNullOrEmpty(u.Insurrance)).Any())
             {
                 return StatusCode(406, _excep.Throw(406, "Thông báo", "Số thẻ BHYT  đã tồn tại!"));
             }
