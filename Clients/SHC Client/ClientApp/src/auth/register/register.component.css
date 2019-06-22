@@ -25,3 +25,9 @@
     right: -22px;
     top: 10px;
 }
+
+.wrap-text {
+    white-space: normal!important;
+    word-break: break-all!important;
+    overflow: visible!important;
+}
