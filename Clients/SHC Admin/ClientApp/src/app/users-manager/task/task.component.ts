@@ -194,6 +194,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
         };
 
         this.frmUser = this._formBuilder.group(this.context);
+        
         this._dataService.getAll('groups','',JSON.stringify({name:'asc'})).subscribe(resp => {
             this.groups = resp.items;
             if (this.user) {
@@ -210,13 +211,12 @@ export class TaskComponent extends AppComponentBase implements OnInit {
         });
 
         this._dataService.getAll('provinces').subscribe(resp => this._provinces = resp.items);
-
-        this.checkShowPathFile(this.userDto.accountType);
-       
+        this.checkShowPathFile(this.userDto.accountType, this.frmUser.value);
     }
 
     // BHYT - Insurrance, CMND - Identification, GPHN - CertificationCode, GPKD - LicenseCode
-    checkShowPathFile(value): void {
+    checkShowPathFile(value, frm: any): void {
+
         
         this.frmUser.setErrors({ invalid: true });
         this.highLightInsurrance = false;
@@ -225,11 +225,11 @@ export class TaskComponent extends AppComponentBase implements OnInit {
         this.highLightCertification = false;
         this.highLightEmail = false;
         this.highLightPhone = false;
-
-        this.frmUser.controls['certificationCode'].setValue(null);
-        this.frmUser.controls['lisenceCode'].setValue(null);
-        this.frmUser.controls['insurrance'].setValue(null);
-        this.frmUser.controls['identification'].setValue(null);
+        
+        // this.frmUser.controls['certificationCode'].setValue(null);
+        // this.frmUser.controls['lisenceCode'].setValue(null);
+        // this.frmUser.controls['insurrance'].setValue(null);
+        // this.frmUser.controls['identification'].setValue(null);
 
         this._idCardUrls = [];
         this._certificateUrls = [];
@@ -720,9 +720,10 @@ export class TaskComponent extends AppComponentBase implements OnInit {
             .replace(/Ù|Ú|Ụ|Ủ|Ũ|Ư|Ừ|Ứ|Ự|Ử|Ữ/g, "U")
             .replace(/Ỳ|Ý|Ỵ|Ỷ|Ỹ/g, "Y")
             .replace(/Đ/g, "D")
-            .replace(/!|@|\$|%|\^|\*|\(|\)|\+|\=|\<|\>|\?|\/|,|\.|\:|\"| |\"|\&|\#|\[|\]|~/g, ' ')
+            .replace(/!|@|\$|%|\^|\*|\(|\)|\+|\=|\<|\>|\?|\/|,|\.|\:|\"| |\"|\&|\#|\[|\\|\{|\}|\||\]|~/g, ' ')
             .replace(/-+-/g, '-')
-            .replace(/(\s)+/g, '$1');
+            .replace(/(\s)+/g, '$1')
+            .replace(/[^a-zA-Z0-9]/g, '');
     }
 
     // Xóa khoảng trắng và kí tự unicode
@@ -743,8 +744,8 @@ export class TaskComponent extends AppComponentBase implements OnInit {
     }
 
     inputLisenceCode(event) {
-        event.target.value = this.cleanSpace(this.cleanUnicode(event.target.value));
-        this.frmUser.controls['lisenceCode'].setValue(this.cleanSpace(this.cleanUnicode(event.target.value)));
+        // event.target.value = this.cleanSpace(this.cleanUnicode(event.target.value));
+        // this.frmUser.controls['lisenceCode'].setValue(this.cleanSpace(this.cleanUnicode(event.target.value)));
     }
 
     ngAfterViewInit(): void {
