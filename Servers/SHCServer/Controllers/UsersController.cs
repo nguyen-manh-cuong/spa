@@ -45,8 +45,8 @@ namespace SHCServer.Controllers
                                 FROM smarthealthcare.sys_users ui
                                 INNER JOIN mdm.sys_users u
                                 ON ui.UserId = u.UserId
-                                LEFT JOIN mdm.sys_users_groups ug ON u.UserId = ug.UserId 
-                                LEFT JOIN mdm.sys_groups g ON g.GroupId = ug.GroupId 
+                                LEFT JOIN mdm.sys_users_groups ug ON u.UserId = ug.UserId AND ug.IsDelete = 0 
+                                LEFT JOIN mdm.sys_groups g ON g.GroupId = ug.GroupId AND g.IsDelete = 0
                                 WHERE u.IsDelete = 0
                                 AND u.AccountType IN (1, 2, 3)
                                 AND ui.IsDelete = 0 ";
@@ -103,7 +103,7 @@ namespace SHCServer.Controllers
 
                 if (data.ContainsKey("group"))
                 {
-                    var group = _contextmdmdb.Query<UserGroup>().Where(o => o.GroupId == int.Parse(data["group"].ToString())).ToList();
+                    var group = _contextmdmdb.Query<UserGroup>().Where(o => o.GroupId == int.Parse(data["group"].ToString()) && o.IsDelete == false).ToList();
 
                     if (group.Count > 0)
                     {
