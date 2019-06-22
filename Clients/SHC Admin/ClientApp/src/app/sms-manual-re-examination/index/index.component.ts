@@ -575,7 +575,8 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
         dialogRef.afterClosed().subscribe(() => {
             this.paginator.pageIndex = 0;
             this.paginator._changePageSize(this.paginator.pageSize);
-            this.selection = new SelectionModel<IMedicalHealthcareHistories>(true, []);
+            // this.selection = new SelectionModel<IMedicalHealthcareHistories>(true, []);
+            this.selection.clear();
         });
     }
 
@@ -617,7 +618,8 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
                     // });
                     this.selection.clear();
                     abp.ui.clearBusy('#main-container');
-                }, err => { });
+                }, err => {
+                 });
         });
     }
 }
