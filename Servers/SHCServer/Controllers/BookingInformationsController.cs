@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using SHCServer.Models;
 using SHCServer.ViewModels;
-using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;

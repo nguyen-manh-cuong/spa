@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using System.IO;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -15,23 +16,24 @@ namespace SHCServer
             DbConfiguration.UseInterceptors(interceptor);
 
             RegisterMappingType();
-            BuildWebHost(args).Run();
+
+            BuildWebHost(args).Build().Run();
         }
 
-        public static IWebHost BuildWebHost(string[] args)
+        public static IWebHostBuilder BuildWebHost(string[] args)
         {
-            return WebHost
-                   .CreateDefaultBuilder(args)
-                   .ConfigureAppConfiguration(config =>
-                   {
-                       config.AddJsonFile("appsettings.json");
-                       config.AddEnvironmentVariables();
-                   })
-                   .UseIISIntegration()
-                   .UseKestrel(c => c.AddServerHeader = false)
-                   .UseStartup<Startup>()
-                   .UseUrls("http://127.0.0.1:9008")
-                   .Build();
+            {
+                var config = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory())
+                                                       .AddJsonFile("appsettings.json", true)
+                                                       .Build();
+
+
+                return WebHost.CreateDefaultBuilder(args)
+                              .UseConfiguration(config)
+                              .UseIISIntegration()
+                              .UseUrls($"http://*:{config.GetValue("Application:Port", 9008)}")
+                              .UseStartup<Startup>();
+            }
         }
 
         private static void RegisterMappingType()
