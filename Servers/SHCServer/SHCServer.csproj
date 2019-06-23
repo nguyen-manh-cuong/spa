@@ -11,6 +11,12 @@
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
+    <ItemGroup>
+      <Compile Remove="Libraries\**" />
+      <Content Remove="Libraries\**" />
+      <EmbeddedResource Remove="Libraries\**" />
+      <None Remove="Libraries\**" />
+    </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.All" Version="2.2.1" />
@@ -20,23 +26,23 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Reference Include="Viettel">
-        <HintPath>..\..\..\Administrator System\Libraries\Viettel.dll</HintPath>
-      </Reference>
-      <Reference Include="Viettel.Extension">
-        <HintPath>..\..\..\Administrator System\Libraries\Viettel.Extension.dll</HintPath>
-      </Reference>
-      <Reference Include="Viettel.MySql">
-        <HintPath>..\..\..\Administrator System\Libraries\Viettel.MySql.dll</HintPath>
-      </Reference>
-    </ItemGroup>
-
-    <ItemGroup>
         <WCFMetadata Include="Connected Services" />
     </ItemGroup>
 
     <ItemGroup>
       <Folder Include="Connected Services\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="Viettel">
+        <HintPath>Libraries\Viettel.dll</HintPath>
+      </Reference>
+      <Reference Include="Viettel.Extension">
+        <HintPath>Libraries\Viettel.Extension.dll</HintPath>
+      </Reference>
+      <Reference Include="Viettel.MySql">
+        <HintPath>Libraries\Viettel.MySql.dll</HintPath>
+      </Reference>
     </ItemGroup>
 
 </Project>
