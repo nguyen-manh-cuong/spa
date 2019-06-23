@@ -114,22 +114,21 @@ export class ResetComponent extends AppComponentBase implements OnInit {
 
     submit() {
         if (this.frmUser.controls['newPassword'].value != this.frmUser.controls['confirmPassword'].value) {
-            return swal({
-                title: "Đổi mật khẩu không thành công",
-                text: "Xác nhận mật khẩu mới không đúng",
-                type: "warning",
-                timer: 3000
-            });
+            return abp.notify.error(
+                    "Đổi mật khẩu không thành công",
+                    "Xác nhận mật khẩu mới không đúng",
+                    { hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true }
+                );
         }
        
         this._user.password = this.frmUser.controls['newPassword'].value;
 
         this._dataService.update("users-reset-password", this._user).subscribe(() => {
-            swal({
-                title: "Cấp lại mật khẩu thành công",
-                type: "success",
-                timer: 3000
-            });
+            abp.notify.success(
+                "Cấp lại mật khẩu thành công",
+                "Thành công",
+                { hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true }
+            );
             return this.dialogRef.close();
         },err=>{
             this.checkPassword=true;
