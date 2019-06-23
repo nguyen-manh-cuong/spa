@@ -196,8 +196,8 @@ export class TaskComponent extends AppComponentBase implements OnInit {
         };
 
         this.frmUser = this._formBuilder.group(this.context);
-        
-        this._dataService.getAll('groups','',JSON.stringify({name:'asc'})).subscribe(resp => {
+
+        this._dataService.get('groups', JSON.stringify({ name: 'asc', appId: '2' }), '', null, null).subscribe(resp => {
             this.groups = resp.items;
             if (this.user) {
                 this._dataService.getAll('groups-userid').subscribe(res => {
@@ -297,8 +297,8 @@ export class TaskComponent extends AppComponentBase implements OnInit {
         this.frmUser.controls['healthId'].setValue(this._healths);
         this.frmUser.controls['groupUser'].setValue(this._selection.selected);
         if (1 === this.frmUser.controls['accountType'].value) {
-            // this.frmUser.controls['certificationCode'].setValue('');
-            // this.frmUser.controls['lisenceCode'].setValue('');
+             this.frmUser.controls['certificationCode'].setValue('');
+             this.frmUser.controls['lisenceCode'].setValue('');
             this.frmUser.controls['certificationCode'].setErrors(null);
             this.frmUser.controls['lisenceCode'].setErrors(null);
 
@@ -337,8 +337,8 @@ export class TaskComponent extends AppComponentBase implements OnInit {
             }
         }
         else if (2 === this.frmUser.controls['accountType'].value) {
-            // this.frmUser.controls['insurrance'].setValue('');
-            // this.frmUser.controls['lisenceCode'].setValue('');
+             this.frmUser.controls['insurrance'].setValue('');
+             this.frmUser.controls['lisenceCode'].setValue('');
             this.frmUser.controls['insurrance'].setErrors(null);
             this.frmUser.controls['lisenceCode'].setErrors(null);
 
@@ -374,9 +374,9 @@ export class TaskComponent extends AppComponentBase implements OnInit {
             }
         }
         else {
-            // this.frmUser.controls['identification'].setValue('');
-            // this.frmUser.controls['certificationCode'].setValue('');
-            // this.frmUser.controls['insurrance'].setValue('');           
+             this.frmUser.controls['identification'].setValue('');
+             this.frmUser.controls['certificationCode'].setValue('');
+             this.frmUser.controls['insurrance'].setValue('');           
             this.frmUser.controls['insurrance'].setErrors(null);
             this.frmUser.controls['identification'].setErrors(null);
             this.frmUser.controls['certificationCode'].setErrors(null);
