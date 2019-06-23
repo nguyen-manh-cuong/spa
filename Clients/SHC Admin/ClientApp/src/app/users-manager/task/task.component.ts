@@ -115,7 +115,6 @@ export class TaskComponent extends AppComponentBase implements OnInit {
         if (this.user) {
             this.userDto = _.clone(this.user);
             this._isNew = false;
-            
 
             if (_.has(this.user, 'provinceCode') && !_.isNull(this.user.provinceCode)) {
                 this._dataService.get('districts', JSON.stringify({ ProvinceCode: this.user.provinceCode }), '', 0, 100).subscribe(resp => this._districts = resp.items);
@@ -162,6 +161,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
             this.userDto.insurrance = '';
             this.userDto.lisenceCode = '';
             this.userDto.accountType = 1;
+            this.userDto.sex = 1;
         }
 
         this.context = {
@@ -175,7 +175,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
             districtCode: [this.userDto.districtCode],
             wardCode: [this.userDto.wardCode],
             address: [this.userDto.address],
-            sex: [1, Validators.required],
+            sex: [this.userDto.sex, Validators.required],
             accountType: [this.userDto.accountType, Validators.required],
             birthDay: [this.userDto.birthDay],
             cmnd: [],

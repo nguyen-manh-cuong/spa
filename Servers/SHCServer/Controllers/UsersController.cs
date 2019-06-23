@@ -199,7 +199,8 @@ namespace SHCServer.Controllers
                     Identification = reader["Identification"].ToString(),
                     LisenceCode = reader["LisenceCode"].ToString(),
                     CertificationCode = reader["CertificationCode"].ToString(),
-                    BirthDay = reader["BirthDay"] != DBNull.Value ? DateTime.Parse(reader["BirthDay"].ToString()) : DateTime.Now
+                    BirthDay = reader["BirthDay"] != DBNull.Value ? DateTime.Parse(reader["BirthDay"].ToString()) : DateTime.Now,
+                    Sex = Convert.ToInt32(reader["Sex"]),
                 });
             }
             reader.Close();
