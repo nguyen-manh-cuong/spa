@@ -11,7 +11,6 @@ import { DataService } from '@shared/service-proxies/service-data';
 import { SelectionModel } from '@angular/cdk/collections';
 import { ValidationRule } from '@shared/common/common';
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
-import { cleanUnicode } from '../../../shared/helpers/utils';
 import { RootModule } from '../../../root.module';
 
 export const MY_FORMATS = {
@@ -261,6 +260,47 @@ export class TaskComponent extends AppComponentBase implements OnInit {
             this.frmUser.controls['identification'].setErrors(null);
             this.frmUser.controls['certificationCode'].setErrors(null);
         }
+    }
+
+    onHandleInput(value) {
+        if (value === 2) {
+            this.highLightEmail = false;
+        }
+        else if (value === 3) {
+            this.highLightInsurrance = false;
+        }
+        else if (value === 4) {
+            this.highLightCertification = false;
+        }
+        else if (value === 5) {
+            this.highLightLisence = false;
+        }
+        else if (value === 6) {
+            this.highLightIdentification = false;
+        }
+    }
+
+    inputPassword(event) {
+        event.target.value = this.cleanUnicode(event.target.value);
+        this.frmUser.controls['password'].setValue(this.cleanUnicode(event.target.value));
+    }
+
+    cleanSpecial(str: string): string {
+        return str
+            .replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, 'a')
+            .replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, 'e')
+            .replace(/ì|í|ị|ỉ|ĩ/g, 'i')
+            .replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, 'o')
+            .replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, 'u')
+            .replace(/ỳ|ý|ỵ|ỷ|ỹ/g, 'y')
+            .replace(/đ/g, 'd')
+            .replace(/À|Á|Ạ|Ả|Ã|Â|Ầ|Ấ|Ậ|Ẩ|Ẫ|Ă|Ằ|Ắ|Ặ|Ẳ|Ẵ/g, "A")
+            .replace(/È|É|Ẹ|Ẻ|Ẽ|Ê|Ề|Ế|Ệ|Ể|Ễ/g, "E")
+            .replace(/Ì|Í|Ị|Ỉ|Ĩ/g, "I")
+            .replace(/Ò|Ó|Ọ|Ỏ|Õ|Ô|Ồ|Ố|Ộ|Ổ|Ỗ|Ơ|Ờ|Ớ|Ợ|Ở|Ỡ/g, "O")
+            .replace(/Ù|Ú|Ụ|Ủ|Ũ|Ư|Ừ|Ứ|Ự|Ử|Ữ/g, "U")
+            .replace(/Ỳ|Ý|Ỵ|Ỷ|Ỹ/g, "Y")
+            .replace(/Đ/g, "D");
     }
 
     masterToggle() {
@@ -587,6 +627,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
 
     rulePhoneNumber(event: any) {
         const patternNum = /^[0-9]*$/;
+        this.highLightPhone = false;
 
         if (event.target.value && event.target.value.length > 1 && !patternNum.test(event.target.value.trim().substring(1))) {
             this.frmUser.controls['phoneNumber'].setErrors({ special: true });
@@ -654,6 +695,7 @@ export class TaskComponent extends AppComponentBase implements OnInit {
     }
 
     checkBirthDate() {
+        this.invalidBirth = false;
         if (!moment(this.frmUser.controls['_birthDay'].value + '/' + this.frmUser.controls['_birthMonth'].value + '/' + this.frmUser.controls['_birthYear'].value, "DD/MM/YYYY").isValid()) {
             this._invaliBirthday = true;
         }

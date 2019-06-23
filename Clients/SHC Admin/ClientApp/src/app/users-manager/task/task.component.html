@@ -23,7 +23,7 @@
                             <div class="col-md-4">
                                 <mat-form-field appearance="outline" class="w-100" [ngClass]="{'mat-form-field-invalid': highLightPhone }">
                                     <mat-label>{{l('PhoneNumber')}}</mat-label>
-                                    <input formControlName="phoneNumber" (keyup)="rulePhoneNumber($event)" matInput minlength="10" maxlength="45" required>
+                                    <input formControlName="phoneNumber" (keyup)="rulePhoneNumber($event)" matInput minlength="10" maxlength="45" required >
                                     <validation matSuffix [control]="frmUser.controls['phoneNumber']"></validation>
                                 </mat-form-field>
                             </div>
@@ -31,7 +31,7 @@
                             <div class="col-md-4">
                                 <mat-form-field appearance="outline" class="w-100" [ngClass]="{'mat-form-field-invalid': highLightEmail }">
                                     <mat-label>Email</mat-label>
-                                    <input formControlName="email" #email (input)="ruleEmail($event)" matInput maxlength="320" required>
+                                    <input formControlName="email" #email (input)="ruleEmail($event)" matInput maxlength="320" required (keyup)="onHandleInput(2)">
                                     <validation matSuffix [control]="frmUser.controls['email']"></validation>
                                 </mat-form-field>
                             </div>
@@ -67,8 +67,9 @@
                                     </mat-select>
                                 </mat-form-field>
                             </div>
-                            <small *ngIf="_invaliBirthday" class="help-block ml-auto pr-4 mb-3" style="color: red; font-style: italic;">Ngày sinh không đúng định dạng</small>
-                            <small *ngIf="invalidBirth" class="help-block ml-auto pr-4 mb-3" style="color: red; font-style: italic;">Ngày sinh không lớn hơn ngày hiện tại</small>
+                            <small *ngIf="_invaliBirthday && !invalidBirth" class="help-block ml-auto pr-4 mb-3" style="color: red; font-style: italic;">Ngày sinh không đúng định dạng</small>
+                            <small *ngIf="invalidBirth && !_invaliBirthday" class="help-block ml-auto pr-4 mb-3" style="color: red; font-style: italic;">Ngày sinh không lớn hơn ngày hiện tại</small>
+                            <small *ngIf="_invaliBirthday && invalidBirth" class="help-block ml-auto pr-4 mb-3" style="color: red; font-style: italic;">Ngày sinh không đúng định dạng<br>Ngày sinh không lớn hơn ngày hiện tại</small>
                         </div>
                     </div>
                 </div>
@@ -91,14 +92,14 @@
                     <div class="col-md-4" *ngIf="_isNew">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l('Password')}}</mat-label>
-                            <input formControlName="password" type="password" [disabled]="!_isNew" [readonly]="!_isNew" matInput required minlength="8" maxlength="255">
+                            <input formControlName="password" type="password" [disabled]="!_isNew" [readonly]="!_isNew" matInput required minlength="8" maxlength="255" (input)="inputPassword($event)">
                             <validation matSuffix [control]="frmUser.controls['password']"></validation>
                         </mat-form-field>
                     </div>
                     <div class="col-md-4 disabled" *ngIf="!_isNew">
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{l('Password')}}</mat-label>
-                            <input formControlName="password" type="password" [disabled]="!_isNew" [readonly]="!_isNew" matInput required minlength="8" maxlength="255">
+                            <input formControlName="password" type="password" [disabled]="!_isNew" [readonly]="!_isNew" matInput required minlength="8" maxlength="255" >
                             <validation matSuffix [control]="frmUser.controls['password']"></validation>
                         </mat-form-field>
                     </div>
@@ -162,19 +163,19 @@
                                 <div class="col-md-9">
                                     <mat-form-field appearance="outline" class="w-100" *ngIf="flagShowLoadFileGphn==0" [ngClass]="{'mat-form-field-invalid': highLightInsurrance }">
                                         <mat-label>{{l('Số thẻ bảo hiểm y tế')}}</mat-label>
-                                        <input formControlName="insurrance" matInput required maxlength="20" (input)="inputInsurrance($event)">
+                                        <input formControlName="insurrance" matInput required maxlength="20" (input)="inputInsurrance($event)" (keyup)="onHandleInput(3)">
                                         <validation matSuffix [control]="frmUser.controls['insurrance']"></validation>
                                     </mat-form-field>
 
                                     <mat-form-field appearance="outline" class="w-100" *ngIf="flagShowLoadFileGphn==1" [ngClass]="{'mat-form-field-invalid': highLightCertification }">
                                         <mat-label>{{l('Số giấy phép hành nghề')}}</mat-label>
-                                        <input formControlName="certificationCode" matInput required  maxlength="20" (input)="inputCertificationCode($event)">
+                                        <input formControlName="certificationCode" matInput required  maxlength="20" (input)="inputCertificationCode($event)" (keyup)="onHandleInput(4)">
                                         <validation matSuffix [control]="frmUser.controls['certificationCode']"></validation>
                                     </mat-form-field>
 
                                     <mat-form-field appearance="outline" class="w-100 number-business" *ngIf="flagShowLoadFileGphn == 2" [ngClass]="{'mat-form-field-invalid': highLightLisence }">
                                         <mat-label>{{l('Số giấy phép kinh doanh')}}</mat-label>
-                                        <input formControlName="lisenceCode" matInput required  maxlength="20" (input)="inputLisenceCode($event)">
+                                        <input formControlName="lisenceCode" matInput required  maxlength="20" (input)="inputLisenceCode($event)" (keyup)="onHandleInput(5)">
                                         <validation matSuffix [control]="frmUser.controls['lisenceCode']"></validation>
                                     </mat-form-field>
                                 </div>
@@ -211,7 +212,7 @@
                                 <div class="col-md-9">
                                     <mat-form-field appearance="outline" class="w-100" [ngClass]="{'mat-form-field-invalid': highLightIdentification }">
                                         <mat-label>{{l('Số CMND')}}</mat-label>
-                                        <input formControlName="identification" (input)="identificationInput($event)" matInput required mask="0*" minlength="9" maxlength="12" >
+                                        <input formControlName="identification" (input)="identificationInput($event)" matInput required mask="0*" minlength="9" maxlength="12" (keyup)="onHandleInput(6)">
                                         <validation matSuffix [control]="frmUser.controls['identification']"></validation>
                                     </mat-form-field>
                                 </div>
