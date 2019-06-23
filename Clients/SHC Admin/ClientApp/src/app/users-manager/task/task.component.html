@@ -226,7 +226,7 @@
                         <div class="upload-content"  *ngIf="!_isNew">
                             <div class="row" *ngFor="let o of _idCardUrlsUpdate; let i = index">
                                 <!--<div class="col-md-2"><img src="{{o.url}}" class="rounded mb-3 selFile" title={{o.name}} width="50"></div>-->
-                                <div class="col-md-9"><p title="{{o.path}}" class="img-name word-break-all">{{o.path}}</p></div>
+                                <div class="col-md-9"><p class="img-name word-break-all">{{ o.path.substring(9) }}</p></div>
                                 <div class="col-md-3 ml-auto"><span class="btn btn-primary btn-delete d-block btn-primary-inverted" (click)="onRemoveFile(i, 1)"><i aria-hidden="true"></i>Xóa file</span></div>
                             </div>
                         </div>
@@ -234,7 +234,7 @@
                         <div class="upload-content">
                             <div class="row" *ngFor="let o of _idCardUrls; let i = index">
                                 <!--<div class="col-md-2"><img src="{{o.url}}" class="rounded mb-3 selFile" title={{o.name}} width="50"></div>-->
-                                <div class="col-md-9"><p title="{{o.path}}" class="img-name word-break-all">{{o.path}}</p></div>
+                                <div class="col-md-9"><p class="img-name word-break-all">{{ o.path.substring(9) }}</p></div>
                                 <div class="col-md-3 ml-auto"><span class="btn btn-primary btn-delete d-block btn-primary-inverted" (click)="removeFile(i, 1)"><i aria-hidden="true"></i>Xóa file</span></div>
                             </div>
                         </div>
@@ -266,7 +266,7 @@
                                 <mat-checkbox color="primary" matTooltip="Toàn bộ" (change)="$event ? masterToggle() : null" [checked]="_selection.hasValue() && isAllSelected()" [indeterminate]="_selection.hasValue() && !isAllSelected()"> </mat-checkbox>
                             </th>
                             <th class="mat-table-sticky text-center"> {{l('GroupName')}} </th>
-                            <th class="w-px-100 mat-header-cell mat-table-sticky text-center"> {{l('ApplicationName')}} </th>
+                            <!--<th class="w-px-100 mat-header-cell mat-table-sticky text-center"> {{l('ApplicationName')}} </th>-->
                             <th class="mat-header-cell mat-table-sticky pl-2 text-center"> {{l('Description')}} </th>
                         </tr>
                     </thead>
@@ -276,7 +276,7 @@
                                 <mat-checkbox color="primary" class="m-t-7" (click)="$event.stopPropagation()" (change)="$event ? _selection.toggle(g) : null" [checked]="_selection.isSelected(g)"> </mat-checkbox>
                             </td>
                             <td class="mat-cell td-ellipsis" style="max-width: 200px;"><b>{{g.groupName}}</b></td>
-                            <td class="mat-cell td-ellipsis" style="max-width: 200px;">{{g.applicationName}}</td>
+                            <!--<td class="mat-cell td-ellipsis" style="max-width: 200px;">{{g.applicationName}}</td>-->
                             <td class="mat-cell td-ellipsis pl-2 pr-2" style="max-width: 200px;"> {{g.description}} </td>
                         </tr>
                     </tbody>
