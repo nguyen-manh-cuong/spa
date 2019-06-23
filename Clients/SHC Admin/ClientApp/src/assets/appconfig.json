@@ -1,8 +1,8 @@
 {
-    "remoteServiceBaseUrl": "http://localhost:9008/api",
+    "remoteServiceBaseUrl": "http://123.30.214.138:9008/api",
     "uploadBaseUrl": "http://10.60.156.61:9008/wwwroot",
     "serverBaseUrl": "http://123.30.214.138:9000",
-    "appBaseUrl": "http://localhost:8300",
+    "appBaseUrl": "http://123.30.214.138:8300",
     "appId": 2,
     "appName": "Smart Health Care System"
 }

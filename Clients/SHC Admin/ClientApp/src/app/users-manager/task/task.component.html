@@ -307,6 +307,20 @@
                     </div>
 
                     <form id="form-dialog" novalidate>
+                        <div class="table-content" style="height: calc(100vh - 395px);overflow: auto;position: relative;">
+                            <table mat-table [dataSource]="dataSource" class="w-100 task">
+                                <ng-container matColumnDef="colSelect">
+                                    <th mat-header-cell *matHeaderCellDef class="w-px-30 min-w-30 text-center col-checkbox border-left"> {{l('Chọn')}} </th>
+                                    <td mat-cell *matCellDef="let row" class="w-px-30 min-w-30 p-t-8 text-center col-checkbox border-left"><mat-checkbox (change)="getHealth(row, $event)" [checked]="(flagShowLoadFileGphn !== 2 ? ( row.check) : (checkedHealth === row.code)) || _healthCodes.indexOf(row.code)>=0"></mat-checkbox></td>
+                                </ng-container>
+                                <ng-container matColumnDef="colHel">
+                                    <th mat-header-cell *matHeaderCellDef class="pl-2 border-right text-center"> {{l('Tên đơn vị')}} </th>
+                                    <td mat-cell *matCellDef="let element" class="pl-2 border-right"> {{ element.code }} - {{ element.name }} </td>
+                                </ng-container>
+                                <tr mat-header-row *matHeaderRowDef="displayedColumns;sticky: true"></tr>
+                                <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="fadeIn animated"></tr>
+                            </table>
+                        </div>
                         <mat-paginator [length]="totalItems"
                                        [pageSize]="pageSize"
                                        [pageSizeOptions]="pageSizeOptions"
@@ -314,20 +328,6 @@
                                        #paginator
                                        (page)="getHealthFacilities()">
                         </mat-paginator>
-                        <div class="table-content mb-3">
-                            <table mat-table [dataSource]="dataSource" class="w-100 task">
-                                <ng-container matColumnDef="colSelect">
-                                    <th mat-header-cell *matHeaderCellDef class="text-center col-checkbox border-left"> {{l('Chọn')}} </th>
-                                    <td mat-cell *matCellDef="let row" class="p-t-8 text-center col-checkbox border-left"><mat-checkbox (change)="getHealth(row, $event)" [checked]="(flagShowLoadFileGphn !== 2 ? ( row.check) : (checkedHealth === row.code)) || _healthCodes.indexOf(row.code)>=0"></mat-checkbox></td>
-                                </ng-container>
-                                <ng-container matColumnDef="colHel">
-                                    <th mat-header-cell *matHeaderCellDef class="pl-2 border-right text-center"> {{l('Tên đơn vị')}} </th>
-                                    <td mat-cell *matCellDef="let element" class="pl-2 border-right"> {{ element.code }} - {{ element.name }} </td>
-                                </ng-container>
-                                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                                <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="fadeIn animated"></tr>
-                            </table>
-                        </div>
                     </form>
                 </div>
             </div>
