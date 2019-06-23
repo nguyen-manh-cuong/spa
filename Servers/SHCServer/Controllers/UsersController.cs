@@ -453,32 +453,32 @@ namespace SHCServer.Controllers
                 return StatusCode(401, _excep.Throw(406, "Thông báo", "Tài khoản không tồn tại!"));
             }
 
-            if (user.Where(u => u.PhoneNumber == obj.PhoneNumber && !string.IsNullOrEmpty(u.PhoneNumber) && u.UserId != obj.UserId).Count() > 0)
+            if (user.Where(u => u.PhoneNumber == obj.PhoneNumber && !string.IsNullOrEmpty(u.PhoneNumber) && u.UserId != obj.UserId && u.IsDelete == false).Any())
             {
                 return StatusCode(406, _excep.Throw(406, "Thông báo", "Số điện thoại đã tồn tại!"));
             }
 
-            if (user.Where(u => u.Email == obj.Email && !string.IsNullOrEmpty(u.Email) && u.UserId != obj.UserId).Count() > 0)
+            if (user.Where(u => u.Email == obj.Email && !string.IsNullOrEmpty(u.Email) && u.UserId != obj.UserId && u.IsDelete == false).Count() > 0)
             {
                 return StatusCode(406, _excep.Throw(406, "Thông báo", "Email đã tồn tại!"));
             }
 
-            if (user.Where(u => u.Identification == obj.Identification && !string.IsNullOrEmpty(u.Identification) && u.UserId != obj.UserId).Count() > 0)
+            if (user.Where(u => u.Identification == obj.Identification && !string.IsNullOrEmpty(u.Identification) && u.UserId != obj.UserId && u.IsDelete == false).Any())
             {
                 return StatusCode(406, _excep.Throw(406, "Thông báo", "Số CMND đã tồn tại!"));
             }
 
-            if (user.Where(u => u.CertificationCode == obj.CertificationCode && !string.IsNullOrEmpty(u.CertificationCode) && u.UserId != obj.UserId).Count() > 0)
+            if (user.Where(u => u.CertificationCode == obj.CertificationCode && !string.IsNullOrEmpty(u.CertificationCode) && u.UserId != obj.UserId && u.IsDelete == false).Any())
             {
                 return StatusCode(406, _excep.Throw(406, "Thông báo", "Số GPHN đã tồn tại!"));
             }
 
-            if (user.Where(u => u.LisenceCode == obj.LisenceCode && !string.IsNullOrEmpty(u.LisenceCode) && u.UserId != obj.UserId).Count() > 0)
+            if (user.Where(u => u.LisenceCode == obj.LisenceCode && !string.IsNullOrEmpty(u.LisenceCode) && u.UserId != obj.UserId && u.IsDelete == false).Any())
             {
                 return StatusCode(406, _excep.Throw(406, "Thông báo", "Số GPKD đã tồn tại!"));
             }
 
-            if (user.Where(u => u.Insurrance == obj.Insurrance && !string.IsNullOrEmpty(u.Insurrance) && u.UserId != obj.UserId).Count() > 0)
+            if (user.Where(u => u.Insurrance == obj.Insurrance && !string.IsNullOrEmpty(u.Insurrance) && u.UserId != obj.UserId && u.IsDelete == false).Any())
             {
                 return StatusCode(406, _excep.Throw(406, "Thông báo", "Số thẻ BHYT  đã tồn tại!"));
             }
