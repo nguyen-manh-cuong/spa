@@ -281,8 +281,8 @@ export class TaskComponent extends AppComponentBase implements OnInit {
     }
 
     inputPassword(event) {
-        event.target.value = this.cleanUnicode(event.target.value);
-        this.frmUser.controls['password'].setValue(this.cleanUnicode(event.target.value));
+        event.target.value = this.cleanSpecial(event.target.value);
+        this.frmUser.controls['password'].setValue(this.cleanSpecial(event.target.value));
     }
 
     cleanSpecial(str: string): string {
