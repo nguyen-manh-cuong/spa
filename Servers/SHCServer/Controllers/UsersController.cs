@@ -305,7 +305,7 @@ namespace SHCServer.Controllers
                 });
                 _contextmdmdb.Session.CommitTransaction();
 
-                UserMDM user = _contextmdmdb.Query<UserMDM>().Where(u => u.UserName == obj.UserName).FirstOrDefault();
+                UserMDM user = _contextmdmdb.Query<UserMDM>().Where(u => u.UserName == obj.UserName && u.IsDelete == false).FirstOrDefault();
                 int userId = user != null ? user.UserId : 0;
 
                 // Insert sys_users_groups in mdm
