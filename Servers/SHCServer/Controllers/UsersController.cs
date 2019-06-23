@@ -678,6 +678,19 @@ namespace SHCServer.Controllers
 
                 _context.Session.BeginTransaction();
                 var files = Request.Form.Files;
+                if(obj.ImageFileOld!=null && obj.ImageFileOld !="")
+                    _context.Update<UsersAttach>(ua => ua.UserId == obj.UserId && !obj.ImageFileOld.Contains(ua.Path), x => new UsersAttach()
+                    {
+                        IsDelete = true
+                    });
+                else
+                {
+                    _context.Update<UsersAttach>(ua => ua.UserId == obj.UserId, x => new UsersAttach()
+                    {
+                        IsDelete = true
+                    });
+                }
+
                 if (files.Count > 0)
                 {
                     foreach (var file in files)
@@ -700,6 +713,7 @@ namespace SHCServer.Controllers
                         {
                             if (obj.AccountType == 2)
                             {
+
                                 _context.Insert(() => new UsersAttach
                                 {
                                     UserId = obj.UserId,
@@ -711,6 +725,7 @@ namespace SHCServer.Controllers
                             }
                             else if (obj.AccountType == 3)
                             {
+
                                 _context.Insert(() => new UsersAttach
                                 {
                                     UserId = obj.UserId,
@@ -722,6 +737,11 @@ namespace SHCServer.Controllers
                             }
                             else
                             {
+                                _context.Update<UsersAttach>(ua => ua.UserId == obj.UserId && (ua.Type.Equals("3") || ua.Type.Equals("4")) && !ua.Path.Equals("/uploads/" + file.FileName), x => new UsersAttach()
+                                {
+                                    IsDelete = true
+                                });
+
                                 _context.Insert(() => new UsersAttach
                                 {
                                     UserId = obj.UserId,
