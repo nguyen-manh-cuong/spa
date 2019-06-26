@@ -226,10 +226,8 @@ export class IndexComponent extends PagedListingComponentBase<IBookingDoctorsCal
 
     onSelectHealthFacilities(obj: any) {
         this._doctors = [];
-        this.dataService.getAll('doctors', obj.healthFacilitiesId).subscribe(resp => {
-            this._doctors = resp.items;
-            console.log(resp.items)
-        });
+        this.dataService.getAll('doctors', obj.healthFacilitiesId).subscribe(resp => 
+            this._doctors = resp.items);
     }
 
     //summit
