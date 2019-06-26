@@ -194,123 +194,123 @@ namespace SHCServer
 
         public static SmsRespone SendSMS(SmsContent content, int type = 1)
         {
-            return null;
-            //tinnhanthuonghieu.CcApiClient requestMT = new tinnhanthuonghieu.CcApiClient();
-            //requestMT.Endpoint.Binding.SendTimeout = TimeSpan.FromSeconds(5);
+            //return null;
+            tinnhanthuonghieu.CcApiClient requestMT = new tinnhanthuonghieu.CcApiClient();
+            requestMT.Endpoint.Binding.SendTimeout = TimeSpan.FromSeconds(5);
 
-            //string User = content.SmsBrand.UserName;
-            //string Password = content.SmsBrand.UserName;
-            //string CPCode = content.SmsBrand.CPCode;
-            //const string RequestID = "1";
-            //const string CommandCode = "bulksms";
+            string User = content.SmsBrand.UserName;
+            string Password = content.SmsBrand.UserName;
+            string CPCode = content.SmsBrand.CPCode;
+            const string RequestID = "1";
+            const string CommandCode = "bulksms";
 
-            //string ServiceID = content.SmsBrand.ServiceId;
-            //string UserID = content.PhoneNumber;
-            //string ReceiverID = content.PhoneNumber;
-            //string Content = content.Message;
-            //string ContentType = "1";
+            string ServiceID = content.SmsBrand.ServiceId;
+            string UserID = content.PhoneNumber;
+            string ReceiverID = content.PhoneNumber;
+            string Content = content.Message;
+            string ContentType = "1";
 
-            //string telco = "";
-            //string resultMessage = "";
+            string telco = "";
+            string resultMessage = "";
 
-            //if (CheckTelcoViettel(content.PhoneNumber) != null)
-            //{
-            //    telco = "Viettel";
-            //}
-            //if (CheckTelcoMobifone(content.PhoneNumber) != null)
-            //{
-            //    telco = "Mobifone";
-            //}
-            //if (CheckTelcoVinaphone(content.PhoneNumber) != null)
-            //{
-            //    telco = "Vinaphone";
-            //}
-            //if (CheckTelcoGmobile(content.PhoneNumber) != null)
-            //{
-            //    telco = "Gmobile";
-            //}
-            //if (CheckTelcoVietnamobile(content.PhoneNumber) != null)
-            //{
-            //    telco = "Vietnamobile";
-            //} 
-            //if (telco == "")
-            //{
-            //    return new SmsRespone
-            //    {
-            //        Code = 0,
-            //        Result ="Sai định dạng số điện thoại",
-            //        Message = content.Message,
-            //        PhoneNumber = content.PhoneNumber,
-            //        HealthFacilitiesId = content.HealthFacilitiesId,
-            //        SmsTemplateId = content.SmsTemplateId,
-            //        SmsPackagesDistributeId = content.SmsPackagesDistributeId,
-            //        SmsPackageUsedId = content.SmsPackageUsedId,
-            //        PatientHistoriesId = content.PatientHistoriesId,
-            //        Telco = telco,
-            //        PatientId = content.PatientId,
-            //        ObjectType = content.objectType
-            //    };
-            //}
+            if (CheckTelcoViettel(content.PhoneNumber) != null)
+            {
+                telco = "Viettel";
+            }
+            if (CheckTelcoMobifone(content.PhoneNumber) != null)
+            {
+                telco = "Mobifone";
+            }
+            if (CheckTelcoVinaphone(content.PhoneNumber) != null)
+            {
+                telco = "Vinaphone";
+            }
+            if (CheckTelcoGmobile(content.PhoneNumber) != null)
+            {
+                telco = "Gmobile";
+            }
+            if (CheckTelcoVietnamobile(content.PhoneNumber) != null)
+            {
+                telco = "Vietnamobile";
+            }
+            if (telco == "")
+            {
+                return new SmsRespone
+                {
+                    Code = 0,
+                    Result = "Sai định dạng số điện thoại",
+                    Message = content.Message,
+                    PhoneNumber = content.PhoneNumber,
+                    HealthFacilitiesId = content.HealthFacilitiesId,
+                    SmsTemplateId = content.SmsTemplateId,
+                    SmsPackagesDistributeId = content.SmsPackagesDistributeId,
+                    SmsPackageUsedId = content.SmsPackageUsedId,
+                    PatientHistoriesId = content.PatientHistoriesId,
+                    Telco = telco,
+                    PatientId = content.PatientId,
+                    ObjectType = content.objectType
+                };
+            }
 
 
-            //if (type == 1)
-            //{
-            //    ContentType = "1";
-            //}
-            //else if (type == 0)
-            //{
-            //    ContentType = "0";
-            //}
+            if (type == 1)
+            {
+                ContentType = "1";
+            }
+            else if (type == 0)
+            {
+                ContentType = "0";
+            }
 
-            //try
-            //{
-            //    var newSms = new SmsRespone { };
-            //    var response = requestMT.wsCpMtAsync(User, Password, CPCode, RequestID, UserID, ReceiverID, ServiceID, CommandCode, Content, ContentType);
-            //    if (response != null)
-            //    {
-            //        var result = response.Result.@return;
+            try
+            {
+                var newSms = new SmsRespone { };
+                var response = requestMT.wsCpMtAsync(User, Password, CPCode, RequestID, UserID, ReceiverID, ServiceID, CommandCode, Content, ContentType);
+                if (response != null)
+                {
+                    var result = response.Result.@return;
 
-            //        return new SmsRespone
-            //        {
-            //            Code = result != null ? result.result1 : 0,
-            //            Result = "Không kết nối được",
-            //            Message = content.Message,
-            //            PhoneNumber = content.PhoneNumber,
-            //            HealthFacilitiesId = content.HealthFacilitiesId,
-            //            SmsTemplateId = content.SmsTemplateId,
-            //            SmsPackagesDistributeId = content.SmsPackagesDistributeId,
-            //            SmsPackageUsedId = content.SmsPackageUsedId,
-            //            PatientHistoriesId = content.PatientHistoriesId,
-            //            Telco = telco,
-            //            PatientId = content.PatientId,
-            //            ObjectType = content.objectType
-            //        };
-            //    }
+                    return new SmsRespone
+                    {
+                        Code = result != null ? result.result1 : 0,
+                        Result = "Không kết nối được",
+                        Message = content.Message,
+                        PhoneNumber = content.PhoneNumber,
+                        HealthFacilitiesId = content.HealthFacilitiesId,
+                        SmsTemplateId = content.SmsTemplateId,
+                        SmsPackagesDistributeId = content.SmsPackagesDistributeId,
+                        SmsPackageUsedId = content.SmsPackageUsedId,
+                        PatientHistoriesId = content.PatientHistoriesId,
+                        Telco = telco,
+                        PatientId = content.PatientId,
+                        ObjectType = content.objectType
+                    };
+                }
 
-            //}
-            //catch(Exception)
-            //{
+            }
+            catch (Exception)
+            {
 
-            //}
-            //finally
-            //{
+            }
+            finally
+            {
 
-            //}
-            //return new SmsRespone
-            //{
-            //    Code = 0,
-            //    Message = content.Message,
-            //    Result = "Không kết nối được",
-            //    PhoneNumber = content.PhoneNumber,
-            //    HealthFacilitiesId = content.HealthFacilitiesId,
-            //    SmsTemplateId = content.SmsTemplateId,
-            //    SmsPackagesDistributeId = content.SmsPackagesDistributeId,
-            //    SmsPackageUsedId = content.SmsPackageUsedId,
-            //    PatientHistoriesId = content.PatientHistoriesId,
-            //    Telco = telco,
-            //    PatientId = content.PatientId,
-            //    ObjectType = content.objectType
-            //};
+            }
+            return new SmsRespone
+            {
+                Code = 0,
+                Message = content.Message,
+                Result = "Không kết nối được",
+                PhoneNumber = content.PhoneNumber,
+                HealthFacilitiesId = content.HealthFacilitiesId,
+                SmsTemplateId = content.SmsTemplateId,
+                SmsPackagesDistributeId = content.SmsPackagesDistributeId,
+                SmsPackageUsedId = content.SmsPackageUsedId,
+                PatientHistoriesId = content.PatientHistoriesId,
+                Telco = telco,
+                PatientId = content.PatientId,
+                ObjectType = content.objectType
+            };
         }
 
         public static List<SmsRespone> SendListSMS(List<SmsContent> lst, int type = 1)
