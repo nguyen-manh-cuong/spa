@@ -158,10 +158,10 @@ export class EditComponent extends AppComponentBase implements OnInit, AfterView
                 params.address =_.trim(this._frm.value.address.replace(/\s+/g," "))
             }
             if (this._frm.value.reason != null) {
-                params.reason = _.trim(this._frm.value.address.replace(/\s+/g, " "))
+                params.reason = _.trim(this._frm.value.reason.replace(/\s+/g, " "))
             }
             if (this._frm.value.bookingUser != null) {
-                params.bookingUser = _.trim(this._frm.value.address.replace(/\s+/g, " "))
+                params.bookingUser = _.trim(this._frm.value.bookingUser.replace(/\s+/g, " "))
             }
             params.updateUserId = this.appSession.userId;
         }
