@@ -26,6 +26,8 @@ namespace SHCServer.Models
             CreateDate = DateTime.Now;
             BookingServiceType = 1;
             ReasonReject = obj.reasonReject;
+
+
         }
         public BookingInformations(BookingInformationsInputCreateViewModel obj)
         {
