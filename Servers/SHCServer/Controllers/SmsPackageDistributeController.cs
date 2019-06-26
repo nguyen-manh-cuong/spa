@@ -77,7 +77,7 @@ namespace SHCServer.Controllers
 
             if (filters.HealthFacilitiesId != null)
                 if (filters.HealthFacilitiesId.Count != 0)
-                    objs = objs.Where(p => filters.HealthFacilitiesId.Contains(p.HealthFacilitiesId));
+                    objs = objs.Where(p => filters.HealthFacilitiesId.Contains(int.Parse(p.HealthFacilitiesId.ToString())));
 
             if (sorting != null)
             {
@@ -104,7 +104,8 @@ namespace SHCServer.Controllers
         {
             var package = _context.Query<SmsPackage>().Where(g => g.Id == obj.SmsPackageId && g.IsDelete == false).FirstOrDefault();
             if (package == null) return StatusCode(406, _excep.Throw(406, "Gói SMS đã chọn không tồn tại."));
-            int packageDistributeId = _context.Query<SmsPackagesDistribute>().OrderByDesc(pd => pd.Id).FirstOrDefault().Id;
+            var smsPackagesDistributes = _context.Query<SmsPackagesDistribute>();
+            int packageDistributeId = smsPackagesDistributes.ToList().Count == 0 ? 0 : smsPackagesDistributes.OrderByDesc(pd => pd.Id).FirstOrDefault().Id;
             List<SmsPackagesDistribute> lstPD = new List<SmsPackagesDistribute>();
             //List<SmsPackageUsed> lstPU = new List<SmsPackageUsed>();
 

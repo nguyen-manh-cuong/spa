@@ -178,6 +178,10 @@ export class EditComponent extends AppComponentBase implements OnInit, AfterView
 
         
     }
+    replace_space(str) {
+        str = str.replace(/ /g, " ");
+        return str;
+    }
 
 
 }
