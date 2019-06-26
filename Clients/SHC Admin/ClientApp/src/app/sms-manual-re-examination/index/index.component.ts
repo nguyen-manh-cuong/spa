@@ -383,6 +383,11 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
             });
     }
 
+    xClick(){
+        this.healthfacilities.setValue(null);
+        
+    }
+
     filter(value: any) {
         var fValue = typeof value === 'string' ? value : (value ? value.name : '')
         this._healthfacilities = [];
