@@ -138,9 +138,9 @@ namespace SHCServer.Controllers
                 {
                     _context.Update<BookingInformations>(p => p.BookingId == booking.bookingId, a => new BookingInformations
                     {
-                        Reason = booking.reason,
+                        Reason = booking.reason.Trim(),
                         Status = booking.status,
-                        BookingUser = booking.bookingUser,
+                        BookingUser = booking.bookingUser.Trim(),
                         Address = booking.address.Trim(),
                         UpdateDate = DateTime.Now,
                         UpdateUserId = booking.updateUserId
