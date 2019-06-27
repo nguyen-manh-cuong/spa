@@ -1,12 +1,11 @@
 <div class="winkel-calendar" (clickOutside)="closepopover()">
     <span *ngIf="!settings.rangepicker">
-        <input type="hidden" class="wc-input" value="{{date}}">
-        <div class="wc-date-container" (click)="popover = !popover">
-            <span>{{date | date: settings.format}}</span>
-            <i class="fa fa-calendar"></i>
-        </div>
-    </span>
+    <input type="hidden" class="wc-input" value="{{date}}">
+    <div class="wc-date-container" (click)="popover = !popover">
+        <span>{{date | date: settings.format}}</span>
+    <i class="fa fa-calendar"></i>
 </div>
+</span>
 <div *ngIf="!settings.rangepicker" class="wc-date-popover" [ngClass]="{'banner-true': settings.bigBanner == true}" [hidden]="!popover">
     <div class="wc-banner" *ngIf="settings.bigBanner">
         <div class="wc-day-row">{{date | date: 'EEEE'}}</div>
@@ -28,8 +27,7 @@
     </div>
     <div class="wc-details">
         <i class="wc-prev fa fa-angle-left" (click)="prevMonth($event)"></i>
-        <div class="month-year" *ngIf="settings.bigBanner" (click)="toggleMonthView()">
-            {{date | date: 'MMMM'}}
+        <div class="month-year" *ngIf="settings.bigBanner" (click)="toggleMonthView()">{{date | date: 'MMMM'}}
             <!-- <i ng-show="!monthsView" class="fa fa-arrow-down"></i>
                                  <i ng-show="monthsView" class="fa fa-arrow-up"></i> -->
         </div>
@@ -61,7 +59,7 @@
     </table>
     <div class="months-view" [hidden]="!monthsView" (click)="setMonth($event)">
         <span *ngFor="let month of settings.cal_months_labels_short" [ngClass]="{'current-month': month == settings.cal_months_labels_short[date?.getMonth()]}"
-              id="{{month}}">{{month}}</span>
+            id="{{month}}">{{month}}</span>
     </div>
     <div class="years-view" *ngIf="yearView">
         <div class="fa fa-angle-left prev" (click)="generateYearList('prev')"></div>
@@ -75,13 +73,13 @@
         <div class="time">
             <div class="hour">
                 <span class="fa fa-plus inc-btn" (click)="incHour()"></span>
-                <input (keypress)="numberOnly($event)" value="{{hourValue}}" [(ngModel)]="hourValue" autofocus (keyup)="changedHour()" />
+                <input (keypress)="numberOnly($event)" value="{{hourValue}}" [(ngModel)]="hourValue" autofocus (keyup)="changedHour()"/>
                 <span class="fa fa-minus dec-btn" (click)="decHour()"></span>
             </div>
             <div class="time-divider">:</div>
             <div class="minutes">
                 <span class="fa fa-plus inc-btn" (click)="incMinutes()"></span>
-                <input (keypress)="numberOnly($event)" value="{{minValue}}" [(ngModel)]="minValue" (keyup)="changedMinutes()" />
+                <input (keypress)="numberOnly($event)" value="{{minValue}}" [(ngModel)]="minValue" (keyup)="changedMinutes()"/>
                 <span class="fa fa-minus dec-btn" (click)="decMinutes()"></span>
             </div>
         </div>
@@ -108,23 +106,22 @@
         <div class="clock-icon" *ngIf="!settings.bigBanner">
             <i class="fa fa-clock-o" aria-hidden="true" (click)="timeView = !timeView"></i>
         </div>
-        <div class="ok" (click)="done()">
-            <i class="fa fa-check"></i>Done
+        <div class="ok" (click)="done()"><i class="fa fa-check"></i>Done
         </div>
     </div>
 </div>
 <span *ngIf="settings.rangepicker">
-    <input type="hidden" class="wc-input" value="{{date}}">
-    <div class="range-input" (click)="togglePopover()">
-        <div class="wc-date-container">
+        <input type="hidden" class="wc-input" value="{{date}}">
+<div class="range-input" (click)="togglePopover()">
+        <div class="wc-date-container" >
             <span>{{dateRange?.startDate | date: settings.format}}</span>
-            <i class="fa fa-arrow-circle-o-right range-direc"></i>
-        </div>
-        <div class="wc-date-container to-input">
-            <span>{{dateRange?.endDate | date: settings.format}}</span>
-            <i class="fa fa-calendar"></i>
-        </div>
-    </div>
+<i class="fa fa-arrow-circle-o-right range-direc"></i>
+</div>
+<div class="wc-date-container to-input">
+    <span>{{dateRange?.endDate | date: settings.format}}</span>
+    <i class="fa fa-calendar"></i>
+</div>
+</div>
 </span>
 <div *ngIf="settings.rangepicker" class="range-date-popover" [ngClass]="{'banner-true': settings.bigBanner == true}" [hidden]="!popover">
     <div class="range-banner">
@@ -165,8 +162,7 @@
     <div class="dp-left-section">
         <div class="wc-details">
             <i class="wc-prev fa fa-angle-left" (click)="prevMonth($event)"></i>
-            <div class="month-year" *ngIf="settings.bigBanner" (click)="toggleMonthView()">
-                {{leftDate | date: 'MMMM'}}
+            <div class="month-year" *ngIf="settings.bigBanner" (click)="toggleMonthView()">{{leftDate | date: 'MMMM'}}
                 <!-- <i ng-show="!monthsView" class="fa fa-arrow-down"></i>
                                  <i ng-show="monthsView" class="fa fa-arrow-up"></i> -->
             </div>
@@ -198,7 +194,7 @@
         </table>
         <div class="months-view" [hidden]="!monthsView" (click)="setMonth($event)">
             <span *ngFor="let month of settings.cal_months_labels_short" [ngClass]="{'current-month': month == settings.cal_months_labels_short[dateRange.startDate?.getMonth()]}"
-                  id="{{month}}">{{month}}</span>
+                id="{{month}}">{{month}}</span>
         </div>
         <div class="years-view" *ngIf="yearView">
             <div class="fa fa-angle-left prev" (click)="generateYearList('prev')"></div>
@@ -211,7 +207,7 @@
             <div class="time">
                 <div class="hour">
                     <span class="fa fa-plus inc-btn" (click)="incHour()"></span>
-                    <input type="number" value="{{hourValue}}" [(ngModel)]="hourValue" autofocus />
+                    <input type="number" value="{{hourValue}}" [(ngModel)]="hourValue" autofocus/>
                     <span class="fa fa-minus dec-btn" (click)="decHour()"></span>
                 </div>
                 <div class="time-divider">:</div>
@@ -245,8 +241,7 @@
     <div class="dp-right-section">
         <div class="wc-details">
             <i class="wc-prev fa fa-angle-left" (click)="prevMonth($event)"></i>
-            <div class="month-year" *ngIf="settings.bigBanner" (click)="toggleMonthView()">
-                {{rightDate | date: 'MMMM'}}
+            <div class="month-year" *ngIf="settings.bigBanner" (click)="toggleMonthView()">{{rightDate | date: 'MMMM'}}
                 <!-- <i ng-show="!monthsView" class="fa fa-arrow-down"></i>
                                  <i ng-show="monthsView" class="fa fa-arrow-up"></i> -->
             </div>
@@ -278,7 +273,7 @@
         </table>
         <div class="months-view" [hidden]="!monthsView" (click)="setMonth($event)">
             <span *ngFor="let month of settings.cal_months_labels_short" [ngClass]="{'current-month': month == settings.cal_months_labels_short[date?.getMonth()]}"
-                  id="{{month}}">{{month}}</span>
+                id="{{month}}">{{month}}</span>
         </div>
         <div class="years-view" *ngIf="yearView">
             <div class="fa fa-angle-left prev" (click)="generateYearList('prev')"></div>
@@ -291,7 +286,7 @@
             <div class="time">
                 <div class="hour">
                     <span class="fa fa-plus inc-btn" (click)="incHour()"></span>
-                    <input type="number" value="{{hourValue}}" [(ngModel)]="hourValue" autofocus />
+                    <input type="number" value="{{hourValue}}" [(ngModel)]="hourValue" autofocus/>
                     <span class="fa fa-minus dec-btn" (click)="decHour()"></span>
                 </div>
                 <div class="time-divider">:</div>
