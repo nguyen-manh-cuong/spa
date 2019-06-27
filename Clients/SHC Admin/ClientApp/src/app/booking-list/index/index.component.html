@@ -19,24 +19,17 @@
             <div class="col-md-8" *ngIf="appSession.user.accountType == 0">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('Unit')}}</mat-label>
-                    
-                    <div class="box-search">
                         <input matInput [formControl]="healthfacilities" [matAutocomplete]="auto" #unitInput>
-                        <div class="box-search-icon">
-                            <button mat-icon-button class="search-button" (click)="xClick()">
-                                <mat-icon class="mat-24" aria-label="Search icon">clear</mat-icon>
-                            </button>
-                        </div>
-                    </div>
-                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn"
-                                      (optionSelected)="onSelectHealthFacilities($event.option.value)">
-                        <mat-option *ngIf="isLoading" class="is-loading">
-                            <mat-spinner diameter="50"></mat-spinner>
-                        </mat-option>
-                        <mat-option *ngFor="let o of _healthfacilities" [value]="o">
-                            {{o.code + ' - ' + o.name}}
-                        </mat-option>
-                    </mat-autocomplete>
+                        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn"
+                                          (optionSelected)="onSelectHealthFacilities($event.option.value)">
+                            <mat-option *ngIf="isLoading" class="is-loading">
+                                <mat-spinner diameter="50"></mat-spinner>
+                            </mat-option>
+                            <mat-option  class="text-center" [innerHTML]="'<div class=\'text-center border-bottom w-100\'>'+ l('SelectAll') +'</div>'" [value]=""></mat-option>
+                            <mat-option *ngFor="let o of _healthfacilities" [value]="o">
+                                {{o.code + ' - ' + o.name}}
+                            </mat-option>
+                        </mat-autocomplete>
                 </mat-form-field>
             </div>
 
