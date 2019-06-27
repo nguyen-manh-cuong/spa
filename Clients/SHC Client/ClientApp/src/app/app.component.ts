@@ -21,7 +21,7 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
     private title = 'Viettel Gateway';
     public pateTitle = '';
 
-    isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset).pipe(map(result => result.matches));
+    isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset).pipe(map((result: any) => result.matches));
     shownLoginName: string = '';
 
     languages: abp.localization.ILanguageInfo[];

@@ -700,6 +700,11 @@ namespace SHCServer.Controllers
                         var filePath = Path.Combine(uploads, uniqueFileName);
                         if (file.Name == "cmnd")
                         {
+                            //_context.Update<UsersAttach>(ua => ua.UserId == obj.UserId && !ua.Type.Equals("1"), x => new UsersAttach()
+                            //{
+                            //    IsDelete = true
+                            //});
+
                             _context.Insert(() => new UsersAttach
                             {
                                 UserId = obj.UserId,
@@ -713,6 +718,10 @@ namespace SHCServer.Controllers
                         {
                             if (obj.AccountType == 2)
                             {
+                                //_context.Update<UsersAttach>(ua => ua.UserId == obj.UserId && !ua.Type.Equals("3"), x => new UsersAttach()
+                                //{
+                                //    IsDelete = true
+                                //});
 
                                 _context.Insert(() => new UsersAttach
                                 {
@@ -725,6 +734,10 @@ namespace SHCServer.Controllers
                             }
                             else if (obj.AccountType == 3)
                             {
+                                //_context.Update<UsersAttach>(ua => ua.UserId == obj.UserId && !ua.Type.Equals("4"), x => new UsersAttach()
+                                //{
+                                //    IsDelete = true
+                                //});
 
                                 _context.Insert(() => new UsersAttach
                                 {
@@ -737,10 +750,10 @@ namespace SHCServer.Controllers
                             }
                             else
                             {
-                                _context.Update<UsersAttach>(ua => ua.UserId == obj.UserId && (ua.Type.Equals("3") || ua.Type.Equals("4")) && !ua.Path.Equals("/uploads/" + file.FileName), x => new UsersAttach()
-                                {
-                                    IsDelete = true
-                                });
+                                //_context.Update<UsersAttach>(ua => ua.UserId == obj.UserId && !ua.Type.Equals("2"), x => new UsersAttach()
+                                //{
+                                //    IsDelete = true
+                                //});
 
                                 _context.Insert(() => new UsersAttach
                                 {

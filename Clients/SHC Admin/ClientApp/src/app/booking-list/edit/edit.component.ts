@@ -147,7 +147,7 @@ export class EditComponent extends AppComponentBase implements OnInit, AfterView
 
     submit() {
 
-        var params = _.pick(this._frm.value, ['bookingId', 'reason', 'status', 'bookingUser', 'address', 'updateUserId']);
+        var params: any = _.pick(this._frm.value, ['bookingId', 'reason', 'status', 'bookingUser', 'address', 'updateUserId']);
 
         if (this._booking) {
             params.bookingId = this._booking.bookingId;
