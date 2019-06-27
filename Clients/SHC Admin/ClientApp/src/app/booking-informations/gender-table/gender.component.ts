@@ -18,7 +18,7 @@ export class GenderComponent extends AppComponentBase implements OnInit {
     dataSourcesGender = new MatTableDataSource();
     @Input('master') masterName: string;
     //@Input('quantityBooking') quantityBookingName: any;
-    arrayGender = [{ position: 1, sex: 'Nam', quantityGender: 0 }, { position: 2, sex: 'Nữ', quantityGender: 0 }];
+    arrayGender = [{ position: 1, sex: 'Nam', quantityGender: 0 }, { position: 2, sex: 'Nữ', quantityGender: 0 }, { position: 3, sex: 'Không xác định', quantityGender: 0 }];
     frmSearch: FormGroup;
     ruleSearch = {};
     time: [0];
@@ -43,16 +43,21 @@ export class GenderComponent extends AppComponentBase implements OnInit {
                 if (count == 1) {
                     this.arrayGender[1].quantityGender = item.quantityByGenderFemale;
                 }
+                if (count == 2) {
+                    this.arrayGender[2].quantityGender = item.quantityByGenderNone;
+                }
                 count++;
             }
-          this.dataSourcesGender.data = this.arrayGender;
+            this.dataSourcesGender.data = this.arrayGender;
+           
         });
   
   }
-  reloadGender(_quantityByGenderFemale: any, _quantityByGenderMale: any){
-    this.arrayGender[0].quantityGender = _quantityByGenderMale;
-    this.arrayGender[1].quantityGender = _quantityByGenderFemale;
-    this.dataSourcesGender.data = this.arrayGender;       
+    reloadGender(_quantityByGenderFemale: any, _quantityByGenderMale: any, _quantityByGenderNone:any){
+      this.arrayGender[0].quantityGender = _quantityByGenderMale;
+      this.arrayGender[1].quantityGender = _quantityByGenderFemale;
+      this.arrayGender[2].quantityGender = _quantityByGenderNone;
+      this.dataSourcesGender.data = this.arrayGender;
   }
 
 }

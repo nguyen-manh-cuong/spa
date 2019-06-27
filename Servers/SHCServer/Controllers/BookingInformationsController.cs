@@ -205,7 +205,7 @@ namespace SHCServer.Controllers
         [Route("api/bookinginformationsgroupby")]
         public IActionResult GetByGroup(int skipCount = 0, int maxResultCount = 10, string sorting = null, string filter = null)
         {
-            var objs = _context.Query<BookingInformations>().Where(b => b.BookingServiceType == 1);
+            var objs = _context.Query<BookingInformations>().Where(b => b.BookingServiceType == 1 );
             //var check = 0;
 
             if (filter != null)
@@ -269,7 +269,8 @@ namespace SHCServer.Controllers
                 QuantityByStatusCancel = objs.Where(o => o.Status == 3).Count(),
                 QuantityByStatusNew = objs.Where(o => o.Status == 0).Count(),
                 QuantityByGenderMale = objs.Where(o => o.Gender == 1).Count(),//Nam
-                QuantityByGenderFemale = objs.Where(o => o.Gender == 2).Count(),//Nu               
+                QuantityByGenderFemale = objs.Where(o => o.Gender == 2).Count(),//Nu     
+                QuantityByGenderNone = objs.Where(o => o.Gender == 3).Count(), //Khong xd
             });
             return Json(new ActionResultDto { Result = new { Items = rs.TakePage(skipCount == 0 ? 1 : skipCount + 1, maxResultCount).ToList().OrderBy(o=>o.HealthFacilitiesName), TotalCount = rs.Count(), TotalPatientCount = objs.Count() } });
         }
