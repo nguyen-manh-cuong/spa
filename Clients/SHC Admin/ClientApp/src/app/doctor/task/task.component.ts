@@ -240,11 +240,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     this.getAcademics();
     this.getDegrees();
     this.getNations();
-    this.getSpecialist();
-
-
-
-
+    // this.getSpecialist();
     this.filterSpecialistOptions();
 
     this.dialogComponent = TaskComponent;
@@ -272,12 +268,20 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
       if (this.obj.certificationCode) {
         this._certificationInputCheck = false;
       }
-      setTimeout(() => {
-        this.obj.specialist.forEach(w => {
-          this._specialist = this._specialistTemp.filter(e => e.code != w.specialistCode);
-          console.log(277, this._specialist);
-        });
-      }, 1000);
+
+      this.getSpecialist(this.obj);
+
+      // setTimeout(() => {
+      //   this.obj.specialist.forEach(w => {
+      //     this._specialist = this._specialistTemp.filter(e => e.code != w.specialistCode);
+      //     console.log(279, w.specialistCode);
+      //     console.log(277, this._specialist);
+      //   });
+      // }, 1000);
+    }
+    else
+    {
+      this.getSpecialist();
     }
     
     if (this.obj) {
@@ -372,7 +376,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
 
   ChangeListSpecia(event: any)
   {
-    console.log(123);
+    // console.log(123);
     
   }
 
@@ -525,10 +529,14 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     this._dataService.getAll("ethnicity").subscribe(resp => { this.ethnicities = resp.items; });
   }
 
-  getSpecialist() {
+  getSpecialist(obj? : any) {
     this.dataService.get("catcommon", "{isActive:'true'}", "{name:'asc'}", null, 300).subscribe(resp => {
       this._specialist = resp.items;
       this._specialistTemp = resp.items;
+
+      obj.specialist.forEach(w => {
+        this._specialist = this._specialistTemp.filter(e => e.code != w.specialistCode);
+      });
   });
   }
 
