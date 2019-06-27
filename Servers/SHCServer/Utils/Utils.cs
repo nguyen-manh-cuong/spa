@@ -10,7 +10,9 @@ using System.Security.Cryptography;
 using System.Text;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using SHCServer.Models;
+using Viettel;
 
 namespace SHCServer
 {
@@ -481,6 +483,40 @@ namespace SHCServer
         //        return new ActionResultDTO() { Error = new { code = 0, message = ex.Message } };
         //    }
         //}
+
+        public static void Log(DbContext context, string logType, int appCode, int userId, string ipAddress, string pathLink, string functionName, object obj, string className, string description, bool result, int healthFacilitiesId, int? errorCode = null)
+        {
+            try
+            {
+                context.Session.BeginTransaction();
+                context.Insert(new Log()
+                {
+                    HealthFacilitiesId = healthFacilitiesId,
+                    AppCode = appCode,
+                    Class = className,
+                    Description = description,
+                    ErrorCode = errorCode.ToString(),
+                    EvenDate = DateTime.Now,
+                    Duration = DateTime.Now,
+                    Function = functionName,
+                    IpAddress = ipAddress,
+                    LogType = logType,
+                    ParamList = JsonConvert.SerializeObject(obj).Replace("\\", ""),
+                    Path = pathLink,
+                    Result = result,
+                    UserId = userId
+                });
+                context.Session.CommitTransaction();
+            }
+            catch (Exception e)
+            {
+                if (context.Session.IsInTransaction)
+                {
+                    context.Session.RollbackTransaction();
+                }
+            }
+        }
+
     }
 
     public class TokenResult

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
@@ -12,13 +13,15 @@ namespace SHCServer.Controllers
     public class CategoryCommonController : BaseController
     {
         private readonly string _connectionString;
-
-        public CategoryCommonController(IOptions<Audience> settings, IConfiguration configuration)
+        private readonly IHttpContextAccessor httpContextAccessor;
+        public CategoryCommonController(IOptions<Audience> settings, IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
         {
             _settings = settings;
             _context = new MySqlContext(new MySqlConnectionFactory(configuration.GetConnectionString("DefaultConnection")));
+            _contextmdmdb = new MySqlContext(new MySqlConnectionFactory(configuration.GetConnectionString("MdmConnection")));
             _connectionString = configuration.GetConnectionString("DefaultConnection");
             _excep = new FriendlyException();
+            this.httpContextAccessor = httpContextAccessor;
         }
 
         [HttpGet]
@@ -77,6 +80,21 @@ namespace SHCServer.Controllers
             {
                 objs = objs.OrderByDesc(o => o.Code).OrderByDesc(o => o.CreateDate);
             }
+
+            Utils.Log(
+                _contextmdmdb,
+                "Business",
+                2,
+                GetCurrentUserId(),
+                GetIpClient(),
+                "/app/category-common",
+                "Lấy dữ liệu",
+                new { Filter = filter, Sorting = sorting },
+                "Chuyên khoa",
+                "Lấy danh sách chuyên khoa",
+                true,
+                GetHealthFacilitiesId(_contextmdmdb,6));
+
             return Json(new ActionResultDto()
             {
                 Result = new
@@ -111,10 +129,37 @@ namespace SHCServer.Controllers
                 }
                 else
                 {
+                    Utils.Log(
+                        _contextmdmdb,
+                        "Business",
+                        2,
+                        GetCurrentUserId(),
+                        GetIpClient(),
+                        "/app/category-common",
+                        "Tạo mới",
+                        categoryCommon,
+                        "Chuyên khoa",
+                        "Tạo mới chuyên khoa",
+                        false,
+                        GetHealthFacilitiesId(_contextmdmdb, GetCurrentUserId()));
                     return StatusCode(406, _excep.Throw(406, "Tạo không thành công !", "Mã chuyên khoa đã tồn tại"));
                 }
 
                 _context.Session.CommitTransaction();
+
+                Utils.Log(
+                    _contextmdmdb,
+                    "Business",
+                    2,
+                    GetCurrentUserId(),
+                    GetIpClient(),
+                    "/app/category-common",
+                    "Tạo mới",
+                    categoryCommon,
+                    "Chuyên khoa",
+                    "Tạo mới chuyên khoa",
+                    true,
+                    GetHealthFacilitiesId(_contextmdmdb, GetCurrentUserId()));
 
                 return Json(new ActionResultDto());
             }
@@ -153,6 +198,20 @@ namespace SHCServer.Controllers
 
                 _context.Session.CommitTransaction();
 
+                Utils.Log(
+                    _contextmdmdb,
+                    "Business",
+                    2,
+                    GetCurrentUserId(),
+                    GetIpClient(),
+                    "/app/category-common",
+                    "Tạo mới",
+                    categoryCommon,
+                    "Chuyên khoa",
+                    "Tạo mới chuyên khoa",
+                    true,
+                    GetHealthFacilitiesId(_contextmdmdb, GetCurrentUserId()));
+
                 return Json(new ActionResultDto());
             }
             catch (Exception e)
@@ -181,6 +240,20 @@ namespace SHCServer.Controllers
                 {
                     IsDelete = true,
                 });
+
+                Utils.Log(
+                    _contextmdmdb,
+                    "Business",
+                    2,
+                    GetCurrentUserId(),
+                    GetIpClient(),
+                    "/app/category-common",
+                    "Tạo mới",
+                    new {Id=id },
+                    "Chuyên khoa",
+                    "Tạo mới chuyên khoa",
+                    true,
+                    GetHealthFacilitiesId(_contextmdmdb, GetCurrentUserId()));
 
                 _context.Session.CommitTransaction();
 
