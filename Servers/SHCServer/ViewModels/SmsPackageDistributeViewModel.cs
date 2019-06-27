@@ -59,12 +59,12 @@ namespace SHCServer.ViewModels
                        })
                         .Where((d, u) => d.IsDelete == false && d.IsActive==true && u.IsDelete==false).Select((d, u) => u).FirstOrDefault();
 
-            PackageName = Packages.Name;
-            Quantity = Packages.Quantity;
-            Cost = Packages.Cost;
+            PackageName = Packages != null ? Packages.Name : "";
+            Quantity = Packages != null ? Packages.Quantity : 0;
+            Cost = Packages != null ? Packages.Cost : 0;
             HealthFacilitiesName = HealthFacilities != null ? HealthFacilities.Name : "";
             HealthFacilitiesCode = HealthFacilities != null ? HealthFacilities.Code : "";
-            SmsBrandsName = SmsBrand.BrandName;
+            SmsBrandsName = SmsBrand != null ? SmsBrand.BrandName : "";
         }
 
         //public override int Id { set; get; }

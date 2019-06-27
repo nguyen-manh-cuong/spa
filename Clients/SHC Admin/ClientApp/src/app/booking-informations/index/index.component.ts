@@ -49,6 +49,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
     _quantityNew: any;
     _quantityMale: any;
     _quantityFemale: any;
+    _quantityNone: any;
     master = 'Master';
     listBooking: any;
     _healthfacilities = [];
@@ -293,6 +294,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
                         this._quantityNew = 0;
                         this._quantityMale = 0;
                         this._quantityFemale = 0;
+                        this._quantityNone = 0;
                     }
                     else {
                         for (var item of this.listBooking) {
@@ -302,10 +304,11 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
                             this._quantityNew = item.quantityByStatusNew;
                             this._quantityMale = item.quantityByGenderMale;
                             this._quantityFemale = item.quantityByGenderFemale;
+                            this._quantityNone = item.quantityByGenderNone;
                         }
                     }
                     this.statusComponent.reloadStatus(this._quantityDone, this._quantityPending, this._quantityCancel, this._quantityNew);
-                    this.genderComponent.reloadGender(this._quantityFemale, this._quantityMale);
+                    this.genderComponent.reloadGender(this._quantityFemale, this._quantityMale, this._quantityNone);
                 }, 500);
             });
 
