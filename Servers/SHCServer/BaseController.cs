@@ -28,14 +28,15 @@ namespace SHCServer
 
         public string GetIpClient()
         {
-            var remoteIpAddress = "42.115.196.33";
+            var remoteIpAddress = HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
+
             return remoteIpAddress;
         }
         public int GetCurrentUserId()
         {
-            //var claims = (User.Identity as ClaimsIdentity).FindFirst("Uid");
-            //return int.Parse(claims.Value);
-            return 6;
+            var claims = (User.Identity as ClaimsIdentity).FindFirst("Uid");
+            return int.Parse(claims.Value);
+            //return 6;
         }
 
         public int GetHealthFacilitiesId(DbContext context,int userId)

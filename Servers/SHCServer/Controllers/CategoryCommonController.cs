@@ -13,15 +13,13 @@ namespace SHCServer.Controllers
     public class CategoryCommonController : BaseController
     {
         private readonly string _connectionString;
-        private readonly IHttpContextAccessor httpContextAccessor;
-        public CategoryCommonController(IOptions<Audience> settings, IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
+        public CategoryCommonController(IOptions<Audience> settings, IConfiguration configuration)
         {
             _settings = settings;
             _context = new MySqlContext(new MySqlConnectionFactory(configuration.GetConnectionString("DefaultConnection")));
             _contextmdmdb = new MySqlContext(new MySqlConnectionFactory(configuration.GetConnectionString("MdmConnection")));
             _connectionString = configuration.GetConnectionString("DefaultConnection");
             _excep = new FriendlyException();
-            this.httpContextAccessor = httpContextAccessor;
         }
 
         [HttpGet]
@@ -93,7 +91,7 @@ namespace SHCServer.Controllers
                 "Chuyên khoa",
                 "Lấy danh sách chuyên khoa",
                 true,
-                GetHealthFacilitiesId(_contextmdmdb,6));
+                GetHealthFacilitiesId(_contextmdmdb,GetCurrentUserId()));
 
             return Json(new ActionResultDto()
             {
