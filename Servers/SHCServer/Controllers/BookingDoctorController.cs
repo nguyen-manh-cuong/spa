@@ -54,7 +54,7 @@ namespace SHCServer.Controllers
         {
             List<BookingDoctorsCalendars> lstDoctorCalendar = new List<BookingDoctorsCalendars>();
 
-            foreach (TimeSlotInputViewModel el in bookingdoctor.LstTimeSlot)
+            /*foreach (TimeSlotInputViewModel el in bookingdoctor.LstTimeSlot)
             {
                 BookingDoctorsCalendars doctorCalendar = new BookingDoctorsCalendars();
                 doctorCalendar.Address = bookingdoctor.Address;
@@ -81,7 +81,60 @@ namespace SHCServer.Controllers
             catch (Exception e)
             {
                 return Json(new ActionResultDto { Error = e.Message });
+            }*/
+
+            try
+            {
+                var listTimeSlot = bookingdoctor.LstTimeSlot;
+                foreach (TimeSlotInputViewModel el in listTimeSlot)
+                {
+                    DateTime calendarDate = DateTime.Parse(el.DateTime);
+                    var bookingDoctorsCalendars = _context.Query<BookingDoctorsCalendars>().Where(b => b.DoctorId == bookingdoctor.Doctor && b.TimeSlotId == el.TimeSlotId && b.CalendarDate == calendarDate).FirstOrDefault();
+                    if (bookingDoctorsCalendars == null)
+                    {
+                        _context.Session.BeginTransaction();
+                        string subQuery = "INSERT INTO booking_doctors_calendars (Address, HealthFacilitiesId, Status, IsActive, DoctorId, TimeSlotId, CalendarDate, CreateUserId) VALUES ";
+                        var subParamQuery = new List<string>();
+                        var subParam = new List<DbParam>();
+
+                        subParamQuery.Add($"(@Address, @HealthFacilitiesId, @Status, @IsActive, @DoctorId, @TimeSlotId, @CalendarDate, @CreateUserId)");
+                        subParam.Add(DbParam.Create("@Address", bookingdoctor.Address));
+                        subParam.Add(DbParam.Create("@HealthFacilitiesId", bookingdoctor.Healthfacilities));
+                        subParam.Add(DbParam.Create("@Status", bookingdoctor.Status));
+                        subParam.Add(DbParam.Create("@IsActive", true));
+                        subParam.Add(DbParam.Create("@DoctorId", bookingdoctor.Doctor));
+                        subParam.Add(DbParam.Create("@TimeSlotId", el.TimeSlotId));
+                        subParam.Add(DbParam.Create("@CalendarDate", calendarDate));
+                        subParam.Add(DbParam.Create("@CreateUserId", bookingdoctor.UserId));
+                        _context.Session.ExecuteNonQuery($"{subQuery} {string.Join(",", subParamQuery)}", subParam);
+                        _context.Session.CommitTransaction();
+                    }
+                    else
+                    {
+                        _context.Session.BeginTransaction();
+                        string subQuery = "UPDATE booking_doctors_calendars SET Address = @Address, HealthFacilitiesId = @HealthFacilitiesId, Status = @Status, IsActive = @IsActive, UpdateDate = @UpdateDate, UpdateUserId = @CreateUserId WHERE DoctorId = @DoctorId AND TimeSlotId = @TimeSlotId AND CalendarDate = @CalendarDate";
+
+                        var subParam = new List<DbParam>();
+                        subParam.Add(DbParam.Create("@Address", bookingdoctor.Address));
+                        subParam.Add(DbParam.Create("@HealthFacilitiesId", bookingdoctor.Healthfacilities));
+                        subParam.Add(DbParam.Create("@Status", bookingdoctor.Status));
+                        subParam.Add(DbParam.Create("@IsActive", true));
+                        subParam.Add(DbParam.Create("@DoctorId", bookingdoctor.Doctor));
+                        subParam.Add(DbParam.Create("@TimeSlotId", el.TimeSlotId));
+                        subParam.Add(DbParam.Create("@CalendarDate", calendarDate));
+                        subParam.Add(DbParam.Create("@UpdateDate", DateTime.Now));
+                        subParam.Add(DbParam.Create("@CreateUserId", bookingdoctor.UserId));
+                        _context.Session.ExecuteNonQuery($"{subQuery}", subParam);
+                        _context.Session.CommitTransaction();
+                    }
+                }
+                return Json(new ActionResultDto());
             }
+            catch (Exception e)
+            {
+                return Json(new ActionResultDto { Error = e.Message });
+            }
+
         }
 
         [HttpGet]

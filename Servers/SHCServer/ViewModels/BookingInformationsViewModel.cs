@@ -218,6 +218,7 @@ namespace SHCServer.ViewModels
         public int updateUserId { set; get; }
         public bool IsDelete { get; set; }
 
+
         public static explicit operator int(BookingInformationsInputViewModel v)
         {
             throw new NotImplementedException();

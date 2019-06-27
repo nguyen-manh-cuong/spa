@@ -101,7 +101,15 @@ export class ResetComponent extends AppComponentBase implements OnInit {
     }
 
     newPasswordInput($event){
-        $event.target.value=cleanUnicode($event.target.value);
+        $event.target.value = cleanUnicode($event.target.value);
+
+        if ($event.target.value != this.frmUser.controls['confirmPassword'].value) {
+            this.frmUser.controls['confirmPassword'].setErrors({ 'comparePassword': true });
+        }
+        else {
+            this.frmUser.controls['confirmPassword'].setErrors(null);
+        }
+
         this.checkPassword=false;
     }
 

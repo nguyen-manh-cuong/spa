@@ -94,7 +94,7 @@ namespace SHCServer.Controllers
             try
             {
                 _context.Session.BeginTransaction();
-                var cc = _context.Query<CategoryCommon>().Where(c => c.Code.Equals(categoryCommon.Code)).FirstOrDefault();
+                var cc = _context.Query<CategoryCommon>().Where(c => c.Code.Equals(categoryCommon.Code) && c.IsDelete == false).FirstOrDefault();
                 if (cc == null)
                 {
                     _context.Insert(() => new CategoryCommon

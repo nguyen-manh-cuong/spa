@@ -79,7 +79,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
     ngOnInit() {
         this.api = 'bookinglist';
         this.frmSearch = this._formBuilder.group({
-            healthfacilities: [],
+            healthfacilities: [this.appSession.user.healthFacilitiesId],
             doctor: [],
             packagesNameDescription: [],
             status: [4],
@@ -193,6 +193,13 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
 
         this.frmSearch.controls['endTime'].setValue(moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').add(1, 'day').toDate());
     }
+
+    xClick() {
+
+        // this.filter('');
+        this.healthfacilities.setValue(null);
+    }
+
 
     openCustomDialog(obj): void {
         this.selectionData.select(obj);
@@ -339,6 +346,16 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
     }
 
     customSearch() {
+        if (this.appSession.user.healthFacilitiesId != null) {
+            this.healthfacilities.value
+                ? this.frmSearch.controls['healthfacilities'].setValue(this.healthfacilities.value.healthFacilitiesId)
+                : '';
+        }
+        else {
+            this.healthfacilities.value
+                ? this.frmSearch.controls['healthfacilities'].setValue(this.healthfacilities.value.healthFacilitiesId)
+                : this.frmSearch.controls['healthfacilities'].setValue('');
+        }
         if (this.frmSearch.controls['packagesNameDescription'].value != null) {
             this.frmSearch.controls['packagesNameDescription'].setValue(this.frmSearch.controls['packagesNameDescription'].value.trim());
         }

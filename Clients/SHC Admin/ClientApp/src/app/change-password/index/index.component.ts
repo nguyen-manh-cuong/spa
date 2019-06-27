@@ -157,7 +157,9 @@ export class IndexComponent extends AppComponentBase implements OnInit {
         // call api
         this._dataService.update(this.api, Object.assign(this.frmResetPassword.value)).subscribe(() => {
             this.checkOldPassword = true;
-            notifyToastr('Thông báo', 'Đổi mật khẩu không thành công. Xác nhận mật khẩu mới không đúng', 'warning');
+
+            notifyToastr(this.l('Đổi mật khẩu thành công'), '', 'success');
+           
            // swal({
                 //title: this.l('Đổi mật khẩu thành công'),
                // text: '',
@@ -167,7 +169,7 @@ export class IndexComponent extends AppComponentBase implements OnInit {
             //.then(() => {
                 setTimeout(()=>{
                     this._authService.logout();
-                },2000);
+                },1500);
 
             //});     
         }, err => {

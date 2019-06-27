@@ -8,6 +8,7 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Viettel;
 using Viettel.MySql;
+using System.Linq;
 
 namespace SHCServer.Controllers
 {
@@ -260,7 +261,6 @@ namespace SHCServer.Controllers
                 objs = objs.OrderByDesc(b => b.CreateDate);
             }
 
-            var a = objs;
             var rs = objs.GroupBy(p => p.DoctorId).Select(p => new BookingInformationsViewModel(p, _connectionString)
             {
                 Quantity = objs.Where(o => o.DoctorId == p.DoctorId).Count(),
@@ -271,7 +271,7 @@ namespace SHCServer.Controllers
                 QuantityByGenderMale = objs.Where(o => o.Gender == 1).Count(),//Nam
                 QuantityByGenderFemale = objs.Where(o => o.Gender == 2).Count(),//Nu               
             });
-            return Json(new ActionResultDto { Result = new { Items = rs.TakePage(skipCount == 0 ? 1 : skipCount + 1, maxResultCount).ToList(), TotalCount = rs.Count(), TotalPatientCount = objs.Count() } });
+            return Json(new ActionResultDto { Result = new { Items = rs.TakePage(skipCount == 0 ? 1 : skipCount + 1, maxResultCount).ToList().OrderBy(o=>o.HealthFacilitiesName), TotalCount = rs.Count(), TotalPatientCount = objs.Count() } });
         }
     }
 }

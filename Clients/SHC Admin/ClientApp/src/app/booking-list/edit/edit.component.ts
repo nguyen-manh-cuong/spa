@@ -157,6 +157,12 @@ export class EditComponent extends AppComponentBase implements OnInit, AfterView
             if(this._frm.value.address != null){
                 params.address =_.trim(this._frm.value.address.replace(/\s+/g," "))
             }
+            if (this._frm.value.reason != null) {
+                params.reason = _.trim(this._frm.value.reason.replace(/\s+/g, " "))
+            }
+            if (this._frm.value.bookingUser != null) {
+                params.bookingUser = _.trim(this._frm.value.bookingUser.replace(/\s+/g, " "))
+            }
             params.updateUserId = this.appSession.userId;
         }
 
@@ -171,6 +177,10 @@ export class EditComponent extends AppComponentBase implements OnInit, AfterView
         }, err => console.log(err));
 
         
+    }
+    replace_space(str) {
+        str = str.replace(/ /g, " ");
+        return str;
     }
 
 

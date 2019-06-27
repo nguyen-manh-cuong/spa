@@ -5,3 +5,8 @@
 .cursor{
     cursor: pointer !important;
 }
+.wrap-text-word {
+    word-break: word-break !important;
+    white-space: normal !important;
+    overflow: visible !important;
+}
