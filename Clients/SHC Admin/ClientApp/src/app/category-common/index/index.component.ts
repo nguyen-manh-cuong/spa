@@ -39,13 +39,13 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
     this.frmSearch = this._formBuilder.group({ name: [] });
   }
   showErrorDeleteMessage() {
-    notifyToastr(this.l('ErrorDelete'),this.l('CategoryCommonErrorDeleted', ''),'error');
+    notifyToastr(this.l('ErrorDelete'), this.l('CategoryCommonErrorDeleted', ''), 'error');
     // swal({
     //   title:this.l('ErrorDelete'), 
     //   text:this.l('CategoryCommonErrorDeleted', ''), 
     //   type:'error',
     //   timer:3000});
-  
+
   }
 
   deleteDialogMessage(obj: EntityDto, key: string, id?: number | string) {
@@ -61,17 +61,28 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
       buttonsStyling: false
     }).then((result) => {
       if (result.value) {
+        this._dataService.create('log', {
+          logType: 'Business',
+          appCode: 2,
+          path: '/app/category-common',
+          function: 'Xóa',
+          description: 'Xóa chuyên khoa',
+          errorCode: '406',
+          paramList: JSON.stringify({ id: obj.id }),
+          class: 'Chuyên khoa',
+          result: false
+        }).subscribe(() => { });
         this.showErrorDeleteMessage();
       }
     });
   }
 
-  checkPermission(isEdit: boolean, isDelete: boolean): boolean{
-    if(isEdit || isDelete){
-        return true;
-    } else{
-        this.displayedColumns = ['orderNumber', 'code', 'name', 'isActive'];
-        return false;
+  checkPermission(isEdit: boolean, isDelete: boolean): boolean {
+    if (isEdit || isDelete) {
+      return true;
+    } else {
+      this.displayedColumns = ['orderNumber', 'code', 'name', 'isActive'];
+      return false;
     }
   }
 }
