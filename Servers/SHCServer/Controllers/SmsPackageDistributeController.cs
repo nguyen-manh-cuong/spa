@@ -124,6 +124,7 @@ namespace SHCServer.Controllers
                 pd.SmsBrandsId = obj.SmsBrandsId;
                 pd.CreateDate = DateTime.Now;
                 pd.CreateUserId = obj.UserId;
+                pd.IsDelete = false;
 
                 //SmsPackageUsed pu = new SmsPackageUsed();
                 //pu.SmsPackageId = obj.SmsPackageId;

@@ -448,8 +448,15 @@ namespace SHCServer.Controllers
         [Route("api/infosms")]
         public IActionResult InfoSms([FromBody] SmsInfoInputViewModel infoInput)
         {
+            int YearNow = DateTime.Now.Year;
+            int MonthNow = DateTime.Now.Month;
             //danh sach goi sms su dung
-            var packages = _context.Query<SmsPackagesDistribute>().Where(pd => pd.HealthFacilitiesId == infoInput.healthFacilitiesId && pd.YearEnd >= DateTime.Now.Year && pd.MonthEnd >= DateTime.Now.Month && pd.IsDelete == false && pd.IsActive == true).Select(u => new PackageDistributeViewModel(u, _connectionString)).ToList();
+            var packages = _context.Query<SmsPackagesDistribute>()
+                            .Where(pd => pd.HealthFacilitiesId == infoInput.healthFacilitiesId 
+                                //&& pd.YearStart <= YearNow && 
+                                && pd.YearEnd >= YearNow && pd.MonthEnd >= MonthNow
+                                && pd.IsDelete == false && pd.IsActive == true)
+                            .Select(u => new PackageDistributeViewModel(u, _connectionString)).ToList();
             if (packages.Count == 0)
             {
                 SaveInfoSmsError(_connectionString, infoInput, "Không thể gửi tin do không sử dụng gói sms nào");
@@ -559,7 +566,12 @@ namespace SHCServer.Controllers
         public IActionResult InfoSendSms([FromBody] SmsInfoBookingInputViewModel infoInput)
         {
             //danh sach goi sms su dung
-            var packages = _context.Query<SmsPackagesDistribute>().Where(pd => pd.HealthFacilitiesId == infoInput.healthFacilitiesId && pd.YearEnd >= DateTime.Now.Year && pd.MonthEnd >= DateTime.Now.Month && pd.IsDelete == false && pd.IsActive == true).Select(u => new PackageDistributeViewModel(u, _connectionString)).ToList();
+            var packages = _context.Query<SmsPackagesDistribute>()
+                            .Where(pd => pd.HealthFacilitiesId == infoInput.healthFacilitiesId 
+                                && pd.YearEnd >= DateTime.Now.Year 
+                                && pd.MonthEnd >= DateTime.Now.Month 
+                                && pd.IsDelete == false && pd.IsActive == true)
+                            .Select(u => new PackageDistributeViewModel(u, _connectionString)).ToList();
             if (packages.Count == 0)
             {
                 SaveInfoSmsBookingError(_connectionString, infoInput, "Không thể gửi tin do không sử dụng gói sms nào");

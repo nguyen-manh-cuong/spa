@@ -116,6 +116,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
 
   _healthfacilities = [];
   _specialist = [];
+  _specialistTemp = [];
 
   _healthFacilitiesId: number;
   _specialistCode: number;
@@ -375,6 +376,12 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     }, 1000);
   }
 
+  ChangeListSpecia(event: any)
+  {
+    console.log(123);
+    
+  }
+
 
   ngAfterViewInit(): void {
       setTimeout(() => {
@@ -525,7 +532,10 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   }
 
   getSpecialist() {
-    this.dataService.get("catcommon", "{isActive:'true'}", "{name:'asc'}", null, 300).subscribe(resp => this._specialist = resp.items);
+    this.dataService.get("catcommon", "{isActive:'true'}", "{name:'asc'}", null, 300).subscribe(resp => {
+      this._specialist = resp.items;
+      this._specialistTemp = resp.items;
+  });
   }
 
   @ViewChild("continueAdd") continueAdd: MatCheckbox;
@@ -659,7 +669,12 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
         tap(() => this.specialIsLoading = true),
         switchMap(value => this.filterSpecialist(value))
       )
-      .subscribe(data => this._specialist = data.items);
+      .subscribe(data => {this._specialist = data.items;
+        this._speciaList.forEach(w => {
+          this._specialist = this._specialist.filter(e => e.code != w);
+        });
+        
+      });
   }
 
   filterSpecialist(value: any) {
@@ -693,6 +708,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   }
 
   specialRemove(code: string): void {
+
     for (let i = 0; i < this._specialistChip.length; i++) {
       if (this._specialistChip[i].specialistCode == code) {
         this._specialistChip.splice(i, 1);
@@ -705,6 +721,8 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     else {
       this.checkSpecial = false;
     }
+    this._specialist.push(this._specialistTemp.find(e => e.code == code));
+    
   }
 
 
@@ -727,6 +745,9 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
         var s = new Specialist(event.option.value.code, event.option.value.name);
         this._specialistChip.push(s);
         this._speciaList.push(s.specialistCode);
+        // debugger;
+        // this._specialist = this._specialist.filter(e => e.code != event.option.value.code);
+        
       }
       else {
         notifyToastr('Thông báo', 'Đã chọn chuyên khoa này', 'warning')

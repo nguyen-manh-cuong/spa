@@ -141,13 +141,13 @@
             <ng-container matColumnDef="fullName">
                 <th mat-header-cell *matHeaderCellDef class="min-w-150 text-center"> {{l('DoctorName')}} </th>
                 <td mat-cell title="{{element.fullName}}" *matCellDef="let element"
-                    class="min-w-150 td-left td-ellipsis"><b (click)="detailDialogDoctor(element)"><u
-                            class="cursor">{{element.fullName}}</u></b></td>
+                    class="max-w-400 wrap-text-word"><b (click)="detailDialogDoctor(element)">
+                        <u class="cursor">{{element.fullName}}</u></b></td>
             </ng-container>
             <ng-container matColumnDef="specialist">
                 <th mat-header-cell *matHeaderCellDef class="min-w-300 text-center"> {{l('DoctorSpecialist')}} </th>
                 <td mat-cell title="{{getSpecialJoin(element.specialist)}}" *matCellDef="let element"
-                    class="min-w-300 td-left td-ellipsis cursor">
+                    class="max-w-400 wrap-text-word cursor">
                     <span>{{ getSpecialJoin(element.specialist) }}</span></td>
             </ng-container>
             <ng-container matColumnDef="phoneNumber">
@@ -158,7 +158,7 @@
             <ng-container matColumnDef="address">
                 <th mat-header-cell *matHeaderCellDef class="min-w-200 text-center"> {{l('Address')}}</th>
                 <td mat-cell title="{{element.address}}" *matCellDef="let element"
-                    class="min-w-200 td-left td-ellipsis cursor">
+                    class="max-w-400 wrap-text-word td-left td-ellipsis cursor">
                     {{element.address}}</td>
             </ng-container>
             <ng-container matColumnDef="priceFrom">
