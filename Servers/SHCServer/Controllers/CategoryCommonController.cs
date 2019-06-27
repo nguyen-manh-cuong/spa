@@ -203,10 +203,10 @@ namespace SHCServer.Controllers
                     GetCurrentUserId(),
                     GetIpClient(),
                     "/app/category-common",
-                    "Tạo mới",
+                    "Sửa",
                     categoryCommon,
                     "Chuyên khoa",
-                    "Tạo mới chuyên khoa",
+                    "Sửa chuyên khoa",
                     true,
                     GetHealthFacilitiesId(_contextmdmdb, GetCurrentUserId()));
 
@@ -246,10 +246,10 @@ namespace SHCServer.Controllers
                     GetCurrentUserId(),
                     GetIpClient(),
                     "/app/category-common",
-                    "Tạo mới",
+                    "Xóa",
                     new {Id=id },
                     "Chuyên khoa",
-                    "Tạo mới chuyên khoa",
+                    "Xóa chuyên khoa",
                     true,
                     GetHealthFacilitiesId(_contextmdmdb, GetCurrentUserId()));
 
