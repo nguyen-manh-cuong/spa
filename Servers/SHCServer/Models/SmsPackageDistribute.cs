@@ -9,16 +9,16 @@ namespace SHCServer.Models
         [Column(IsPrimaryKey = true)]
         [AutoIncrement]
         public int Id { set; get; }
-        public int SmsPackageId { set; get; }
-        public int HealthFacilitiesId { set; get; }
+        public int? SmsPackageId { set; get; }
+        public int? HealthFacilitiesId { set; get; }
 
-        public int SmsBrandsId { set; get; }
-        public int YearStart { set; get; }
-        public int YearEnd { set; get; }
-        public int MonthStart { set; get; }
-        public int MonthEnd { set; get; }
-        public bool IsActive { set; get; }
-        public bool IsDelete { set; get; }
+        public int? SmsBrandsId { set; get; }
+        public int? YearStart { set; get; }
+        public int? YearEnd { set; get; }
+        public int? MonthStart { set; get; }
+        public int? MonthEnd { set; get; }
+        public bool? IsActive { set; get; }
+        public bool? IsDelete { set; get; }
 
         public DateTime? CreateDate { get; set; }
         public int? CreateUserId { get; set; }

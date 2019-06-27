@@ -97,7 +97,7 @@ namespace SHCServer.Controllers
                 {
                     if (genSmsCode.SmsTemplateCode != null)
                     {
-                        if (int.Parse(genSmsCode.SmsTemplateCode.Substring(8, 2)) < 10)
+                        if (int.Parse(genSmsCode.SmsTemplateCode.Substring(8, 2)) < 9)
                             smsTemplateCode = genSmsCode.SmsTemplateCode.Substring(0, 8) + "0" + (int.Parse(genSmsCode.SmsTemplateCode.Substring(8, 2)) + 1).ToString();
                         else
                             smsTemplateCode = genSmsCode.SmsTemplateCode.Substring(0, 8) + (int.Parse(genSmsCode.SmsTemplateCode.Substring(8, 2)) + 1).ToString();
@@ -119,7 +119,7 @@ namespace SHCServer.Controllers
                 if (genSmsCode != null)
                 {
                     if (genSmsCode.SmsTemplateCode != null)
-                        if (int.Parse(genSmsCode.SmsTemplateCode.Substring(8, 2)) < 10)
+                        if (int.Parse(genSmsCode.SmsTemplateCode.Substring(8, 2)) < 9)
                             smsTemplateCode = genSmsCode.SmsTemplateCode.Substring(0, 8) + "0" + (int.Parse(genSmsCode.SmsTemplateCode.Substring(8, 2)) + 1).ToString();
                         else
                             smsTemplateCode = genSmsCode.SmsTemplateCode.Substring(0, 8) + (int.Parse(genSmsCode.SmsTemplateCode.Substring(8, 2)) + 1).ToString();

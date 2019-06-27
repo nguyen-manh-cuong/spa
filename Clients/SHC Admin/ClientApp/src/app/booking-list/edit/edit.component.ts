@@ -147,7 +147,7 @@ export class EditComponent extends AppComponentBase implements OnInit, AfterView
 
     submit() {
 
-        var params = _.pick(this._frm.value, ['bookingId', 'reason', 'status', 'bookingUser', 'address', 'updateUserId']);
+        var params: any = _.pick(this._frm.value, ['bookingId', 'reason', 'status', 'bookingUser', 'address', 'updateUserId']);
 
         if (this._booking) {
             params.bookingId = this._booking.bookingId;
@@ -156,6 +156,12 @@ export class EditComponent extends AppComponentBase implements OnInit, AfterView
             params.bookingUser = this._frm.value.bookingUser;
             if(this._frm.value.address != null){
                 params.address =_.trim(this._frm.value.address.replace(/\s+/g," "))
+            }
+            if (this._frm.value.reason != null) {
+                params.reason = _.trim(this._frm.value.reason.replace(/\s+/g, " "))
+            }
+            if (this._frm.value.bookingUser != null) {
+                params.bookingUser = _.trim(this._frm.value.bookingUser.replace(/\s+/g, " "))
             }
             params.updateUserId = this.appSession.userId;
         }
@@ -171,6 +177,10 @@ export class EditComponent extends AppComponentBase implements OnInit, AfterView
         }, err => console.log(err));
 
         
+    }
+    replace_space(str) {
+        str = str.replace(/ /g, " ");
+        return str;
     }
 
 
