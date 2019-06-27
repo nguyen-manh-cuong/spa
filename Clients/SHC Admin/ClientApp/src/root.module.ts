@@ -114,7 +114,7 @@ export class RootModule {
     constructor() {
         abp.message.error = (message, title) => {
             //abp.notify.error(message, title, { hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true });
-            notifyToastr(title,message,'error');
+            // notifyToastr(title,message,'error');
             RootModule.message = message;
         }
     }
