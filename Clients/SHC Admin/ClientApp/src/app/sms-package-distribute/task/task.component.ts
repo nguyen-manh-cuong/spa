@@ -97,13 +97,18 @@ export class packagedistributeTaskComponent extends AppComponentBase implements 
         if(this._frmpackagedistribute.controls['yearStart'].value == this._frmpackagedistribute.controls['yearEnd'].value){
             if(this._frmpackagedistribute.controls['monthStart'].value > this._frmpackagedistribute.controls['monthEnd'].value){
                 this.yearStart.nativeElement.focus();
+                console.log(this._frmpackagedistribute.controls['monthStart'].value );
                 return notifyToastr( 'Thông báo', 'Đến tháng phải lớn hơn hoặc bằng Từ tháng', 'warning'); 
+                
                 // swal({
                 //     title: 'Thông báo',
                 //     text: 'Đến tháng phải lớn hơn hoặc bằng Từ tháng',
                 //     type: 'warning',
                 //     timer: 3000
                 // });
+            }
+            if(this._frmpackagedistribute.controls['monthStart'].value < this._currentYear){
+                return notifyToastr( 'Thông báo', 'Từ tháng phải lớn hơn tháng hiện tại', 'warning'); 
             }
         }
 

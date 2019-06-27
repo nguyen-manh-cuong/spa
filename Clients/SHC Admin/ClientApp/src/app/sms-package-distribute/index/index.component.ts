@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, Injector, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatButton, MatDialog, MatDialogRef } from '@angular/material';
 
 import { DataService } from '@shared/service-proxies/service-data';
@@ -14,6 +14,9 @@ import { SelectAutocompleteComponent } from '@app/mat-select-autocomplete/select
 import { getPermission, notifyToastr } from '@shared/helpers/utils';
 import { Router } from '@angular/router';
 import { AnyARecord } from 'dns';
+import { takeUntil } from 'rxjs/operators';
+import { Subject, ReplaySubject } from 'rxjs';
+import { uniqBy } from 'lodash';
 
 @Component({
     selector: 'app-packagedistributeindex',
@@ -24,6 +27,11 @@ import { AnyARecord } from 'dns';
 export class packagedistributeIndexComponent extends PagedListingComponentBase<IPachkageDistribute> implements OnInit {
 
     frmSearch: FormGroup;
+
+    healthFacilitiesFilterCtrl: FormControl = new FormControl();
+    filteredSpecials: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
+    private _onDestroy = new Subject<void>();
+    
     displayedColumns = this.appSession.user.accountType != 0 ? ['Stt', 'StartTime', 'pk', 'sms', 'isActive', 'task'] : ['Stt', 'HealthFacilitiesId', 'StartTime', 'pk', 'sms', 'isActive', 'task'];
 
     _month = [{ id: 1, name: 'Tháng 1' }, { id: 2, name: 'Tháng 2' }, { id: 3, name: 'Tháng 3' }, { id: 4, name: 'Tháng 4' }, { id: 5, name: 'Tháng 5' }, { id: 6, name: 'Tháng 6' }, { id: 7, name: 'Tháng 7' }, { id: 8, name: 'Tháng 8' }, { id: 9, name: 'Tháng 9' }, { id: 10, name: 'Tháng 10' }, { id: 11, name: 'Tháng 11' }, { id: 12, name: 'Tháng 12' },];
@@ -69,6 +77,39 @@ export class packagedistributeIndexComponent extends PagedListingComponentBase<I
         this._dataService.getAll('healthfacilities').subscribe(resp => {
             this._medicalFacility = resp.items;
         });
+
+        
+        this.dataService.getAll('healthfacilities').subscribe(resp => {
+            this._medicalFacility = uniqBy(this._medicalFacility.concat(resp.items), e => e.code);
+            this.filterMedicalFacility();
+        });
+
+        this.healthFacilitiesFilterCtrl.valueChanges
+            .pipe(takeUntil(this._onDestroy))
+            .subscribe((e) => {
+                this.dataService.getAll('healthfacilities').subscribe(resp => {
+                    this._medicalFacility = uniqBy(this._medicalFacility.concat(resp.items), eb => eb.code);
+                    this.filterMedicalFacility();
+                });
+            });
+    }
+
+    private filterMedicalFacility() {
+        if (!this._medicalFacility) {
+            return;
+        }
+        // get the search keyword
+        let search = this.healthFacilitiesFilterCtrl.value;
+        if (!search) {
+            this.filteredSpecials.next(this._medicalFacility.slice());
+            return;
+        } else {
+            search = search.toLowerCase();
+        }
+        // filter the specialLists
+        this.filteredSpecials.next(
+            this._medicalFacility.filter(o => o.name.toLowerCase().indexOf(search) > -1)
+        );
     }
 
     getMedicalById(id: number): string {
@@ -97,12 +138,6 @@ export class packagedistributeIndexComponent extends PagedListingComponentBase<I
                         this.paginator._changePageSize(this.paginator.pageSize);
                         this.paginator.pageIndex = 0;
                         notifyToastr( this.l('SuccessfullyDeleted'), this.l('DeletedInSystem', obj[key]), 'success');
-                        // swal({
-                        //     title: this.l('SuccessfullyDeleted'),
-                        //     html: this.l('DeletedInSystem', obj[key]),
-                        //     type: 'success',
-                        //     timer: 3000
-                        // });
                     });
             }
         });
@@ -141,22 +176,10 @@ export class packagedistributeIndexComponent extends PagedListingComponentBase<I
         if (this.frmSearch.controls['fromYear'].value == this.frmSearch.controls['toYear'].value) {
             if(this.frmSearch.controls['monthStart'].value > this.frmSearch.controls['monthEnd'].value){
                 return notifyToastr('Thông báo',  'Đến tháng phải lớn hơn hoặc bằng Từ tháng', 'warning');
-                // swal({
-                //     title: 'Thông báo',
-                //     text: 'Đến tháng phải lớn hơn hoặc bằng Từ tháng',
-                //     type: 'warning',
-                //     timer: 3000
-                // });
             }
         }
         if (this.frmSearch.controls['fromYear'].value > this.frmSearch.controls['toYear'].value) {
                 return notifyToastr('Thông báo', 'Đến năm phải lớn hơn hoặc bằng Từ năm', 'warning');
-                //  swal({
-                //     title: 'Thông báo',
-                //     text: 'Đến năm phải lớn hơn hoặc bằng Từ năm',
-                //     type: 'warning',
-                //     timer: 3000
-                // });
         }
         this.btnSearchClicks$.next();
     }
