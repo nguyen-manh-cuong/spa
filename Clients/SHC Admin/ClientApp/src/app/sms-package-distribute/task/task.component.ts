@@ -107,8 +107,8 @@ export class packagedistributeTaskComponent extends AppComponentBase implements 
                 //     timer: 3000
                 // });
             }
-            if(this._frmpackagedistribute.controls['monthStart'].value < this._currentYear){
-                return notifyToastr( 'Thông báo', 'Từ tháng phải lớn hơn tháng hiện tại', 'warning'); 
+            if(this._frmpackagedistribute.controls['monthStart'].value < this._currentMonth){
+                return notifyToastr( 'Thông báo', 'Từ tháng phải lớn hơn hoặc bằng tháng hiện tại', 'warning'); 
             }
         }
 
