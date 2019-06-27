@@ -36,7 +36,7 @@ export class AppComponent extends AppComponentBase implements OnInit, AfterViewI
     oddNumberOfClick = 0;
     evenNumberOfClick = 0;
 
-    isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset).pipe(map(result => result.matches));
+    isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset).pipe(map((result: any) => result.matches));
     shownLoginName: string = '';
 
     languages: abp.localization.ILanguageInfo[];

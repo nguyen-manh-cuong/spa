@@ -4,7 +4,7 @@ import {Directive, ElementRef, Output, EventEmitter, HostListener} from '@angula
     selector: '[clickOutside]'
 })
 export class ClickOutsideDirective {
-    constructor(private _elementRef: ElementRef) {
+    constructor(private _elementRef: ElementRef | any) {
     }
 
     @Output()
