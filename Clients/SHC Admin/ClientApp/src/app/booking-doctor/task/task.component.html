@@ -140,6 +140,6 @@
     <div class="text-right mb-3">
         <button class="mr-3" mat-raised-button color="primary" mat-dialog-close>{{l("Close")}}</button>
         <button class="mr-3" mat-raised-button color="primary" [disabled]="_frm.invalid" (click)="submit(0)">{{l("Save")}}</button>
-        <button mat-raised-button color="primary" [disabled]="_frm.invalid" (click)="submit(1)">{{l("SaveAndApprove")}}</button>
+        <button mat-raised-button color="primary" [disabled]="_frm.invalid || fromDateMustBeGreaterThanOrEqualToDate" (click)="submit(1)">{{l("SaveAndApprove")}}</button>
     </div>
 </form>

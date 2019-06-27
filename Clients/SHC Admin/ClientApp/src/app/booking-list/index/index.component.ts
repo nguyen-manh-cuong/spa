@@ -193,14 +193,6 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
 
         this.frmSearch.controls['endTime'].setValue(moment(this.endTime.nativeElement.value, 'DD/MM/YYYY').add(1, 'day').toDate());
     }
-
-    xClick() {
-
-        // this.filter('');
-        this.healthfacilities.setValue(null);
-    }
-
-
     openCustomDialog(obj): void {
         this.selectionData.select(obj);
         const dialogRef = this.dialog.open(this.dialogSendComponent, { minWidth: 'calc(100vw/2)', maxWidth: 'calc(100vw - 300px)', disableClose: true, data: { selection: this.selectionData, type: 1 } });
