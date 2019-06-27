@@ -51,7 +51,6 @@ namespace SHCServer.Controllers
             }
 
             clause.Add("where uh.IsDelete = 0 group by h.Code");
-
             var str = $"{query} {string.Join(" ", clause)}";
             var reader = _context.Session.ExecuteReader($"{query} {string.Join(" ", clause)}", param);
 

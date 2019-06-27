@@ -92,6 +92,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   @ViewChild('doctorSummary') doctorSummary;
   @ViewChild('dataContainer') _avatar;
   @ViewChild('avatarImg') avatarImg;
+  @ViewChild("continueAdd") continueAdd: MatCheckbox;
 
   @ViewChild('healthfacilitiesInput', { read: MatAutocompleteTrigger }) trigger: MatAutocompleteTrigger;
   @ViewChild('specialistInput', { read: MatAutocompleteTrigger }) SpecialistTrigger: MatAutocompleteTrigger;
@@ -253,7 +254,6 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
 
 
     if (this.obj) {
-
       if (this.obj.provinceCode) {
         this.getDistricts(this.obj.provinceCode);
       }
@@ -272,26 +272,20 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
       if (this.obj.certificationCode) {
         this._certificationInputCheck = false;
       }
+      setTimeout(() => {
+        this.obj.specialist.forEach(w => {
+          this._specialist = this._specialistTemp.filter(e => e.code != w.specialistCode);
+          console.log(277, this._specialist);
+        });
+      }, 1000);
     }
-
-
-
-    // else if (this._obj.birthMonth) {
-    //   this._birthDay = new Date(this._obj.birthMonth + "/01/" + this._obj.birthYear);
-    // }
-    // else {
-    //   this._birthDay = new Date("01/01/" + this._obj.birthYear);
-    // }
+    
     if (this.obj) {
       this._certificationDate = this.obj.certificationDate;
       if (this.obj.avatar) {
         this.avatarName = this.obj.avatar.slice(9, this.obj.avatar.length);
       }
     }
-    //   else {
-    //     this._obj.certificationDate = new Date(Date.now());
-    //   }
-    // }
 
 
     this._context = {
@@ -538,7 +532,6 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
   });
   }
 
-  @ViewChild("continueAdd") continueAdd: MatCheckbox;
 
   checkBoxChange(controlName?) {
     if (controlName != null) {
@@ -548,7 +541,6 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
       this.continueAdd.writeValue(!this.continueAdd.checked);
     }
   }
-
 
   //End Base//
 
