@@ -9,7 +9,6 @@ import { Router, Route } from '@angular/router';
 import { DataService } from '@shared/service-proxies/service-data';
 import { DomSanitizer, Title } from '@angular/platform-browser';
 import * as moment from 'moment';
-import swal from 'sweetalert2';
 import { notifyToastr } from '@shared/helpers/utils';
 
 @Component({
@@ -26,6 +25,8 @@ export class LoginComponent extends AppComponentBase implements OnInit {
     isLoading = false;
     dataService: DataService;
     numberLoginFail = 0;
+
+    userLogin = { userName: '', logCount: 0 };
 
     @ViewChild('userNameOrEmail') userNameOrEmail;
     @ViewChild('codeCapcha') codeCapcha;
@@ -77,21 +78,16 @@ export class LoginComponent extends AppComponentBase implements OnInit {
     _capcha: { code: string, data: any } = { code: '', data: '' };
 
     onHandleLoginInput(event) {
-        this._dataService.get('auth', JSON.stringify({ 'userName': event.target.value }), null, null, null).subscribe(data => {
-            if (data.items != undefined) {
-                if (data.items.counter < 10) {
-                    this.numberLoginFail = data.items.counter;
-                }
-
-                let lockedTime = (moment(Date.now()).valueOf() - moment(new Date(data.items.lockedTime)).valueOf()) / (1000 * 60);
-                if (lockedTime >= 0) {
-                    if (data.items.counter >= 10) {
-                        this._dataService.get('auth', JSON.stringify({ 'userName': this.frmLogin.controls['userNameOrEmailAddress'].value, 'counter': -1 }), null, null, null).subscribe(data => { });
-                    }
-                }
+        if (localStorage.getItem('userLog') != null && JSON.parse(localStorage.getItem('userLog')).userName === event.target.value) {
+            if (parseInt(JSON.parse(localStorage.getItem('userLog')).logCount) < 10) {
+                this.numberLoginFail = parseInt(JSON.parse(localStorage.getItem('userLog')).logCount);
             }
-        });
+            else {
+                localStorage.removeItem('userLog');
+            }
+        }
     }
+
     //chém space
     replace_space(str) {
         str = str.replace(/ /g, "");
@@ -100,30 +96,22 @@ export class LoginComponent extends AppComponentBase implements OnInit {
     login(): void {
         let numLoginFail = 1;
         let lockedTime = 0;
-
+        
         const userNameOrEmailAddress = this.frmLogin.controls['userNameOrEmailAddress'].value.toLocaleLowerCase();
 
         this._dataService.get('auth', JSON.stringify({ 'userName': userNameOrEmailAddress }), null, null, null).subscribe(data => {
             if (!data.items) {
                 notifyToastr(this.l('Notification'), this.l('Đăng nhập không thành công. Tài khoản không tồn tại'), 'warning');
                 return;
-                //  swal({
-                //     title: this.l('Notification'),
-                //     text: this.l('Đăng nhập không thành công. Tài khoản không tồn tại'),
-                //     type: 'warning',
-                //     timer: 3000
-                // });
             }
 
+            if (localStorage.getItem('userLog') != null) {
+                numLoginFail = parseInt(JSON.parse(localStorage.getItem('userLog')).logCount);
+            }
+            if (numLoginFail === 11) localStorage.removeItem('userLog');
             if (data.items.status != 2 || data.items.mdmStatus != 1 || moment(new Date(data.items.expriredDate)).valueOf() < moment(Date.now()).valueOf()) {
                 this._dataService.get('auth', JSON.stringify({'userName': userNameOrEmailAddress}), null, null, null).subscribe(data => {
                     return notifyToastr(this.l('Notification'), this.l('Đăng nhập không thành công. Tài khoản chưa được kích hoạt hoặc bị khóa'), 'warning');
-                    //  swal({
-                    //     title: this.l('Notification'),
-                    //     text: this.l('Đăng nhập không thành công. Tài khoản chưa được kích hoạt hoặc bị khóa'),
-                    //     type: 'warning',
-                    //     timer: 3000
-                    // });
                 });
                 return;
             }
@@ -134,24 +122,17 @@ export class LoginComponent extends AppComponentBase implements OnInit {
                 this.userNameOrEmail.nativeElement.focus();
                 this.frmLogin.controls['userNameOrEmailAddress'].setValue('');
                 this.frmLogin.controls['password'].setValue('');
+                localStorage.removeItem('userLog');
                 notifyToastr(this.l('Notification'), this.l('Đăng nhập không thành công. Vui lòng trở lại sau 60 phút'), 'warning');
                 return;
-                // swal({
-                //     title: this.l('Notification'),
-                //     text: this.l('Đăng nhập không thành công. Vui lòng trở lại sau 60 phút'),
-                //     type: 'warning',
-                //     timer: 3000
-                // });
             }
-
-            numLoginFail = data.items.counter + 1;
 
             if (numLoginFail >= 10) {
                 this.numberLoginFail = 0;
             } else {
                 this.numberLoginFail = numLoginFail;
             }
-            
+           
             if (numLoginFail > 5) {
                 if (this.frmLogin.controls['codeCapcha'].value != this._capcha.code) {
                     this.capcha = true;
@@ -166,26 +147,19 @@ export class LoginComponent extends AppComponentBase implements OnInit {
 
                         this.frmLogin.controls['password'].setValue('');
                         notifyToastr(this.l('Notification'), this.l('Đăng nhập không thành công. Vui lòng trở lại sau 60 phút'), 'warning');
-                        return;
-                        //  swal({
-                        //     title: this.l('Notification'),
-                        //     text: this.l('Đăng nhập không thành công. Vui lòng trở lại sau 60 phút'),
-                        //     type: 'warning',
-                        //     timer: 3000
-                        // });
                     }
                     else {
                         notifyToastr(this.l('Notification'), this.l(`Mã xác nhận không trùng khớp. Bạn còn ${10 - numLoginFail} lần thử`), 'warning');
-                        return
-                        // swal({
-                        //     title: this.l('Notification'),
-                        //     text: this.l(`Mã xác nhận không trùng khớp. Bạn còn ${10 - numLoginFail} lần thử`),
-                        //     type: 'warning',
-                        //     timer: 3000
-                        // });
+                        this.userLogin.logCount = numLoginFail + 1;
+                        this.userLogin.userName = userNameOrEmailAddress;
+                        localStorage.setItem('userLog', JSON.stringify(this.userLogin));
+                        if (numLoginFail === 10) localStorage.removeItem('userLog');
+                        return;
                     }
                 }
             }
+            this.userLogin.logCount = numLoginFail + 1;
+            this.userLogin.userName = userNameOrEmailAddress;
             this.submitted = true;
             if (this.frmLogin.invalid) { return; }
             this.loginService.authenticateModel = Object.assign(this.loginService.authenticateModel, this.frmLogin.value);
@@ -200,52 +174,35 @@ export class LoginComponent extends AppComponentBase implements OnInit {
                         localStorage.removeItem('password');
                     }
 
+                    localStorage.removeItem('userLog');
                     this._dataService.get('auth', JSON.stringify({ 'userName': userNameOrEmailAddress, 'counter': -1 }), null, null, null).subscribe(data => { });
                 }
 
             }, () => {
+                    localStorage.setItem('userLog', JSON.stringify(this.userLogin));
                     this._dataService.get('auth', JSON.stringify({'userName': userNameOrEmailAddress, 'counter': numLoginFail, 'lockedTime': lockedTime}), null, null, null).subscribe(data => {
-                        
-                    if (numLoginFail > 4) {
-                        this.getCapcha();
-                    }
-                });
+                        if (numLoginFail > 4) {
+                            this.getCapcha();
+                        }
+                    });
 
                     if (numLoginFail <= 5) {
-                        abp.notify.error(this.l(`Đăng nhập không thành công. Tên đăng nhập hoặc mật khẩu không chính xác. Bạn còn ${5 - numLoginFail} lần thử`), this.l('Notification'), { hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true });
-                        //notifyToastr(this.l('Notification'), this.l(`Đăng nhập không thành công. Tên đăng nhập hoặc mật khẩu không chính xác. Bạn còn ${5 - numLoginFail} lần thử`), 'warning');
+                        notifyToastr(this.l('Notification'), this.l(`Đăng nhập không thành công. Tên đăng nhập hoặc mật khẩu không chính xác. Bạn còn ${5 - numLoginFail} lần thử`), 'warning');
                         return;
-                        //  swal({
-                        //     title: this.l('Notification'),
-                        //     text: this.l(`Đăng nhập không thành công. Tên đăng nhập hoặc mật khẩu không chính xác. Bạn còn ${5 - numLoginFail} lần thử`),
-                        //     type: 'warning',
-                        //     timer: 3000
-                        // });
                     }
                     else if (10 === numLoginFail) {
                         this.userNameOrEmail.nativeElement.focus();
                         this.frmLogin.controls['userNameOrEmailAddress'].setValue('');
                         this.frmLogin.controls['password'].setValue('');
+                        localStorage.removeItem('userLog');
                         notifyToastr(this.l('Notification'), this.l('Đăng nhập không thành công. Vui lòng trở lại sau 60 phút'), 'warning');
                         return;
-                        // swal({
-                        //     title: this.l('Notification'),
-                        //     text: this.l('Đăng nhập không thành công. Vui lòng trở lại sau 60 phút'),
-                        //     type: 'warning',
-                        //     timer: 3000
-                        // });
                     }
                     else {
                         notifyToastr(this.l('Notification'), (10 - numLoginFail === 0) 
                         ? this.l('Đăng nhập không thành công. Vui lòng trở lại sau 60 phút') 
                             : this.l(`Đăng nhập không thành công. Tên đăng nhập hoặc mật khẩu không chính xác. Bạn còn ${10 - numLoginFail} lần thử`), 'warning');
                         return;
-                        // swal({
-                        //     title: this.l('Notification'),
-                        //     text: (10 - numLoginFail === 0) ? this.l('Đăng nhập không thành công. Vui lòng trở lại sau 60 phút') : this.l(`Đăng nhập không thành công. Tên đăng nhập hoặc mật khẩu không chính xác. Bạn còn ${10 - numLoginFail} lần thử`),
-                        //     type: 'warning',
-                        //     timer: 3000
-                        // });
                     }
             });
         });
