@@ -52,7 +52,7 @@ namespace SHCServer.Controllers
                                     p.Email,
                                     (select count(*) from sms_logs s where s.ObjectId = p.PatientId and s.ObjectType = 1) as smsCount
                                 from " + nameData + @".medical_healthcare_histories h
-                                inner join" + nameData +@".cats_patients p on h.PatientId = p.PatientId";
+                                inner join " + nameData +@".cats_patients p on h.PatientId = p.PatientId";
             List<string> clause = new List<string>();
             List<DbParam> param = new List<DbParam>();
             List<MedicalHealthcareHistoriesViewModel> lst = new List<MedicalHealthcareHistoriesViewModel>();
