@@ -54,8 +54,11 @@
                 <!-- <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l("PackageDistributeHealthFacilities")}}</mat-label>
                     <mat-select formControlName="HealthFacilitiesId" [multiple]="true">
-                            {{frmSearch.get('HealthFacilitiesId').value && frmSearch.get('HealthFacilitiesId').value[0] ? frmSearch.get('HealthFacilitiesId').value[0].name : ''}}
                         <mat-select-trigger>
+                                {{frmSearch.get('HealthFacilitiesId').value && frmSearch.get('HealthFacilitiesId').value[0] ? frmSearch.get('HealthFacilitiesId').value[0].name : ''}}
+                                <span *ngIf="frmSearch.get('HealthFacilitiesId').value?.length > 1">
+                                    (+{{frmSearch.get('HealthFacilitiesId').value.length - 1}} cơ sở y tế khác)
+                                </span>
                         </mat-select-trigger>
                         <mat-select-search [placeholderLabel]="l('PackageDistributeHealthFacilities')" noEntriesFoundLabel="Không có kết quả" [formControl]="healthFacilitiesFilterCtrl"></mat-select-search>
                         <mat-option *ngFor="let o of _medicalFacility" [value]="o">{{o.name}}</mat-option>
