@@ -88,7 +88,7 @@ export class packagedistributeIndexComponent extends PagedListingComponentBase<I
             .pipe(takeUntil(this._onDestroy))
             .subscribe((e) => {
                 this.dataService.getAll('healthfacilities').subscribe(resp => {
-                    this._medicalFacility = uniqBy(this._medicalFacility.concat(resp.items), eb => eb.code);
+                    this._medicalFacility = uniqBy(this._medicalFacility.concat(resp.items), eb => eb.name);
                     this.filterMedicalFacility();
                 });
             });
@@ -99,6 +99,8 @@ export class packagedistributeIndexComponent extends PagedListingComponentBase<I
             return;
         }
         // get the search keyword
+        console.log(102, this.healthFacilitiesFilterCtrl.value);
+        
         let search = this.healthFacilitiesFilterCtrl.value;
         if (!search) {
             this.filteredSpecials.next(this._medicalFacility.slice());

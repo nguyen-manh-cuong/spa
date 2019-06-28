@@ -14,22 +14,26 @@ namespace SHCServer.Controllers
     public class SmsPackageDistributeController : BaseController
     {
         private readonly string _connectionString;
-
+        private string nameData;
         protected DbContext context;
 
         public SmsPackageDistributeController(IOptions<Audience> settings, IConfiguration configuration)
         {
             _settings = settings;
             _connectionString = configuration.GetConnectionString("DefaultConnection");
+
             _context = new MySqlContext(new MySqlConnectionFactory(_connectionString));
             _excep = new FriendlyException();
+
+            if (_connectionString.IndexOf("smarthealthcare_58") > 0) nameData = "smarthealthcare_58";
+            else if (_connectionString.IndexOf("smarthealthcare") > 0) nameData = "smarthealthcare";
         }
 
         [HttpGet]
         [Route("api/smspackagedistribute")]
         public IActionResult GetAllPackageDistribute(int skipCount = 0, int maxResultCount = 10, string sorting = null, string filter = null)
         {
-            var objs = _context.Query<SmsPackagesDistribute>().Where(o => o.IsDelete == false && o.HealthFacilitiesId != 0);
+            var objs = _context.Query<SmsPackagesDistribute>().Where(o => o.IsDelete == false && o.HealthFacilitiesId != 0 && o.IsActive == true);
 
             int monthStart = 0;
             int monthEnd = 0;
@@ -241,7 +245,7 @@ namespace SHCServer.Controllers
         public int GetTotal(string startDate, string endDate)
         {
             string query = @"SELECT count(*) as Total
-                                FROM smarthealthcare.sms_packages_distribute
+                                FROM " + nameData + @".sms_packages_distribute
                                 WHERE
 	                                STR_TO_DATE(CONCAT(MonthStart, '/', YearStart), '%m/%Y') >= STR_TO_DATE(@StartDate, '%m/%Y') AND
                                     STR_TO_DATE(CONCAT(MonthEnd, '/', YearEnd), '%m/%Y') <= STR_TO_DATE(@EndDate, '%m/%Y')";

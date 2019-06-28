@@ -45,7 +45,7 @@ namespace SHCServer.ViewModels
                        {
                             JoinType.InnerJoin, d.HealthFacilitiesId == h.HealthFacilitiesId
                        })
-                        .Where((d, h) => d.Id == PackagesDistribute.Id && d.IsDelete==false && d.IsActive==true && h.IsDelete==false && h.IsActive==true)
+                        .Where((d, h) => d.Id == PackagesDistribute.Id && d.IsDelete==false && h.IsDelete==false && h.IsActive==true)
                         .Select((d, h) => h).FirstOrDefault();
 
             var health = context.Query<HealthFacilities>().Where(h => h.HealthFacilitiesId == PackagesDistribute.HealthFacilitiesId).FirstOrDefault();
@@ -61,7 +61,7 @@ namespace SHCServer.ViewModels
                        {
                             JoinType.InnerJoin, d.Id==u.SmsPackageDistributeId
                        })
-                        .Where((d, u) => d.IsDelete == false && d.IsActive==true && u.IsDelete==false).Select((d, u) => u).FirstOrDefault();
+                        .Where((d, u) => d.Id == Id && d.IsDelete == false && d.IsActive==true && u.IsDelete==false).Select((d, u) => u).FirstOrDefault();
 
             PackageName = pack != null ? pack.Name : "";
             Quantity = Packages != null ? Packages.Quantity : 0;
@@ -76,6 +76,7 @@ namespace SHCServer.ViewModels
         public string Locality { set; get; }
 
         public long Quantity { get; set; }
+        public long QuantityUsed { get; set; }
 
         public long Amount { get; set; }
 

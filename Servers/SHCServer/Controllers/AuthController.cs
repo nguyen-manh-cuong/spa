@@ -24,18 +24,22 @@ namespace SHCServer.Controllers
     {
         private readonly string _connectionString;
         private readonly string _host;
+        private string nameData;
         private readonly int _port;
 
         public AuthController(IOptions<Audience> settings, IConfiguration configuration)
         {
             _settings = settings;
-            _context = new MySqlContext(new MySqlConnectionFactory(configuration.GetConnectionString("DefaultConnection")));
-            _contextmdmdb = new MySqlContext(new MySqlConnectionFactory(configuration.GetConnectionString("MdmConnection")));
             _connectionString = configuration.GetConnectionString("DefaultConnection");
+            _context = new MySqlContext(new MySqlConnectionFactory(_connectionString));
+            _contextmdmdb = new MySqlContext(new MySqlConnectionFactory(configuration.GetConnectionString("MdmConnection")));
 
             _host = configuration.GetValue("Gateway:Ip", "127.0.0.1");
             _port = configuration.GetValue("Gateway:Port", 9000);
             _excep = new FriendlyException();
+
+            if (_connectionString.IndexOf("smarthealthcare_58") > 0) nameData = "smarthealthcare_58";
+            else if (_connectionString.IndexOf("smarthealthcare") > 0) nameData = "smarthealthcare";
         }
 
         [HttpGet]
@@ -159,7 +163,7 @@ namespace SHCServer.Controllers
             string query = @"SELECT 
                                     ui.*,
                                     u.Status as MdmStatus
-                                FROM smarthealthcare.sys_users ui
+                                FROM " + nameData + @".sys_users ui
                                 INNER JOIN mdm.sys_users u
                                 ON ui.UserId = u.UserId
                                 AND ui.IsDelete = 0";

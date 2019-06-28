@@ -1,6 +1,6 @@
 import { Component, Injector, OnInit, ViewChild } from '@angular/core';
 import { IBookingInformations, IMedicalHealthcareHistories, IHealthfacilities } from '@shared/Interfaces';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatAutocompleteTrigger } from '@angular/material';
 import { isEmpty, isNil, isNull, omitBy, zipObject } from 'lodash';
 
 import { DataService } from '@shared/service-proxies/service-data';
@@ -19,6 +19,7 @@ import { Observable } from 'rxjs';
 import { startWith, map, debounceTime, tap, switchMap, finalize } from 'rxjs/operators';
 import { getPermission, notifyToastr } from '@shared/helpers/utils';
 import { Router } from '@angular/router';
+import { COMMA, ENTER } from '@angular/cdk/keycodes';
 
 export const MY_FORMATS = {
     parse: {
@@ -72,6 +73,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
     @ViewChild('endTime') endTime;
     @ViewChild('auto') auto;
     @ViewChild('bookingService') bookingService;
+    @ViewChild('unitInput', { read: MatAutocompleteTrigger }) UnitTrigger: MatAutocompleteTrigger;
     constructor(injector: Injector, private _dataService: DataService, public dialog: MatDialog, private _formBuilder: FormBuilder, private router: Router) {
         super(injector);
     }
@@ -114,6 +116,27 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
 
     displayFn(h?: IHealthfacilities): string | undefined {
         return h ? h.name : undefined;
+    }
+    check = 0;
+    _unitChip = [];
+    specialVisible = true;
+    specialSelectable = true;
+    specialRemovable = true;
+    specialAddOnBlur = true;
+    specialSeparatorKeysCodes: number[] = [ENTER, COMMA];
+
+    checkUnit = true;
+    UnitClick(check?) {
+        if (check) {
+            this.check = check;
+        }
+        if (this._unitChip.length == 0) {
+            this.checkUnit = false;
+        }
+        else {
+            this.checkUnit = true;
+        }
+        this.UnitTrigger.openPanel();
     }
 
     filterOptions() {

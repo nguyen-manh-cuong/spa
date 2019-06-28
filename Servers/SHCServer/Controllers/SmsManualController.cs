@@ -15,6 +15,7 @@ namespace SHCServer.Controllers
     public class SmsManualController : BaseController
     {
         private readonly string _connectionString;
+        private string nameData;
 
         public SmsManualController(IOptions<Audience> settings, IConfiguration configuration)
         {
@@ -22,6 +23,9 @@ namespace SHCServer.Controllers
             _context = new MySqlContext(new MySqlConnectionFactory(configuration.GetConnectionString("DefaultConnection")));
             _excep = new FriendlyException();
             _connectionString = configuration.GetConnectionString("DefaultConnection");
+
+            if (_connectionString.IndexOf("smarthealthcare_58") > 0) nameData = "smarthealthcare_58";
+            else if (_connectionString.IndexOf("smarthealthcare") > 0) nameData = "smarthealthcare";
         }
 
         [HttpGet]
@@ -47,8 +51,8 @@ namespace SHCServer.Controllers
                                     p.Address,
                                     p.Email,
                                     (select count(*) from sms_logs s where s.ObjectId = p.PatientId and s.ObjectType = 1) as smsCount
-                                from smarthealthcare.medical_healthcare_histories h
-                                inner join smarthealthcare.cats_patients p on h.PatientId = p.PatientId";
+                                from " + nameData + @".medical_healthcare_histories h
+                                inner join "+ nameData + @".cats_patients p on h.PatientId = p.PatientId";
             List<string> clause = new List<string>();
             List<DbParam> param = new List<DbParam>();
             List<MedicalHealthcareHistoriesViewModel> lst = new List<MedicalHealthcareHistoriesViewModel>();
@@ -453,8 +457,10 @@ namespace SHCServer.Controllers
             //danh sach goi sms su dung
             var packages = _context.Query<SmsPackagesDistribute>()
                             .Where(pd => pd.HealthFacilitiesId == infoInput.healthFacilitiesId 
-                                //&& pd.YearStart <= YearNow && 
-                                && pd.YearEnd >= YearNow && pd.MonthEnd >= MonthNow
+                                && ((pd.YearStart < YearNow && pd.YearEnd == YearNow && pd.MonthEnd <= MonthNow)
+                                || (pd.YearStart < YearNow && pd.YearEnd > YearNow)
+                                || (pd.YearStart == YearNow && pd.YearEnd == YearNow && pd.MonthEnd >= MonthNow && pd.MonthStart <= MonthNow)
+                                || (pd.YearStart == YearNow && pd.YearEnd > YearNow && pd.MonthStart <= MonthNow))
                                 && pd.IsDelete == false && pd.IsActive == true)
                             .Select(u => new PackageDistributeViewModel(u, _connectionString)).ToList();
             if (packages.Count == 0)
@@ -565,11 +571,15 @@ namespace SHCServer.Controllers
         [Route("api/infoSendsms")]
         public IActionResult InfoSendSms([FromBody] SmsInfoBookingInputViewModel infoInput)
         {
+            int YearNow = DateTime.Now.Year;
+            int MonthNow = DateTime.Now.Month;
             //danh sach goi sms su dung
             var packages = _context.Query<SmsPackagesDistribute>()
-                            .Where(pd => pd.HealthFacilitiesId == infoInput.healthFacilitiesId 
-                                && pd.YearEnd >= DateTime.Now.Year 
-                                && pd.MonthEnd >= DateTime.Now.Month 
+                            .Where(pd => pd.HealthFacilitiesId == infoInput.healthFacilitiesId
+                                && ((pd.YearStart < YearNow && pd.YearEnd == YearNow && pd.MonthEnd <= MonthNow)
+                                || (pd.YearStart < YearNow && pd.YearEnd > YearNow)
+                                || (pd.YearStart == YearNow && pd.YearEnd == YearNow && pd.MonthEnd >= MonthNow && pd.MonthStart <= MonthNow)
+                                || (pd.YearStart == YearNow && pd.YearEnd > YearNow && pd.MonthStart <= MonthNow))
                                 && pd.IsDelete == false && pd.IsActive == true)
                             .Select(u => new PackageDistributeViewModel(u, _connectionString)).ToList();
             if (packages.Count == 0)
