@@ -453,8 +453,10 @@ namespace SHCServer.Controllers
             //danh sach goi sms su dung
             var packages = _context.Query<SmsPackagesDistribute>()
                             .Where(pd => pd.HealthFacilitiesId == infoInput.healthFacilitiesId 
-                                //&& pd.YearStart <= YearNow && 
-                                && pd.YearEnd >= YearNow && pd.MonthEnd >= MonthNow
+                                && ((pd.YearStart < YearNow && pd.YearEnd == YearNow && pd.MonthEnd <= MonthNow)
+                                || (pd.YearStart < YearNow && pd.YearEnd > YearNow)
+                                || (pd.YearStart == YearNow && pd.YearEnd == YearNow && pd.MonthEnd >= MonthNow && pd.MonthStart <= MonthNow)
+                                || (pd.YearStart == YearNow && pd.YearEnd > YearNow && pd.MonthStart <= MonthNow))
                                 && pd.IsDelete == false && pd.IsActive == true)
                             .Select(u => new PackageDistributeViewModel(u, _connectionString)).ToList();
             if (packages.Count == 0)

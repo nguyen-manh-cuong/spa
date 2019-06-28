@@ -57,7 +57,7 @@ namespace SHCServer.ViewModels
                        {
                             JoinType.InnerJoin, d.Id==u.SmsPackageDistributeId
                        })
-                        .Where((d, u) => d.IsDelete == false && d.IsActive==true && u.IsDelete==false).Select((d, u) => u).FirstOrDefault();
+                        .Where((d, u) => d.Id == Id && d.IsDelete == false && d.IsActive==true && u.IsDelete==false).Select((d, u) => u).FirstOrDefault();
 
             PackageName = Packages != null ? Packages.Name : "";
             Quantity = Packages != null ? Packages.Quantity : 0;
@@ -72,6 +72,7 @@ namespace SHCServer.ViewModels
         public string Locality { set; get; }
 
         public long Quantity { get; set; }
+        public long QuantityUsed { get; set; }
 
         public long Amount { get; set; }
 
