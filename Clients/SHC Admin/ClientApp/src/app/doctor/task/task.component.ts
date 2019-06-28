@@ -391,7 +391,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
         if (this.obj.certificationDate)
           this.certificationDatePicker.nativeElement.value = moment(this._certificationDate).format("DD/MM/YYYY");
       }
-      }, 5000);
+      }, 1500);
   }
 
   //Add custom editor
@@ -533,10 +533,11 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     this.dataService.get("catcommon", "{isActive:'true'}", "{name:'asc'}", null, 300).subscribe(resp => {
       this._specialist = resp.items;
       this._specialistTemp = resp.items;
-      
-      specialists.forEach(w => {
-        this._specialist = this._specialist.filter(e => e.code != w.specialistCode);
-      });
+      if (specialists) {
+        specialists.forEach(w => {
+          this._specialist = this._specialist.filter(e => e.code != w.specialistCode);
+        });
+      }
   });
   }
 
