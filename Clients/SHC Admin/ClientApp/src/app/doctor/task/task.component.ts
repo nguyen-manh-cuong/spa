@@ -269,7 +269,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
         this._certificationInputCheck = false;
       }
 
-      this.getSpecialist(this.obj);
+      this.getSpecialist(this.obj.specialist);
 
       // setTimeout(() => {
       //   this.obj.specialist.forEach(w => {
@@ -529,13 +529,13 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
     this._dataService.getAll("ethnicity").subscribe(resp => { this.ethnicities = resp.items; });
   }
 
-  getSpecialist(obj? : any) {
+  getSpecialist(specialists? : any[]) {
     this.dataService.get("catcommon", "{isActive:'true'}", "{name:'asc'}", null, 300).subscribe(resp => {
       this._specialist = resp.items;
       this._specialistTemp = resp.items;
-
-      obj.specialist.forEach(w => {
-        this._specialist = this._specialistTemp.filter(e => e.code != w.specialistCode);
+      
+      specialists.forEach(w => {
+        this._specialist = this._specialist.filter(e => e.code != w.specialistCode);
       });
   });
   }

@@ -23,6 +23,7 @@
                         <mat-option *ngIf="isLoading" class="is-loading">
                             <mat-spinner diameter="30"></mat-spinner>
                         </mat-option>
+                        <mat-option class="text-center" [innerHTML]="'<div class=\'text-center border-bottom w-100\'>'+ l('Bỏ chọn') +'</div>'"></mat-option>
                         <mat-option *ngFor="let o of _healthfacilities" [value]="o">
                             {{o.code + ' - ' + o.name}}
                         </mat-option>
