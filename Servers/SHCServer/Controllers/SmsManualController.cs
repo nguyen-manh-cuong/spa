@@ -571,11 +571,15 @@ namespace SHCServer.Controllers
         [Route("api/infoSendsms")]
         public IActionResult InfoSendSms([FromBody] SmsInfoBookingInputViewModel infoInput)
         {
+            int YearNow = DateTime.Now.Year;
+            int MonthNow = DateTime.Now.Month;
             //danh sach goi sms su dung
             var packages = _context.Query<SmsPackagesDistribute>()
-                            .Where(pd => pd.HealthFacilitiesId == infoInput.healthFacilitiesId 
-                                && pd.YearEnd >= DateTime.Now.Year 
-                                && pd.MonthEnd >= DateTime.Now.Month 
+                            .Where(pd => pd.HealthFacilitiesId == infoInput.healthFacilitiesId
+                                && ((pd.YearStart < YearNow && pd.YearEnd == YearNow && pd.MonthEnd <= MonthNow)
+                                || (pd.YearStart < YearNow && pd.YearEnd > YearNow)
+                                || (pd.YearStart == YearNow && pd.YearEnd == YearNow && pd.MonthEnd >= MonthNow && pd.MonthStart <= MonthNow)
+                                || (pd.YearStart == YearNow && pd.YearEnd > YearNow && pd.MonthStart <= MonthNow))
                                 && pd.IsDelete == false && pd.IsActive == true)
                             .Select(u => new PackageDistributeViewModel(u, _connectionString)).ToList();
             if (packages.Count == 0)
