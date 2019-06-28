@@ -35,16 +35,20 @@ namespace SHCServer.ViewModels
                        {
                             JoinType.InnerJoin, d.SmsPackageId == p.Id
                        })
-                        .Where((d, p) => d.Id == PackagesDistribute.Id && d.IsDelete==false && d.IsActive==true && p.IsDelete==false && p.IsActive==true)
+                        .Where((d, p) => d.Id == PackagesDistribute.Id)
                         .Select((d, p) => p).FirstOrDefault();
+
+            var pack = context.Query<SmsPackage>().Where(p => p.Id == PackagesDistribute.SmsPackageId).FirstOrDefault();
                         
 
             var HealthFacilities = context.JoinQuery<SmsPackagesDistribute, HealthFacilities>((d, h) => new object[]
                        {
                             JoinType.InnerJoin, d.HealthFacilitiesId == h.HealthFacilitiesId
                        })
-                        .Where((d, h) => d.Id == PackagesDistribute.Id && d.IsDelete==false && d.IsActive==true && h.IsDelete==false && h.IsActive==true)
+                        .Where((d, h) => d.Id == PackagesDistribute.Id && d.IsDelete==false && h.IsDelete==false && h.IsActive==true)
                         .Select((d, h) => h).FirstOrDefault();
+
+            var health = context.Query<HealthFacilities>().Where(h => h.HealthFacilitiesId == PackagesDistribute.HealthFacilitiesId).FirstOrDefault();
 
             SmsBrand = context.JoinQuery<SmsPackagesDistribute, SmsBrands>((d, b) => new object[]
                        {
@@ -57,13 +61,13 @@ namespace SHCServer.ViewModels
                        {
                             JoinType.InnerJoin, d.Id==u.SmsPackageDistributeId
                        })
-                        .Where((d, u) => d.IsDelete == false && d.IsActive==true && u.IsDelete==false).Select((d, u) => u).FirstOrDefault();
+                        .Where((d, u) => d.Id == Id && d.IsDelete == false && d.IsActive==true && u.IsDelete==false).Select((d, u) => u).FirstOrDefault();
 
-            PackageName = Packages != null ? Packages.Name : "";
+            PackageName = pack != null ? pack.Name : "";
             Quantity = Packages != null ? Packages.Quantity : 0;
             Cost = Packages != null ? Packages.Cost : 0;
-            HealthFacilitiesName = HealthFacilities != null ? HealthFacilities.Name : "";
-            HealthFacilitiesCode = HealthFacilities != null ? HealthFacilities.Code : "";
+            HealthFacilitiesName = health != null ? health.Name : "";
+            HealthFacilitiesCode = health != null ? health.Code : "";
             SmsBrandsName = SmsBrand != null ? SmsBrand.BrandName : "";
         }
 
@@ -72,6 +76,7 @@ namespace SHCServer.ViewModels
         public string Locality { set; get; }
 
         public long Quantity { get; set; }
+        public long QuantityUsed { get; set; }
 
         public long Amount { get; set; }
 

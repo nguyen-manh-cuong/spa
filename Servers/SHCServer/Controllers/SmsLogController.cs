@@ -65,7 +65,9 @@ namespace SHCServer.Controllers
             //} 
 
             objs = objs.OrderByDesc(o => o.Id);
-            List<SmsLogViewModel> list = objectType == 1 ? objs.Select(l => new SmsLogViewModel(l, _connectionString)).ToList() : objs.TakePage(skipCount == 0 ? 1 : skipCount + 1, maxResultCount).Select(l => new SmsLogViewModel(l, _connectionString)).ToList();
+            List<SmsLogViewModel> list = objectType == 1 ? objs
+                .Select(l => new SmsLogViewModel(l, _connectionString)).ToList() : objs.TakePage(skipCount == 0 ? 1 : skipCount + 1, maxResultCount)
+                .Select(l => new SmsLogViewModel(l, _connectionString)).ToList();
 
             foreach (var item in list)
             {
