@@ -60,25 +60,37 @@ namespace SHCServer.Controllers
 
                 if (data.ContainsKey("provinceCode"))
                 {
-                    clause.Add("AND u.ProvinceCode = @provinceCode");
-                    param.Add(DbParam.Create("@provinceCode", data["provinceCode"]));
+                    if (!string.IsNullOrEmpty(data["provinceCode"]))
+                    {
+                        clause.Add("AND u.ProvinceCode = @provinceCode");
+                        param.Add(DbParam.Create("@provinceCode", data["provinceCode"]));
+                    } 
                 }
 
                 if (data.ContainsKey("districtCode"))
                 {
-                    clause.Add("AND u.DistrictCode = @districtCode");
-                    param.Add(DbParam.Create("@districtCode", data["districtCode"]));
+                    if (!string.IsNullOrEmpty(data["districtCode"]))
+                    {
+                        clause.Add("AND u.DistrictCode = @districtCode");
+                        param.Add(DbParam.Create("@districtCode", data["districtCode"]));
+                    }
                 }
 
                 if (data.ContainsKey("wardCode"))
                 {
-                    clause.Add("AND u.WardCode = @wardCode");
-                    param.Add(DbParam.Create("@wardCode", data["wardCode"]));
+                    if (!string.IsNullOrEmpty(data["wardCode"]))
+                    {
+                        clause.Add("AND u.WardCode = @wardCode");
+                        param.Add(DbParam.Create("@wardCode", data["wardCode"]));
+                    }
                 }
 
                 if (data.ContainsKey("userName"))
                 {
-                    clause.Add($"AND u.UserName LIKE '%{data["userName"].Replace(@"%", "\\%").Replace(@"_", "\\_").Trim()}%'");
+                    if (!string.IsNullOrEmpty(data["userName"]))
+                    {
+                        clause.Add($"AND u.UserName LIKE '%{data["userName"].Replace(@"%", "\\%").Replace(@"_", "\\_").Trim()}%'");
+                    }
                 }
 
                 if (data.ContainsKey("accountType"))
@@ -93,7 +105,7 @@ namespace SHCServer.Controllers
 
                 if (data.ContainsKey("userPhoneEmail"))
                 {
-                    if (!string.IsNullOrEmpty(data["userPhoneEmail"].Trim()))
+                    if (!string.IsNullOrEmpty(data["userPhoneEmail"]))
                     {
                         clause.Add($"AND (u.PhoneNumber = @userPhoneEmail OR u.Email = @userPhoneEmail)");
                         param.Add(DbParam.Create("@userPhoneEmail", data["userPhoneEmail"].Trim()));
@@ -103,21 +115,24 @@ namespace SHCServer.Controllers
 
                 if (data.ContainsKey("group"))
                 {
-                    var group = _contextmdmdb.Query<UserGroup>().Where(o => o.GroupId == int.Parse(data["group"].ToString()) && o.IsDelete == false).ToList();
+                    if (!string.IsNullOrEmpty(data["group"]))
+                    {
+                        var group = _contextmdmdb.Query<UserGroup>().Where(o => o.GroupId == int.Parse(data["group"].ToString()) && o.IsDelete == false).ToList();
 
-                    if (group.Count > 0)
-                    {
-                        int count = group.Count;
-                        clause.Add($"AND ( u.UserId = {group[0].UserId}");
-                        for (int i = 1; i < count - 1; i++)
+                        if (group.Count > 0)
                         {
-                            clause.Add($"OR u.UserId = {group[i].UserId}");
+                            int count = group.Count;
+                            clause.Add($"AND ( u.UserId = {group[0].UserId}");
+                            for (int i = 1; i < count - 1; i++)
+                            {
+                                clause.Add($"OR u.UserId = {group[i].UserId}");
+                            }
+                            clause.Add($"OR u.UserId = {group[count - 1].UserId})");
                         }
-                        clause.Add($"OR u.UserId = {group[count - 1].UserId})");
-                    }
-                    else
-                    {
-                        return Json(new ActionResultDto ());
+                        else
+                        {
+                            return Json(new ActionResultDto());
+                        }
                     }
                 }
             }
@@ -898,8 +913,11 @@ namespace SHCServer.Controllers
         [Route("api/user-approved")]
         public IActionResult Approved([FromBody] UserInputViewModel obj)
         {
-            var user = _context.Query<User>().Where(u => u.UserId == obj.UserId).FirstOrDefault();
-
+            var user = _context.Query<User>().Where(u => u.UserId == obj.UserId)?.FirstOrDefault();
+            if (user == null)
+            {
+                return null;
+            }
             int statusTmp = user.Status == 1 ? 2 : (user.Status == 2 ? 3 : 2);
             try
             {
