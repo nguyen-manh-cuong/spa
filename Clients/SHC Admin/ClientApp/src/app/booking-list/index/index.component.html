@@ -19,7 +19,7 @@
             <div class="col-md-8" *ngIf="appSession.user.accountType == 0">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('Unit')}}</mat-label>
-                        <input matInput [formControl]="healthfacilities" [matAutocomplete]="auto" #unitInput>
+                        <input matInput [formControl]="healthfacilities" [matAutocomplete]="auto" #unitInput (click)="UnitClick()">
                         <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn"
                                           (optionSelected)="onSelectHealthFacilities($event.option.value)">
                             <mat-option *ngIf="isLoading" class="is-loading">
