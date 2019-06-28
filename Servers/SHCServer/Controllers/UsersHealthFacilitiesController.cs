@@ -14,12 +14,16 @@ namespace SHCServer.Controllers
     public class UsersHealthFacilitiesController : BaseController
     {
         private readonly string _connectionString;
+        private string nameData;
         public UsersHealthFacilitiesController(IOptions<Audience> setting, IConfiguration configuration)
         {
             _settings = setting;
-            _context = new MySqlContext(new MySqlConnectionFactory(configuration.GetConnectionString("DefaultConnection")));
             _connectionString = configuration.GetConnectionString("DefaultConnection");
+            _context = new MySqlContext(new MySqlConnectionFactory(_connectionString));
             _excep = new FriendlyException();
+
+            if (_connectionString.IndexOf("smarthealthcare_58") > 0) nameData = "smarthealthcare_58";
+            else if (_connectionString.IndexOf("smarthealthcare") > 0) nameData = "smarthealthcare";
         }
 
         [HttpGet]
@@ -27,8 +31,8 @@ namespace SHCServer.Controllers
         public IActionResult GetHealthFacilitiesForUser(string filter = null)
         {
             string query = @"select *
-                                from smarthealthcare.sys_users_healthfacilities uh
-                                inner join smarthealthcare.cats_healthfacilities h on uh.HealthFacilitiesId = h.HealthFacilitiesId";
+                                from " + nameData + @".sys_users_healthfacilities uh
+                                inner join " + nameData + @".cats_healthfacilities h on uh.HealthFacilitiesId = h.HealthFacilitiesId";
             List<string> clause = new List<string>();
             List<DbParam> param = new List<DbParam>();
             List<UserHealthfacilitiesViewModel> lst = new List<UserHealthfacilitiesViewModel>();
