@@ -97,14 +97,16 @@ export class IndexComponent extends PagedListingComponentBase<IBookingDoctorsCal
             this.getDate(this.startTime.nativeElement.value, this.endTime.nativeElement.value);
         }, 1000);
 
-        this.selection.onChange.subscribe(se => {
-            se.added.forEach(e => {
-                this._checkboxSelected.push(e.doctorId);
+        if (this.selection.onChange) {
+            this.selection.onChange.subscribe(se => {
+                se.added.forEach(e => {
+                    this._checkboxSelected.push(e.doctorId);
+                });
+                se.removed.forEach(e => {
+                    this._checkboxSelected = this._checkboxSelected.filter(ef => ef !== e.doctorId);
+                });
             });
-            se.removed.forEach(e => {
-                this._checkboxSelected = this._checkboxSelected.filter(ef => ef !== e.doctorId);
-            });
-        });
+        }
     }
 
     //dialog detail
