@@ -391,7 +391,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
         if (this.obj.certificationDate)
           this.certificationDatePicker.nativeElement.value = moment(this._certificationDate).format("DD/MM/YYYY");
       }
-      }, 1000);
+      }, 5000);
   }
 
   //Add custom editor
