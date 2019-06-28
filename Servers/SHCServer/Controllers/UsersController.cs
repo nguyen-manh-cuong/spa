@@ -19,19 +19,22 @@ namespace SHCServer.Controllers
 {
     public class UsersController : BaseController
     {
-        //private readonly string _connectionString;
+        private readonly string _connectionString;
         //private readonly string _connectionStringShc;
         private string _newPassword;
-
+        private string nameData;
         public UsersController(IOptions<Audience> settings, IConfiguration configuration)
         {
             _settings = settings;
             _contextmdmdb = new MySqlContext(new MySqlConnectionFactory(configuration.GetConnectionString("MdmConnection")));
             //_connectionString = configuration.GetConnectionString("MdmConnection");
             _excep = new FriendlyException();
-
-            _context = new MySqlContext(new MySqlConnectionFactory(configuration.GetConnectionString("DefaultConnection")));
+            _connectionString = configuration.GetConnectionString("DefaultConnection");
+            _context = new MySqlContext(new MySqlConnectionFactory(_connectionString));
             //_connectionStringShc = configuration.GetConnectionString("DefaultConnection");
+
+            if (_connectionString.IndexOf("smarthealthcare_58") > 0) nameData = "smarthealthcare_58";
+            else if (_connectionString.IndexOf("smarthealthcare") > 0) nameData = "smarthealthcare";
         }
 
         [HttpGet]
@@ -42,7 +45,7 @@ namespace SHCServer.Controllers
                                     u.*,
                                     ui.Status as SHCStatus,
                                     g.GroupName
-                                FROM smarthealthcare.sys_users ui
+                                FROM " + nameData + @".sys_users ui
                                 INNER JOIN mdm.sys_users u
                                 ON ui.UserId = u.UserId
                                 LEFT JOIN mdm.sys_users_groups ug ON u.UserId = ug.UserId AND ug.IsDelete = 0 

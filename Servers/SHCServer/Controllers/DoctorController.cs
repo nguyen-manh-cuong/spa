@@ -17,13 +17,16 @@ namespace SHCServer.Controllers
     public class DoctorController : BaseController
     {
         private readonly string _connectionString;
-
+        private string nameData;
         public DoctorController(IOptions<Audience> settings, IConfiguration configuration)
         {
             _settings = settings;
             _context = new MySqlContext(new MySqlConnectionFactory(configuration.GetConnectionString("DefaultConnection")));
             _connectionString = configuration.GetConnectionString("DefaultConnection");
             _excep = new FriendlyException();
+
+            if (_connectionString.IndexOf("smarthealthcare_58") > 0) nameData = "smarthealthcare_58";
+            else if (_connectionString.IndexOf("smarthealthcare") > 0) nameData = "smarthealthcare";
         }
 
         [HttpGet]
@@ -713,7 +716,7 @@ namespace SHCServer.Controllers
             List<string> clause = new List<string>();
             List<DbParam> param = new List<DbParam>();
 
-            string doctorCheckBooking = @"SELECT Status FROM smarthealthcare.cats_doctors d INNER JOIN smarthealthcare.booking_doctors_calendars bdc ON d.DoctorId=bdc.DoctorId WHERE 1=1 AND d.IsDelete=0 AND bdc.Status IN (0,1) ";
+            string doctorCheckBooking = @"SELECT Status FROM " + nameData + @".cats_doctors d INNER JOIN "+ nameData + @".booking_doctors_calendars bdc ON d.DoctorId=bdc.DoctorId WHERE 1=1 AND d.IsDelete=0 AND bdc.Status IN (0,1) ";
 
             clause.Add("AND d.DoctorId=@DoctorId");
             param.Add(new DbParam("@DoctorId", id));

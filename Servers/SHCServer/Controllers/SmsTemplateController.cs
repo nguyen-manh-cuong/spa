@@ -14,12 +14,16 @@ namespace SHCServer.Controllers
     public class SMSController : BaseController
     {
         private readonly string _connectionString;
+        private string nameData;
         public SMSController(IOptions<Audience> settings, IConfiguration configuration)
         {
             _excep = new FriendlyException();
             _settings = settings;
-            _context = new MySqlContext(new MySqlConnectionFactory(configuration.GetConnectionString("DefaultConnection")));
             _connectionString = configuration.GetConnectionString("DefaultConnection");
+            _context = new MySqlContext(new MySqlConnectionFactory(_connectionString));
+
+            if (_connectionString.IndexOf("smarthealthcare_58") > 0) nameData = "smarthealthcare_58";
+            else if (_connectionString.IndexOf("smarthealthcare") > 0) nameData = "smarthealthcare";
         }
 
         [HttpGet]
@@ -80,13 +84,12 @@ namespace SHCServer.Controllers
 
             return Json(new ActionResultDto { Result = new { Items = objs.TakePage(skipCount == 0 ? 1 : skipCount + 1, maxResultCount).ToList(), TotalCount = objs.Count() } });
         }
-
+        
         [HttpPost]
         [Route("api/sms-templates")]
         public IActionResult Create([FromBody] SmsTemplateInputViewModel sms)
         {
-            string sql = $"SELECT * FROM smarthealthcare.sms_template where BINARY SmsTemplateName = '{sms.SmsTemplateName}' " +
-                $"and {sms.IsDelete} = false";
+            string sql = $"SELECT * FROM {nameData}.sms_template where BINARY SmsTemplateName = '{sms.SmsTemplateName}' and {sms.IsDelete} = false";
 
             SmsTemplate genSmsCode;
             string smsTemplateCode = "";
@@ -191,8 +194,7 @@ namespace SHCServer.Controllers
 
                 if (sms.SmsTemplateName != nameCurrentTemplate)
                 {
-                    string sql = $"SELECT * FROM smarthealthcare.sms_template where BINARY SmsTemplateName = '{sms.SmsTemplateName}' " +
-              $"and {sms.IsDelete} = false";
+                    string sql = $"SELECT * FROM {nameData}.sms_template where BINARY SmsTemplateName = '{sms.SmsTemplateName}' and {sms.IsDelete} = false";
                     //if (sms.HealthFacilitiesId != null)
                     //{
                     //    sql = sql + $" and (HealthFacilitiesId = {sms.HealthFacilitiesId} or HealthFacilitiesId = null)";
