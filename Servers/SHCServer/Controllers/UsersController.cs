@@ -382,7 +382,7 @@ namespace SHCServer.Controllers
                 _context.Session.BeginTransaction();
                 _context.Insert(() => new User
                 {
-                    Status = 2,
+                    Status = 1,
                     UserId = userId,
                     ExpriredDate = DateTime.Now.AddMonths(2)
                 });

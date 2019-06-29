@@ -286,6 +286,29 @@ namespace SHCServer.Controllers
 
             try
             {
+
+                //check cấu hình trong sys_configs
+                var config = _context.Query<Config>().Where(e => !e.IsDelete && e.IsActive == true); //lấy thông tin cấu hình
+
+                string checkvalue = ""; //giá trị check
+
+                //check theo loại tài khoản
+                if (obj.AccountType == 1) //Thành viên
+                {
+                    var accType = config.Where(e => e.Code == "A03.ApprovePatientAccount").FirstOrDefault();
+                    if (accType != null) checkvalue = accType.Values;
+                }
+                else if (obj.AccountType == 2) // Bác sỹ/ Chuyên gia/ Điều dưỡng
+                {
+                    var accType = config.Where(e => e.Code == "A04. ApproveDoctorAccount").FirstOrDefault();
+                    if (accType != null) checkvalue = accType.Values;
+                }
+                else if (obj.AccountType == 3) //Cơ sở y tế/ doanh nghiệp
+                {
+                    var accType = config.Where(e => e.Code == "A05. ApproveHealthFacilityAccount").FirstOrDefault();
+                    if (accType != null) checkvalue = accType.Values;
+                }
+
                 // Insert sys_users in mdm
                 _contextmdmdb.Session.BeginTransaction();
                 _contextmdmdb.Insert(() => new UserMDM
@@ -312,7 +335,9 @@ namespace SHCServer.Controllers
                     CertificationCode = obj.CertificationCode,
                     Insurrance = obj.Insurrance,
                     Identification = obj.Identification,
-                    LisenceCode = obj.LisenceCode
+                    LisenceCode = obj.LisenceCode,
+
+                    Status = checkvalue == "0" ? 1 : 0, //nếu giá trị là 0 thì set = 1(hoạt động), còn lại là 0 (không hoạt động)
                 });
                 _contextmdmdb.Session.CommitTransaction();
 
@@ -323,7 +348,7 @@ namespace SHCServer.Controllers
                 _context.Session.BeginTransaction();
                 _context.Insert(() => new User
                 {
-                    Status = 2,
+                    Status = checkvalue == "0" ? 2 : 1, //nếu giá trị là 0 thì set = 2(đã duyệt), còn lại là 1 (chờ duyệt),
                     UserId = userId,
                     ExpriredDate = DateTime.Now.AddMonths(2)
                 });
