@@ -383,7 +383,7 @@ export class TaskComponent extends AppComponentBase implements OnInit, AfterView
 
   ngAfterViewInit(): void {
       setTimeout(() => {
-		if(_isNew) {
+		if(this._isNew) {
 		  this._frm.controls['nationCode'].setValue('VN');
 		  this._frm.controls['ethnicityCode'].setValue('001');
 		}
