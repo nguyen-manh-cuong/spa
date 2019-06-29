@@ -3,3 +3,26 @@
     line-height: 40px;
     padding: 0px 20px;
 }
+.group-capcha {
+    margin-top: 30px;
+    position: relative;
+}
+.lbl-capcha {
+    position: absolute;
+    position: absolute;
+    top: -18px;
+    background: #fff;
+    left: 28px;
+    padding: 2px 5px;
+}
+.group-capcha .form-control {
+    height: 43px;
+}
+.img-capcha {
+    height: 43px;
+    width: 100%;
+}
+.group-capcha .fa-refresh {
+    font-size: 30px;
+    margin-top: 7px;
+}

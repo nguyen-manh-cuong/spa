@@ -28,14 +28,26 @@ export class LoginService {
         private _logService: LogService
     ) { this.clear(); }
 
-    authenticate(finallyCallback?: () => void, errorCallback?: (error: any) => void): void {
+    //authenticate(finallyCallback?: () => void, errorCallback?: (error: any) => void): void {
+    //    finallyCallback = finallyCallback || (() => { });
+
+    //    this._tokenAuthService
+    //        .authenticate(this.authenticateModel)
+    //        .pipe(finalize(() => { finallyCallback() }))
+    //        .subscribe((result: AuthenticateResultModel) => {
+    //            this.processAuthenticateResult(result);
+    //        }, error => errorCallback(error));
+    //}
+
+    authenticate(finallyCallback?: (success: any) => void, errorCallback?: (error: any) => void): void {
         finallyCallback = finallyCallback || (() => { });
 
         this._tokenAuthService
             .authenticate(this.authenticateModel)
-            .pipe(finalize(() => { finallyCallback() }))
+            .pipe(finalize(() => { }))
             .subscribe((result: AuthenticateResultModel) => {
                 this.processAuthenticateResult(result);
+                finallyCallback(result);
             }, error => errorCallback(error));
     }
 

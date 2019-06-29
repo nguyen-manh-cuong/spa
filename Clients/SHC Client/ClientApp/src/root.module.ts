@@ -117,12 +117,11 @@ export class RootModule {
             //    text: message,
             //    timer: 3000
             //});
-            notifyToastr(title, message, 'error');
+            if (message !== 'Đăng nhập không thành công. Tên đăng nhập, email, số điện thoại hoặc mật khẩu không chính xác') notifyToastr(title, message, 'error');
             //abp.notify.error(message, title);
             RootModule.message = message;
         }
     }
-
 }
 
 

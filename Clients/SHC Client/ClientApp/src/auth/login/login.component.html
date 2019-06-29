@@ -13,10 +13,11 @@
                                     <div class="form-group">
                                         <div>
                                             <label>Tên đăng nhập/Email/Số điện thoại</label>
-                                            <input #userNameOrEmailAddress formControlName="userNameOrEmailAddress" placeholder="" type="text" name="tentruycap" id="bill-number" class="form-control input-lg" autocomplete="off" maxlength="255">
+                                            <input #userNameOrEmailAddress formControlName="userNameOrEmailAddress" placeholder="" type="text" name="tentruycap" id="bill-number" class="form-control input-lg" autocomplete="off" maxlength="255" (keyup)="onHandleLoginInput($event)">
                                             <validation [control]="frmLogin.controls['userNameOrEmailAddress']"></validation>
                                         </div>
                                     </div>
+
                                     <div class="form-group">
                                         <div>
                                             <label>Mật khẩu</label>
@@ -24,12 +25,32 @@
                                             <validation [control]="frmLogin.controls['password']"></validation>
                                         </div>
                                     </div>
+
+                                    <div class="form-group group-capcha" *ngIf="numberLoginFail > 4 && numberLoginFail < 10">
+                                        <div class="row">
+                                            <div class="col-md-6 d-flex" [ngClass]="{'has-error': this.capcha}">
+                                                <label class="required min-width-100 mt-5 lbl-capcha {{this.capcha ? 'text-danger' : ''}}">Mã xác nhận<span class="text-danger">*</span></label>
+                                                <input type="text" name="prof_place" #codeCapcha formControlName="codeCapcha" mask="A*" maxlength="4" (change)="validateCapcha($event.target.value)" class="form-control validate">
+                                            </div>
+                                            <div class="col-md-6" style="margin-left: -20px; margin-top: -3px;">
+                                                <div class="row">
+                                                    <div class="col-md-10 pr-0"> <img [src]="_capcha.data" class="img-capcha" /></div>
+                                                    <div class="col-md-2">
+                                                        <span type="button"  (click)="getCapcha()"><i class="fa fa-refresh" aria-hidden="true"></i></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                           
+                                            <!--<small *ngIf="this.capcha" class="help-block" style="color: red;margin-left: 114px;">Mã xác nhận không khớp</small>-->
+                                        </div>
+                                    </div>
+
                                     <div class="form-group">Quên mật khẩu? Nhấn <a style="cursor:pointer" (click)="resetPasswordClick()">vào đây</a></div>
                                     <div class="form-group">Đăng ký tài khoản mới? Nhấn <a style="cursor:pointer" (click)="registerClick()">vào đây</a></div>
 
                                     <div class="form-group">
                                         <div>
-                                            <button class="btn btn-aqua btn-block btn-lg text-uppercase" (click)="login()">Đăng nhập</button>
+                                            <button class="btn btn-aqua btn-block btn-lg text-uppercase" [disabled]="frmLogin.controls['userNameOrEmailAddress'].invalid || frmLogin.controls['password'].invalid || (frmLogin.controls['codeCapcha'].value == null || frmLogin.controls['codeCapcha'].value == '') && (numberLoginFail >= 5)" (click)="login()">Đăng nhập</button>
                                             <button class="btn btn-facebook btn-block btn-lg">Đăng nhập nhanh bằng Facebook</button>
                                             <button class="btn btn-google btn-block btn-lg ">Đăng nhập nhanh bằng Google</button>
                                             <button class="btn btn-zalo btn-block btn-lg ">Đăng nhập nhanh bằng Zalo</button>

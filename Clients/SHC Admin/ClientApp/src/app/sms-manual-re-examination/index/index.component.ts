@@ -632,7 +632,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
                     this.selection.clear();
                     abp.ui.clearBusy('#main-container');
                 }, err => {
-                    // this.selection.clear();
+                    this.selection.clear();
                  });
         });
     }
