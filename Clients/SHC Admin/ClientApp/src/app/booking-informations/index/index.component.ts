@@ -14,6 +14,7 @@ import { PagedListingComponentBase } from '@shared/paged-listing-component-base'
 import { TaskComponent } from '../task/task.component';
 import { StatusComponent } from '../status-table/status.component';
 import { GenderComponent } from '../gender-table/gender.component';
+import { MatAutocompleteTrigger } from '@angular/material';
 import * as moment from 'moment';
 import swal from 'sweetalert2';
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
@@ -76,6 +77,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
     @ViewChild("endTime") endTime;
     @ViewChild("startTime") startTime;
     @ViewChild(MatSort) sort: MatSort;
+    @ViewChild('inputUnit', { read: MatAutocompleteTrigger }) inputUnitTrigger: MatAutocompleteTrigger;
 
     constructor(injector: Injector, private _dataService: DataService, public dialog: MatDialog, private _formBuilder: FormBuilder) { super(injector); }
 
@@ -112,6 +114,10 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
     }
     displayFn(h?: IHealthfacilities): string | undefined {
         return h ? h.name : undefined;
+    }
+
+    inputUnitClick(){
+        this.inputUnitTrigger.openPanel();
     }
 
     filterOptions() {
