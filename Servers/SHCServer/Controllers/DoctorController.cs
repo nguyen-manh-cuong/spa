@@ -739,7 +739,8 @@ namespace SHCServer.Controllers
 
                     _context.Update<Doctor>(d => d.DoctorId == id, x => new Doctor()
                     {
-                        IsDelete = true
+                        IsDelete = true,
+                        IsActive = false
                     });
 
                     var specialist = _context.Query<DoctorSpecialists>().Where(s => s.IsDelete == false && s.IsActive == true && s.DoctorId == id);
@@ -759,6 +760,16 @@ namespace SHCServer.Controllers
                         {
                             IsDelete = true,
                             IsActive = false
+                        });
+                    }
+
+                    var bookingDoctor = _context.Query<BookingDoctorsCalendars>().Where(bdc => bdc.Status != 0 && bdc.Status != 1 && bdc.IsDelete == false && bdc.IsActive == true && bdc.DoctorId == id);
+                    foreach(var item in bookingDoctor.ToList())
+                    {
+                        _context.Update<BookingDoctorsCalendars>(bdc => bdc.DoctorId == item.DoctorId, x => new BookingDoctorsCalendars()
+                        {
+                            IsActive = false,
+                            IsDelete = true
                         });
                     }
 
