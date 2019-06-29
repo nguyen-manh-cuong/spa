@@ -7,6 +7,7 @@ import { PagedListingComponentBase } from '@shared/paged-listing-component-base'
 import { startWith, map, ignoreElements, debounceTime, tap, switchMap, finalize, catchError } from 'rxjs/operators';
 import { Observable, merge, of } from 'rxjs';
 import { TaskComponent } from '@app/sms-template-task/task/task.component';
+import { MatAutocompleteTrigger } from '@angular/material';
 
 import * as moment from 'moment';
 import swal from 'sweetalert2';
@@ -83,6 +84,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     @ViewChild("birthday") birthday;
     @ViewChild("endTime") endTime;
     @ViewChild("startTime") startTime;
+    @ViewChild('inputUnit', { read: MatAutocompleteTrigger }) inputUnitTrigger: MatAutocompleteTrigger;
 
     constructor(injector: Injector, private _dataService: DataService, public dialog: MatDialog, private _formBuilder: FormBuilder, private router: Router) {
         super(injector);
@@ -180,15 +182,11 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     }
 
     onSelectHealthFacilities(obj: any) {
-        if (obj) {
-            this._doctors = [];
-            this.dataService.getAll('doctors', obj.healthFacilitiesId).subscribe(resp => this._doctors = resp.items);
-        }
-        else {
-            this._doctors = [];
-            this.healthfacilities.setValue(null);
-        }
+        this._doctors = [];
+        this.healthfacilities.setValue(null);
     }
+
+
 
     // onInputHealthFacilities(value) {
     //     if (value != ' ') {
@@ -580,6 +578,10 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
         // });
     }
 
+    inputUnitClick(){
+        this.inputUnitTrigger.openPanel();
+    }
+
     openCustomDialog(): void {
         const dialogRef = this.dialog.open(this.dialogComponent, { minWidth: 'calc(100vw/2)', maxWidth: 'calc(100vw - 300px)', disableClose: true, data: { selection: this.selection, type: 1, objectType: 1 } });
 
@@ -630,8 +632,9 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
                     this.selection.clear();
                     abp.ui.clearBusy('#main-container');
                 }, err => {
-                    // this.selection.clear();
+                    this.selection.clear();
                  });
         });
     }
+
 }

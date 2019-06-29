@@ -8,8 +8,7 @@
             </mat-slide-toggle>
         </div>
         <div class="col-8">
-            <mat-paginator #paginator [pageSizeOptions]="pageSizeOptions" [length]="totalItems" [pageSize]="pageSize"
-                           showFirstLastButtons></mat-paginator>
+            <mat-paginator #paginator [pageSizeOptions]="pageSizeOptions" [length]="totalItems" [pageSize]="pageSize" showFirstLastButtons></mat-paginator>
         </div>
     </div>
 </div>
@@ -19,17 +18,16 @@
             <div class="col-md-8" *ngIf="appSession.user.accountType == 0">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('Unit')}}</mat-label>
-                        <input matInput [formControl]="healthfacilities" [matAutocomplete]="auto" #unitInput (click)="UnitClick()">
-                        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn"
-                                          (optionSelected)="onSelectHealthFacilities($event.option.value)">
-                            <mat-option *ngIf="isLoading" class="is-loading">
-                                <mat-spinner diameter="50"></mat-spinner>
-                            </mat-option>
-                            <mat-option  class="text-center" [innerHTML]="'<div class=\'text-center border-bottom w-100\'>'+ l('SelectAll') +'</div>'"></mat-option>
-                            <mat-option *ngFor="let o of _healthfacilities" [value]="o">
-                                {{o.code + ' - ' + o.name}}
-                            </mat-option>
-                        </mat-autocomplete>
+                    <input matInput [formControl]="healthfacilities" [matAutocomplete]="auto" (click)="inputUnitClick()" #inputUnit>
+                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="onSelectHealthFacilities($event.option.value)">
+                        <mat-option *ngIf="isLoading" class="is-loading">
+                            <mat-spinner diameter="50"></mat-spinner>
+                        </mat-option>
+                        <mat-option class="text-center" [innerHTML]="'<div class=\'text-center border-bottom w-100\'>'+ l('SelectAll') +'</div>'"></mat-option>
+                        <mat-option *ngFor="let o of _healthfacilities" [value]="o">
+                            {{o.code + ' - ' + o.name}}
+                        </mat-option>
+                    </mat-autocomplete>
                 </mat-form-field>
             </div>
 
@@ -46,8 +44,7 @@
             <div class="col-md-{{appSession.user.accountType == 0 ? 8 : 4}} fadeIn animated">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l("Tìm kiếm")}}</mat-label>
-                    <input maxlength="255" placeholder="Họ tên, Số điện thoại, Mã đặt khám"
-                           formControlName="packagesNameDescription" matInput autocomplete>
+                    <input maxlength="255" placeholder="Họ tên, Số điện thoại, Mã đặt khám" formControlName="packagesNameDescription" matInput autocomplete>
                 </mat-form-field>
             </div>
             <div class="col-md-4">
@@ -69,35 +66,21 @@
 
             </div>
             <div class="col-md-4">
-                        <mat-form-field appearance="outline" class="w-100"
-                                        [ngClass]="{'mat-form-field-invalid': CompareTime()}">
-                            <mat-label>{{l('Từ ngày')}}</mat-label>
-                            <input readonly style="cursor: pointer; background-color: white;" disabled (click)="picker.open()" [disabled]="_isDateTimeEnable" matInput #startTime [matDatepicker]="picker" mask="0*"
-                                   required  [disabled]="type == 10"
-                                   [required]="frmSearch.get('time').value==10 && !startTime.value">
-                            <mat-datepicker-toggle matSuffix [for]="picker" class="t-2"></mat-datepicker-toggle>
-                            <mat-datepicker #picker></mat-datepicker>
-                            <!-- <mat-icon class="icon-alert" matSuffix
+                <mat-form-field appearance="outline" class="w-100" [ngClass]="{'mat-form-field-invalid': CompareTime()}">
+                    <mat-label>{{l('Từ ngày')}}</mat-label>
+                    <input readonly style="cursor: pointer; background-color: white;" disabled (click)="picker.open()" [disabled]="_isDateTimeEnable" matInput #startTime [matDatepicker]="picker" mask="0*" required [disabled]="type == 10" [required]="frmSearch.get('time').value==10 && !startTime.value">
+                    <mat-datepicker-toggle matSuffix [for]="picker" class="t-2"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                    <!-- <mat-icon class="icon-alert" matSuffix
                                       *ngIf="frmSearch.get('time').value==10 && !startTime.value" class="text-danger"
                                       matTooltip="{{l('Không được để trống')}}">info</mat-icon> -->
-                            <mat-icon matSuffix
-                                      *ngIf="CompareTime()"
-                                      class="text-danger" matTooltip="{{l('Từ ngày không được lớn hơn Đến ngày')}}">info</mat-icon>
-                        </mat-form-field>
+                    <mat-icon matSuffix *ngIf="CompareTime()" class="text-danger" matTooltip="{{l('Từ ngày không được lớn hơn Đến ngày')}}">info</mat-icon>
+                </mat-form-field>
             </div>
             <div class="col-md-4" id="cbo-endTime">
                 <mat-form-field appearance="outline" class="icon-alert w-100">
                     <mat-label>{{l('Đến ngày')}}</mat-label>
-                    <input readonly
-                           style="cursor: pointer; background-color: white;"
-                           disabled
-                           (click)="picker1.open()"
-                           [disabled]="_isDateTimeEnable"
-                           matInput #endTime
-                           [matDatepicker]="picker1"
-                           mask="0*"
-                           [required]="frmSearch.get('time').value==10 && !endTime.value"
-                           maxlength="10">
+                    <input readonly style="cursor: pointer; background-color: white;" disabled (click)="picker1.open()" [disabled]="_isDateTimeEnable" matInput #endTime [matDatepicker]="picker1" mask="0*" [required]="frmSearch.get('time').value==10 && !endTime.value" maxlength="10">
                     <mat-datepicker-toggle matSuffix [for]="picker1" class="t-2"></mat-datepicker-toggle>
                     <mat-datepicker #picker1></mat-datepicker>
                     <!-- <mat-icon matSuffix *ngIf="frmSearch.get('time').value==10 && !endTime.value" class="text-danger"
@@ -107,35 +90,32 @@
                               class="text-danger" matTooltip="{{l('Đến ngày không được nhỏ hơn Từ ngày')}}">info</mat-icon> -->
                 </mat-form-field>
             </div>
-                <div class="col-md-4">
+            <div class="col-md-4">
 
-                    <mat-form-field appearance="outline" class="w-100">
-                        <mat-label>Gói khám</mat-label>
-                        <mat-select formControlName="bookingService" disabled>
-                            <mat-option [innerHTML]="'<div class=\'text-center border-bottom w-100\'>'+ l('Bỏ chọn') +'</div>'">
-                            </mat-option>
-                            <mat-option *ngFor="let o of _doctors" [value]="o.doctorId">{{ o.fullName }}</mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                </div>
-                    <div class="col-md-4 text-center d-flex align-self-center fadeIn animated ml-auto">
-                        <button #btnSearch mat-stroked-button color="primary" (click)="customSearch()" class="w-100 mb-4">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Gói khám</mat-label>
+                    <mat-select formControlName="bookingService" disabled>
+                        <mat-option [innerHTML]="'<div class=\'text-center border-bottom w-100\'>'+ l('Bỏ chọn') +'</div>'">
+                        </mat-option>
+                        <mat-option *ngFor="let o of _doctors" [value]="o.doctorId">{{ o.fullName }}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="col-md-4 text-center d-flex align-self-center fadeIn animated ml-auto">
+                <button #btnSearch mat-stroked-button color="primary" (click)="customSearch()" class="w-100 mb-4">
                             <mat-icon class="mr-2">search</mat-icon>{{l("Search")}}
                         </button>
-                    </div>
-                    <div class="col-md-4 text-center d-flex align-self-center fadeIn animated mr-auto">
-                        <button mat-stroked-button color="primary"
-                                [disabled]="frmSearch.get('time').value==10 && !startTime.value || frmSearch.get('time').value==10 && !endTime.value || startTime.value > endTime.value"
-                                (click)="btnSearchClicks$.next($event)" class="w-100 mb-4">
+            </div>
+            <div class="col-md-4 text-center d-flex align-self-center fadeIn animated mr-auto">
+                <button mat-stroked-button color="primary" [disabled]="frmSearch.get('time').value==10 && !startTime.value || frmSearch.get('time').value==10 && !endTime.value || startTime.value > endTime.value" (click)="btnSearchClicks$.next($event)" class="w-100 mb-4">
                             {{l("Xuất Excel")}}
                         </button>
-                    </div>
             </div>
+        </div>
     </form>
 
     <div class="table-content" style="height: calc(100vh - 245px);">
-        <table mat-table [dataSource]="dataSources" matSort #sort="matSort" matSortDisableClear matSortActive="id"
-               matSortDirection="desc" class="w-100 task">
+        <table mat-table [dataSource]="dataSources" matSort #sort="matSort" matSortDisableClear matSortActive="id" matSortDirection="desc" class="w-100 task">
             <ng-container matColumnDef="orderNumber">
                 <th mat-header-cell *matHeaderCellDef class="min-w-50 text-center pl-0"> {{l("OrderNumber")}} </th>
                 <td mat-cell *matCellDef="let element; let i = index;" class="min-w-30 text-center">
@@ -245,29 +225,29 @@
                     </td>
                 </ng-container> -->
 
-                <ng-container matColumnDef="task" *ngIf="checkPermission(permission.edit)">
-                    <th mat-header-cell *matHeaderCellDef></th>
-                    <td mat-cell *matCellDef="let element" class="w-px-30">
-                        <button mat-icon-button [matMenuTriggerFor]="menu">
+            <ng-container matColumnDef="task" *ngIf="checkPermission(permission.edit)">
+                <th mat-header-cell *matHeaderCellDef></th>
+                <td mat-cell *matCellDef="let element" class="w-px-30">
+                    <button mat-icon-button [matMenuTriggerFor]="menu">
                             <mat-icon>more_vert</mat-icon>
                         </button>
-                        <mat-menu #menu="matMenu">
-                            <button mat-menu-item *ngIf="element.status != 3 ? true : false" (click)="openCustomDialog(element)">
+                    <mat-menu #menu="matMenu">
+                        <button mat-menu-item *ngIf="element.status != 3 ? true : false" (click)="openCustomDialog(element)">
                                 <mat-icon class="text-muted">sms</mat-icon>SMS
                             </button>
-                            <button mat-menu-item (click)="detail(element)">
+                        <button mat-menu-item (click)="detail(element)">
                                 <mat-icon class="text-muted">dvr</mat-icon>Xem chi tiết
                             </button>
 
-                            <button *ngIf="(element.status == 0 || element.status == 1) && permission.edit ? true : false" mat-menu-item (click)="openDialog(element)">
+                        <button *ngIf="(element.status == 0 || element.status == 1) && permission.edit ? true : false" mat-menu-item (click)="openDialog(element)">
                                 <mat-icon class="text-muted f-18">edit</mat-icon>{{l("Edit")}}
                             </button>
-                            <button *ngIf="(element.status == 0 || element.status == 1) && permission.edit ? true : false" mat-menu-item (click)="deleteDialogPackage(element)">
+                        <button *ngIf="(element.status == 0 || element.status == 1) && permission.edit ? true : false" mat-menu-item (click)="deleteDialogPackage(element)">
                                 <mat-icon class="text-muted f-18">cancel</mat-icon>Hủy đặt khám
                             </button>
-                        </mat-menu>
-                    </td>
-                </ng-container>
+                    </mat-menu>
+                </td>
+            </ng-container>
 
             <tr mat-header-row *matHeaderRowDef="displayedColumns;sticky:true"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="fadeIn animated"></tr>

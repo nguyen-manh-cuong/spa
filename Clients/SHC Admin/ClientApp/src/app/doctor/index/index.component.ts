@@ -16,7 +16,7 @@ import { DetailComponent } from '../detail/detail.component';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { getPermission, notifyToastr } from '@shared/helpers/utils';
 import { Router } from '@angular/router';
-
+import { MatAutocompleteTrigger } from '@angular/material';
 
 
 export class DoctorEntityDto {
@@ -64,7 +64,7 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
 
   permission: any;
   healthfacilitiesControl = new FormControl();
-
+  @ViewChild('inputUnit', { read: MatAutocompleteTrigger }) inputUnitTrigger: MatAutocompleteTrigger;
   displayedColumns = ['orderNumber', 'fullName', 'specialist', 'phoneNumber', 'address', 'priceFrom', 'allowBooking', 'allowFilter', 'allowSearch', 'task'];
 
   constructor(injector: Injector, private _dataService: DataService, public dialog: MatDialog, private _formBuilder: FormBuilder, private router: Router) { super(injector); }
@@ -404,6 +404,10 @@ export class IndexComponent extends PagedListingComponentBase<ICategoryCommon> i
       }
     }
     this.healthfacilities.setValue('');
+  }
+
+  inputUnitClick(){
+    this.inputUnitTrigger.openPanel();
   }
 
 

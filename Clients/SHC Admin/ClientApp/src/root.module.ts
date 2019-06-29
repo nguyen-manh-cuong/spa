@@ -114,8 +114,8 @@ export class RootModule {
     constructor() {
         abp.message.error = (message, title) => {
             //abp.notify.error(message, title, { hideDuration: 3000, preventDuplicates: true, preventOpenDuplicates: true });
-            if (message !== 'Tên đăng nhập hoặc mật khẩu không chính xác') notifyToastr(title, message, 'error');
-            
+            if (message !== 'Đăng nhập không thành công. Tên đăng nhập, email, số điện thoại hoặc mật khẩu không chính xác') notifyToastr(title, message, 'error');
+            if (message === 'Đăng nhập không thành công. Tên đăng nhập, email hoặc số điện thoại không tồn tại !!!') message = 'Tài khoản không tồn tại.'
             RootModule.message = message;
         }
     }

@@ -74,6 +74,8 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
     @ViewChild('auto') auto;
     @ViewChild('bookingService') bookingService;
     @ViewChild('unitInput', { read: MatAutocompleteTrigger }) UnitTrigger: MatAutocompleteTrigger;
+    @ViewChild('inputUnit', { read: MatAutocompleteTrigger }) inputUnitTrigger: MatAutocompleteTrigger;
+
     constructor(injector: Injector, private _dataService: DataService, public dialog: MatDialog, private _formBuilder: FormBuilder, private router: Router) {
         super(injector);
     }
@@ -202,6 +204,12 @@ export class IndexComponent extends PagedListingComponentBase<IBookingInformatio
                 return 'Nữ';
         }
     }
+
+    inputUnitClick(){
+        this.inputUnitTrigger.openPanel();
+    }
+
+
     // healthfacilitesChange($event){
     //     if($event.value){
     //         this.dataService.getAll('doctor',"{healthfacilities:"+$event.value+"}").subscribe(resp => { this._doctors = resp.items });

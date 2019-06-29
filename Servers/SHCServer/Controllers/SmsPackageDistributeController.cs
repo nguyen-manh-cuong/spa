@@ -33,7 +33,7 @@ namespace SHCServer.Controllers
         [Route("api/smspackagedistribute")]
         public IActionResult GetAllPackageDistribute(int skipCount = 0, int maxResultCount = 10, string sorting = null, string filter = null)
         {
-            var objs = _context.Query<SmsPackagesDistribute>().Where(o => o.IsDelete == false && o.HealthFacilitiesId != 0 && o.IsActive == true);
+            var objs = _context.Query<SmsPackagesDistribute>().Where(o => o.IsDelete == false && o.HealthFacilitiesId != 0);
 
             int monthStart = 0;
             int monthEnd = 0;

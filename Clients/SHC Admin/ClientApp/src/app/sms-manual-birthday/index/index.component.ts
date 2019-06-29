@@ -6,6 +6,7 @@ import { FormBuilder, FormControl } from '@angular/forms';
 import { PagedListingComponentBase } from '@shared/paged-listing-component-base';
 import { startWith, map, finalize, debounceTime, tap, switchMap, catchError } from 'rxjs/operators';
 import { Observable, merge, of } from 'rxjs';
+import { MatAutocompleteTrigger } from '@angular/material';
 import { MatDialog, throwMatDialogContentAlreadyAttachedError } from '@angular/material';
 import { TaskComponent } from '@app/sms-template-task/task/task.component';
 
@@ -91,6 +92,9 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
 
     _checkboxSelected: number[] = [];
 
+    
+    @ViewChild('inputUnit', { read: MatAutocompleteTrigger }) inputUnitTrigger: MatAutocompleteTrigger;
+
     constructor(injector: Injector, private _dataService: DataService, public dialog: MatDialog, private _formBuilder: FormBuilder) {
         super(injector);
     }
@@ -162,6 +166,10 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
                 this.selection.select(row);
             });
         
+    }
+
+    inputUnitClick(){
+        this.inputUnitTrigger.openPanel();
     }
 
     onSelectHealthFacilities(obj: any) {

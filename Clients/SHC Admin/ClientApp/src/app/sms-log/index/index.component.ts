@@ -4,6 +4,7 @@ import { DataService } from '@shared/service-proxies/service-data';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { PagedListingComponentBase } from '@shared/paged-listing-component-base';
 import { Observable } from 'rxjs';
+import { MatAutocompleteTrigger } from '@angular/material';
 import { map, startWith, finalize, switchMap, tap, debounceTime } from 'rxjs/operators';
 import swal from 'sweetalert2';
 import * as moment from 'moment';
@@ -66,6 +67,7 @@ export class IndexComponent extends PagedListingComponentBase<ISmsLogs> implemen
 
     _startDate = moment(new Date()).format('DD/MM/YYYY HH:mm');
     _endDate = moment(new Date()).format('DD/MM/YYYY HH:mm');
+    @ViewChild('inputUnit', { read: MatAutocompleteTrigger }) inputUnitTrigger: MatAutocompleteTrigger;
 
     constructor(injector: Injector, private _dataService: DataService /*, public dialog: MatDialog*/, private _formBuilder: FormBuilder) {
         super(injector);
@@ -136,6 +138,10 @@ export class IndexComponent extends PagedListingComponentBase<ISmsLogs> implemen
             .pipe(
                 finalize(() => this.isLoading = false)
             )
+    }
+
+    inputUnitClick(){
+        this.inputUnitTrigger.openPanel();
     }
 
     customSearch() {

@@ -7,6 +7,7 @@ import { PagedListingComponentBase } from '@shared/paged-listing-component-base'
 import { MatDialog } from '@angular/material/dialog';
 import { TaskComponent } from '@app/sms-template-task/task/task.component';
 import { DetailComponent } from './../detail/detail.component';
+import { MatAutocompleteTrigger } from '@angular/material';
 import { Observable, merge, of } from 'rxjs';
 import { MatPaginator, MatSort } from '@angular/material';
 import { startWith, map, finalize, switchMap, debounceTime, tap, catchError } from 'rxjs/operators';
@@ -83,6 +84,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     @ViewChild("compareLast") compareLast;
     @ViewChild("birthYear") birthYear;
     @ViewChild("healthInsuranceNumber") healthInsuranceNumber;
+    @ViewChild('inputUnit', { read: MatAutocompleteTrigger }) inputUnitTrigger: MatAutocompleteTrigger;
 
     dialogDetail: any;
 
@@ -164,6 +166,11 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
         const province = this._provinces.find((o: { provinceCode: string, name: string; }) => o.provinceCode === obj);
         if (province) { this.dataService.get('districts', JSON.stringify({ ProvinceCode: province.provinceCode }), '', 0, 0).subscribe(resp => this._districts = resp.items); }
     }
+
+    inputUnitClick(){
+        this.inputUnitTrigger.openPanel();
+    }
+
 
     // onSelectDistrict(obj: any) {
     //     this._wards = [];
