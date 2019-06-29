@@ -9,6 +9,7 @@ import { startWith, map, finalize, switchMap, tap, debounceTime, catchError } fr
 import { Observable, merge, of } from 'rxjs';
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import { SelectionModel } from '@angular/cdk/collections';
+import { MatAutocompleteTrigger } from '@angular/material';
 
 import swal from 'sweetalert2';
 import * as moment from 'moment';
@@ -59,6 +60,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingDoctorsCal
     @ViewChild("startTime") startTime;
     @ViewChild("endTime") endTime;
     @ViewChild('auto') auto;
+    @ViewChild('inputUnit', { read: MatAutocompleteTrigger }) inputUnitTrigger: MatAutocompleteTrigger;
 
     constructor(injector: Injector, private _dataService: DataService, public dialog: MatDialog, private _formBuilder: FormBuilder, private router: Router) {
         super(injector);
@@ -188,6 +190,11 @@ export class IndexComponent extends PagedListingComponentBase<IBookingDoctorsCal
         const numSelected = this.selection.selected.length;
         const numRows = this.dataSources.data.length;
         return numSelected === numRows;
+    }
+
+
+    inputUnitClick(){
+        this.inputUnitTrigger.openPanel();
     }
 
     masterToggle() {

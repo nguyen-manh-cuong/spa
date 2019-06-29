@@ -11,8 +11,7 @@
             </mat-slide-toggle>
         </div>
         <div class="col-9">
-            <mat-paginator #paginator [pageSizeOptions]="pageSizeOptions" [length]="totalItems" [pageSize]="pageSize"
-                showFirstLastButtons></mat-paginator>
+            <mat-paginator #paginator [pageSizeOptions]="pageSizeOptions" [length]="totalItems" [pageSize]="pageSize" showFirstLastButtons></mat-paginator>
         </div>
     </div>
 </div>
@@ -22,9 +21,12 @@
             <div class="col-md-6" *ngIf="appSession.user.accountType == 0">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('Unit')}}</mat-label>
-                    <input matInput [formControl]="healthfacilities" [matAutocomplete]="auto">
+                    <input matInput [formControl]="healthfacilities" [matAutocomplete]="auto" (click)="inputUnitClick()" #inputUnit>
                     <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="onSelectHealthFacilities($event.option.value)">
-                        <mat-option *ngIf="isLoading" class="is-loading"><mat-spinner diameter="50"></mat-spinner></mat-option>
+                        <mat-option *ngIf="isLoading" class="is-loading">
+                            <mat-spinner diameter="50"></mat-spinner>
+                        </mat-option>
+                        <mat-option class="text-center" [innerHTML]="'<div class=\'text-center border-bottom w-100\'>'+ l('Bỏ chọn') +'</div>'"></mat-option>
                         <mat-option *ngFor="let o of _healthfacilities" [value]="o">
                             {{o.code + ' - ' + o.name}}
                         </mat-option>
@@ -36,7 +38,7 @@
                     <mat-label>{{l("BookingTimeSlotsUnitTimeslost")}}</mat-label>
                     <input formControlName="keyFilter" matInput autocomplete maxlength="255">
                 </mat-form-field>
-            </div> 
+            </div>
             <div class="col-md-3 text-center d-flex align-self-center">
                 <button #btnSearch mat-stroked-button (click)="customSearch()" color="primary" class="w-100 mb-4">
                     <mat-icon class="mr-2">search</mat-icon>{{l("Search")}}
@@ -46,8 +48,7 @@
     </form>
 
     <div class="table-content" style="height: calc(100vh - 245px);">
-        <table mat-table [dataSource]="dataSources" matSort #sort="matSort" matSortDisableClear matSortDirection="asc"
-            class="w-100 task">
+        <table mat-table [dataSource]="dataSources" matSort #sort="matSort" matSortDisableClear matSortDirection="asc" class="w-100 task">
             <ng-container matColumnDef="orderNumber">
                 <th mat-header-cell *matHeaderCellDef class="min-w-30 text-center pl-0"> {{l("OrderNumber")}} </th>
                 <td mat-cell *matCellDef="let element; let i = index;" class="min-w-30 text-center">

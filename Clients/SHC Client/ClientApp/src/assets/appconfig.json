@@ -1,6 +1,6 @@
 {
   "remoteServiceBaseUrl": "http://127.0.0.1:9008/api",
-  "serverBaseUrl": "http://123.30.214.138:9000",
+  "serverBaseUrl": "http://127.0.0.1:9000",
   "appBaseUrl": "http://127.0.0.1:8400",
   "appId": 2,
   "appName": "Smart Health Care System"

@@ -18,18 +18,19 @@
             <div class="col-md-6" *ngIf="appSession.user.accountType == 0">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('Unit')}}</mat-label>
-                    <input matInput [formControl]="healthfacilities" [matAutocomplete]="auto" required>
+                    <input matInput [formControl]="healthfacilities" [matAutocomplete]="auto" (click)="inputUnitClick()" #inputUnit required>
                     <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="onSelectHealthFacilities($event.option.value)">
                         <mat-option *ngIf="isLoading" class="is-loading">
-                        <mat-spinner diameter="50">
-                        </mat-spinner>
+                            <mat-spinner diameter="50">
+                            </mat-spinner>
                         </mat-option>
+                        <mat-option class="text-center" [innerHTML]="'<div class=\'text-center border-bottom w-100\'>'+ l('Bỏ chọn') +'</div>'"></mat-option>
                         <mat-option *ngFor="let o of _healthfacilities" [value]="o">
                             {{o.code + ' - ' + o.name}}
                         </mat-option>
                     </mat-autocomplete>
                 </mat-form-field>
-            </div> 
+            </div>
             <div class="col-md-{{appSession.user.accountType == 0 ? 6 : 3}}">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('Doctor')}}</mat-label>
@@ -56,8 +57,7 @@
                 </mat-form-field>
             </div>
             <div class="col-md-3 text-center d-flex align-self-center fadeIn animated">
-                <button #btnSearch mat-stroked-button color="primary" (click)="search()"
-                    class="w-100 mb-4">
+                <button #btnSearch mat-stroked-button color="primary" (click)="search()" class="w-100 mb-4">
                     <mat-icon class="mr-2">search</mat-icon>{{l("Search")}}
                 </button>
             </div>
@@ -65,26 +65,16 @@
     </form>
 
     <div class='app-calendar content'>
-        <full-calendar
-            #calendar
-            defaultView="dayGridMonth"
-            [header]="{
+        <full-calendar #calendar defaultView="dayGridMonth" [header]="{
                 left: 'prev, next today',
                 center: 'title',
                 right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
-            }"
-            [editable]="true"
-            [locales]="viLocale"
-            [plugins]="calendarPlugins"
-            [weekends]="calendarWeekends"
-            [events]="calendarEvents"
-            [eventLimit]="4" 
-            (eventRender)="handleEvent($event)"
-        ></full-calendar>
-    </div><hr>
+            }" [editable]="true" [locales]="viLocale" [plugins]="calendarPlugins" [weekends]="calendarWeekends" [events]="calendarEvents" [eventLimit]="4" (eventRender)="handleEvent($event)"></full-calendar>
+    </div>
+    <hr>
 
     <div>
-        Ghi chú : 
+        Ghi chú :
         <span class="btn wait">
             08h00 - 12h00
         </span>{{l('CalendarNew')}}
