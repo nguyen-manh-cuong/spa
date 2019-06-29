@@ -182,15 +182,11 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     }
 
     onSelectHealthFacilities(obj: any) {
-        if (obj) {
-            this._doctors = [];
-            this.dataService.getAll('doctors', obj.healthFacilitiesId).subscribe(resp => this._doctors = resp.items);
-        }
-        else {
-            this._doctors = [];
-            this.healthfacilities.setValue(null);
-        }
+        this._doctors = [];
+        this.healthfacilities.setValue(null);
     }
+
+
 
     // onInputHealthFacilities(value) {
     //     if (value != ' ') {

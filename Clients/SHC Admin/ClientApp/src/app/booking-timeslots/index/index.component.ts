@@ -13,6 +13,7 @@ import { TaskComponent } from '../task/task.component';
 import swal from 'sweetalert2';
 import { getPermission, notifyToastr } from '@shared/helpers/utils';
 import { Router } from '@angular/router';
+import { MatAutocompleteTrigger } from '@angular/material';
 
 
 export class EntityDto {
@@ -27,6 +28,8 @@ export class EntityDto {
 })
 export class IndexComponent extends PagedListingComponentBase<IBookingTimeslots> implements OnInit {
   _healthfacilities = [];
+
+  @ViewChild('inputUnit', { read: MatAutocompleteTrigger }) inputUnitTrigger: MatAutocompleteTrigger;
 
   filteredOptions: Observable<IHealthfacilities[]>;
   healthfacilities = new FormControl();
@@ -122,6 +125,12 @@ export class IndexComponent extends PagedListingComponentBase<IBookingTimeslots>
     }
     this.btnSearchClicks$.next();
   }
+
+
+  inputUnitClick(){
+    this.inputUnitTrigger.openPanel();
+  }
+
 
   showNotify(obj: EntityDto, key: string, id?: number | string) {
     notifyToastr(this.l('Không thể xóa khung giờ khám đang hoạt động'), '', 'error');

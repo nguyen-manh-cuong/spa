@@ -9,7 +9,7 @@ import { DataService } from '@shared/service-proxies/service-data';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { AppComponentBase } from '@shared/app-component-base';
 import { TaskComponent } from '../task/task.component';
-
+import { MatAutocompleteTrigger } from '@angular/material';
 import { FullCalendarComponent } from '@fullcalendar/angular';
 import { EventInput } from '@fullcalendar/core';
 import viLocale from '@fullcalendar/core/locales/vi';
@@ -54,6 +54,7 @@ export class IndexComponent extends AppComponentBase implements OnInit {
 
     @ViewChild('calendar') calendarComponent: FullCalendarComponent;
     @ViewChild('healthfacilities') healthfacility;
+    @ViewChild('inputUnit', { read: MatAutocompleteTrigger }) inputUnitTrigger: MatAutocompleteTrigger;
 
     constructor(injector: Injector, private _dataService: DataService, public dialog: MatDialog, private _formBuilder: FormBuilder, private router: Router) {
         super(injector);
@@ -149,6 +150,10 @@ export class IndexComponent extends AppComponentBase implements OnInit {
     //filter autocomplete
     displayFn(h?: IHealthfacilities): string | undefined {
         return h ? h.name : undefined;
+    }
+
+    inputUnitClick(){
+        this.inputUnitTrigger.openPanel();
     }
 
     filterOptions() {

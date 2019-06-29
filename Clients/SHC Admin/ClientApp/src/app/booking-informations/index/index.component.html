@@ -1,25 +1,28 @@
 <div class="toolbar border-bottom">
-        <div class="row w-100 m-0">
-            <div class="col-3 text-left d-flex align-items-center">            
-                <mat-slide-toggle class="ml-2" [checked]="showFilter" (change)="toggedFilter()">
-                    <ng-container *ngIf="showFilter">{{l("ShowFilter")}}</ng-container>
-                    <ng-container *ngIf="!showFilter">{{l("HideFilter")}}</ng-container>
-                </mat-slide-toggle>
-            </div>
-            <div class="col-9">
-                <mat-paginator #paginator [pageSizeOptions]="pageSizeOptions" [length]="totalItems" [pageSize]="pageSize" showFirstLastButtons></mat-paginator>
-            </div>
+    <div class="row w-100 m-0">
+        <div class="col-3 text-left d-flex align-items-center">
+            <mat-slide-toggle class="ml-2" [checked]="showFilter" (change)="toggedFilter()">
+                <ng-container *ngIf="showFilter">{{l("ShowFilter")}}</ng-container>
+                <ng-container *ngIf="!showFilter">{{l("HideFilter")}}</ng-container>
+            </mat-slide-toggle>
+        </div>
+        <div class="col-9">
+            <mat-paginator #paginator [pageSizeOptions]="pageSizeOptions" [length]="totalItems" [pageSize]="pageSize" showFirstLastButtons></mat-paginator>
         </div>
     </div>
+</div>
 <div class="content">
     <form [formGroup]="frmSearch" class="form-filter form-custom pl-2 pr-2  mb-4" novalidate>
         <div class="row pt-4">
             <div class="col-md-6" *ngIf="appSession.user.accountType == 0">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('Unit')}}</mat-label>
-                    <input matInput [formControl]="healthfacilities" [matAutocomplete]="auto">
+                    <input matInput [formControl]="healthfacilities" [matAutocomplete]="auto" (click)="inputUnitClick()" #inputUnit>
                     <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="onSelectHealthFacilities($event.option.value)">
-                        <mat-option *ngIf="isLoading" class="is-loading"><mat-spinner diameter="50"></mat-spinner></mat-option>
+                        <mat-option *ngIf="isLoading" class="is-loading">
+                            <mat-spinner diameter="50"></mat-spinner>
+                        </mat-option>
+                        <mat-option class="text-center" [innerHTML]="'<div class=\'text-center border-bottom w-100\'>'+ l('Bỏ chọn') +'</div>'"></mat-option>
                         <mat-option *ngFor="let o of _healthfacilities" [value]="o">
                             {{o.code + ' - ' + o.name}}
                         </mat-option>
@@ -62,19 +65,19 @@
             <div class="col-md-3" id="cbo-endTime">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{l('Đến ngày')}}</mat-label>
-                    <input readonly style="cursor: inherit" (click)="picker2.open()" [disabled]="_isDateTimeEnable" matInput [matDatepicker]="picker2" #endTime mask="0*"  maxlength="10" required>
+                    <input readonly style="cursor: inherit" (click)="picker2.open()" [disabled]="_isDateTimeEnable" matInput [matDatepicker]="picker2" #endTime mask="0*" maxlength="10" required>
                     <mat-datepicker-toggle matSuffix [for]="picker2" class="t-2"></mat-datepicker-toggle>
                     <mat-datepicker #picker2></mat-datepicker>
                 </mat-form-field>
             </div>
             <div class="col-md-3  text-center d-flex align-self-center">
-                <button #btnSearch mat-stroked-button (click)="search()" color="primary" class="w-100 mb-4" >
+                <button #btnSearch mat-stroked-button (click)="search()" color="primary" class="w-100 mb-4">
                     <mat-icon class="mr-2">search</mat-icon>{{l("Search")}}
                 </button>
             </div>
         </div>
-        
-    </form> 
+
+    </form>
     <div class="row">
         <div class="col-lg-7">
             <div class="mb-2 pl-2 f14"> <b>{{l('Số lượng bệnh nhân theo bác sỹ ')}}</b> {{l('(Tổng số')}} {{totalPatientCount}} {{('bệnh nhân)')}}</div>
@@ -95,20 +98,20 @@
                     <ng-container matColumnDef="quantity">
                         <th mat-header-cell *matHeaderCellDef class="text-center col-quantity"> {{l("Số lượng bệnh nhân")}} </th>
                         <td mat-cell *matCellDef="let element" class="col-quantity text-right"> {{element.quantity}} </td>
-                    </ng-container>                    
+                    </ng-container>
                     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
                 </table>
             </div>
         </div>
-            
+
         <div class="col-md-5">
             <div class="mb-4">
-                    <div class="mb-2 f14"> <b>{{l('Số lượng bệnh nhân theo giới tính')}}</b></div>
-                    <app-gender [master]="master"></app-gender>
+                <div class="mb-2 f14"> <b>{{l('Số lượng bệnh nhân theo giới tính')}}</b></div>
+                <app-gender [master]="master"></app-gender>
             </div>
             <div class="mb-2 f14"><b>{{l('Số lượng bệnh nhân theo trạng thái')}}</b></div>
             <app-status [master]="master"></app-status>
         </div>
-    </div>                                 
     </div>
+</div>
