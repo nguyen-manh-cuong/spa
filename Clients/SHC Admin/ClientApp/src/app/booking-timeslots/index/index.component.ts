@@ -35,6 +35,7 @@ export class IndexComponent extends PagedListingComponentBase<IBookingTimeslots>
   healthfacilities = new FormControl();
   isLoading = false;
   permission: any;
+  checkInputHealthFacilities = false;
   displayedColumns = this.appSession.user.accountType != 0 ? ['orderNumber', 'code', 'name', 'time', 'status', 'task'] : ['orderNumber', 'healthFacilitiesName', 'code', 'name', 'time', 'status', 'task'];
 
   constructor(injector: Injector, private _dataService: DataService, public dialog: MatDialog, private _formBuilder: FormBuilder, private router: Router) { super(injector); }
@@ -130,6 +131,12 @@ export class IndexComponent extends PagedListingComponentBase<IBookingTimeslots>
   inputUnitClick(){
     this.inputUnitTrigger.openPanel();
   }
+
+  onSelectHealthFacilities(value) {
+    if (value.healthFacilitiesId) {
+      this.checkInputHealthFacilities = false;
+    }
+}
 
 
   showNotify(obj: EntityDto, key: string, id?: number | string) {

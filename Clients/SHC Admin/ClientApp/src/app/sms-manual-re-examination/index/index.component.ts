@@ -51,6 +51,7 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
     _districts = [];
     _wards = [];
     _doctors = [];
+    checkInputHealthFacilities = false;
     _isRequest = false;
     _healthfacilities = [];
     _status = [{ id: 0, name: 'Tất cả' }, { id: 1, name: 'Đã gửi SMS' }, { id: 2, name: 'Chưa gửi SMS' }];
@@ -180,13 +181,11 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
             }); 
         }
     }
-
-    onSelectHealthFacilities(obj: any) {
-        this._doctors = [];
-        this.healthfacilities.setValue(null);
+    onSelectHealthFacilities(value) {
+        if (value.healthFacilitiesId) {
+          this.checkInputHealthFacilities = false;
+        }
     }
-
-
 
     // onInputHealthFacilities(value) {
     //     if (value != ' ') {
@@ -387,10 +386,6 @@ export class IndexComponent extends PagedListingComponentBase<IMedicalHealthcare
             });
     }
 
-    xClick(){
-        this.healthfacilities.setValue(null);
-        
-    }
 
     filter(value: any) {
         var fValue = typeof value === 'string' ? value : (value ? value.name : '')
